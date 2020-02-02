@@ -1,3 +1,6 @@
+"""
+This class provides a CLI for interaction with Solvers and Puzzles
+"""
 from .util import *
 
 class PuzzlePlayer:
