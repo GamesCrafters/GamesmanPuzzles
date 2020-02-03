@@ -29,7 +29,7 @@ class Hanoi(Puzzle):
 
     def primitive(self):
         if self.stacks[2] == list(range(self.size, 0, -1)):
-            return PuzzleValue.WIN 
+            return PuzzleValue.SOLVABLE 
         return GameValue.UNDECIDED
 
     def doMove(self, move):
