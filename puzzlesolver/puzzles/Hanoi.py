@@ -30,7 +30,7 @@ class Hanoi(Puzzle):
     def primitive(self):
         if self.stacks[2] == list(range(self.size, 0, -1)):
             return PuzzleValue.SOLVABLE 
-        return GameValue.UNDECIDED
+        return PuzzleValue.UNDECIDED
 
     def doMove(self, move):
         newPuzzle = Hanoi(size=self.size)
@@ -58,4 +58,4 @@ class Hanoi(Puzzle):
         return [newPuzzle]
 
 if __name__ == "__main__":
-    PuzzlePlayer(Hanoi(size=7), GeneralSolver(), auto=True).play()
+    PuzzlePlayer(Hanoi(size=3), GeneralSolver(), auto=False).play()
