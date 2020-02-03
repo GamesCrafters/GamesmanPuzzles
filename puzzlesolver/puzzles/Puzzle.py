@@ -1,7 +1,24 @@
-# These are general functions that you might want to implement if you are to use the PuzzlePlayer
-# and the GeneralSolver
+# These are general functions that you might want to implement if you are to use the 
+# PuzzlePlayer and the GeneralSolver
 
 class Puzzle:
+
+    def __hash__(self):
+        """Returns a hash of the puzzle.
+        Requirements:
+        - Each different puzzle must have a different hash
+        - The same puzzle must have the same hash.
+        
+        Outputs:
+        Hash of Puzzle -- Integer
+
+        Note: How same and different are defined are dependent on how you implement it.
+        For example, a common optimization technique for reducing the size of key-value
+        pair storings are to make specific permutations of a board the same as they have
+        the same position value (i.e. rotating or flipping a tic-tac-toe board). 
+        In that case, the hash of all those specific permutations are the same.
+        """
+        raise NotImplementedError
 
     def primitive(self):
         """If the Puzzle is at an endstate, return GameValue.WIN or GameValue.LOSS
@@ -19,7 +36,7 @@ class Puzzle:
         """Given a valid move, returns a new Puzzle object with that move executed
 
         Inputs
-        move -- any type (defined by generateMoves)
+        move -- type defined by generateMoves
 
         Outputs:
         Puzzle with move executed
@@ -30,7 +47,7 @@ class Puzzle:
         """Generate possible moves from the self
 
         Outputs:
-        List of moves
+        List of moves, move must be hashable
         """
         raise NotImplementedError
 

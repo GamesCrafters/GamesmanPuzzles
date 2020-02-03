@@ -2,38 +2,54 @@ from .util import *
 
 class PuzzlePlayer:
 
-    def __init__(self, game, solver=None):
-        self.base = game
-        self.game = game
+    def __init__(self, puzzle, solver=None, auto=False):
+        self.base = puzzle
+        self.puzzle = puzzle
         self.solver = solver
+        self.auto = auto
         if solver:
-            self.solver.solve(self.game)
+            self.solver.solve(self.puzzle)
 
-    # Starts the GameManager
+    # Starts the PuzzlePlayer
     def play(self):
-        self.game = self.base
-        while self.game.primitive() == GameValue.UNDECIDED:
+        self.puzzle = self.base
+        self.turn = 0
+        while self.puzzle.primitive() == GameValue.UNDECIDED:
             self.printInfo()
-            self.printTurn()
+            self.printTurn(auto=self.auto)
         self.printInfo()
         print("Game Over")
 
-    # Prints the game info
+    # Prints the puzzle info
     def printInfo(self):
-        print("Primitive:     ", self.game.primitive())
+        print("Turn:          ", self.turn), 
+        print("Primitive:     ", self.puzzle.primitive())
         if self.solver:
-            print("Solver:        ", self.solver.solve(self.game))
-            print("Remoteness:    ", self.solver.getRemoteness(self.game))
-        print(str(self.game))
+            print("Solver:        ", self.solver.solve(self.puzzle))
+            print("Remoteness:    ", self.solver.getRemoteness(self.puzzle))
+        print(str(self.puzzle))
+        self.turn += 1
 
     # Prompts for input and moves
-    def printTurn(self):
-        moves = self.game.generateMoves()
-        print("Possible Moves:", moves)
-        print("Enter Piece: ")
-        index = int(input())
-        if index >= len(moves):
-            print("Not a valid move, try again")
+    def printTurn(self, auto=False):
+        if auto: 
+            move = self.generateBestMove()
+            self.puzzle = self.puzzle.doMove(move)
         else:
-            self.game = self.game.doMove(moves[index])
+            moves = self.puzzle.generateMoves()
+            print("Possible Moves:", moves)
+            print("Enter Piece: ")
+            index = int(input())
+            if index >= len(moves):
+                print("Not a valid move, try again")
+            else:
+                self.puzzle = self.puzzle.doMove(moves[index])
         print("----------------------------")
+
+    def generateBestMove(self):
+        remotes = {
+            self.solver.getRemoteness(self.puzzle.doMove(move)) : move 
+            for move in self.puzzle.generateMoves()
+        }
+        return remotes[min(remotes.keys())]
+

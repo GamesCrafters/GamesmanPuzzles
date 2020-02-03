@@ -11,8 +11,9 @@ from ..PuzzlePlayer import PuzzlePlayer
 class Hanoi(Puzzle):
 
     def __init__(self, size=3):
+        self.size = size
         self.stacks = [
-            [3, 2, 1],
+            list(range(size, 0, -1)),
             [],
             []
         ]
@@ -27,10 +28,12 @@ class Hanoi(Puzzle):
         return str(self.stacks)
 
     def primitive(self):
-        return GameValue.WIN if self.stacks[2] == [3, 2, 1] else GameValue.UNDECIDED
+        if self.stacks[2] == list(range(self.size, 0, -1)):
+            return GameValue.WIN 
+        return GameValue.UNDECIDED
 
     def doMove(self, move):
-        newPuzzle = Hanoi()
+        newPuzzle = Hanoi(size=self.size)
         stacks = deepcopy(self.stacks)
         stacks[move[1]].append(stacks[move[0]].pop())
         newPuzzle.stacks = stacks
@@ -46,13 +49,13 @@ class Hanoi(Puzzle):
         return moves
 
     def winStates(self):
-        newPuzzle = Hanoi()
+        newPuzzle = Hanoi(size=self.size)
         newPuzzle.stacks = [
             [],
             [],
-            [3, 2, 1]
+            list(range(self.size, 0, -1))
         ]
         return [newPuzzle]
 
 if __name__ == "__main__":
-    PuzzlePlayer(Hanoi(), GeneralSolver()).play()
+    PuzzlePlayer(Hanoi(size=7), GeneralSolver(), auto=True).play()
