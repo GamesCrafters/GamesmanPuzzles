@@ -17,7 +17,7 @@ class PuzzlePlayer:
     def play(self):
         self.puzzle = self.base
         self.turn = 0
-        while self.puzzle.primitive() == GameValue.UNDECIDED:
+        while self.puzzle.primitive() == PuzzleValue.UNDECIDED:
             self.printInfo()
             self.printTurn(auto=self.auto)
         self.printInfo()

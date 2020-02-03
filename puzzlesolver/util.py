@@ -1,4 +1,4 @@
-class GameValue:
-    WIN = "WINABLE"
-    LOSS = "UNWINABLE"
+class PuzzleValue:
+    SOLVEABLE = "SOLVEABLE"
+    UNSOLVABLE = "UNSOLVABLE"
     UNDECIDED = "UNDECIDED"

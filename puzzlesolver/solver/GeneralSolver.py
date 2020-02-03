@@ -12,7 +12,7 @@ class GeneralSolver(Solver):
         """Returns remoteness of puzzle. Automatically solves if memory isn't set"""
         self.solve(puzzle)
         if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
-        return GameValue.LOSS
+        return PuzzleValue.LOSS
 
     def solve(self, puzzle):
         """Traverse the entire puzzle tree and classifiers all the 
@@ -30,14 +30,14 @@ class GeneralSolver(Solver):
                 for move in puzzle.generateMoves():
                     nextPuzzle = puzzle.doMove(move)
                     if hash(nextPuzzle) not in self.remoteness:
-                        self.values[hash(nextPuzzle)] = GameValue.WIN
+                        self.values[hash(nextPuzzle)] = PuzzleValue.WIN
                         self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
                         queue.put(nextPuzzle)
 
         ends = puzzle.winStates()
         for end in ends: 
-            self.values[hash(end)] = GameValue.WIN
+            self.values[hash(end)] = PuzzleValue.WIN
             self.remoteness[hash(end)] = 0
             helper(self, end)
-        if hash(puzzle) not in self.values: self.values[hash(puzzle)] = GameValue.LOSS
+        if hash(puzzle) not in self.values: self.values[hash(puzzle)] = PuzzleValue.LOSS
         return self.values[hash(puzzle)]
