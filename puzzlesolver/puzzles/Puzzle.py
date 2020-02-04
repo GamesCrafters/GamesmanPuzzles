@@ -19,12 +19,20 @@ class Puzzle:
         In that case, the hash of all those specific permutations are the same.
         """
         raise NotImplementedError
+    
+    def __str__(self):
+        """Returns the string representation of the puzzle.
+        
+        Outputs:
+        String representation -- String
+        """
+        return "No String representation available"
 
     def primitive(self):
         """If the Puzzle is at an endstate, return GameValue.WIN or GameValue.LOSS
         else return GameValue.UNDECIDED
 
-        GameValue located in the util class. If you're in the puzzles directory
+        GameValue located in the util class. If you're in the puzzles or solvers directory
         you can write from ..util import * 
 
         Outputs:
@@ -52,7 +60,7 @@ class Puzzle:
         raise NotImplementedError
 
     def winStates(self):
-        """Returns a list of Puzzle objects that are wins
+        """Returns a list of Puzzle objects that are solved states
 
         Outputs:
         List of Puzzles
