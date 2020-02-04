@@ -1,6 +1,7 @@
 # GamesmanPuzzles
-A Python Package dedicated to Puzzle solving
+[![Build Status](https://travis-ci.com/GamesCrafters/GamesmanPuzzles.svg?branch=master)](https://travis-ci.com/GamesCrafters/GamesmanPuzzles)
 
+A Python Package dedicated to Puzzle solving
 ## Getting Started
 Clone this repository and run from the base directory
 ```
