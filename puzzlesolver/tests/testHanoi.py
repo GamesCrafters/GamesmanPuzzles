@@ -5,7 +5,7 @@ from ..solver.GeneralSolver import GeneralSolver
 from ..util import *
 
 def testGeneral():
-    for i in range(10):
+    for i in range(5):
         puzzle = Hanoi(size=i)
         solver = GeneralSolver()
         assert solver.solve(puzzle) == PuzzleValue.SOLVABLE
