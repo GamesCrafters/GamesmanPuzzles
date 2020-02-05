@@ -13,7 +13,7 @@ to play a game of Towers of Hanoi
 Tips for exploring this repository:
 1. Definitely explore the [puzzlesolver](puzzlesolver) in depth. There should be a README.md in every important directory to explain what each file does.
 2. Understand what a [puzzle tree](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree) is.
-3. Create your own puzzle using [puzzle.py](puzzlesolver/puzzles/puzzle.py) and if you're ready, create your own puzzle solver using [solver.py](puzzlesolver/solver/solver.py)
+3. Create your own puzzle using [Puzzle.py](puzzlesolver/puzzles/Puzzle.py) and if you're ready, create your own puzzle solver using [Solver.py](puzzlesolver/solver/solver.py)
 4. [Hanoi.py](puzzlesolver/puzzles/Hanoi.py) and [GeneralSolver.py](puzzlesolver/solver/GeneralSolver.py) are two examples of a puzzle and a solver.
 
 Every change must be done using a pull request. Here are the directions [to fork a repository and make a change.](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) 
