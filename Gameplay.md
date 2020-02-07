@@ -30,7 +30,7 @@ def generateMoves(self):
     moves = []
     for i, stack1 in enumerate(self.stacks):
         if not stack1: continue
-        for j, stack2 in enumerate(self.stacks[i:]):
+        for j, stack2 in enumerate(self.stacks):
             if i == j: continue
             if not stack2 or stack2[-1] > stack1[-1]: moves.append((i, j))
     return moves
