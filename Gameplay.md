@@ -39,14 +39,19 @@ def generateMoves(self):
 Do move produces a puzzle after the move was executed onto the puzzle. It's important to generate an entirely new game with the move executed so that it works with the solver (which we will delve into later). 
 ```python
 def doMove(self, move):
-    newPuzzle = Hanoi(size=self.size)
+    newPuzzle = Hanoi()
     stacks = deepcopy(self.stacks)
     stacks[move[1]].append(stacks[move[0]].pop())
     newPuzzle.stacks = stacks
     return newPuzzle
 ```
 ### Execute
-Once you have implemented all the required functions, add a line on the end of the file outside the Hanoi class to execute the PuzzlePlayer. If everything runs smoothly, congrats! You have created a playable puzzle!
+Once you have implemented all the required functions, add a line on the end of the file outside the Hanoi class to execute the PuzzlePlayer. 
 ```python
 PuzzlePlayer(Hanoi(), None).play()
 ```
+On your CLI, execute
+```bash
+python <your_python_file_name>.py
+```
+If everything runs smoothly, congrats! You have created a playable puzzle!
