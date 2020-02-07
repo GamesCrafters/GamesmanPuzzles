@@ -1,5 +1,4 @@
-# How to make a Puzzle:
-## Prerequisites 
+# Prerequisites:
 This guide will teach you how to make puzzle object based on the puzzle class. This guide will assume the following:
 1. You have cloned this repository or cloned a forked version of this repository.
 2. You are familiar with Python 3 and class inheritance.
