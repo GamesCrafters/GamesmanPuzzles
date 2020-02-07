@@ -1,0 +1,10 @@
+# 2. Gameplay
+Hanoi is a commonly known and simple puzzle. The puzzle consists of three rods and a stack of differently sized rings on one rod. The goal is to take a stack of rings and move them one by one to form another stack of rings on a different rod. The only restriction is that a bigger ring cannot be on top of a smaller ring.
+
+The goal of this step is to implement functions for Hanoi so that we'll be able to play it on our PuzzlePlayer. This document assumes you have satisfied the [prerequisties](). 
+## Gameplay functions
+### __init__(self)
+### __str__(self)
+### primitive(self)
+### generateMoves(self)
+### doMove(self, move)
