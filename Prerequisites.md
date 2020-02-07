@@ -25,4 +25,4 @@ class Hanoi(Puzzle):
 
 The rest of guide will implement the instance methods of this class.
 
-[Next step: Gameplay](Gameplay.md)
+[Next step: Gameplay Methods](Gameplay.md)
