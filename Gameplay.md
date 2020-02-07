@@ -16,5 +16,32 @@ def __str__(self):
     return str(self.board)
 ```
 ### `primitive(self)`
+The primitive of the puzzle describes if the puzzle has reached the solution or not. If it has reached the endstate, we will a arbitrary value that we define as SOLVABLE. Otherwise, it's considered to be UNDECIDED. 
+```python
+def primitive(self):
+    if self.board[2] == [3, 2, 1]:
+        return PuzzleValue.SOLVABLE
+    return PuzzleValue.UNDECIDED
+```
 ### `generateMoves(self)`
+This function allows the puzzle to generate possible moves and move the puzzle forward. It should return all possible legal moves that any player can make on the puzzle. For Hanoi, a legal move is to move the top piece of any rod onto another rod as long as it satisfies the restriction that a bigger ring cannot be on top of a smaller ring.
+```python
+def generateMoves(self):
+    moves = []
+    for i, rod1 in enumerate(self.board):
+        if not rod1: continue
+        for j, rod2 in enumerate(self.board[i:]):
+            if i == j: continue
+            if not rod2 or rod2[-1] > rod1[-1]: moves.append((i, j))
+    return moves
+```
 ### `doMove(self, move)`
+Do move produces a puzzle after the move was executed onto the puzzle.
+```python
+def doMove(self, move):
+    newPuzzle = Hanoi(size=self.size)
+    stacks = deepcopy(self.stacks)
+    stacks[move[1]].append(stacks[move[0]].pop())
+    newPuzzle.stacks = stacks
+    return newPuzzle
+```
