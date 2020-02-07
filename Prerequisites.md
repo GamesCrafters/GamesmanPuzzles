@@ -1,8 +1,27 @@
 # Prerequisites:
-This guide will teach you how to make puzzle object based on the puzzle class. This guide will assume the following:
-1. You have cloned this repository or cloned a forked version of this repository.
-2. You are familiar with Python 3 and class inheritance.
+This guide will teach you how to make puzzle object based on the puzzle class. This guide will assume that you are already familiar with Python 3.
 
-We'll be implementing Hanoi based on the abstract puzzle class defined in Puzzle.py. Please click the link below for more info.
+## Initialize files
+Clone this repository and navigate into the base directory: 
 
-[Next step: Gameplay]()
+```bash
+git clone https://github.com/GamesCrafters/GamesmanPuzzles.git
+cd GamesmanPuzzles
+```
+
+Create a new Python file and import the following:
+```python
+from copy import deepcopy
+from puzzlesolver.util import *
+from puzzlesolver.solver.GeneralSolver import GeneralSolver
+from puzzlesolver.PuzzlePlayer import PuzzlePlayer
+```
+
+Initialize a new class object called Hanoi:
+```python
+class Hanoi:
+```
+
+The rest of guide will implement the instance methods of this class.
+
+[Next step: Gameplay](Gameplay.md)
