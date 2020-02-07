@@ -13,13 +13,14 @@ Create a new Python file and import the following:
 ```python
 from copy import deepcopy
 from puzzlesolver.util import *
+from puzzlesolver.puzzles.Puzzle import Puzzle
 from puzzlesolver.solver.GeneralSolver import GeneralSolver
 from puzzlesolver.PuzzlePlayer import PuzzlePlayer
 ```
 
-Initialize a new class object called Hanoi:
+Initialize a new Puzzle object called Hanoi:
 ```python
-class Hanoi:
+class Hanoi(Puzzle):
 ```
 
 The rest of guide will implement the instance methods of this class.
