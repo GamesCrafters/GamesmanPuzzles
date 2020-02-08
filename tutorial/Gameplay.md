@@ -59,3 +59,5 @@ On your CLI, execute
 python <your_python_file_name>.py
 ```
 If everything runs smoothly, congrats! You have created a playable puzzle!
+
+[Next step: Implementing the Solver methods](Solver.md)
