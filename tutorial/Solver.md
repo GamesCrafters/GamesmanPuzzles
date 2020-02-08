@@ -16,11 +16,11 @@ The GeneralSolver is a bottom-top solver, meaning that it uses the endstates of 
 
 ```python
 def winStates(self):
-    newPuzzle = Hanoi(size=self.size)
+    newPuzzle = Hanoi()
     newPuzzle.stacks = [
         [],
         [],
-        list(range(self.size, 0, -1))
+        [3, 2, 1]
     ]
     return [newPuzzle]
 ```
