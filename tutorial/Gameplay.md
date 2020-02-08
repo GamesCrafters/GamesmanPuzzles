@@ -1,4 +1,8 @@
 # Gameplay Methods
+<p align="center">
+<img src='Tower_of_hanoi.jpeg'>
+</p>
+
 Hanoi is a commonly known and simple puzzle. The puzzle consists of three rods and a stack of differently sized rings on one rod. The goal is to take a stack of rings and move them one by one to form another stack of rings on the rightmost rod. The only restriction is that a bigger ring cannot be on top of a smaller ring.
 
 The goal of this step is to explain the functionality for the GamesmanPuzzles version of Hanoi as well as implement the functions so that we'll be able to interact with it on our PuzzlePlayer. This document assumes you have satisfied the [prerequisties](Prerequisites.md). 
