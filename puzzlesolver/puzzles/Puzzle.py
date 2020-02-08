@@ -3,23 +3,7 @@
 
 class Puzzle:
 
-    def __hash__(self):
-        """Returns a hash of the puzzle.
-        Requirements:
-        - Each different puzzle must have a different hash
-        - The same puzzle must have the same hash.
-        
-        Outputs:
-        Hash of Puzzle -- Integer
-
-        Note: How same and different are defined are dependent on how you implement it.
-        For example, a common optimization technique for reducing the size of key-value
-        pair storings are to make specific permutations of a board the same as they have
-        the same position value (i.e. rotating or flipping a tic-tac-toe board). 
-        In that case, the hash of all those specific permutations are the same.
-        """
-        raise NotImplementedError
-    
+    # Gameplay methods
     def __str__(self):
         """Returns the string representation of the puzzle.
         
@@ -57,8 +41,26 @@ class Puzzle:
         Outputs:
         List of moves, move must be hashable
         """
-        raise NotImplementedError
+        raise NotImplementedError    
+    
+    # Solver methods
+    def __hash__(self):
+        """Returns a hash of the puzzle.
+        Requirements:
+        - Each different puzzle must have a different hash
+        - The same puzzle must have the same hash.
+        
+        Outputs:
+        Hash of Puzzle -- Integer
 
+        Note: How same and different are defined are dependent on how you implement it.
+        For example, a common optimization technique for reducing the size of key-value
+        pair storings are to make specific permutations of a board the same as they have
+        the same position value (i.e. rotating or flipping a tic-tac-toe board). 
+        In that case, the hash of all those specific permutations are the same.
+        """
+        raise NotImplementedError
+    
     def winStates(self):
         """Returns a list of Puzzle objects that are solved states
 
