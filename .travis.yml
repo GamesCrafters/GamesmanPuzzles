@@ -4,4 +4,4 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - pytest puzzlesolver/tests/*.py
+  - pytest tests/*.py

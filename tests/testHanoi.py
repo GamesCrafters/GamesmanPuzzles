@@ -1,8 +1,8 @@
 import pytest
 
-from ..puzzles.Hanoi import Hanoi
-from ..solver.GeneralSolver import GeneralSolver
-from ..util import *
+from puzzlesolver.puzzles.Hanoi import Hanoi
+from puzzlesolver.solver.GeneralSolver import GeneralSolver
+from puzzlesolver.util import *
 
 def testGeneral():
     for i in range(5):

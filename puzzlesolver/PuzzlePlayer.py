@@ -19,7 +19,7 @@ class PuzzlePlayer:
         self.turn = 0
         while self.puzzle.primitive() == PuzzleValue.UNDECIDED:
             self.printInfo()
-            self.printTurn(auto=self.auto)
+            self.printTurn()
         self.printInfo()
         print("Game Over")
 
@@ -34,8 +34,8 @@ class PuzzlePlayer:
         self.turn += 1
 
     # Prompts for input and moves
-    def printTurn(self, auto=False):
-        if auto: 
+    def printTurn(self):
+        if self.auto: 
             move = self.generateBestMove()
             self.puzzle = self.puzzle.doMove(move)
         else:
