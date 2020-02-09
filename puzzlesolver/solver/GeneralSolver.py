@@ -19,7 +19,7 @@ class GeneralSolver(Solver):
         positions with values and remoteness
         - If position already exists in memory, returns its value
         """
-        if hash(puzzle) in self.values: self.values[hash(puzzle)]
+        if hash(puzzle) in self.values: return self.values[hash(puzzle)]
         
         # BFS for remoteness classification
         def helper(self, puzzle):

@@ -1,2 +1,4 @@
-# How to Create a Puzzle:
-This directory is dedicated to teaching new students the process of developing a puzzle. Start by looking at the [prerequisites](Prerequisites.md) 
+# Tutorials
+These are guides used to describe the functionality of GamesmanPuzzles. The following tutorials available are:
+- [Puzzle](Puzzle)
+- [Solver](Solver)
