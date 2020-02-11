@@ -28,7 +28,7 @@ class GeneralSolver(Solver):
                         self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
                         queue.put(nextPuzzle)
 
-        ends = puzzle.winStates()
+        ends = puzzle.generateSolutions()
         for end in ends: 
             self.values[hash(end)] = PuzzleValue.SOLVABLE
             self.remoteness[hash(end)] = 0

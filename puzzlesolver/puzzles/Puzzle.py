@@ -61,7 +61,7 @@ class Puzzle:
         """
         raise NotImplementedError
     
-    def winStates(self):
+    def generateSolutions(self):
         """Returns a list of Puzzle objects that are solved states
 
         Outputs:
