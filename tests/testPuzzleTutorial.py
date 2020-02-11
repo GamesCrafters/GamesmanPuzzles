@@ -37,7 +37,7 @@ class Hanoi(Puzzle):
     def __hash__(self):
         return hash(str(self.stacks))
 
-    def winStates(self):
+    def generateSolutions(self):
         newPuzzle = Hanoi()
         newPuzzle.stacks = [
             [],
