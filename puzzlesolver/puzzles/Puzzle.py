@@ -2,7 +2,7 @@
 # PuzzlePlayer and the GeneralSolver
 
 class Puzzle:
-
+    
     # Gameplay methods
     def __str__(self):
         """Returns the string representation of the puzzle.
