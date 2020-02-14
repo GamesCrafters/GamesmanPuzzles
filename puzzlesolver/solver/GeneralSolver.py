@@ -1,20 +1,11 @@
 from .Solver import Solver
 from ..util import *
 import queue as q
-import pickle
 
 class GeneralSolver(Solver):
 
     def __init__(self, *args, **kwarg):
-        try:
-            assert puzzle
-            f = open(puzzle.__class__.__name__ + '.pkl')
-            pkl = pickle.load(f)
-            self.values, self.remoteness = pkl[0], pkl[1]
-            f.close()
-        except:
-            print('Not using database')
-            self.values, self.remoteness = {}, {}
+        self.values, self.remoteness = {}, {}
     
     def getRemoteness(self, puzzle):
         """Returns remoteness of puzzle. Automatically solves if memory isn't set"""
