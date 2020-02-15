@@ -1,10 +1,11 @@
 import pickle
 from .GeneralSolver import GeneralSolver
-import os
+from pathlib import Path
 
 class PickleSolverWrapper(GeneralSolver):
 
     def __init__(self, puzzle=None, path="."):
+        Path(path).mkdir(parents=True, exist_ok=True)
         try:
             assert puzzle
             f = open(path + "/" + puzzle.__class__.__name__ + '.pkl', 'rb')
