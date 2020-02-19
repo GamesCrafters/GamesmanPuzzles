@@ -15,7 +15,7 @@ def solve(self, puzzle):
 
 ### 2. Breadth algorithm
 Remember back in the puzzle project, we defined a few important functions that were meant to be used for this solver. These functions are:
-- ```winStates(self):``` Generates all the positions that have a primitive value of SOLVABLE.
+- ```generateSolutions(self):``` Generates all the positions that have a primitive value of SOLVABLE.
 - ```generateMoves(self):``` Generates all the possible moves from that position.
 - ```doMove(self, move):``` Returns a new Puzzle object with ```move``` executed. 
 
@@ -30,7 +30,7 @@ Splitting the algorithm into two separate parts:
 
 Step 1: (the ```helper``` function would be defined in Step 2, 3, & 4)
 ```python
-ends = puzzle.winStates()
+ends = puzzle.generateSolutions()
 for end in ends: 
     self.values[hash(end)] = PuzzleValue.SOLVABLE
     self.remoteness[hash(end)] = 0
@@ -71,7 +71,7 @@ def solve(self, puzzle):
                     self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
                     queue.put(nextPuzzle)
 
-    ends = puzzle.winStates()
+    ends = puzzle.generateSolutions()
     for end in ends: 
         self.values[hash(end)] = PuzzleValue.SOLVABLE
         self.remoteness[hash(end)] = 0

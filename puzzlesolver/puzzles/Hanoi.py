@@ -48,7 +48,7 @@ class Hanoi(Puzzle):
                 if not stack2 or stack2[-1] > stack1[-1]: moves.append((i, j))
         return moves
 
-    def winStates(self):
+    def generateSolutions(self):
         newPuzzle = Hanoi(size=self.size)
         newPuzzle.stacks = [
             [],
