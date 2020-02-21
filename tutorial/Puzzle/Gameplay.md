@@ -28,7 +28,9 @@ def primitive(self):
     return PuzzleValue.UNDECIDED
 ```
 #### `generateMoves(self)`
-This function allows the puzzle to generate possible moves and move the puzzle forward. It should return all possible legal moves that any player can make on the puzzle. For Hanoi, a legal move is to move the top piece of any rod onto another rod as long as it satisfies the restriction that a bigger ring cannot be on top of a smaller ring.
+This function allows the puzzle to generate possible moves and move the puzzle forward. It should return all possible moves (including undos) that any player can make on the puzzle. For Hanoi, a move is to move the top piece of any rod onto another rod as long as it satisfies the restriction that a bigger ring cannot be on top of a smaller ring.
+
+**Note:** We also have to include "undo" moves, which are moves that may not technically be legal (i.e. undoing a move in Chess could be uncapturing a piece or a pawn moving backwards). We need these moves as our GeneralSolver moves from the end state to the start states. Consider if undoing any move is a legal move in your puzzle and if it isn't, implement `generateLegalMoves(self)` as well, which returns a list of legal moves.  
 ```python
 def generateMoves(self):
     moves = []
@@ -39,6 +41,9 @@ def generateMoves(self):
             if not stack2 or stack2[-1] > stack1[-1]: moves.append((i, j))
     return moves
 ```
+
+
+
 #### `doMove(self, move)`
 Do move produces a puzzle after the move was executed onto the puzzle. It's important to generate an entirely new game with the move executed so that it works with the solver (which we will delve into later). 
 ```python
