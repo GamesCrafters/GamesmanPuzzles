@@ -36,12 +36,20 @@ class Puzzle:
         raise NotImplementedError
 
     def generateMoves(self):
-        """Generate possible moves from the self
+        """Generate moves from self (including undos)
 
         Outputs:
         List of moves, move must be hashable
         """
-        raise NotImplementedError    
+        raise NotImplementedError
+
+    def generateLegalMoves(self):
+        """Generate only legal moves from self
+
+        Outputs:
+        List of moves, move must be hashable
+        """
+        return self.generateMoves()
     
     # Solver methods
     def __hash__(self):
