@@ -1,8 +1,8 @@
 #!usr/bin/env python3
 from flask import Flask, jsonify
 
-from puzzlesolver.solver.PickleSolverWrapper import PickleSolverWrapper
-from puzzlesolver.puzzles.Hanoi import Hanoi
+from puzzlesolver.solver import PickleSolverWrapper
+from puzzlesolver.puzzle import Hanoi
 
 app = Flask(__name__)
 

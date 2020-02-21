@@ -1,8 +1,8 @@
 import pytest
 
-from puzzlesolver.puzzles.Hanoi import Hanoi
-from puzzlesolver.solver.PickleSolverWrapper import PickleSolverWrapper
-from puzzlesolver.solver.GeneralSolver import GeneralSolver
+from puzzlesolver.puzzles import Hanoi
+from puzzlesolver.solver import PickleSolverWrapper
+from puzzlesolver.solver import GeneralSolver
 from puzzlesolver.util import *
 
 import tempfile
