@@ -10,12 +10,14 @@ from ..PuzzlePlayer import PuzzlePlayer
 
 class Hanoi(Puzzle):
 
-    def __init__(self, size=3, id=None):
-        if id: self.decode(id)
+    def __init__(self, position_id=None, variant_id=None, size=3, id=None):
+        if position_id: self.decode(position_id)
+        elif id: self.decode(id)
         else:
-            self.size = size
+            self.size = int(variant_id) if variant_id else size
+            if not isinstance(self.size, int): raise ValueError 
             self.stacks = [
-                list(range(size, 0, -1)),
+                list(range(self.size, 0, -1)),
                 [],
                 []
             ]
@@ -46,8 +48,9 @@ class Hanoi(Puzzle):
 
     # Helper function for decoding, not necessary
     def decode(self, id):
+        id = str(id)
         stacks = id.split("b")
-        assert len(stacks) == 3
+        if not len(stacks) == 3: raise ValueError
         self.stacks = []
         self.size = 0
         for stack in stacks:
@@ -56,7 +59,8 @@ class Hanoi(Puzzle):
                 continue
             discs = stack.split("a")
             discs = [int(disc) for disc in discs]
-            assert all(discs[i] > discs[i+1] for i in range(len(discs) - 1))
+            if not all(discs[i] > discs[i+1] for i in range(len(discs) - 1)):
+                raise ValueError
             self.stacks.append(discs)
             self.size += len(discs)
 
@@ -66,6 +70,7 @@ class Hanoi(Puzzle):
         return PuzzleValue.UNDECIDED
 
     def doMove(self, move):
+        if move not in self.generateMoves(): raise ValueError
         newPuzzle = Hanoi(size=self.size)
         stacks = deepcopy(self.stacks)
         stacks[move[1]].append(stacks[move[0]].pop())
@@ -90,5 +95,12 @@ class Hanoi(Puzzle):
         ]
         return [newPuzzle]
 
+    @staticmethod
+    def checkValidVariant(position_id, variant_id):
+        size = int(variant_id)
+        puzzle = Hanoi(id=position_id)
+        if puzzle.size != size: return False
+        return True
+
 if __name__ == "__main__":
-    PuzzlePlayer(Hanoi(size=3), GeneralSolver()).play()
+    PuzzlePlayer(Hanoi(variant_id=3), GeneralSolver()).play()

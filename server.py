@@ -1,11 +1,13 @@
 #!usr/bin/env python3
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect, url_for
 
 from puzzlesolver import puzzleList    
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.config["DEBUG"] = True
+
+API_PORT=9001
 
 try: 
     from flask_cors import CORS
@@ -32,23 +34,50 @@ def handle_puzzles():
             {
                 'gameId': id,
                 'name': puzzleList[id]['name'],
-                'startPosition': puzzleList[id]['puzzle']().encode()
             }
         for id in puzzleList])
-    except: format_response_err()
+    except: 
+        return format_response_err()
 
-@app.route('/puzzles/<puzzle_id>/positions/<position>', methods=['GET'])
-def handle_position(puzzle_id, position):
+@app.route('/puzzles/<puzzle_id>/variants', methods=['GET'])
+def handle_puzzle_variants(puzzle_id):
     try:
-        puzzle = puzzleList[puzzle_id]['puzzle'](id=position)
-        solver = puzzleList[puzzle_id]['solver'](puzzle=puzzle, path="./database")
+        return format_response_ok({
+            'puzzleId': puzzle_id,
+            'name': 'Hanoi',
+            'variants': [
+                {
+                    'variantId': variant_id,
+                    'description': '',
+                    'status': 'ok',
+                } for variant_id in puzzleList[puzzle_id]['variants']
+            ]      
+        })
+    except:
+        return format_response_err()
+
+@app.route('/puzzles/<puzzle_id>/variants/<variant_id>', methods=['GET'])
+def handle_puzzle_variant(puzzle_id, variant_id):
+    try:
+        variant = puzzleList[puzzle_id]['variants'][variant_id]
+        return format_response_ok({
+            'startPos': variant['puzzle']().encode()
+        })
+    except AssertionError:
+        return format_response_err()
+
+@app.route('/puzzles/<puzzle_id>/variants/<variant_id>/positions/<position>', methods=['GET'])
+def handle_position(puzzle_id, variant_id, position):
+    try:
+        puzzle = puzzleList[puzzle_id]['variants'][str(variant_id)]['puzzle'](position_id=position)
+        solver = puzzleList[puzzle_id]['variants'][str(variant_id)]['solver'](puzzle=puzzle, path="./database")
         return format_response_ok({
             'position': position,
             'positionValue': solver.solve(puzzle),
             'remoteness': solver.getRemoteness(puzzle),
             'moves': [
                 {
-                    "move": move,
+                    "move": str(move),
                     "position": puzzle.doMove(move).encode(),
                     "positionValue": solver.solve(puzzle.doMove(move)),
                     "remoteness": solver.getRemoteness(puzzle.doMove(move))
@@ -57,25 +86,6 @@ def handle_position(puzzle_id, position):
         })    
     except AssertionError:
         return format_response_err("Invalid position ID")
-    except:
-        return format_response_err()
-
-"""
-@app.route('/puzzles/<puzzle_id>', methods=['GET'])
-def handle_puzzle(puzzle_id):
-    if puzzle_id != 'hanoi': return format_response_err('Game not found')
-    return format_response_ok({
-        'puzzleId': puzzle_id,
-        'name': 'Hanoi',
-        'variants': [
-            {
-                'variantId': 'regular',
-                'description': '',
-                'status': 'ok',
-            }
-        ]
-    })
-"""
 
 if __name__ == '__main__':
-    app.run(port=9001)
+    app.run(host='0.0.0.0', port=9001)

@@ -3,6 +3,14 @@
 
 class Puzzle:
     
+    # Intializer
+    def __init__(self, variant_id=None, position_id=None):
+        """
+        Inputs:
+            str: variant_id
+            str: position_id
+        """
+
     # Gameplay methods
     def __str__(self):
         """Returns the string representation of the puzzle.
@@ -27,11 +35,11 @@ class Puzzle:
     def doMove(self, move):
         """Given a valid move, returns a new Puzzle object with that move executed
 
-        Inputs
-        move -- type defined by generateMoves
+        Inputs:
+            move -- type defined by generateMoves
 
         Outputs:
-        Puzzle with move executed
+            Puzzle with move executed
         """
         raise NotImplementedError
 
@@ -91,6 +99,20 @@ class Puzzle:
         """Returns the name of the Puzzle.
 
         Outputs:
-        String name
+            String name
         """
         return self.__class__.__name__
+
+    @staticmethod
+    def checkValidVariant(position_id, variant_id):
+        """Checks if the position is a possible position of variant given the 
+        variant_id
+
+        Inputs:
+            position_id -- str
+            variant_id -- str
+
+        Outputs:
+            True if possible else False
+        """
+        raise NotImplementedError
