@@ -1,11 +1,17 @@
 #!usr/bin/env python3
 from flask import Flask, jsonify
 
-from puzzlesolver import puzzleList
+from puzzlesolver import puzzleList    
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.config["DEBUG"] = True
+
+try: 
+    from flask_cors import CORS
+    CORS(app)
+except:
+    pass
 
 def format_response_ok(response):
     return {
