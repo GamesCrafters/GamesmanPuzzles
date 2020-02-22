@@ -76,3 +76,21 @@ class Puzzle:
         List of Puzzles
         """
         raise NotImplementedError
+
+    # Server methods
+    def encode(self):
+        """Returns an id that can be decoded to create another Puzzle. Similar to a hash as
+        that each encoding must be unique to each Puzzle state
+
+        Outputs:
+        Decodable id
+        """
+        raise NotImplementedError
+
+    def getName(self):
+        """Returns the name of the Puzzle.
+
+        Outputs:
+        String name
+        """
+        return self.__class__.__name__

@@ -8,7 +8,7 @@ class PickleSolverWrapper(GeneralSolver):
         Path(path).mkdir(parents=True, exist_ok=True)
         try:
             assert puzzle
-            f = open(path + "/" + puzzle.__class__.__name__ + '.pkl', 'rb')
+            f = open(path + "/" + puzzle.getName() + '.pkl', 'rb')
             pkl = pickle.load(f)
             self.values, self.remoteness = pkl[0], pkl[1]
             f.close()
@@ -20,7 +20,7 @@ class PickleSolverWrapper(GeneralSolver):
     def solve(self, puzzle):
         if self.values and self.remoteness: return GeneralSolver.solve(self, puzzle)
         output = GeneralSolver.solve(self, puzzle)
-        f = open(self.path + "/" + puzzle.__class__.__name__ + ".pkl", 'wb')
+        f = open(self.path + "/" + puzzle.getName() + ".pkl", 'wb')
         pickle.dump([self.values, self.remoteness], f)
         f.close()
         return output
