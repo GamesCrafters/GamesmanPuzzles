@@ -18,6 +18,7 @@ class PickleSolverWrapper(GeneralSolver):
         self.path = path
 
     def solve(self, puzzle):
+        if self.values and self.remoteness: return GeneralSolver.solve(self, puzzle)
         output = GeneralSolver.solve(self, puzzle)
         f = open(self.path + "/" + puzzle.__class__.__name__ + ".pkl", 'wb')
         pickle.dump([self.values, self.remoteness], f)

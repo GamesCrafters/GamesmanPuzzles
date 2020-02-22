@@ -58,4 +58,4 @@ class Hanoi(Puzzle):
         return [newPuzzle]
 
 if __name__ == "__main__":
-    PuzzlePlayer(Hanoi(size=10), GeneralSolver(), auto=True).play()
+    PuzzlePlayer(Hanoi(size=3), GeneralSolver()).play()
