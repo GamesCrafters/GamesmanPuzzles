@@ -5,6 +5,7 @@ from puzzlesolver.solver.PickleSolverWrapper import PickleSolverWrapper
 from puzzlesolver.puzzles.Hanoi import Hanoi
 
 app = Flask(__name__)
+app.config["DEBUG"] = True
 
 puzzle = Hanoi()
 solver = PickleSolverWrapper(puzzle=puzzle, path="./database/")
