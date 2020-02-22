@@ -75,4 +75,7 @@ def handle_puzzle(puzzle_id):
             }
         ]
     })
-"""    
+"""
+
+if __name__ == '__main__':
+    app.run(port=9001)
