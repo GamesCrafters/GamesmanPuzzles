@@ -36,7 +36,7 @@ def testPickleWrapper():
 
 def testPickleWrapperPersistence():
     open_mock = mock.mock_open()
-    with mock.patch('__main__.open', open_mock, create=True):
+    with mock.patch('puzzlesolver.solvers.picklesolverwrapper.open', open_mock, create=True):
         pickle_mock = mock.Mock()
 
         solver_mock = mock.Mock(spec=GeneralSolver)

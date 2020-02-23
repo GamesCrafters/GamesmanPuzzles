@@ -10,6 +10,7 @@ class PickleSolverWrapper(Solver):
         Path(path).mkdir(parents=True, exist_ok=True)
         assert puzzle
         try:
+            print(open)
             f = open(path + "/" + puzzle.getName() + '.pkl', 'rb')
             self.solver = pickle.load(f)
             assert isinstance(self.solver, Solver)
