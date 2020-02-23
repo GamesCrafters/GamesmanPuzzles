@@ -3,10 +3,10 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
 from copy import deepcopy
-from .Puzzle import Puzzle
+from .puzzle import Puzzle
 from ..util import *
-from ..solver import GeneralSolver
-from ..PuzzlePlayer import PuzzlePlayer
+from ..solvers import GeneralSolver
+from ..puzzleplayer import PuzzlePlayer
 
 class Hanoi(Puzzle):
 
@@ -103,4 +103,5 @@ class Hanoi(Puzzle):
         return True
 
 if __name__ == "__main__":
-    PuzzlePlayer(Hanoi(variant_id=3), GeneralSolver()).play()
+    puzzle = Hanoi(size=3)
+    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle)).play()

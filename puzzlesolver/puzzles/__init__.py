@@ -1,1 +1,1 @@
-from .Hanoi import Hanoi
+from .hanoi import Hanoi

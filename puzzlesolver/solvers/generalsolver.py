@@ -1,4 +1,4 @@
-from .Solver import Solver
+from .solver import Solver
 from ..util import *
 import queue as q
 

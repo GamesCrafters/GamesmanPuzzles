@@ -1,5 +1,5 @@
 from .puzzles import *
-from .solver import *
+from .solvers import *
 
 def variantWrapper(puzzle_class, variant_id, *args, **kwargs):
     def puzzleWrapper(position_id, variant_id):
