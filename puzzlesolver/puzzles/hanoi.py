@@ -31,8 +31,10 @@ class Hanoi(Puzzle):
     def __str__(self):
         return str(self.stacks)
 
+    """ Removed until it's proved that its necessary
     def __eq__(self, other):
         return self.stacks == other.stacks
+    """
 
     def getName(self):
         return 'Hanoi' + str(self.size)
