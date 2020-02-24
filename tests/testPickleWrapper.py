@@ -19,7 +19,7 @@ def testPickleWrapperGeneral():
     for i in range(1,5):
         with tempfile.TemporaryDirectory() as directory:
             puzzle = Hanoi(size=i)
-            solver = PickleSolverWrapper(puzzle=puzzle, path=directory, solver=GeneralSolver())
+            solver = PickleSolverWrapper(puzzle=puzzle, path=directory, solver=GeneralSolver)
             assert solver.solve(puzzle) == PuzzleValue.SOLVABLE
             assert solver.getRemoteness(puzzle) == 2**i - 1
 
@@ -29,7 +29,10 @@ def testPickleWrapper():
         solver_mock.return_value.solve.return_value = True
         solver_mock.return_value.getRemoteness.return_value = -1
 
-        solver = PickleSolverWrapper(Hanoi(), path=directory, solver=solver_mock)
+        solver_class = mock.Mock()
+        solver_class.return_value = solver_mock
+
+        solver = PickleSolverWrapper(Hanoi(), path=directory, solver=solver_class)
 
         assert solver.solve() == solver_mock.solve()
         assert solver.getRemoteness() == solver_mock.getRemoteness()
