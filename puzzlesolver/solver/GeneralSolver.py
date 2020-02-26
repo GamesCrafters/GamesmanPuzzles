@@ -22,9 +22,9 @@ class GeneralSolver(Solver):
         if hash(puzzle) in self.values: return self.values[hash(puzzle)]
         
         # BFS for remoteness classification
-        def helper(self, puzzle):
+        def helper(self, puzzles):
             queue = q.Queue()
-            queue.put(puzzle)
+            for puzzle in puzzles: queue.put(puzzle)
             while not queue.empty():
                 puzzle = queue.get()
                 for move in puzzle.generateMoves():
@@ -38,6 +38,6 @@ class GeneralSolver(Solver):
         for end in ends: 
             self.values[hash(end)] = PuzzleValue.SOLVABLE
             self.remoteness[hash(end)] = 0
-            helper(self, end)
+        helper(self, ends)
         if hash(puzzle) not in self.values: self.values[hash(puzzle)] = PuzzleValue.UNSOLVABLE
         return self.values[hash(puzzle)]

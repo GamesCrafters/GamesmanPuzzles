@@ -22,8 +22,8 @@ Remember back in the puzzle project, we defined a few important functions that w
 Following the steps of the algorithm we defined in [puzzle tree:](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree)
 
 1. Find all the winstates of a Puzzle and set their remoteness to be 0.
-2. Generate all positions that have a move towards the initial position in step 1.
-3. Set all of our generated positions to have a remoteness equal to the initial position plus 1.
+2. Generate all positions that have a move towards the initial positions in step 1.
+3. Set all of our generated positions to have a remoteness equal to the initial position plus 1 if the position was not seen before.
 4. Repeat steps 2 and 3 for all new generated positions.
 
 Splitting the algorithm into two separate parts:
@@ -34,17 +34,16 @@ ends = puzzle.generateSolutions()
 for end in ends: 
     self.values[hash(end)] = PuzzleValue.SOLVABLE
     self.remoteness[hash(end)] = 0
-    helper(self, end)
+helper(self, ends)
 if hash(puzzle) not in self.values: self.values[hash(puzzle)] = PuzzleValue.UNSOLVABLE
 return self.values[hash(puzzle)]
-
 ```
 
 Step 2, 3, & 4: 
 ```python
-def helper(self, puzzle):
+def helper(self, puzzles):
     queue = q.Queue()
-    queue.put(puzzle)
+    for puzzle in puzzles: queue.put(puzzle)
     while not queue.empty():
         puzzle = queue.get()
         for move in puzzle.generateMoves():
@@ -58,10 +57,12 @@ def helper(self, puzzle):
 The final solve function should look like this:
 ```python
 def solve(self, puzzle):
-    if hash(puzzle) in self.values: return self.values[hash(puzzle)]        
-    def helper(self, puzzle):
+    if hash(puzzle) in self.values: return self.values[hash(puzzle)]
+    
+    # BFS for remoteness classification
+    def helper(self, puzzles):
         queue = q.Queue()
-        queue.put(puzzle)
+        for puzzle in puzzles: queue.put(puzzle)
         while not queue.empty():
             puzzle = queue.get()
             for move in puzzle.generateMoves():
@@ -75,7 +76,7 @@ def solve(self, puzzle):
     for end in ends: 
         self.values[hash(end)] = PuzzleValue.SOLVABLE
         self.remoteness[hash(end)] = 0
-        helper(self, end)
+    helper(self, ends)
     if hash(puzzle) not in self.values: self.values[hash(puzzle)] = PuzzleValue.UNSOLVABLE
     return self.values[hash(puzzle)]
 ```
