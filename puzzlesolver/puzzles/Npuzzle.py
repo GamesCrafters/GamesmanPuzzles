@@ -13,10 +13,12 @@ class Npuzzle(Puzzle):
         self.position = range(size**2-1,-1,-1)
 
     def __str__(self):
+        ret = ""
         for i in range(self.size):
             for j in range(self.size):
-                print(str(self.position[self.size*i + j]) +"\t", end='')
-            print()
+                ret += (str(self.position[self.size*i + j])) + "\t"
+            ret += "\n"
+        return ret
 
     def primitive(self):
         if self.position == [i for i in range(1, size**2)] + [0]:
