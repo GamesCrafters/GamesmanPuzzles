@@ -39,18 +39,62 @@ class Puzzle:
         """Generate moves from self (including undos)
 
         Outputs:
-        List of moves, move must be hashable
+        Iterable of moves, move must be hashable
         """
         raise NotImplementedError
 
     def generateLegalMoves(self):
-        """Generate only legal moves from self
+        """Generate only legal moves from self. 
+        Equivalent to generateForwardMoves + generateBiMoves
 
         Outputs:
-        List of moves, move must be hashable
+        Iterable of moves, move must be hashable
         """
         return self.generateMoves()
     
+    def generateForwardMoves(self):
+        """For every possible Puzzle B, generate a move from self to B if:
+        - There exists a Legal move from self to B
+        - There doesn't exist a Legal move from B to self
+
+        +---+     +---+
+        | S +-----> B |
+        +---+     +---+
+
+        Outputs:
+        Iterable of moves, move must be hashable
+        """
+        raise NotImplementedError
+
+    def generateUndoMoves(self):
+        """For every possible Puzzle B, generate a move from self to B if:
+        - There exists a Legal move from B to self
+        - There doesn't exist a Legal move from self to B
+
+        +---+     +---+
+        | S <-----+ B |
+        +---+     +---+
+
+        Outputs:
+        Iterable of moves, move must be hashable
+        """
+        raise NotImplementedError
+
+    def generateBiMoves(self):
+        """For every possible Puzzle B, generate a move from self to B if:
+        - There exists a Legal move from self to B
+        AND
+        - There exists a Legal move from B to self
+
+        +---+     +---+
+        | S <-----> B |
+        +---+     +---+
+
+        Outputs:
+        Iterable of moves, move must be hashable
+        """
+        raise NotImplementedError
+
     # Solver methods
     def __hash__(self):
         """Returns a hash of the puzzle.
