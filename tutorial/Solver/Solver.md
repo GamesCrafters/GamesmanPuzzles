@@ -16,7 +16,7 @@ def solve(self, puzzle):
 ### 2. Breadth algorithm
 Remember back in the puzzle project, we defined a few important functions that were meant to be used for this solver. These functions are:
 - ```generateSolutions(self):``` Generates all the positions that have a primitive value of SOLVABLE.
-- ```generateMoves(self):``` Generates all the possible moves from that position.
+- ```generateMoves(self):``` Generates all moves from that position (including undos).
 - ```doMove(self, move):``` Returns a new Puzzle object with ```move``` executed. 
 
 Following the steps of the algorithm we defined in [puzzle tree:](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree)
