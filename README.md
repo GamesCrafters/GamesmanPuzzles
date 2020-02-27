@@ -5,7 +5,7 @@ A Python Package dedicated to Puzzle solving. Developed as of part of the [UC Be
 ## Getting Started
 Clone this repository and run from the base directory
 ```
-python -m puzzlesolver.puzzles.Hanoi
+python -m puzzlesolver.puzzles.hanoi
 ```
 to play a game of Towers of Hanoi
 

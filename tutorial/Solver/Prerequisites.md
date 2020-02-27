@@ -11,10 +11,10 @@ cd GamesmanPuzzles
 
 Create a new Python file and import the following:
 ```python
-from puzzlesolver.solver.Solver import Solver
+from puzzlesolver.solver.solver import Solver
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.Hanoi import Hanoi
-from puzzlesolver.PuzzlePlayer import PuzzlePlayer
+from puzzlesolver.puzzles.hanoi import Hanoi
+from puzzlesolver.puzzleplayer import PuzzlePlayer
 import queue as q
 ```
 

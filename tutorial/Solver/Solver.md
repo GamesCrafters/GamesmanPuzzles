@@ -6,7 +6,7 @@ Our GeneralSolver uses a bottom to top BFS algorithm to classify positions of th
 The solve function is the core of all solvers in the GamesmanPuzzles and is used to classify positions of the puzzle. For this solver, we will use memoization and tree traversal.
 
 ### 1. Memory search 
-In the case when our position already exists in memory or have already calculated the this position, we just lookup the value using the hash of the puzzle.
+In the case when our position already exists in memory or have already calculated this position, we just lookup the value using the hash of the puzzle.
 
 ```python
 def solve(self, puzzle):

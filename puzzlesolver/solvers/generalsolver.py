@@ -1,12 +1,11 @@
-from .Solver import Solver
+from .solver import Solver
 from ..util import *
 import queue as q
 
 class GeneralSolver(Solver):
 
-    def __init__(self, *args, **kwargs):
-        self.values = {}
-        self.remoteness = {}
+    def __init__(self, *args, **kwarg):
+        self.values, self.remoteness = {}, {}
     
     def getRemoteness(self, puzzle):
         """Returns remoteness of puzzle. Automatically solves if memory isn't set"""
