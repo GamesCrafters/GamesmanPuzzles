@@ -1,6 +1,6 @@
 """This puzzle is meant for testing purposes"""
 
-from .Puzzle import Puzzle
+from .puzzle import Puzzle
 from ..util import *
 
 class GraphPuzzle(Puzzle):

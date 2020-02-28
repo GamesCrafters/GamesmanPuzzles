@@ -1,7 +1,7 @@
 import pytest
 
-from puzzlesolver.puzzles.graphpuzzle import GraphPuzzle
-from puzzlesolver.solver.GeneralSolver import GeneralSolver
+from puzzlesolver.puzzles import GraphPuzzle
+from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import *
 
 @GraphPuzzle.variant_test

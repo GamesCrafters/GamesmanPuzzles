@@ -10,8 +10,8 @@ from ..puzzleplayer import PuzzlePlayer
 
 class Hanoi(Puzzle):
 
-    def __init__(self, position_id=None, variant_id=None, size=3, id=None):
-        self.size = int(variant_id) if variant_id else size
+    def __init__(self, size=3, id=None):
+        self.size = size
         if not isinstance(self.size, int): raise ValueError 
         self.stacks = [
             list(range(self.size, 0, -1)),
@@ -44,7 +44,7 @@ class Hanoi(Puzzle):
         newPuzzle.stacks = stacks
         return newPuzzle        
 
-    def generateMoves(self):
+    def generateMoves(self, movetypes="all"):
         moves = []
         for i, stack1 in enumerate(self.stacks):
             if not stack1: continue
