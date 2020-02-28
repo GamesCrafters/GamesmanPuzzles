@@ -14,7 +14,7 @@ Create a new Python file and import the following:
 from copy import deepcopy
 from puzzlesolver.util import *
 from puzzlesolver.puzzles.puzzle import Puzzle
-from puzzlesolver.solver.generalsolver import GeneralSolver
+from puzzlesolver.solvers.generalsolver import GeneralSolver
 from puzzlesolver.puzzleplayer import PuzzlePlayer
 ```
 

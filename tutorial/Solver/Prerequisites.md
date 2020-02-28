@@ -11,7 +11,7 @@ cd GamesmanPuzzles
 
 Create a new Python file and import the following:
 ```python
-from puzzlesolver.solver.solver import Solver
+from puzzlesolver.solvers.solver import Solver
 from puzzlesolver.util import *
 from puzzlesolver.puzzles.hanoi import Hanoi
 from puzzlesolver.puzzleplayer import PuzzlePlayer
