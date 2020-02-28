@@ -60,49 +60,6 @@ class Puzzle:
         Iterable of moves, move must be hashable
         """
         return self.generateMoves()
-    
-    def generateForwardMoves(self):
-        """For every possible Puzzle B, generate a move from self to B if:
-        - There exists a Legal move from self to B
-        - There doesn't exist a Legal move from B to self
-
-        +---+     +---+
-        | S +-----> B |
-        +---+     +---+
-
-        Outputs:
-        Iterable of moves, move must be hashable
-        """
-        raise NotImplementedError
-
-    def generateUndoMoves(self):
-        """For every possible Puzzle B, generate a move from self to B if:
-        - There exists a Legal move from B to self
-        - There doesn't exist a Legal move from self to B
-
-        +---+     +---+
-        | S <-----+ B |
-        +---+     +---+
-
-        Outputs:
-        Iterable of moves, move must be hashable
-        """
-        raise NotImplementedError
-
-    def generateBiMoves(self):
-        """For every possible Puzzle B, generate a move from self to B if:
-        - There exists a Legal move from self to B
-        AND
-        - There exists a Legal move from B to self
-
-        +---+     +---+
-        | S <-----> B |
-        +---+     +---+
-
-        Outputs:
-        Iterable of moves, move must be hashable
-        """
-        raise NotImplementedError
 
     # Solver methods
     def __hash__(self):
