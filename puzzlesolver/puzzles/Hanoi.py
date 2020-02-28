@@ -39,7 +39,7 @@ class Hanoi(Puzzle):
         newPuzzle.stacks = stacks
         return newPuzzle        
 
-    def generateMoves(self):
+    def generateMoves(self, movetype="all"):
         moves = []
         for i, stack1 in enumerate(self.stacks):
             if not stack1: continue

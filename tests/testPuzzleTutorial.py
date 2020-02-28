@@ -18,7 +18,7 @@ class Hanoi(Puzzle):
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
 
-    def generateMoves(self):
+    def generateMoves(self, movetype="all"):
         moves = []
         for i, stack1 in enumerate(self.stacks):
             if not stack1: continue

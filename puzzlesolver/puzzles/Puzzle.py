@@ -35,8 +35,17 @@ class Puzzle:
         """
         raise NotImplementedError
 
-    def generateMoves(self):
+    def generateMoves(self, movetype="all"):
         """Generate moves from self (including undos)
+
+        Inputs
+        movetype -- str, can be the following
+        - 'undo': undo moves
+        - 'for': forward moves
+        - 'bi': bidirectional moves
+        - 'legal': legal moves (for + bi)
+        - 'back': back moves (undo + bi)
+        - 'all': all the moves listed above
 
         Outputs:
         Iterable of moves, move must be hashable
@@ -114,9 +123,9 @@ class Puzzle:
         raise NotImplementedError
     
     def generateSolutions(self):
-        """Returns a list of Puzzle objects that are solved states
+        """Returns a Iterable of Puzzle objects that are solved states
 
         Outputs:
-        List of Puzzles
+        Iterable of Puzzles
         """
         raise NotImplementedError
