@@ -2,6 +2,14 @@
 # PuzzlePlayer and the GeneralSolver
 
 class Puzzle:
+    
+    # Intializer
+    def __init__(self, variant_id=None, position_id=None):
+        """
+        Inputs:
+            str: variant_id
+            str: position_id
+        """
 
     # Gameplay methods
     def __str__(self):
@@ -27,11 +35,11 @@ class Puzzle:
     def doMove(self, move):
         """Given a valid move, returns a new Puzzle object with that move executed
 
-        Inputs
-        move -- type defined by generateMoves
+        Inputs:
+            move -- type defined by generateMoves
 
         Outputs:
-        Puzzle with move executed
+            Puzzle with move executed
         """
         raise NotImplementedError
 
@@ -51,15 +59,6 @@ class Puzzle:
         Iterable of moves, move must be hashable
         """
         raise NotImplementedError
-
-    def generateLegalMoves(self):
-        """Generate only legal moves from self. 
-        Equivalent to generateForwardMoves + generateBiMoves
-
-        Outputs:
-        Iterable of moves, move must be hashable
-        """
-        return self.generateMoves()
 
     # Solver methods
     def __hash__(self):
@@ -86,3 +85,12 @@ class Puzzle:
         Iterable of Puzzles
         """
         raise NotImplementedError
+
+    # Method for PickleSolverWrapper
+    def getName(self):
+        """Returns the name of the Puzzle.
+
+        Outputs:
+            String name
+        """
+        return self.__class__.__name__

@@ -2,9 +2,9 @@ import pytest
 
 from copy import deepcopy
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.Puzzle import Puzzle
-from puzzlesolver.solver.GeneralSolver import GeneralSolver
-from puzzlesolver.PuzzlePlayer import PuzzlePlayer
+from puzzlesolver.puzzles.puzzle import Puzzle
+from puzzlesolver.solvers.generalsolver import GeneralSolver
+from puzzlesolver.puzzleplayer import PuzzlePlayer
 
 class Hanoi(Puzzle):
     def __init__(self):

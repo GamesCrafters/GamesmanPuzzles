@@ -22,4 +22,4 @@ class Solver:
         Outputs:
         remoteness of puzzle
         """
-        return "Not implemented :)"
+        return "Not implemented :)"        
