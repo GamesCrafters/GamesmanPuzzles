@@ -9,15 +9,15 @@ The solve function is the core of all solvers in the GamesmanPuzzles and is used
 In the case when our position already exists in memory or have already calculated this position, we just lookup the value using the hash of the puzzle.
 
 ```python
-def solve(self, puzzle):
+def solve(self, puzzle, **kwargs):
     if hash(puzzle) in self.values: return self.values
 ```
 
 ### 2. Breadth algorithm
 Remember back in the puzzle project, we defined a few important functions that were meant to be used for this solver. These functions are:
-- ```generateSolutions(self):``` Generates all the positions that have a primitive value of SOLVABLE.
-- ```generateMoves(self):``` Generates all moves from that position (including undos).
-- ```doMove(self, move):``` Returns a new Puzzle object with ```move``` executed. 
+- ```generateSolutions(self, **kwargs):``` Generates all the positions that have a primitive value of SOLVABLE.
+- ```generateMoves(self, **kwargs):``` Generates moves from that position.
+- ```doMove(self, move, **kwargs):``` Returns a new Puzzle object with ```move``` executed. 
 
 Following the steps of the algorithm we defined in [puzzle tree:](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree)
 
@@ -46,7 +46,7 @@ def helper(self, puzzles):
     for puzzle in puzzles: queue.put(puzzle)
     while not queue.empty():
         puzzle = queue.get()
-        for move in puzzle.generateMoves():
+        for move in puzzle.generateMoves(movetype="undo"):
             nextPuzzle = puzzle.doMove(move)
             if hash(nextPuzzle) not in self.remoteness:
                 self.values[hash(nextPuzzle)] = PuzzleValue.SOLVABLE
@@ -56,7 +56,7 @@ def helper(self, puzzles):
 
 The final solve function should look like this:
 ```python
-def solve(self, puzzle):
+def solve(self, puzzle, **kwargs):
     if hash(puzzle) in self.values: return self.values[hash(puzzle)]
     
     # BFS for remoteness classification

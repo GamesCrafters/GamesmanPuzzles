@@ -10,7 +10,7 @@ from ..puzzleplayer import PuzzlePlayer
 
 class Hanoi(Puzzle):
 
-    def __init__(self, size=3, id=None):
+    def __init__(self, size=3, **kwargs):
         self.size = size
         if not isinstance(self.size, int): raise ValueError 
         self.stacks = [
@@ -31,12 +31,12 @@ class Hanoi(Puzzle):
     def getName(self):
         return 'Hanoi' + str(self.size)
 
-    def primitive(self):
+    def primitive(self, **kwargs):
         if self.stacks[2] == list(range(self.size, 0, -1)):
             return PuzzleValue.SOLVABLE 
         return PuzzleValue.UNDECIDED
 
-    def doMove(self, move):
+    def doMove(self, move, **kwargs):
         if move not in self.generateMoves(): raise ValueError
         newPuzzle = Hanoi(size=self.size)
         stacks = deepcopy(self.stacks)
@@ -44,7 +44,7 @@ class Hanoi(Puzzle):
         newPuzzle.stacks = stacks
         return newPuzzle        
 
-    def generateMoves(self, movetypes="all"):
+    def generateMoves(self, movetypes="all", **kwargs):
         moves = []
         for i, stack1 in enumerate(self.stacks):
             if not stack1: continue
@@ -53,7 +53,7 @@ class Hanoi(Puzzle):
                 if not stack2 or stack2[-1] > stack1[-1]: moves.append((i, j))
         return moves
 
-    def generateSolutions(self):
+    def generateSolutions(self, **kwargs):
         newPuzzle = Hanoi(size=self.size)
         newPuzzle.stacks = [
             [],

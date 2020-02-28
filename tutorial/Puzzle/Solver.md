@@ -11,11 +11,11 @@ def __hash__(self):
     return hash(str(self.stacks))
 ```
 
-#### ```generateSolutions(self):```
+#### ```generateSolutions(self, **kwargs):```
 The GeneralSolver is a bottom-top solver, meaning that it uses the endstates of the puzzle (when the puzzle has a "solvable" primitive) and solves from those positions. Because of that, the puzzle must compute the endstates of the puzzle itself. 
 
 ```python
-def generateSolutions(self):
+def generateSolutions(self, **kwargs):
     newPuzzle = Hanoi()
     newPuzzle.stacks = [
         [],

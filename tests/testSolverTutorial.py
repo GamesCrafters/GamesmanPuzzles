@@ -6,16 +6,16 @@ import queue as q
 
 class GeneralSolver(Solver):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         self.values = {}
         self.remoteness = {}
     
-    def getRemoteness(self, puzzle):
+    def getRemoteness(self, puzzle, **kwargs):
         self.solve(puzzle)
         if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
         return PuzzleValue.UNSOLVABLE
 
-    def solve(self, puzzle):
+    def solve(self, puzzle, **kwargs):
         if hash(puzzle) in self.values: return self.values[hash(puzzle)]
         
         # BFS for remoteness classification

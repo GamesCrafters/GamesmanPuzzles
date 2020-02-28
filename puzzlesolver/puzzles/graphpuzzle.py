@@ -14,7 +14,8 @@ class GraphPuzzle(Puzzle):
                 primitive=PuzzleValue.UNDECIDED,
                 biChildren=[],
                 forwardChildren=[],
-                undoChildren=[]):
+                undoChildren=[],
+                **kwargs):
         self.name = name
         self.variantid = variantid
         self.value = primitive
@@ -45,10 +46,10 @@ class GraphPuzzle(Puzzle):
     def __str__(self):
         return "Puzzle: {}".format(self.name)
 
-    def primitive(self):
+    def primitive(self, **kwargs):
         return self.value
 
-    def doMove(self, move):
+    def doMove(self, move, **kwargs):
         child = move[0]
         if child == "b": index = self.biChildren
         elif child == "f": index = self.forwardChildren
@@ -68,7 +69,7 @@ class GraphPuzzle(Puzzle):
             moves.extend(["{}{}".format(i, j.name) for j in children[i]])
         return moves
 
-    def generateSolutions(self):
+    def generateSolutions(self, **kwargs):
         return GraphPuzzle.solutions[self.variantid]
     
     def addForwardMove(self, puzzle):

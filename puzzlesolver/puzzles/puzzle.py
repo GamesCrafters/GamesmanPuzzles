@@ -4,12 +4,8 @@
 class Puzzle:
     
     # Intializer
-    def __init__(self, variant_id=None, position_id=None):
-        """
-        Inputs:
-            str: variant_id
-            str: position_id
-        """
+    def __init__(self, **kwargs):
+        pass
 
     # Gameplay methods
     def __str__(self):
@@ -20,7 +16,7 @@ class Puzzle:
         """
         return "No String representation available"
 
-    def primitive(self):
+    def primitive(self, **kwargs):
         """If the Puzzle is at an endstate, return GameValue.WIN or GameValue.LOSS
         else return GameValue.UNDECIDED
 
@@ -32,7 +28,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
-    def doMove(self, move):
+    def doMove(self, move, **kwargs):
         """Given a valid move, returns a new Puzzle object with that move executed
 
         Inputs:
@@ -43,7 +39,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
-    def generateMoves(self, movetype="all"):
+    def generateMoves(self, movetype="all", **kwargs):
         """Generate moves from self (including undos)
 
         Inputs
@@ -78,7 +74,7 @@ class Puzzle:
         """
         raise NotImplementedError
     
-    def generateSolutions(self):
+    def generateSolutions(self, **kwargs):
         """Returns a Iterable of Puzzle objects that are solved states
 
         Outputs:
@@ -87,7 +83,7 @@ class Puzzle:
         raise NotImplementedError
 
     # Method for PickleSolverWrapper
-    def getName(self):
+    def getName(self, **kwargs):
         """Returns the name of the Puzzle.
 
         Outputs:

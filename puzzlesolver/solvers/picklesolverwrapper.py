@@ -6,7 +6,7 @@ from copy import deepcopy
 
 class PickleSolverWrapper(Solver):
 
-    def __init__(self, puzzle=None, path="./databases", solver=GeneralSolver):
+    def __init__(self, puzzle=None, path="./databases", solver=GeneralSolver, **kwargs):
         Path(path).mkdir(parents=True, exist_ok=True)
         assert puzzle
         try:

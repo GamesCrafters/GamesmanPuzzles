@@ -2,7 +2,7 @@
 
 class Solver:
 
-    def solve(self, puzzle, *args, **kwargs):
+    def solve(self, puzzle, **kwargs):
         """Finds the value of the puzzle
 
         Inputs
@@ -13,7 +13,7 @@ class Solver:
         """
         raise NotImplementedError
     
-    def getRemoteness(self, puzzle, *args, **kwargs):
+    def getRemoteness(self, puzzle, **kwargs):
         """Finds the remoteness of the puzzle
 
         Inputs:

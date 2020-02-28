@@ -7,13 +7,13 @@ class GeneralSolver(Solver):
     def __init__(self, *args, **kwarg):
         self.values, self.remoteness = {}, {}
     
-    def getRemoteness(self, puzzle):
+    def getRemoteness(self, puzzle, **kwargs):
         """Returns remoteness of puzzle. Automatically solves if memory isn't set"""
         self.solve(puzzle)
         if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
         return PuzzleValue.UNSOLVABLE
 
-    def solve(self, puzzle):
+    def solve(self, puzzle, **kwargs):
         """Traverse the entire puzzle tree and classifiers all the 
         positions with values and remoteness
         - If position already exists in memory, returns its value
