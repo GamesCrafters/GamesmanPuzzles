@@ -1,8 +1,28 @@
 # Moves
-#### `generateMoves(self, movetype="all", **kwargs)`
-This function allows the puzzle to generate possible moves and move the puzzle forward. It should return all possible moves (including undos) that any player can make on the puzzle. For Hanoi, a move is to move the top piece of any rod onto another rod as long as it satisfies the restriction that a bigger ring cannot be on top of a smaller ring.
+Let's review how moves work in the puzzle tree. Below is a graph with the numbered nodes as Puzzles and the directed edges as Moves.
 
-**Note:** We also have to include "undo" moves, which are moves that may not technically be legal (i.e. undoing a move in Chess could be uncapturing a piece or a pawn moving backwards). We need these moves as our GeneralSolver moves from the end state to the start states. Consider if undoing any move is a legal move in your puzzle and if it isn't, implement `generateLegalMoves(self)` as well, which returns a list of legal moves.  
+<p align="center">
+<img src='graph.png' width=200>
+</p>
+
+### Move types
+We'll define five types of moves for each node:
+- **Forward**: All moves from a Puzzle P to another Puzzle Q if there exists a Legal move from P to Q, **but** there doesn't exist a Legal move from Q to P.  
+    - Examples: (1,2), (3,1)
+- **Bidirectional**: All moves from a Puzzle P to another Puzzle Q if there exists a Legal move from P to Q **and** there exists a Legal move from Q to P.
+    - Examples: (1,4), (4,1)
+- **Backward**: All moves from a Puzzle P to another Puzzle Q if there **doesn't** exist a Legal move from P to Q **but** there exists a Legal move from Q to P.
+    - Examples: (1,3), (2,1)
+- **Legal:** Any move possible from the current Puzzle based on the Puzzle rules (i.e capturing and moving pawns forward in Chess). Also equivalent to the combination of Forward and Bidirectional moves
+- **Undo:** Equivalent to the combination of Bidirectional and Backward moves.
+
+These moves allow us to traverse the Puzzle Tree much more easily. The GeneralSolver makes good use of Undo moves when solving position values and calculating remoteness (more on that in the Solver guide). Hanoi only has Bidirectional moves, so there isn't a need to generate Forward or Backward moves. However, when considering other Puzzles such as Peg solitare (which jumps over and captures adjacent pieces) it's important to make sure that all the possible moves are implemented.
+
+### Implementation
+
+#### `generateMoves(self, movetype="all", **kwargs)`
+This function allows the puzzle to generate possible moves and move the puzzle forward. It should return all possible moves based on the `movetype` variable. Possible values of `movetype` are `['for', 'back', 'bi', 'undo', 'legal', 'all']`.
+
 ```python
 def generateMoves(self, movetype="all", **kwargs):
     moves = []

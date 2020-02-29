@@ -26,7 +26,7 @@ class GeneralSolver(Solver):
             for puzzle in puzzles: queue.put(puzzle)
             while not queue.empty():
                 puzzle = queue.get()
-                for move in puzzle.generateMoves('back'):
+                for move in puzzle.generateMoves('undo'):
                     nextPuzzle = puzzle.doMove(move)
                     if hash(nextPuzzle) not in self.remoteness:
                         self.values[hash(nextPuzzle)] = PuzzleValue.SOLVABLE

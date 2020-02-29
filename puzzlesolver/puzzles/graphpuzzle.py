@@ -14,14 +14,14 @@ class GraphPuzzle(Puzzle):
                 primitive=PuzzleValue.UNDECIDED,
                 biChildren=[],
                 forwardChildren=[],
-                undoChildren=[],
+                backwardChildren=[],
                 **kwargs):
         self.name = name
         self.variantid = variantid
         self.value = primitive
         self.biChildren = set() 
         self.forwardChildren = set()
-        self.undoChildren = set()
+        self.backwardChildren = set()
         
         if variantid not in GraphPuzzle.unique_names: GraphPuzzle.unique_names[variantid] = set()
         if variantid not in GraphPuzzle.solutions: GraphPuzzle.solutions[variantid] = set()
@@ -37,8 +37,8 @@ class GraphPuzzle(Puzzle):
             self.addBiMove(child)
         for child in forwardChildren:
             self.addForwardMove(child)
-        for child in undoChildren:
-            self.addUndoMove(child)
+        for child in backwardChildren:
+            self.addBackwardMove(child)
 
     def __hash__(self):
         return hash(str(self.name))
@@ -51,19 +51,22 @@ class GraphPuzzle(Puzzle):
 
     def doMove(self, move, **kwargs):
         child = move[0]
-        if child == "b": index = self.biChildren
-        elif child == "f": index = self.forwardChildren
-        elif child == "u": index = self.undoChildren
-        else: raise ValueError("Not a valid move")
+        if child == "1": index = self.biChildren
+        elif child == "0": index = self.forwardChildren
+        elif child == "2": index = self.backwardChildren
+        else: raise ValueError("Not a valid move {}".format(child))
         for i in index:
             if str(i.name) == str(move[1:]): return i 
         raise ValueError("Not a valid move")
 
     def generateMoves(self, movetype='all', **kwargs):
         children = {}
-        if movetype == 'for' or movetype == 'legal' or movetype == 'all': children["f"] = self.forwardChildren
-        if movetype == 'bi' or movetype == 'back' or movetype == 'legal' or movetype == 'all': children["b"] = self.biChildren
-        if movetype == 'undo' or movetype == 'back' or movetype == 'all': children["u"] = self.undoChildren
+        if movetype == 'for' or movetype == 'legal' or movetype == 'all': 
+            children["0"] = self.forwardChildren
+        if movetype == 'bi' or movetype == 'undo' or movetype == 'legal' or movetype == 'all': 
+            children["1"] = self.biChildren
+        if movetype == 'back' or movetype == 'undo' or movetype == 'all': 
+            children["2"] = self.backwardChildren
         moves = []
         for i in children: 
             moves.extend(["{}{}".format(i, j.name) for j in children[i]])
@@ -73,24 +76,24 @@ class GraphPuzzle(Puzzle):
         return GraphPuzzle.solutions[self.variantid]
     
     def addForwardMove(self, puzzle):
-        if puzzle in self.undoChildren or self in puzzle.forwardChildren or\
+        if puzzle in self.backwardChildren or self in puzzle.forwardChildren or\
             self in puzzle.biChildren or puzzle in self.biChildren:
             raise ValueError("Contradictory move")
         if self.variantid != puzzle.variantid: raise ValueError("Variants must be the same")
         self.forwardChildren.add(puzzle)
-        puzzle.undoChildren.add(self)
+        puzzle.backwardChildren.add(self)
     
-    def addUndoMove(self, puzzle):
-        if puzzle in self.forwardChildren or self in puzzle.undoChildren or\
+    def addBackwardMove(self, puzzle):
+        if puzzle in self.forwardChildren or self in puzzle.backwardChildren or\
             self in puzzle.biChildren or puzzle in self.biChildren:
             raise ValueError("Contradictory move")
         if self.variantid != puzzle.variantid: raise ValueError("Variants must be the same")
-        self.undoChildren.add(puzzle)
+        self.backwardChildren.add(puzzle)
         puzzle.forwardChildren.add(self)
     
     def addBiMove(self, puzzle):
         if puzzle in self.forwardChildren or self in puzzle.forwardChildren or\
-            self in puzzle.undoChildren or puzzle in self.undoChildren:
+            self in puzzle.backwardChildren or puzzle in self.backwardChildren:
             raise ValueError("Contradictory move")
         if self.variantid != puzzle.variantid: raise ValueError("Variants must be the same")
         self.biChildren.add(puzzle)
@@ -102,10 +105,10 @@ class GraphPuzzle(Puzzle):
             except: pass
         remove(self.forwardChildren, puzzle)
         remove(self.biChildren, puzzle)
-        remove(self.undoChildren, puzzle)
+        remove(self.backwardChildren, puzzle)
         remove(puzzle.forwardChildren, self)
         remove(puzzle.biChildren, self)
-        remove(puzzle.undoChildren, self)
+        remove(puzzle.backwardChildren, self)
     
     @staticmethod
     def variant_test(func):

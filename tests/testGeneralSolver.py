@@ -9,7 +9,11 @@ def testSimple():
     forward = GraphPuzzle(name="f")
     bi = GraphPuzzle(name="b")
     undo = GraphPuzzle(name="u")
-    sol = GraphPuzzle(name="s", forwardChildren=[forward], biChildren=[bi], undoChildren=[undo], primitive=PuzzleValue.SOLVABLE)
+    sol = GraphPuzzle(name="s", 
+        forwardChildren=[forward], 
+        biChildren=[bi], 
+        backwardChildren=[undo], 
+        primitive=PuzzleValue.SOLVABLE)
 
     solver = GeneralSolver()
     solver.solve(sol)

@@ -44,12 +44,12 @@ class Puzzle:
 
         Inputs
         movetype -- str, can be the following
-        - 'undo': undo moves
         - 'for': forward moves
         - 'bi': bidirectional moves
+        - 'back': back moves
         - 'legal': legal moves (for + bi)
-        - 'back': back moves (undo + bi)
-        - 'all': all the moves listed above
+        - 'undo': undo moves (back + bi)
+        - 'all': any defined move (for + bi + back)
 
         Outputs:
         Iterable of moves, move must be hashable
