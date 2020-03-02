@@ -16,15 +16,16 @@ We'll define five types of moves for each node:
 - **Legal:** Any move possible from the current Puzzle based on the Puzzle rules (i.e capturing and moving pawns forward in Chess). Also equivalent to the combination of Forward and Bidirectional moves
 - **Undo:** Equivalent to the combination of Bidirectional and Backward moves.
 
-These moves allow us to traverse the Puzzle Tree much more easily. The GeneralSolver makes good use of Undo moves when solving position values and calculating remoteness (more on that in the Solver guide). Hanoi only has Bidirectional moves, so there isn't a need to generate Forward or Backward moves. However, when considering other Puzzles such as Peg solitare (which jumps over and captures adjacent pieces), make sure that `generateMoves` returns moves for every `movetype`.
+The GeneralSolver makes good use of Undo moves when solving position values and calculating remoteness (more on that in the Solver guide). Hanoi only has Bidirectional moves, so there isn't a need to generate Forward or Backward moves, however, when considering other Puzzles such as Peg solitare (which jumps over and captures adjacent pieces), make sure that `generateMoves` returns moves for every `movetype`.
 
 ### Implementation
 
 #### `generateMoves(self, movetype="all", **kwargs)`
-This function allows the puzzle to generate possible moves and move the puzzle forward. It should return all possible moves based on the `movetype` variable. Possible values of `movetype` are `['for', 'back', 'bi', 'undo', 'legal', 'all']`.
+This function allows the puzzle to generate possible moves and move the puzzle forward. It should return all possible moves based on the `movetype` variable. Hanoi only has bidirectional moves, so if we're inputted a `movetype` of `'for'` or `'back'`, we should return no moves. Possible values of `movetype` are `['for', 'back', 'bi', 'undo', 'legal', 'all']`.
 
 ```python
 def generateMoves(self, movetype="all", **kwargs):
+    if movetype=='for' or movetype=='back': return []
     moves = []
     for i, stack1 in enumerate(self.stacks):
         if not stack1: continue
@@ -33,7 +34,6 @@ def generateMoves(self, movetype="all", **kwargs):
             if not stack2 or stack2[-1] > stack1[-1]: moves.append((i, j))
     return moves
 ```
-
 
 ### Execute
 Once you have implemented all the required functions, add a line on the end of the file outside the Hanoi class to execute the PuzzlePlayer. 
