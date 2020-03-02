@@ -16,7 +16,7 @@ We'll define five types of moves for each node:
 - **Legal:** Any move possible from the current Puzzle based on the Puzzle rules (i.e capturing and moving pawns forward in Chess). Also equivalent to the combination of Forward and Bidirectional moves
 - **Undo:** Equivalent to the combination of Bidirectional and Backward moves.
 
-These moves allow us to traverse the Puzzle Tree much more easily. The GeneralSolver makes good use of Undo moves when solving position values and calculating remoteness (more on that in the Solver guide). Hanoi only has Bidirectional moves, so there isn't a need to generate Forward or Backward moves. However, when considering other Puzzles such as Peg solitare (which jumps over and captures adjacent pieces) it's important to make sure that all the possible moves are implemented.
+These moves allow us to traverse the Puzzle Tree much more easily. The GeneralSolver makes good use of Undo moves when solving position values and calculating remoteness (more on that in the Solver guide). Hanoi only has Bidirectional moves, so there isn't a need to generate Forward or Backward moves. However, when considering other Puzzles such as Peg solitare (which jumps over and captures adjacent pieces), make sure that `generateMoves` returns moves for every `movetype`.
 
 ### Implementation
 
