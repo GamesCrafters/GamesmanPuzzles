@@ -44,7 +44,8 @@ class Hanoi(Puzzle):
         newPuzzle.stacks = stacks
         return newPuzzle        
 
-    def generateMoves(self, movetypes="all", **kwargs):
+    def generateMoves(self, movetype="all", **kwargs):
+        if movetype=='for' or movetype=='back': return []
         moves = []
         for i, stack1 in enumerate(self.stacks):
             if not stack1: continue
