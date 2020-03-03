@@ -3,25 +3,22 @@ import pytest
 from puzzlesolver.puzzles.graphpuzzle import GraphPuzzle
 from puzzlesolver.util import *
 
-@GraphPuzzle.variant_test
-def testInit():
-    with pytest.raises(ValueError): GraphPuzzle()
-    GraphPuzzle(name=1)
-    with pytest.raises(ValueError): GraphPuzzle(name=1)
-    GraphPuzzle(name=2)
+def testPaths():
+    puzzle1 = GraphPuzzle(0)
+    puzzle2 = GraphPuzzle(1)
+    puzzle3 = GraphPuzzle(2)
+    puzzle4 = GraphPuzzle(3)
+    
+    puzzle1.setMove(puzzle2)
+    puzzle1.setMove(puzzle3, "bi")
+    puzzle1.setMove(puzzle4, "back")
 
-@GraphPuzzle.variant_test
-def testVariant():
-    v0p1 = GraphPuzzle(name=1, variantid=0)
-    GraphPuzzle(name=2, variantid=0)
-    with pytest.raises(ValueError): GraphPuzzle(name=2, variantid=0)
-    print(GraphPuzzle(name=1, variantid=1))
-    with pytest.raises(ValueError): GraphPuzzle(name=2, forwardChildren=[v0p1], variantid=1)
-    with pytest.raises(ValueError): GraphPuzzle(name=2, biChildren=[v0p1], variantid=1)
-
-@GraphPuzzle.variant_test
+    assert puzzle1.doMove(1) == puzzle2
+    assert puzzle1.doMove(2) == puzzle3
+    assert puzzle1.doMove(3) == puzzle4
+"""
 def testForwardPath():
-    lastPuzzle = GraphPuzzle(name=0) 
+    lastPuzzle = GraphPuzzle(0) 
     firstPuzzle = lastPuzzle
     for i in range(1, 3):
         firstPuzzle = GraphPuzzle(name=i, forwardChildren=[firstPuzzle])
@@ -36,7 +33,6 @@ def testForwardPath():
     assert puzzle == lastPuzzle, '{} is not {}'.format(puzzle, lastPuzzle)
     assert not puzzle.generateMoves(movetype='legal')
 
-@GraphPuzzle.variant_test
 def testUndoPath():
     lastPuzzle = GraphPuzzle(name=0) 
     firstPuzzle = lastPuzzle
@@ -53,7 +49,6 @@ def testUndoPath():
     assert puzzle == firstPuzzle, '{} is not {}'.format(puzzle, lastPuzzle)
     assert not puzzle.generateMoves(movetype="undo")
 
-@GraphPuzzle.variant_test
 def testBiPath():
     lastPuzzle = GraphPuzzle(0)
     firstPuzzle = lastPuzzle
@@ -70,3 +65,4 @@ def testBiPath():
         assert temp != cur
         assert temp == other
         cur, other = temp, cur        
+"""
