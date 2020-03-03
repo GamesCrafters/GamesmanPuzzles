@@ -2,67 +2,49 @@ import pytest
 
 from puzzlesolver.puzzles.graphpuzzle import GraphPuzzle
 from puzzlesolver.util import *
+from puzzlesolver.util import PuzzleValue as pz
 
-def testPaths():
+def testMoveGeneral():
     puzzle1 = GraphPuzzle(0)
     puzzle2 = GraphPuzzle(1)
     puzzle3 = GraphPuzzle(2)
     puzzle4 = GraphPuzzle(3)
     
-    puzzle1.setMove(puzzle2)
+    puzzle1.setMove(puzzle2, "for")
     puzzle1.setMove(puzzle3, "bi")
     puzzle1.setMove(puzzle4, "back")
 
-    assert puzzle1.doMove(1) == puzzle2
-    assert puzzle1.doMove(2) == puzzle3
-    assert puzzle1.doMove(3) == puzzle4
-"""
-def testForwardPath():
-    lastPuzzle = GraphPuzzle(0) 
-    firstPuzzle = lastPuzzle
-    for i in range(1, 3):
-        firstPuzzle = GraphPuzzle(name=i, forwardChildren=[firstPuzzle])
+    forward = puzzle1.generateMoves(movetype='for')
+    assert len(forward) == 1
+    assert puzzle1.doMove(next(iter(forward))) == puzzle2
 
-    puzzle = firstPuzzle
-    for _ in range(1, 3):
-        moves = puzzle.generateMoves(movetype='legal')
-        assert moves
-        assert len(moves) == 1
-        puzzle = puzzle.doMove(moves[0])
+    bi = puzzle1.generateMoves(movetype='bi')
+    assert len(bi) == 1
+    assert puzzle1.doMove(next(iter(bi))) == puzzle3
 
-    assert puzzle == lastPuzzle, '{} is not {}'.format(puzzle, lastPuzzle)
-    assert not puzzle.generateMoves(movetype='legal')
+    back = puzzle1.generateMoves(movetype='back')
+    assert len(back) == 1
+    assert puzzle1.doMove(next(iter(back))) == puzzle4
 
-def testUndoPath():
-    lastPuzzle = GraphPuzzle(name=0) 
-    firstPuzzle = lastPuzzle
-    for i in range(1, 3):
-        firstPuzzle = GraphPuzzle(name=i, forwardChildren=[firstPuzzle])
+    assert len(puzzle1.generateMoves(movetype='legal')) == 2
+    assert len(puzzle1.generateMoves(movetype='undo')) == 2
 
-    puzzle = lastPuzzle
-    for _ in range(1, 3):
-        moves = puzzle.generateMoves(movetype="undo")
-        assert moves
-        assert len(moves) == 1
-        puzzle = puzzle.doMove(moves[0])
+def testInvalid():
+    pytest.raises(Exception, GraphPuzzle)
+    pytest.raises(ValueError, GraphPuzzle, 0, value=None)
 
-    assert puzzle == firstPuzzle, '{} is not {}'.format(puzzle, lastPuzzle)
-    assert not puzzle.generateMoves(movetype="undo")
+    gp1 = GraphPuzzle(0, value=pz.UNDECIDED)
+    gp2 = GraphPuzzle(1, value=pz.SOLVABLE)
+    gp3 = GraphPuzzle(1, value=pz.UNDECIDED)
+    gp1.setMove(gp2)
+    pytest.raises(ValueError, gp1.setMove, gp1)
+    pytest.raises(ValueError, gp1.setMove, gp3)
 
-def testBiPath():
-    lastPuzzle = GraphPuzzle(0)
-    firstPuzzle = lastPuzzle
-    for i in range(1, 2):
-        firstPuzzle = GraphPuzzle(i, biChildren=[firstPuzzle])
-    
-    cur, other = firstPuzzle, lastPuzzle
-    assert cur != other
-    for _ in range(2):
-        moves = cur.generateMoves(movetype="bi")
-        assert moves
-        assert len(moves) == 1
-        temp = cur.doMove(moves[0])
-        assert temp != cur
-        assert temp == other
-        cur, other = temp, cur        
-"""
+    pytest.raises(ValueError, gp1.doMove, None)
+    pytest.raises(ValueError, gp1.doMove, 10)
+    pytest.raises(ValueError, gp1.doMove, next(iter(gp2.generateMoves())))
+
+    gp4 = GraphPuzzle(2, value=pz.UNDECIDED)
+    gp4.setMove(gp3)
+
+    pytest.raises(ValueError, gp1.setMove, gp4)

@@ -8,34 +8,40 @@ class GraphPuzzle(Puzzle):
 
     def __init__(self, name,
                 value=PuzzleValue.UNDECIDED,
-                children={},
                 **kwargs):
+        if name == None: raise ValueError("Name cannot be None")
+        if not PuzzleValue.contains(value): raise ValueError("Not a valid value")
         self.name = name
         self.value = value
 
         self.graph = nx.DiGraph()
         self.graph.add_node(self.name, value=value)
         self.solutions = set([self.name]) if value == PuzzleValue.SOLVABLE else set()
-        for movetype in children:
-            for child in children[movetype]:
-                self.setMove(child, movetype)   
 
-    def __child(self, child):
+    def _addChild(self, child, value=None):
         if isinstance(child, GraphPuzzle):
+            if child.name == self.name: raise ValueError("Cannot have move to self")
+            for node in set(child.graph) & set(self.graph):
+                if child.graph.nodes[node] != self.graph.nodes[node]:
+                    raise ValueError("Contradictory info on node {}".format(node))
             self.graph.update(child.graph)
             self.solutions.update(child.solutions)
             child.graph = self.graph
             child.solutions = self.solutions
-            child = (child.name, child.value)
-        if len(child) != 2: raise ValueError("Not a valid child")
-        self.graph.nodes[child[0]]['value'] = child[1]
+            value = child.value
+            child = child.name
+        self.graph.nodes[child]['value'] = value
         return child
         
     def __hash__(self):
         return hash(str(self.name))
 
     def __eq__(self, puzzle):
-        return isinstance(puzzle, GraphPuzzle) and self.graph == puzzle.graph
+        return (isinstance(puzzle, GraphPuzzle) and 
+                self.name == puzzle.name and
+                self.value == puzzle.value and
+                self.graph == puzzle.graph and
+                self.solutions == puzzle.solutions)
 
     def __str__(self):
         return "Puzzle: {}".format(self.name)
@@ -65,17 +71,18 @@ class GraphPuzzle(Puzzle):
         return self.solutions
     
     def setMove(self, child, movetype="for"):
-        child = self.__child(child)
-        if self.name == child[0]: raise ValueError("Cannot make move to same state")
+        child = self._addChild(child)
+        if self.name == child: raise ValueError("Cannot make move to same state")
         self.removeMove(child)
         if movetype == "bi":
-            self.graph.add_edge(self.name, child[0])
-            self.graph.add_edge(child[0], self.name)
+            self.graph.add_edge(self.name, child)
+            self.graph.add_edge(child, self.name)
         if movetype == "for":
-            self.graph.add_edge(self.name, child[0])
+            self.graph.add_edge(self.name, child)
         if movetype == "back":
-            self.graph.add_edge(child[0], self.name)
-        self.graph.nodes[child[0]]['value'] = child[1]
+            self.graph.add_edge(child, self.name)
 
     def removeMove(self, child):
+        if isinstance(child, GraphPuzzle):
+            child = child.name
         self.graph.remove_edges_from([(self.name, child), (child, self.name)])
