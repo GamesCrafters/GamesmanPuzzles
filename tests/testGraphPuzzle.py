@@ -29,6 +29,10 @@ def testMoveGeneral():
     assert len(puzzle1.generateMoves(movetype='legal')) == 2
     assert len(puzzle1.generateMoves(movetype='undo')) == 2
 
+    assert puzzle1.graph == puzzle2.graph
+    assert puzzle1.graph == puzzle3.graph
+    assert puzzle1.graph == puzzle4.graph
+
 def testInvalid():
     pytest.raises(Exception, GraphPuzzle)
     pytest.raises(ValueError, GraphPuzzle, 0, value=None)
@@ -48,3 +52,15 @@ def testInvalid():
     gp4.setMove(gp3)
 
     pytest.raises(ValueError, gp1.setMove, gp4)
+
+"""
+def testCase1():
+    p1 = GraphPuzzle(1)
+    p2 = GraphPuzzle(2)
+    p1.setMove(p2)
+    p3 = GraphPuzzle(3)
+    p3.setMove(p1)
+    p3.setMove(p1, movetype='bi')
+    assert p1.graph == p2.graph
+    assert p1.graph == p3.graph
+"""

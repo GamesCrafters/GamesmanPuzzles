@@ -16,7 +16,7 @@ class GraphPuzzle(Puzzle):
 
         self.graph = nx.DiGraph()
         self.graph.add_node(self.name, value=value)
-        self.solutions = set([self.name]) if value == PuzzleValue.SOLVABLE else set()
+        self.solutions = set([self]) if value == PuzzleValue.SOLVABLE else set()
 
     def _addChild(self, child, value=None):
         if isinstance(child, GraphPuzzle):
