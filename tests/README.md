@@ -5,6 +5,8 @@ This is where we would be testing our solvers on the games we develop. Ideally, 
 * testPickleWrapper.py: Test for the PickleWrapperSolver
 * testPuzzleTutorial.py: Test for the puzzle tutorial
 * testSolverTutorial.py: Test for the solver tutorial
+* testGeneralSolver.py: Test for GeneralSolver
+* testGraphPuzzle.py: Test for GraphPuzzle
 ### If you want to test manually:
 Go to the base directory and execute. You have to have pytest installed.
 ```
