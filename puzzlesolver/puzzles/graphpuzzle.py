@@ -15,19 +15,27 @@ class GraphPuzzle(Puzzle):
         self.value = value
 
         self.graph = nx.DiGraph()
-        self.graph.add_node(self.name, value=value)
+        self.graph.add_node(self.name, value=value, obj=self)
         self.solutions = set([self]) if value == PuzzleValue.SOLVABLE else set()
 
     def _addChild(self, child, value=None):
         if isinstance(child, GraphPuzzle):
-            if child.name == self.name: raise ValueError("Cannot have move to self")
-            for node in set(child.graph) & set(self.graph):
-                if child.graph.nodes[node] != self.graph.nodes[node]:
-                    raise ValueError("Contradictory info on node {}".format(node))
-            self.graph.update(child.graph)
-            self.solutions.update(child.solutions)
-            child.graph = self.graph
-            child.solutions = self.solutions
+            if self.graph != child.graph:
+                if child.name == self.name: raise ValueError("Cannot have move to self")
+                intersection = set(child.graph) & set(self.graph)
+                for node in intersection:
+                    if child.graph.nodes[node] != self.graph.nodes[node]:
+                        raise ValueError("Contradictory values on node {}".format(node))
+                if nx.symmetric_difference(child.graph.subgraph(intersection), 
+                    self.graph.subgraph(intersection)):
+                    raise ValueError("Intersection between graphs contain contradictory edges")
+                self.graph.update(child.graph)
+                self.solutions.update(child.solutions)
+                for node in self.graph:
+                    if 'obj' in self.graph.nodes[node]:
+                        puzzle = self.graph.nodes[node]['obj']
+                        puzzle.graph = self.graph
+                        puzzle.solutions = self.solutions
             value = child.value
             child = child.name
         self.graph.nodes[child]['value'] = value
@@ -51,9 +59,11 @@ class GraphPuzzle(Puzzle):
 
     def doMove(self, move, **kwargs):
         if move not in self.generateMoves(): raise ValueError("Not a valid move")
+        if 'obj' in self.graph.nodes[move]: return self.graph.nodes[move]['obj']
         newPuzzle = GraphPuzzle(move, self.graph.nodes[move]['value'])
         newPuzzle.solutions = self.solutions
         newPuzzle.graph = self.graph
+        self.graph.nodes[move]['obj'] = newPuzzle
         return newPuzzle
 
     def generateMoves(self, movetype='all', **kwargs):

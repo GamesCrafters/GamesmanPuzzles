@@ -53,7 +53,6 @@ def testInvalid():
 
     pytest.raises(ValueError, gp1.setMove, gp4)
 
-"""
 def testCase1():
     p1 = GraphPuzzle(1)
     p2 = GraphPuzzle(2)
@@ -63,4 +62,3 @@ def testCase1():
     p3.setMove(p1, movetype='bi')
     assert p1.graph == p2.graph
     assert p1.graph == p3.graph
-"""
