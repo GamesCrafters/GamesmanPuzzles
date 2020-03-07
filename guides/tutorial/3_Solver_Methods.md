@@ -34,11 +34,11 @@ On your CLI, execute
 ```bash
 python <your_python_file_name>.py
 ```
-If you have a remoteness of 7 and a Primitive value of "SOLVABLE", congrats! You have successfully integrated the GeneralSolver into your game!
+If you have a remoteness of 7 and a Primitive value of "UNDECIDED", congrats! You have successfully integrated the GeneralSolver into your game!
 
 ## Extras
 Ponder on these questions in how we can optimize this puzzle
 - If we change our endstate to be a stack on either the middle or right rod, how can we optimize this?
 - Why is deserializing a hash to a puzzle a bad idea?
 
-Also, check out the guide in creating a [Solver!](../)
+[Next Part: Implementing a Solver](4_Solver_Prerequisites.md)

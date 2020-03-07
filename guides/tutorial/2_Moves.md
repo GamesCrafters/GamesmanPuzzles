@@ -2,7 +2,7 @@
 Let's review how moves work in the puzzle tree. Below is a graph with the numbered nodes as Puzzles and the directed edges as Moves.
 
 <p align="center">
-<img src='graph.png' width=200>
+<img src='Assets/graph.png' width=200>
 </p>
 
 ### Move types
@@ -46,4 +46,4 @@ python <your_python_file_name>.py
 ```
 If everything runs smoothly, congrats! You have created a playable puzzle!
 
-[Next step: Implementing the Solver methods](Solver.md)
+[Next step: Implementing the Solver methods](3_Solver_Methods.md)
