@@ -2,7 +2,7 @@
 
 from .puzzle import Puzzle
 from ..util import *
-from networkx import nx
+import networkx as nx
 
 class GraphPuzzle(Puzzle):
 
