@@ -4,7 +4,7 @@
 class Puzzle:
     
     # Intializer
-    def __init__(self, **kwargs):
+    def __init__(self, variantid=None, **kwargs):
         pass
 
     # Gameplay methods
@@ -12,7 +12,7 @@ class Puzzle:
         """Returns the string representation of the puzzle.
         
         Outputs:
-        String representation -- String
+            String representation -- String
         """
         return "No String representation available"
 
@@ -24,7 +24,7 @@ class Puzzle:
         you can write from ..util import * 
 
         Outputs:
-        Primitive of Puzzle type GameValue
+            Primitive of Puzzle type GameValue
         """
         raise NotImplementedError
 
@@ -43,16 +43,16 @@ class Puzzle:
         """Generate moves from self (including undos)
 
         Inputs
-        movetype -- str, can be the following
-        - 'for': forward moves
-        - 'bi': bidirectional moves
-        - 'back': back moves
-        - 'legal': legal moves (for + bi)
-        - 'undo': undo moves (back + bi)
-        - 'all': any defined move (for + bi + back)
+            movetype -- str, can be the following
+            - 'for': forward moves
+            - 'bi': bidirectional moves
+            - 'back': back moves
+            - 'legal': legal moves (for + bi)
+            - 'undo': undo moves (back + bi)
+            - 'all': any defined move (for + bi + back)
 
         Outputs:
-        Iterable of moves, move must be hashable
+            Iterable of moves, move must be hashable
         """
         raise NotImplementedError
 
@@ -64,7 +64,7 @@ class Puzzle:
         - The same puzzle must have the same hash.
         
         Outputs:
-        Hash of Puzzle -- Integer
+            Hash of Puzzle -- Integer
 
         Note: How same and different are defined are dependent on how you implement it.
         For example, a common optimization technique for reducing the size of key-value
@@ -78,7 +78,7 @@ class Puzzle:
         """Returns a Iterable of Puzzle objects that are solved states
 
         Outputs:
-        Iterable of Puzzles
+            Iterable of Puzzles
         """
         raise NotImplementedError
 
