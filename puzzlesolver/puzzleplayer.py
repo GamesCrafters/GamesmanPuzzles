@@ -1,5 +1,5 @@
 """
-This class provides a CLI for interaction with Solvers and Puzzles
+This class provides a TUI for interaction with Solvers and Puzzles
 """
 from .util import *
 
