@@ -49,6 +49,7 @@ class PuzzlePlayer:
                 self.puzzle = self.puzzle.doMove(moves[index])
         print("----------------------------")
 
+    # Generates best move from the solver
     def generateBestMove(self):
         remotes = {
             self.solver.getRemoteness(self.puzzle.doMove(move)) : move 
