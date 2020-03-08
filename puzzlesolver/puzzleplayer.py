@@ -39,7 +39,7 @@ class PuzzlePlayer:
             move = self.generateBestMove()
             self.puzzle = self.puzzle.doMove(move)
         else:
-            moves = self.puzzle.generateLegalMoves()
+            moves = self.puzzle.generateMoves(movetype="legal")
             print("Possible Moves:", moves)
             print("Enter Piece: ")
             index = int(input())
@@ -52,7 +52,7 @@ class PuzzlePlayer:
     def generateBestMove(self):
         remotes = {
             self.solver.getRemoteness(self.puzzle.doMove(move)) : move 
-            for move in self.puzzle.generateLegalMoves()
+            for move in self.puzzle.generateMoves(movetype="legal")
         }
         return remotes[min(remotes.keys())]
 
