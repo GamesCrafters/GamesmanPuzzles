@@ -18,7 +18,7 @@ to play a puzzle of Towers of Hanoi
 
 ## Exploring GamesmanPuzzles
 Tips for exploring this repository:
-1. [Follow the guides and learn how to create a puzzle and a solver!](guide)
+1. [Follow the guides and learn how to create a puzzle and a solver!](guides)
 2. Definitely explore the [puzzlesolver](puzzlesolver) in depth. There should be a README.md in every important directory to explain what each file does.
 3. Understand what a [puzzle tree](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree) is. 
 
