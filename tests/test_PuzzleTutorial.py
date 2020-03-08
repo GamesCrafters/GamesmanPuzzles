@@ -18,7 +18,16 @@ class Hanoi(Puzzle):
             return PuzzleValue.SOLVABLE 
         return PuzzleValue.UNDECIDED
 
+    def doMove(self, move, **kwargs):
+        if move not in self.generateMoves(): raise ValueError
+        newPuzzle = Hanoi()
+        stacks = deepcopy(self.stacks)
+        stacks[move[1]].append(stacks[move[0]].pop())
+        newPuzzle.stacks = stacks
+        return newPuzzle    
+
     def generateMoves(self, movetype="all", **kwargs):
+        if movetype=='for' or movetype=='back': return []
         moves = []
         for i, stack1 in enumerate(self.stacks):
             if not stack1: continue
@@ -26,14 +35,6 @@ class Hanoi(Puzzle):
                 if i == j: continue
                 if not stack2 or stack2[-1] > stack1[-1]: moves.append((i, j))
         return moves
-
-    def doMove(self, move, **kwargs):
-        if move not in self.generateMoves(): raise ValueError
-        newPuzzle = Hanoi()
-        stacks = deepcopy(self.stacks)
-        stacks[move[1]].append(stacks[move[0]].pop())
-        newPuzzle.stacks = stacks
-        return newPuzzle        
 
     def __hash__(self):
         return hash(str(self.stacks))
