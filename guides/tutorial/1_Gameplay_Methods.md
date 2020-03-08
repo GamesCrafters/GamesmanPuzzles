@@ -1,11 +1,19 @@
 # Gameplay Methods
 <p align="center">
-<img src='Tower_of_hanoi.jpeg'>
+<img src='assets/Tower_of_hanoi.jpeg'>
 </p>
 
 Hanoi is a commonly known and simple puzzle. The puzzle consists of three rods and a stack of differently sized rings on one rod. The goal is to take a stack of rings and move them one by one to form another stack of rings on the rightmost rod. The only restriction is that a bigger ring cannot be on top of a smaller ring.
 
-The goal of this step is to explain the functionality for the GamesmanPuzzles version of Hanoi as well as implement the functions so that we'll be able to interact with it on our PuzzlePlayer. This document assumes you have satisfied the [prerequisties](Prerequisites.md). 
+The goal of this step is to explain the functionality for the GamesmanPuzzles version of Hanoi as well as implement the functions so that we'll be able to interact with it on our PuzzlePlayer. 
+
+Initialize a new Puzzle object called Hanoi:
+```python
+class Hanoi(Puzzle):
+```
+
+The rest of guide will implement the instance methods of this class.
+
 ## Gameplay functions
 #### `__init__(self, **kwargs)`
 We want to initialize our puzzle with its starting position. For Hanoi, our starting position is a stack of discs on the leftmost rod. For this example, we will represent the rods with a list of lists containing integers, which represent the size of the disc. Also, the order of the integers from left to right, represents the order of the discs from bottom to top.
@@ -38,4 +46,4 @@ def doMove(self, move, **kwargs):
     newPuzzle.stacks = stacks
     return newPuzzle        
 ```
-[Next step: Implementing generateMoves](Moves.md)
+[Next step: Implementing generateMoves](2_Moves.md)

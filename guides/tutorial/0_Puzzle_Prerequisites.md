@@ -1,4 +1,4 @@
-# Prerequisites:
+# Puzzle Prerequisites:
 This guide will teach you how to make  a Puzzle object based on the Puzzle class. This guide will assume that you are already familiar with Python 3.
 
 ## Initialize files
@@ -18,11 +18,6 @@ from puzzlesolver.solvers.generalsolver import GeneralSolver
 from puzzlesolver.puzzleplayer import PuzzlePlayer
 ```
 
-Initialize a new Puzzle object called Hanoi:
-```python
-class Hanoi(Puzzle):
-```
-
 The rest of guide will implement the instance methods of this class.
 
-[Next step: Gameplay Methods](Gameplay.md)
+[Next step: Gameplay Methods](1_Gameplay_Methods.md)

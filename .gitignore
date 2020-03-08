@@ -126,4 +126,4 @@ dmypy.json
 
 # Databases
 *.pkl
-database
+database*
