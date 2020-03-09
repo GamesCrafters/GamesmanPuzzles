@@ -4,6 +4,7 @@ from ..util import *
 from ..solver.GeneralSolver import GeneralSolver
 from ..PuzzlePlayer import PuzzlePlayer
 
+## TODO Fix swap
 class Npuzzle(Puzzle):
     def __init__(self, size=3):
         self.size = size
