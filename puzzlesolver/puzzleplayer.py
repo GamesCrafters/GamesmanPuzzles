@@ -1,5 +1,5 @@
 """
-This class provides a CLI for interaction with Solvers and Puzzles
+This class provides a TUI for interaction with Solvers and Puzzles
 """
 from .util import *
 
@@ -39,7 +39,7 @@ class PuzzlePlayer:
             move = self.generateBestMove()
             self.puzzle = self.puzzle.doMove(move)
         else:
-            moves = self.puzzle.generateLegalMoves()
+            moves = self.puzzle.generateMoves(movetype="legal")
             print("Possible Moves:", moves)
             print("Enter Piece: ")
             index = int(input())
@@ -49,10 +49,11 @@ class PuzzlePlayer:
                 self.puzzle = self.puzzle.doMove(moves[index])
         print("----------------------------")
 
+    # Generates best move from the solver
     def generateBestMove(self):
         remotes = {
             self.solver.getRemoteness(self.puzzle.doMove(move)) : move 
-            for move in self.puzzle.generateLegalMoves()
+            for move in self.puzzle.generateMoves(movetype="legal")
         }
         return remotes[min(remotes.keys())]
 
