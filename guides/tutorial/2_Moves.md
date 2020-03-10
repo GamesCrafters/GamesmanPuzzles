@@ -35,6 +35,19 @@ def generateMoves(self, movetype="all", **kwargs):
     return moves
 ```
 
+#### `doMove(self, move, **kwargs)`
+Do move produces a puzzle after **ANY** move was executed onto the puzzle. This means that it accepts undo moves as well. In Hanoi, there are no undo moves, but in a Puzzle like Peg Solitare, `doMove` must also be able to undo captures. It's also important to generate an entirely new game with the move executed so that it works with the solver. 
+```python
+def doMove(self, move, **kwargs):
+    if move not in self.generateMoves(): raise ValueError
+    newPuzzle = Hanoi()
+    stacks = deepcopy(self.stacks)
+    stacks[move[1]].append(stacks[move[0]].pop())
+    newPuzzle.stacks = stacks
+    return newPuzzle        
+```
+
+
 ### Execute
 Once you have implemented all the required functions, add a line on the end of the file outside the Hanoi class to execute the PuzzlePlayer. 
 ```python
