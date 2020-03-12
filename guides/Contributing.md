@@ -9,6 +9,7 @@ Contributors to this repository should clone and be up to date with the `dev` br
 Start by cloning this repository and switching to the dev branch.
 ```bash
 git clone https://github.com/GamesCrafters/GamesmanPuzzles
+cd GamesmanPuzzles
 git checkout dev
 ```
 Load the dependencies. It's recommended to use a [virtualenv](https://docs.python.org/3/library/venv.html) for this step. Make sure to be using Python3 instead of Python2.
