@@ -1,13 +1,9 @@
 import flask
 from flask import request, jsonify
-from puzzlesolver.puzzles.hanoi import Hanoi
+from puzzlesolver.puzzles import puzzleList
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-
-puzzleList = {
-    'hanoi': Hanoi
-}
 
 @app.route('/puzzles', methods=['GET'])
 def puzzles():
