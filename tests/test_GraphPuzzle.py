@@ -29,9 +29,9 @@ def testMoveGeneral():
     assert len(puzzle1.generateMoves(movetype='legal')) == 2
     assert len(puzzle1.generateMoves(movetype='undo')) == 2
 
-    assert puzzle1.graph == puzzle2.graph
-    assert puzzle1.graph == puzzle3.graph
-    assert puzzle1.graph == puzzle4.graph
+    assert puzzle1.connected(puzzle2)
+    assert puzzle1.connected(puzzle3)
+    assert puzzle1.connected(puzzle4)
 
 def testInvalid():
     pytest.raises(Exception, GraphPuzzle)
@@ -58,7 +58,6 @@ def testCase1():
     p2 = GraphPuzzle(2)
     p1.setMove(p2)
     p3 = GraphPuzzle(3)
-    p3.setMove(p1)
     p3.setMove(p1, movetype='bi')
-    assert p1.graph == p2.graph
-    assert p1.graph == p3.graph
+    assert p1.connected(p2)
+    assert p1.connected(p3)

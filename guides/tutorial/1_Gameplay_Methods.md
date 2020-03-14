@@ -35,15 +35,4 @@ def primitive(self, **kwargs):
         return PuzzleValue.SOLVABLE 
     return PuzzleValue.UNDECIDED
 ```
-#### `doMove(self, move, **kwargs)`
-Do move produces a puzzle after the move was executed onto the puzzle. It's important to generate an entirely new game with the move executed so that it works with the solver (which we will delve into later). 
-```python
-def doMove(self, move, **kwargs):
-    if move not in self.generateMoves(): raise ValueError
-    newPuzzle = Hanoi()
-    stacks = deepcopy(self.stacks)
-    stacks[move[1]].append(stacks[move[0]].pop())
-    newPuzzle.stacks = stacks
-    return newPuzzle        
-```
-[Next step: Implementing generateMoves](2_Moves.md)
+[Next step: Implementing the Move functions](2_Moves.md)

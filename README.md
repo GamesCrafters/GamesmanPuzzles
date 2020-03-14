@@ -1,5 +1,6 @@
 # GamesmanPuzzles
 [![Build Status](https://travis-ci.com/GamesCrafters/GamesmanPuzzles.svg?branch=master)](https://travis-ci.com/GamesCrafters/GamesmanPuzzles)
+[![codecov](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles/branch/master/graph/badge.svg)](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles)
 
 A Python Package dedicated to Puzzle solving. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
 ## Getting Started
@@ -18,7 +19,7 @@ to play a puzzle of Towers of Hanoi
 
 ## Exploring GamesmanPuzzles
 Tips for exploring this repository:
-1. [Follow the guides and learn how to create a puzzle and a solver!](guide)
+1. [Follow the guides and learn how to create a puzzle and a solver!](guides)
 2. Definitely explore the [puzzlesolver](puzzlesolver) in depth. There should be a README.md in every important directory to explain what each file does.
 3. Understand what a [puzzle tree](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree) is. 
 

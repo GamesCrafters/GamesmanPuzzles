@@ -96,3 +96,8 @@ class GraphPuzzle(Puzzle):
         if isinstance(child, GraphPuzzle):
             child = child.name
         self.graph.remove_edges_from([(self.name, child), (child, self.name)])
+
+    def connected(self, child):
+        if not isinstance(child, GraphPuzzle):
+            raise ValueError("Not a GraphPuzzle")
+        return self.graph == child.graph
