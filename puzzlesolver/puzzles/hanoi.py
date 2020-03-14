@@ -10,7 +10,7 @@ from ..puzzleplayer import PuzzlePlayer
 
 class Hanoi(Puzzle):
 
-    variants = {i : GeneralSolver for i in range(10)}
+    variants = {str(i) : GeneralSolver for i in range(10)}
 
     def __init__(self, size=3, **kwargs):
         self.size = size
