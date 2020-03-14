@@ -13,11 +13,10 @@ class GeneralSolver(Solver):
 **```__init__(self, **kwargs)```**
 
 We initialize the dictionaries used to store the values and remoteness of the positions.
-
 ```python
-def __init__(self, **kwargs):
-    self.values = {}
+def __init__(self, puzzle, **kwargs):
     self.remoteness = {}
+    self.puzzle = puzzle
 ```
 
 **```getRemoteness(self, puzzle, **kwargs)```**
@@ -25,9 +24,19 @@ def __init__(self, **kwargs):
 This is just a function used to help the PuzzlePlayer find the remoteness of the position
 ```python
 def getRemoteness(self, puzzle, **kwargs):
-    self.solve(puzzle)
     if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
     return PuzzleValue.UNSOLVABLE
 ```
+
+**```getValue(self, puzzle, **kwargs)```**
+
+This is a function that gets the value of the puzzle after its already solved
+```python
+def getValue(self, puzzle, **kwargs):
+    remoteness = self.getRemoteness(puzzle, **kwargs)
+    if remoteness == PuzzleValue.UNSOLVABLE: return PuzzleValue.UNSOLVABLE
+    return PuzzleValue.SOLVABLE
+```
+Note that in the official `GeneralSolver`, there is no method for `getValue`, however it is defined in the `Solver` class. This is because `getValue` only relies on the function `getRemoteness` and doesn't require any other solver attributes, meaning we can make `getValue` be part of the abstraction.  
 
 [Next Step: Implementing the Solver Methods](6_Solver_Methods.md)
