@@ -11,7 +11,7 @@ class Solver:
         """
         raise NotImplementedError
 
-    def solve(self, **kwargs):
+    def solve(self, *args, **kwargs):
         """Solves the puzzle initialized in the init function
         """
         raise NotImplementedError
