@@ -15,8 +15,8 @@ def testSimple():
         backwardChildren=[undo], 
         primitive=PuzzleValue.SOLVABLE)
 
-    solver = GeneralSolver()
-    solver.solve(sol)
+    solver = GeneralSolver(sol)
+    solver.solve()
     assert solver.getRemoteness(undo) == 1
     assert solver.getRemoteness(sol) == 0
     assert solver.getRemoteness(bi) == 1
