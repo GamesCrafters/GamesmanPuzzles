@@ -75,8 +75,8 @@ class Hanoi(Puzzle):
             if string != "":
                 stack = [int(x) for x in string.split("_")]
                 puzzle.stacks.append(stack)
+                variantid -= len(stack)
             else: puzzle.stacks.append([])
-            variantid -= len(stack)
         if variantid != 0: raise ValueError("Invalid variant")
         return puzzle
     
