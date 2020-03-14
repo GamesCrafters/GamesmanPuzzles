@@ -4,7 +4,7 @@
 class Puzzle:
     
     # Intializer
-    def __init__(self, variantid=None, **kwargs):
+    def __init__(self, **kwargs):
         pass
 
     # Gameplay methods
