@@ -94,15 +94,24 @@ class Puzzle:
         """
         return self.__class__.__name__
 
-    # Methods and attributes for solver
+    # Methods and attributes for Server
     """A dictionary with the following
-    - variantId as the key
+    - variantId as the string key
     - A Solver class object as the value
 
     This dictionary is meant to store Solvers for the web server to interact with.
     See Hanoi for a dict comprehension example
     """
-    variants = {}
+    variants = {}        
+
+    @classmethod
+    def generateStartPosition(cls, variantid, **kwargs):
+        """Returns a Puzzle object containing the start position.
+        
+        Outputs:
+            - Puzzle object
+        """
+        raise NotImplementedError
 
     @classmethod
     def deserialize(cls, puzzleid, variantid, **kwargs):
@@ -124,3 +133,29 @@ class Puzzle:
             String Puzzle
         """
         raise NotImplementedError
+
+    @classmethod
+    def validate(cls, puzzleid, variantid, **kwargs):
+        """Checks if the puzzleid fits the rules set for the puzzle, as
+        well as fits the variantid as well
+        
+        Inputs:
+            - puzzleid: 
+            - variantid: 
+        """
+        raise NotImplementedError
+
+    def generateMovePositions(self, movetype="legal", **kwargs):
+        """Generate an iterable of puzzles with all moves fitting movetype
+        executed.
+
+        Inputs:
+            -- movetype: The type of move to generate the puzzles
+        
+        Outputs:
+            -- Iterable of puzzles 
+        """
+        puzzles = []
+        for move in self.generateMoves(movetype=movetype, **kwargs):
+            puzzles.append((move, self.doMove(move)))
+        return puzzles

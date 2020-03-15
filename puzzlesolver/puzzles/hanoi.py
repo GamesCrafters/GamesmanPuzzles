@@ -5,22 +5,28 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 from copy import deepcopy
 from .puzzle import Puzzle
 from ..util import *
-from ..solvers import GeneralSolver
+from ..solvers import *
 from ..puzzleplayer import PuzzlePlayer
 
 class Hanoi(Puzzle):
 
-    variants = {str(i) : GeneralSolver for i in range(10)}
+    variants = {str(i) : PickleSolverWrapper for i in range(1, 11)}
 
     def __init__(self, size=3, **kwargs):
-        self.size = size
-        if not isinstance(self.size, int): raise ValueError 
+        if not isinstance(size, int): raise ValueError 
         self.stacks = [
-            list(range(self.size, 0, -1)),
+            list(range(size, 0, -1)),
             [],
             []
         ]
     
+    @property
+    def variant(self):
+        size = 0
+        for stack in self.stacks:
+            size += len(stack)
+        return str(size)
+
     def __key(self):
         return (str(self.stacks))
 
@@ -31,16 +37,16 @@ class Hanoi(Puzzle):
         return str(self.stacks)
 
     def getName(self):
-        return 'Hanoi' + str(self.size)
+        return 'Hanoi' + self.variant
 
     def primitive(self, **kwargs):
-        if self.stacks[2] == list(range(self.size, 0, -1)):
+        if self.stacks[2] == list(range(int(self.variant), 0, -1)):
             return PuzzleValue.SOLVABLE 
         return PuzzleValue.UNDECIDED
 
     def doMove(self, move, **kwargs):
         if move not in self.generateMoves(): raise ValueError
-        newPuzzle = Hanoi(size=self.size)
+        newPuzzle = Hanoi(size=int(self.variant))
         stacks = deepcopy(self.stacks)
         stacks[move[1]].append(stacks[move[0]].pop())
         newPuzzle.stacks = stacks
@@ -57,27 +63,30 @@ class Hanoi(Puzzle):
         return moves
 
     def generateSolutions(self, **kwargs):
-        newPuzzle = Hanoi(size=self.size)
+        newPuzzle = Hanoi(size=int(self.variant))
         newPuzzle.stacks = [
             [],
             [],
-            list(range(self.size, 0, -1))
+            list(range(int(self.variant), 0, -1))
         ]
         return [newPuzzle]
 
     @classmethod
-    def deserialize(cls, puzzleid="3_2_1--", variantid=3, **kwargs):
+    def generateStartPosition(cls, variantid, **kwargs):
+        if not isinstance(variantid, str): raise TypeError("Invalid variantid")
+        if variantid not in Hanoi.variants: raise IndexError("Out of bounds variantid")
+        return Hanoi(size=int(variantid))
+                  
+    @classmethod
+    def deserialize(cls, puzzleid, **kwargs):
         puzzle = Hanoi()
-        stacks = puzzleid.split("-")
-        if len(stacks) != 3: raise ValueError("Invalid puzzleid")
         puzzle.stacks = []
+        stacks = puzzleid.split("-")
         for string in stacks:
             if string != "":
                 stack = [int(x) for x in string.split("_")]
                 puzzle.stacks.append(stack)
-                variantid -= len(stack)
             else: puzzle.stacks.append([])
-        if variantid != 0: raise ValueError("Invalid variant")
         return puzzle
     
     def serialize(self, **kwargs):
@@ -85,6 +94,24 @@ class Hanoi(Puzzle):
         for stack in self.stacks:
             result.append("_".join(str(x) for x in stack))
         return "-".join(result)
+
+    @classmethod
+    def validate(cls, puzzleid, variantid, **kwargs):
+        if not isinstance(variantid, str): raise PuzzleException("Invalid variantid")
+        if variantid not in cls.variants: raise PuzzleException("Out of bounds variantid")
+        p = cls.deserialize(puzzleid)
+        if p.variant != variantid: raise PuzzleException("variantid doesn't match puzzleid")
+        if not p.isLegalPosition(): raise PuzzleException("puzzleid is not a valid puzzle")
+                
+    def isLegalPosition(self):
+        unique = set()
+        for stack in self.stacks:
+            if stack != sorted(stack, reverse=True):
+                return False
+            unique.update(stack)
+        if len(unique) != int(variantid) or min(unique) != 1 or max(unique) != int(variantid):
+            return False
+        return True
 
 if __name__ == "__main__":
     puzzle = Hanoi(size=3)
