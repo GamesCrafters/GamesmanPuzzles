@@ -17,5 +17,5 @@ def testSerialization():
         puzzle = Hanoi(size=i)
         solver = GeneralSolver(puzzle=puzzle)
         solver.solve()
-        new_puzzle = Hanoi.deserialize(puzzle.serialize(), i)
+        new_puzzle = Hanoi.deserialize(puzzle.serialize())
         assert hash(puzzle) == hash(new_puzzle)
