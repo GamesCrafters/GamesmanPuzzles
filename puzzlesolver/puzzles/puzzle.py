@@ -85,7 +85,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
-    # Method for PickleSolverWrapper
+    # Attributes for PickleSolverWrapper
     def getName(self, **kwargs):
         """Returns the name of the Puzzle.
 
@@ -93,7 +93,7 @@ class Puzzle:
             String name
         """
         return self.__class__.__name__
-
+    
     # Methods and attributes for Server
     """A dictionary with the following
     - variantId as the string key
@@ -103,6 +103,10 @@ class Puzzle:
     See Hanoi for a dict comprehension example
     """
     variants = {}        
+
+    @property
+    def variant(self):
+        raise NotImplementedError
 
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
@@ -143,19 +147,32 @@ class Puzzle:
             - puzzleid: 
             - variantid: 
         """
-        raise NotImplementedError
+        if not isinstance(variantid, str): raise PuzzleException("Invalid variantid")
+        if variantid not in cls.variants: raise PuzzleException("Out of bounds variantid")
+        p = cls.deserialize(puzzleid)
+        if p.variant != variantid: raise PuzzleException("variantid doesn't match puzzleid")
+        if not p.isLegalPosition(): raise PuzzleException("puzzleid is not a valid puzzle")
 
     def generateMovePositions(self, movetype="legal", **kwargs):
         """Generate an iterable of puzzles with all moves fitting movetype
         executed.
 
         Inputs:
-            -- movetype: The type of move to generate the puzzles
+            - movetype: The type of move to generate the puzzles
         
         Outputs:
-            -- Iterable of puzzles 
+            - Iterable of puzzles 
         """
         puzzles = []
         for move in self.generateMoves(movetype=movetype, **kwargs):
             puzzles.append((move, self.doMove(move)))
         return puzzles
+    
+    def isLegalPostion(self):
+        """Checks if the Puzzle is valid given the rules.
+        For example, Hanoi cannot have a larger ring on top of a smaller one.
+
+        Outputs:
+            - True if Puzzle is valid, else False
+        """
+        raise NotImplementedError 
