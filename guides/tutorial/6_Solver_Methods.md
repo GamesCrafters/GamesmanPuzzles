@@ -10,7 +10,7 @@ In the case when our position already exists in memory or have already calculate
 
 ```python
 def solve(self, puzzle, **kwargs):
-    if hash(puzzle) in self.values: return self.values
+    if hash(puzzle) in self.values: return self.values[hash(puzzle)]
 ```
 
 ### 2. Breadth algorithm
