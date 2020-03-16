@@ -6,7 +6,7 @@ Let's review how moves work in the puzzle tree. Below is a graph with the number
 </p>
 
 ### Move types
-We'll define five types of moves for each node:
+We'll define five types of moves for each node. Let (*a*,*b*) represent a move from Puzzle *a* to Puzzle *b*.
 - **Forward**: All moves from a Puzzle P to another Puzzle Q if there exists a Legal move from P to Q, **but** there doesn't exist a Legal move from Q to P.  
     - Examples: (1,2), (3,1)
 - **Bidirectional**: All moves from a Puzzle P to another Puzzle Q if there exists a Legal move from P to Q **and** there exists a Legal move from Q to P.
