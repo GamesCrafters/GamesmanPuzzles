@@ -24,7 +24,7 @@ def __init__(self, **kwargs):
 #### `__str__(self, **kwargs)`
 The string representation of the puzzle will help visualize the state of our stacks on our PuzzlePlayer interface. For a quick visual, we'll be using the string representation of the lists we used.
 ```python
-def __str__(self):
+def __str__(self, **kwargs):
     return str(self.stacks)
 ```
 #### `primitive(self, **kwargs)`
