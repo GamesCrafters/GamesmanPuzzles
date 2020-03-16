@@ -94,14 +94,6 @@ class Hanoi(Puzzle):
         for stack in self.stacks:
             result.append("_".join(str(x) for x in stack))
         return "-".join(result)
-
-    @classmethod
-    def validate(cls, puzzleid, variantid, **kwargs):
-        if not isinstance(variantid, str): raise PuzzleException("Invalid variantid")
-        if variantid not in cls.variants: raise PuzzleException("Out of bounds variantid")
-        p = cls.deserialize(puzzleid)
-        if p.variant != variantid: raise PuzzleException("variantid doesn't match puzzleid")
-        if not p.isLegalPosition(): raise PuzzleException("puzzleid is not a valid puzzle")
                 
     def isLegalPosition(self):
         unique = set()
@@ -109,7 +101,7 @@ class Hanoi(Puzzle):
             if stack != sorted(stack, reverse=True):
                 return False
             unique.update(stack)
-        if len(unique) != int(variantid) or min(unique) != 1 or max(unique) != int(variantid):
+        if len(unique) != int(self.variant) or min(unique) != 1 or max(unique) != int(self.variant):
             return False
         return True
 

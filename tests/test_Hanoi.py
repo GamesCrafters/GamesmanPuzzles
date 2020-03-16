@@ -19,3 +19,14 @@ def testSerialization():
         solver.solve()
         new_puzzle = Hanoi.deserialize(puzzle.serialize())
         assert hash(puzzle) == hash(new_puzzle)
+
+def testValidation():
+    invalid_puzzle = "1_2_3--"
+    valid_puzzle = "3_2_1--"
+    blank_puzzle = ""
+    weird_input = "123__"
+    pytest.raises(PuzzleException, Hanoi.validate, blank_puzzle, "3")
+    pytest.raises(PuzzleException, Hanoi.validate, weird_input, "3")
+    pytest.raises(PuzzleException, Hanoi.validate, invalid_puzzle, "3")
+    pytest.raises(PuzzleException, Hanoi.validate, valid_puzzle, "4")
+    Hanoi.validate(valid_puzzle, "3")

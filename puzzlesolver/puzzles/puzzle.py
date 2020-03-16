@@ -1,5 +1,6 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
+from ..util import PuzzleException
 
 class Puzzle:
     
@@ -118,12 +119,14 @@ class Puzzle:
         raise NotImplementedError
 
     @classmethod
-    def deserialize(cls, puzzleid, variantid, **kwargs):
-        """Returns a Puzzle object based on puzzleid and
-        variantid
+    def deserialize(cls, puzzleid, **kwargs):
+        """Returns a Puzzle object based on puzzleid
 
         Example: puzzleid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
+
+        Inputes:
+            puzzleid - String id from puzzle, serialize() must be able to generate it
 
         Outputs:
             Puzzle object based on puzzleid and variantid
@@ -149,9 +152,10 @@ class Puzzle:
         """
         if not isinstance(variantid, str): raise PuzzleException("Invalid variantid")
         if variantid not in cls.variants: raise PuzzleException("Out of bounds variantid")
-        p = cls.deserialize(puzzleid)
+        try: p = cls.deserialize(puzzleid)
+        except: raise PuzzleException("puzzleid is not a valid puzzle") 
         if p.variant != variantid: raise PuzzleException("variantid doesn't match puzzleid")
-        if not p.isLegalPosition(): raise PuzzleException("puzzleid is not a valid puzzle")
+        if not p.isLegalPosition(): raise PuzzleException("puzzleid is not a valid puzzle {}".format(str(p.stacks)))
 
     def generateMovePositions(self, movetype="legal", **kwargs):
         """Generate an iterable of puzzles with all moves fitting movetype
