@@ -1,4 +1,4 @@
-# Puzzle Prerequisites:
+# Puzzle Prerequisites
 This guide will teach you how to make a Puzzle object based on the Puzzle class. This guide will assume that you are already familiar with Python 3.
 
 ## Initialize files
