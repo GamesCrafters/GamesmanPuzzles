@@ -155,7 +155,7 @@ class Puzzle:
         try: p = cls.deserialize(puzzleid)
         except: raise PuzzleException("puzzleid is not a valid puzzle") 
         if p.variant != variantid: raise PuzzleException("variantid doesn't match puzzleid")
-        if not p.isLegalPosition(): raise PuzzleException("puzzleid is not a valid puzzle {}".format(str(p.stacks)))
+        if not p.isLegalPosition(): raise PuzzleException("puzzleid is not a valid puzzle")
 
     def generateMovePositions(self, movetype="legal", **kwargs):
         """Generate an iterable of puzzles with all moves fitting movetype
