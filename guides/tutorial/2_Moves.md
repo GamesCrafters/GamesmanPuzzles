@@ -36,7 +36,7 @@ def generateMoves(self, movetype="all", **kwargs):
 ```
 
 #### `doMove(self, move, **kwargs)`
-Do move produces a puzzle after **ANY** move was executed onto the puzzle. This means that it accepts undo moves as well. In Hanoi, there are no undo moves (???), but in a Puzzle like Peg Solitare, `doMove` must also be able to undo captures. It's also important to generate an entirely new game with the move executed so that it works with the solver. 
+Do move produces a puzzle after **ANY** move was executed onto the puzzle. This means that it accepts **backward** moves as well. In Hanoi, there are no backward moves, but in a Puzzle like Peg Solitare, `doMove` must also be able to **backward** moves like undoing captures. It's also important to generate an entirely new game with the move executed so that it works with the solver. 
 ```python
 def doMove(self, move, **kwargs):
     if move not in self.generateMoves(): raise ValueError
