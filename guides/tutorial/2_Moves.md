@@ -14,7 +14,7 @@ We'll define five types of moves for each node. Let (*a*,*b*) represent a move f
 - **Backward**: All moves from a Puzzle P to another Puzzle Q if there **doesn't** exist a Legal move from P to Q **but** there exists a Legal move from Q to P.
     - Examples: (1,3), (2,1)
 - **Legal:** Any move possible from the current Puzzle based on the Puzzle rules (i.e capturing and moving pawns forward in Chess). Also equivalent to the combination of Forward and Bidirectional moves
-- **Undo:** Equivalent to the combination of Bidirectional and Backward moves.
+- **Undo:** Equivalent to the union of Bidirectional and Backward moves.
 
 The GeneralSolver makes good use of Undo moves when solving position values and calculating remoteness (more on that in the Solver guide). Hanoi only has Bidirectional moves, so there isn't a need to generate Forward or Backward moves, however, when considering other Puzzles such as Peg solitare (which jumps over and captures adjacent pieces), make sure that `generateMoves` returns moves for every `movetype`.
 
@@ -36,7 +36,7 @@ def generateMoves(self, movetype="all", **kwargs):
 ```
 
 #### `doMove(self, move, **kwargs)`
-Do move produces a puzzle after **ANY** move was executed onto the puzzle. This means that it accepts undo moves as well. In Hanoi, there are no undo moves, but in a Puzzle like Peg Solitare, `doMove` must also be able to undo captures. It's also important to generate an entirely new game with the move executed so that it works with the solver. 
+Do move produces a puzzle after **ANY** move was executed onto the puzzle. This means that it accepts **backward** moves as well. In Hanoi, there are no backward moves, but in a Puzzle like Peg Solitare, `doMove` must also be able to **backward** moves like undoing captures. It's also important to generate an entirely new game with the move executed so that it works with the solver. 
 ```python
 def doMove(self, move, **kwargs):
     if move not in self.generateMoves(): raise ValueError
