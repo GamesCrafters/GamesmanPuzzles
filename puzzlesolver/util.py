@@ -1,4 +1,4 @@
 class PuzzleValue:
     SOLVABLE = "SOLVABLE"
-    UNSOLVABLE = "UNSOLVABLE"
+    UNSOLVABLE = float("inf")
     UNDECIDED = "UNDECIDED"
