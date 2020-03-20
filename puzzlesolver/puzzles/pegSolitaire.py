@@ -1,8 +1,8 @@
 from copy import deepcopy
-from puzzlesolver.util import *
-from puzzlesolver.puzzles.puzzle import Puzzle
-from puzzlesolver.solvers.generalsolver import GeneralSolver
-from puzzlesolver.puzzleplayer import PuzzlePlayer
+from .puzzle import Puzzle
+from ..util import *
+from ..solvers import GeneralSolver
+from ..puzzleplayer import PuzzlePlayer
 
 class Peg(Puzzle):
     def __init__(self, **kwargs):
@@ -255,12 +255,7 @@ class Peg(Puzzle):
         return solutions
 
 ### _________ Possible Print _______________
-def printPuzzle(turn, primitive, solver, solve, remoteness, puzzle):
-    print("Turn:          ", turn), 
-    print("Primitive:     ", primitive)
-    if solver:
-        print("Solver:        ", solve)
-        print("Remoteness:    ", remoteness)
+def printPuzzle(puzzle):
     #Print Puzzle
     print("Puzzle: ")
     space = "                    "
@@ -282,6 +277,6 @@ def printPuzzle(turn, primitive, solver, solve, remoteness, puzzle):
 board = [[1],[0,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]]
 board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
 
-PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), printPuzzleInfo=printPuzzle).play()
+PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=True, printPuzzleInfo=printPuzzle).play()
 # PuzzlePlayer(Peg()).play()
 

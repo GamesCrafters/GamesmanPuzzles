@@ -4,23 +4,17 @@ This class provides a TUI for interaction with Solvers and Puzzles
 from .util import *
 
 #Default to print Puzzle Info
-def printInfo(turn, primitive, solver, solve, remoteness, puzzle):
-    print("Turn:          ", turn), 
-    print("Primitive:     ", primitive)
-    if solver:
-        print("Solver:        ", solve)
-        print("Remoteness:    ", remoteness)
+def printPuzzle(puzzle):
     print(str(puzzle))
-    return turn + 1
 
 class PuzzlePlayer:
 
-    def __init__(self, puzzle, solver=None, auto=False, printPuzzleInfo=printInfo):
+    def __init__(self, puzzle, solver=None, auto=False, printPuzzleInfo=printPuzzle):
         self.base = puzzle
         self.puzzle = puzzle
         self.solver = solver
         self.auto = auto
-        self.printInfo = printPuzzleInfo
+        self.printPuzzle = printPuzzleInfo
         if solver:
             self.solver.solve(self.puzzle)
 
@@ -29,10 +23,20 @@ class PuzzlePlayer:
         self.puzzle = self.base
         self.turn = 0
         while self.puzzle.primitive() == PuzzleValue.UNDECIDED:
-            self.turn = self.printInfo(self.turn, self.puzzle.primitive(), self.solver, self.solver.solve(self.puzzle), self.solver.getRemoteness(self.puzzle), self.puzzle)
+            self.printInfo()
+            self.printPuzzle(self.puzzle)
             self.printTurn()
-        self.turn = self.printInfo(self.turn, self.puzzle.primitive(), self.solver, self.solver.solve(self.puzzle), self.solver.getRemoteness(self.puzzle), self.puzzle)
+        self.printInfo()
+        self.printPuzzle(self.puzzle)
         print("Game Over")
+
+    def printInfo(self):
+        print("Turn:          ", self.turn), 
+        print("Primitive:     ", self.puzzle.primitive())
+        if self.solver:
+            print("Solver:        ", self.solver.solve(self.puzzle))
+            print("Remoteness:    ", self.solver.getRemoteness(self.puzzle))
+        self.turn += 1
 
     # Prompts for input and moves
     def printTurn(self):
