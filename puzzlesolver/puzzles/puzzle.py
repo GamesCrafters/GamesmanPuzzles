@@ -16,6 +16,12 @@ class Puzzle:
         """
         return "No String representation available"
 
+    def printInfo(self):
+        """Prints the string representation of the puzzle. 
+        Can be custom defined"""
+
+        print(str(self))
+
     def primitive(self, **kwargs):
         """If the Puzzle is at an endstate, return GameValue.WIN or GameValue.LOSS
         else return GameValue.UNDECIDED
