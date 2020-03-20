@@ -2,46 +2,54 @@
 
 from .puzzle import Puzzle
 from ..util import *
+import networkx as nx
 
 class GraphPuzzle(Puzzle):
 
-    solutions = {}
-    unique_names = {}
-
-    def __init__(self, 
-                name=None,
-                variantid=0,
-                primitive=PuzzleValue.UNDECIDED,
-                biChildren=[],
-                forwardChildren=[],
-                backwardChildren=[],
+    def __init__(self, name,
+                value=PuzzleValue.UNDECIDED,
                 **kwargs):
+        if name == None: raise ValueError("Name cannot be None")
+        if not PuzzleValue.contains(value): raise ValueError("Not a valid value")
         self.name = name
-        self.variantid = variantid
-        self.value = primitive
-        self.biChildren = set() 
-        self.forwardChildren = set()
-        self.backwardChildren = set()
+        self.value = value
+
+        self.graph = nx.DiGraph()
+        self.graph.add_node(self.name, value=value, obj=self)
+        self.solutions = set([self]) if value == PuzzleValue.SOLVABLE else set()
+
+    def _addChild(self, child, value=None):
+        if isinstance(child, GraphPuzzle):
+            if self.graph != child.graph:
+                if child.name == self.name: raise ValueError("Cannot have move to self")
+                intersection = set(child.graph) & set(self.graph)
+                for node in intersection:
+                    if child.graph.nodes[node] != self.graph.nodes[node]:
+                        raise ValueError("Contradictory values on node {}".format(node))
+                if nx.symmetric_difference(child.graph.subgraph(intersection), 
+                    self.graph.subgraph(intersection)):
+                    raise ValueError("Intersection between graphs contain contradictory edges")
+                self.graph.update(child.graph)
+                self.solutions.update(child.solutions)
+                for node in self.graph:
+                    if 'obj' in self.graph.nodes[node]:
+                        puzzle = self.graph.nodes[node]['obj']
+                        puzzle.graph = self.graph
+                        puzzle.solutions = self.solutions
+            value = child.value
+            child = child.name
+        self.graph.nodes[child]['value'] = value
+        return child
         
-        if variantid not in GraphPuzzle.unique_names: GraphPuzzle.unique_names[variantid] = set()
-        if variantid not in GraphPuzzle.solutions: GraphPuzzle.solutions[variantid] = set()
-
-        if self.name == None: raise ValueError("Name cannot be None")
-        if self.name in GraphPuzzle.unique_names[variantid]: 
-            raise ValueError("{} already exists: {}".format(self.name, GraphPuzzle.unique_names[variantid]))
-
-        GraphPuzzle.unique_names[variantid].add(self.name)
-        if primitive == PuzzleValue.SOLVABLE: GraphPuzzle.solutions[variantid].add(self)
-        
-        for child in biChildren:
-            self.addBiMove(child)
-        for child in forwardChildren:
-            self.addForwardMove(child)
-        for child in backwardChildren:
-            self.addBackwardMove(child)
-
     def __hash__(self):
         return hash(str(self.name))
+
+    def __eq__(self, puzzle):
+        return (isinstance(puzzle, GraphPuzzle) and 
+                self.name == puzzle.name and
+                self.value == puzzle.value and
+                self.graph == puzzle.graph and
+                self.solutions == puzzle.solutions)
 
     def __str__(self):
         return "Puzzle: {}".format(self.name)
@@ -50,71 +58,46 @@ class GraphPuzzle(Puzzle):
         return self.value
 
     def doMove(self, move, **kwargs):
-        child = move[0]
-        if child == "1": index = self.biChildren
-        elif child == "0": index = self.forwardChildren
-        elif child == "2": index = self.backwardChildren
-        else: raise ValueError("Not a valid move {}".format(child))
-        for i in index:
-            if str(i.name) == str(move[1:]): return i 
-        raise ValueError("Not a valid move")
+        if move not in self.generateMoves(): raise ValueError("Not a valid move")
+        if 'obj' in self.graph.nodes[move]: return self.graph.nodes[move]['obj']
+        newPuzzle = GraphPuzzle(move, self.graph.nodes[move]['value'])
+        newPuzzle.solutions = self.solutions
+        newPuzzle.graph = self.graph
+        self.graph.nodes[move]['obj'] = newPuzzle
+        return newPuzzle
 
     def generateMoves(self, movetype='all', **kwargs):
-        children = {}
-        if movetype == 'for' or movetype == 'legal' or movetype == 'all': 
-            children["0"] = self.forwardChildren
-        if movetype == 'bi' or movetype == 'undo' or movetype == 'legal' or movetype == 'all': 
-            children["1"] = self.biChildren
-        if movetype == 'back' or movetype == 'undo' or movetype == 'all': 
-            children["2"] = self.backwardChildren
-        moves = []
-        for i in children: 
-            moves.extend(["{}{}".format(i, j.name) for j in children[i]])
-        return moves
+        undo = set(self.graph.reverse(False)[self.name])
+        legal = set(self.graph[self.name]) 
+        if movetype == 'undo': return undo
+        if movetype == 'legal': return legal
+        if movetype == 'bi': return undo & legal
+        if movetype == 'for': return legal - (undo & legal)
+        if movetype == 'back': return undo - (undo & legal)
+        if movetype == 'all': return undo | legal
+        raise ValueError("Invalid movetype {}".format(movetype))
 
     def generateSolutions(self, **kwargs):
-        return GraphPuzzle.solutions[self.variantid]
+        return self.solutions
     
-    def addForwardMove(self, puzzle):
-        if puzzle in self.backwardChildren or self in puzzle.forwardChildren or\
-            self in puzzle.biChildren or puzzle in self.biChildren:
-            raise ValueError("Contradictory move")
-        if self.variantid != puzzle.variantid: raise ValueError("Variants must be the same")
-        self.forwardChildren.add(puzzle)
-        puzzle.backwardChildren.add(self)
-    
-    def addBackwardMove(self, puzzle):
-        if puzzle in self.forwardChildren or self in puzzle.backwardChildren or\
-            self in puzzle.biChildren or puzzle in self.biChildren:
-            raise ValueError("Contradictory move")
-        if self.variantid != puzzle.variantid: raise ValueError("Variants must be the same")
-        self.backwardChildren.add(puzzle)
-        puzzle.forwardChildren.add(self)
-    
-    def addBiMove(self, puzzle):
-        if puzzle in self.forwardChildren or self in puzzle.forwardChildren or\
-            self in puzzle.backwardChildren or puzzle in self.backwardChildren:
-            raise ValueError("Contradictory move")
-        if self.variantid != puzzle.variantid: raise ValueError("Variants must be the same")
-        self.biChildren.add(puzzle)
-        puzzle.biChildren.add(self)
-    
-    def removeMove(self, puzzle):
-        def remove(t, e):
-            try: t.remove(e)
-            except: pass
-        remove(self.forwardChildren, puzzle)
-        remove(self.biChildren, puzzle)
-        remove(self.backwardChildren, puzzle)
-        remove(puzzle.forwardChildren, self)
-        remove(puzzle.biChildren, self)
-        remove(puzzle.backwardChildren, self)
-    
-    @staticmethod
-    def variant_test(func):
-        def helper():
-            try: func()
-            finally: 
-                GraphPuzzle.solutions = {}
-                GraphPuzzle.unique_names = {}
-        return helper
+    def setMove(self, child, movetype="for"):
+        child = self._addChild(child)
+        if self.name == child: raise ValueError("Cannot make move to same state")
+        self.removeMove(child)
+        if movetype == "bi":
+            self.graph.add_edge(self.name, child)
+            self.graph.add_edge(child, self.name)
+        if movetype == "for":
+            self.graph.add_edge(self.name, child)
+        if movetype == "back":
+            self.graph.add_edge(child, self.name)
+
+    def removeMove(self, child):
+        if isinstance(child, GraphPuzzle):
+            child = child.name
+        self.graph.remove_edges_from([(self.name, child), (child, self.name)])
+
+    def connected(self, child):
+        if not isinstance(child, GraphPuzzle):
+            raise ValueError("Not a GraphPuzzle")
+        return self.graph == child.graph

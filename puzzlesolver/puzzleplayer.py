@@ -62,5 +62,7 @@ class PuzzlePlayer:
             self.solver.getRemoteness(self.puzzle.doMove(move)) : move 
             for move in self.puzzle.generateMoves(movetype="legal")
         }
+        if PuzzleValue.UNSOLVABLE in remotes:
+            del remotes[PuzzleValue.UNSOLVABLE]
         return remotes[min(remotes.keys())]
 
