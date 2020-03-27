@@ -3,14 +3,15 @@
 Our GeneralSolver uses a bottom to top BFS algorithm to classify positions of the puzzle. This guide assumes that you have checked out the following documentation for a [puzzle tree.](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree)
 
 ### Introduction
-The solve function is the core of all solvers in the GamesmanPuzzles and is used to classify positions of the puzzle. For this solver, we will use memoization and tree traversal.
+The `solve` function is the core of all solvers in the GamesmanPuzzles and is used to classify positions of the puzzle. For this solver, we will use memoization and tree traversal.
 
 ### 1. Memory search 
 In the case when our position already exists in memory or have already calculated this position, we just lookup the value using the hash of the puzzle.
 
 ```python
 def solve(self, puzzle, **kwargs):
-    if hash(puzzle) in self.values: return self.values
+    if hash(puzzle) in self.values: return self.values[hash(puzzle)]
+    # ...
 ```
 
 ### 2. Breadth algorithm
@@ -30,13 +31,15 @@ Splitting the algorithm into two separate parts:
 
 Step 1: (the ```helper``` function would be defined in Step 2, 3, & 4)
 ```python
-ends = puzzle.generateSolutions()
-for end in ends: 
-    self.values[hash(end)] = PuzzleValue.SOLVABLE
-    self.remoteness[hash(end)] = 0
-helper(self, ends)
-if hash(puzzle) not in self.values: self.values[hash(puzzle)] = PuzzleValue.UNSOLVABLE
-return self.values[hash(puzzle)]
+def solve(self, puzzle, **kwargs):
+    # continued...
+    ends = puzzle.generateSolutions()
+    for end in ends: 
+        self.values[hash(end)] = PuzzleValue.SOLVABLE
+        self.remoteness[hash(end)] = 0
+    helper(self, ends)
+    if hash(puzzle) not in self.values: self.values[hash(puzzle)] = PuzzleValue.UNSOLVABLE
+    return self.values[hash(puzzle)]
 ```
 
 Step 2, 3, & 4: 
