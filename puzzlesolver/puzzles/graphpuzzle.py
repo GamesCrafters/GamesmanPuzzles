@@ -1,6 +1,6 @@
 """This puzzle is meant for testing purposes"""
 
-from .puzzle import Puzzle
+from . import Puzzle
 from ..util import *
 import networkx as nx
 

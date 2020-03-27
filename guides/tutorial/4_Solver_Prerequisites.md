@@ -4,10 +4,10 @@ This next part of the tutorial will teach you how to make a custom solver follow
 ## Initialize files
 Create a **NEW** Python file and import the following:
 ```python
-from puzzlesolver.solvers.solver import Solver
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.hanoi import Hanoi
-from puzzlesolver.puzzleplayer import PuzzlePlayer
+from puzzlesolver.solvers import Solver
+from puzzlesolver.puzzles import Hanoi
+from puzzlesolver import PuzzlePlayer
 import queue as q
 ```
 
