@@ -10,6 +10,7 @@ class GeneralSolver(Solver):
     
     def getRemoteness(self, puzzle, **kwargs):
         """Returns remoteness of puzzle. Automatically solves if memory isn't set"""
+        if not self.remoteness: print("Warning: No memory found. Please make sure that `solve` was called.")
         if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
         return PuzzleValue.UNSOLVABLE
 
