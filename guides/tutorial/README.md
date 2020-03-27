@@ -1,2 +1,2 @@
 # Puzzle and Solver Guide
-This guide is meant for newcommers of the GamesmanPuzzles project to gain an intuition of how a Puzzle is solvedby implementing the puzzle of Hanoi as well as the GeneralSolver. We'll first implement the Puzzle, and later implement the Solver. Start by looking at the [Puzzle prerequisites](0_Puzzle_Prerequisites.md).
+This guide is meant for newcommers of the GamesmanPuzzles project to gain an intuition of how a Puzzle is solved by implementing the puzzle of Hanoi as well as the GeneralSolver. We'll first implement the Puzzle, and later implement the Solver. Start by looking at the [Puzzle prerequisites](0_Puzzle_Prerequisites.md).

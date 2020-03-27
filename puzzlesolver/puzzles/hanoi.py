@@ -3,7 +3,7 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
 from copy import deepcopy
-from .puzzle import Puzzle
+from . import Puzzle
 from ..util import *
 from ..solvers import *
 from ..puzzleplayer import PuzzlePlayer

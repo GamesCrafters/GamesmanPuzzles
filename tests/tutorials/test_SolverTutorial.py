@@ -1,7 +1,7 @@
-from puzzlesolver.solvers.solver import Solver
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.hanoi import Hanoi
-from puzzlesolver.puzzleplayer import PuzzlePlayer
+from puzzlesolver.solvers import Solver
+from puzzlesolver.puzzles import Hanoi
+from puzzlesolver import PuzzlePlayer
 import queue as q
 
 class GeneralSolver(Solver):
