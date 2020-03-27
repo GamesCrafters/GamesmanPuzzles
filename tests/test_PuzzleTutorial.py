@@ -2,7 +2,7 @@ import pytest
 
 from copy import deepcopy
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.puzzle import Puzzle
+from puzzlesolver.puzzles import Puzzle
 from puzzlesolver.solvers.generalsolver import GeneralSolver
 from puzzlesolver.puzzleplayer import PuzzlePlayer
 
