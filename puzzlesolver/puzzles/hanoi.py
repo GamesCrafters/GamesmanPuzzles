@@ -10,8 +10,6 @@ from ..puzzleplayer import PuzzlePlayer
 
 class Hanoi(Puzzle):
 
-    variants = {i : GeneralSolver for i in range(10)}
-
     def __init__(self, size=3, **kwargs):
         self.size = size
         if not isinstance(self.size, int): raise ValueError 
@@ -64,27 +62,6 @@ class Hanoi(Puzzle):
             list(range(self.size, 0, -1))
         ]
         return [newPuzzle]
-
-    @classmethod
-    def deserialize(cls, puzzleid="3_2_1--", variantid=3, **kwargs):
-        puzzle = Hanoi()
-        stacks = puzzleid.split("-")
-        if len(stacks) != 3: raise ValueError("Invalid puzzleid")
-        puzzle.stacks = []
-        for string in stacks:
-            if string != "":
-                stack = [int(x) for x in string.split("_")]
-                puzzle.stacks.append(stack)
-            else: puzzle.stacks.append([])
-            variantid -= len(stack)
-        if variantid != 0: raise ValueError("Invalid variant")
-        return puzzle
-    
-    def serialize(self, **kwargs):
-        result = []
-        for stack in self.stacks:
-            result.append("_".join(str(x) for x in stack))
-        return "-".join(result)
 
 if __name__ == "__main__":
     puzzle = Hanoi(size=3)
