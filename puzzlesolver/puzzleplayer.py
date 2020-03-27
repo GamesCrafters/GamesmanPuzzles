@@ -39,7 +39,7 @@ class PuzzlePlayer:
             move = self.generateBestMove()
             self.puzzle = self.puzzle.doMove(move)
         else:
-            moves = self.puzzle.generateMoves(movetype="legal")
+            moves = list(self.puzzle.generateMoves(movetype="legal"))
             print("Possible Moves:", moves)
             print("Enter Piece: ")
             index = int(input())
