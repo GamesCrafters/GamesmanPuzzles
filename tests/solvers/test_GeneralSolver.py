@@ -14,8 +14,8 @@ def testSimple():
     sol.setMove(bidirectional, movetype="bi")
     sol.setMove(backward, movetype="back")
 
-    solver = GeneralSolver()
-    solver.solve(sol)
+    solver = GeneralSolver(sol)
+    solver.solve()
 
     assert solver.getRemoteness(backward) == 1
     assert solver.getRemoteness(sol) == 0

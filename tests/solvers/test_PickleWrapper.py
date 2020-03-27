@@ -20,7 +20,7 @@ def testPickleWrapperGeneral():
         with tempfile.TemporaryDirectory() as directory:
             puzzle = Hanoi(size=i)
             solver = PickleSolverWrapper(puzzle=puzzle, path=directory, solver=GeneralSolver)
-            assert solver.solve(puzzle) == PuzzleValue.SOLVABLE
+            assert solver.getValue(puzzle) == PuzzleValue.SOLVABLE
             assert solver.getRemoteness(puzzle) == 2**i - 1
 
 def testPickleWrapper():

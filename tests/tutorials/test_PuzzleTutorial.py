@@ -50,6 +50,6 @@ class Hanoi(Puzzle):
 
 def testTutorial():
     puzzle = Hanoi()
-    solver = GeneralSolver()
-    solver.solve(puzzle)
+    solver = GeneralSolver(puzzle)
+    solver.solve()
     assert solver.getRemoteness(puzzle) == 7
