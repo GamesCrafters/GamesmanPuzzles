@@ -3,6 +3,8 @@
 Our GeneralSolver uses a bottom to top BFS algorithm to classify positions of the puzzle. This guide assumes that you have checked out the following documentation for a [puzzle tree.](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree)
 
 ### Introduction
+The `solve` function is the core of all solvers in the GamesmanPuzzles and is used to classify positions of the puzzle. For this solver, we will use memoization and tree traversal.
+
 Our GeneralSolver traverses the puzzle tree using the solve function. First, start with the function initalization:
 ```python
 def solve(self, **kwargs)
@@ -24,10 +26,12 @@ Splitting the algorithm into two separate parts:
 
 Step 1: (the ```helper``` function would be defined in Step 2, 3, & 4)
 ```python
-ends = self.puzzle.generateSolutions()
-for end in ends: 
-    self.remoteness[hash(end)] = 0
-helper(self, ends)
+def solve(self, puzzle, **kwargs):
+    # continued...
+    ends = puzzle.generateSolutions()
+    for end in ends: 
+        self.remoteness[hash(end)] = 0
+    helper(self, ends)
 ```
 
 Step 2, 3, & 4: 

@@ -1,9 +1,10 @@
 # Miscellaneous Functions
 Our GeneralSolver uses a bottom to top BFS algorithm to classify positions of the puzzle. This guide assumes that you have checked out the following documentation for a [puzzle tree.](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree)
 
-The following steps define functions to initialize the Solver object, as well as getting remoteness of the Puzzle after solving.
+The following steps will guide you to implement a custom solver following the Solver interface.
+Once finished, it will also allow you to query the remoteness of the solved puzzles.
 
-Initialize a new Solver object called GeneralSolver:
+Create GeneralSolver with the Solver interface called:
 ```python
 class GeneralSolver(Solver):
 ```

@@ -93,34 +93,3 @@ class Puzzle:
             String name
         """
         return self.__class__.__name__
-
-    # Methods and attributes for solver
-    """A dictionary with the following
-    - variantId as the key
-    - A Solver class object as the value
-
-    This dictionary is meant to store Solvers for the web server to interact with.
-    See Hanoi for a dict comprehension example
-    """
-    variants = {}
-
-    @classmethod
-    def deserialize(cls, puzzleid, variantid, **kwargs):
-        """Returns a Puzzle object based on puzzleid and
-        variantid
-
-        Example: puzzleid="3_2-1-" for Hanoi creates a Hanoi puzzle
-        with two stacks of discs ((3,2) and (1))
-
-        Outputs:
-            Puzzle object based on puzzleid and variantid
-        """
-        raise NotImplementedError
-
-    def serialize(self, **kwargs):
-        """Returns a serialized based on self
-
-        Outputs:
-            String Puzzle
-        """
-        raise NotImplementedError
