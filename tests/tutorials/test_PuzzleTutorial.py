@@ -2,23 +2,32 @@ import pytest
 
 from copy import deepcopy
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.Puzzle import Puzzle
-from puzzlesolver.solver.GeneralSolver import GeneralSolver
-from puzzlesolver.PuzzlePlayer import PuzzlePlayer
+from puzzlesolver.puzzles import Puzzle
+from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver import PuzzlePlayer
 
 class Hanoi(Puzzle):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.stacks = [[3, 2, 1], [], []]
 
     def __str__(self):
         return str(self.stacks)
 
-    def primitive(self):
+    def primitive(self, **kwargs):
         if self.stacks[2] == [3, 2, 1]:
-            return PuzzleValue.SOLVABLE
+            return PuzzleValue.SOLVABLE 
         return PuzzleValue.UNDECIDED
 
-    def generateMoves(self):
+    def doMove(self, move, **kwargs):
+        if move not in self.generateMoves(): raise ValueError
+        newPuzzle = Hanoi()
+        stacks = deepcopy(self.stacks)
+        stacks[move[1]].append(stacks[move[0]].pop())
+        newPuzzle.stacks = stacks
+        return newPuzzle    
+
+    def generateMoves(self, movetype="all", **kwargs):
+        if movetype=='for' or movetype=='back': return []
         moves = []
         for i, stack1 in enumerate(self.stacks):
             if not stack1: continue
@@ -27,17 +36,10 @@ class Hanoi(Puzzle):
                 if not stack2 or stack2[-1] > stack1[-1]: moves.append((i, j))
         return moves
 
-    def doMove(self, move):
-        newPuzzle = Hanoi()
-        stacks = deepcopy(self.stacks)
-        stacks[move[1]].append(stacks[move[0]].pop())
-        newPuzzle.stacks = stacks
-        return newPuzzle
-
     def __hash__(self):
         return hash(str(self.stacks))
 
-    def generateSolutions(self):
+    def generateSolutions(self, **kwargs):
         newPuzzle = Hanoi()
         newPuzzle.stacks = [
             [],
@@ -48,6 +50,6 @@ class Hanoi(Puzzle):
 
 def testTutorial():
     puzzle = Hanoi()
-    solver = GeneralSolver()
-    solver.solve(puzzle)
+    solver = GeneralSolver(puzzle)
+    solver.solve()
     assert solver.getRemoteness(puzzle) == 7

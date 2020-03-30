@@ -4,4 +4,5 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - pytest tests/*.py
+  - pytest --cov puzzlesolver
+  - bash <(curl -s https://codecov.io/bash) 
