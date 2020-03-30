@@ -1,9 +1,9 @@
 import flask
 from flask import request, jsonify, abort
 from puzzlesolver.puzzles import puzzleList
-from puzzlesolver.util import *
+from puzzlesolver.util import PuzzleException
 
-from werkzeug.exceptions import *
+from werkzeug.exceptions import InternalServerError
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False

@@ -3,12 +3,12 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
 from copy import deepcopy
-from . import Puzzle
+from . import ServerPuzzle
 from ..util import *
 from ..solvers import *
 from ..puzzleplayer import PuzzlePlayer
 
-class Hanoi(Puzzle):
+class Hanoi(ServerPuzzle):
 
     variants = {str(i) : PickleSolverWrapper for i in range(1, 11)}
 
