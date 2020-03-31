@@ -1,8 +1,8 @@
 from copy import deepcopy
-from .Puzzle import Puzzle
+from .puzzle import Puzzle
 from ..util import *
-from ..solver.GeneralSolver import GeneralSolver
-from ..PuzzlePlayer import PuzzlePlayer
+from ..solvers.picklesolverwrapper import PickleSolverWrapper
+from ..puzzleplayer import PuzzlePlayer
 
 ## TODO Fix swap
 class Npuzzle(Puzzle):
@@ -33,7 +33,9 @@ class Npuzzle(Puzzle):
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
 
-    def generateMoves(self):
+    def generateMoves(self, movetype='bi'):
+        if movetype == 'for':
+            return []
         return self.getAdjacent(self.position.index(0))
 
     def doMove(self, move):
@@ -72,4 +74,5 @@ class Npuzzle(Puzzle):
 
 
 if __name__ == "__main__":
-    PuzzlePlayer(Npuzzle(size=3), GeneralSolver()).play()
+    puzzle = Npuzzle(size=3)
+    PuzzlePlayer(puzzle, PickleSolverWrapper(puzzle=puzzle)).play()
