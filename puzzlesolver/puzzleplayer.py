@@ -3,18 +3,13 @@ This class provides a TUI for interaction with Solvers and Puzzles
 """
 from .util import *
 
-#Default to print Puzzle Info
-def printPuzzle(puzzle):
-    print(str(puzzle))
-
 class PuzzlePlayer:
 
-    def __init__(self, puzzle, solver=None, auto=False, printPuzzleInfo=printPuzzle):
+    def __init__(self, puzzle, solver=None, auto=False):
         self.base = puzzle
         self.puzzle = puzzle
         self.solver = solver
         self.auto = auto
-        self.printPuzzle = printPuzzleInfo
         if solver:
             self.solver.solve(self.puzzle)
 
@@ -24,10 +19,10 @@ class PuzzlePlayer:
         self.turn = 0
         while self.puzzle.primitive() == PuzzleValue.UNDECIDED:
             self.printInfo()
-            self.printPuzzle(self.puzzle)
+            self.puzzle.printInfo()
             self.printTurn()
         self.printInfo()
-        self.printPuzzle(self.puzzle)
+        self.puzzle.printInfo()
         print("Game Over")
 
     def printInfo(self):

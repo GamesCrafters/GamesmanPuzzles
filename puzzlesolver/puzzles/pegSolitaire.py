@@ -26,6 +26,29 @@ class Peg(Puzzle):
     def __str__(self, **kwargs):
         return str(self.board)
 
+    ### _________ Print Funcs _______________
+    def printInfo(self):
+        #Print Puzzle
+        print("Puzzle: ")
+        space = "                    "
+        for outer in range(5):
+            print(space, end="")
+            for inner in range(outer + 1):
+                print(str(self.board[outer][inner]) + "       ", end="")
+            print("")
+            temp = list(space)
+            temp = temp[:-4]
+            space = "".join(temp)
+            print(" " + space + " ", end="")
+            for inner2 in range(outer + 1):
+                print("[" + str(outer) + "," + str(inner2) + "]" + "   ", end="")
+            print("")
+
+    def getName(self, **kwargs):
+        return "Peg Solitaire"
+
+    # ________ End Print Funcs _________
+
     def primitive(self, **kwargs):
         if self.pins == 1:
             return PuzzleValue.SOLVABLE
@@ -254,29 +277,11 @@ class Peg(Puzzle):
                 solutions.append(newPuzzle)
         return solutions
 
-### _________ Possible Print _______________
-def printPuzzle(puzzle):
-    #Print Puzzle
-    print("Puzzle: ")
-    space = "                    "
-    for outer in range(5):
-        print(space, end="")
-        for inner in range(outer + 1):
-            print(str(puzzle.board[outer][inner]) + "       ", end="")
-        print("")
-        temp = list(space)
-        temp = temp[:-4]
-        space = "".join(temp)
-        print(" " + space + " ", end="")
-        for inner2 in range(outer + 1):
-            print("[" + str(outer) + "," + str(inner2) + "]" + "   ", end="")
-        print("")
                 
-
 
 board = [[1],[0,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]]
 board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
 
-PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=True, printPuzzleInfo=printPuzzle).play()
+PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=False).play()
 # PuzzlePlayer(Peg()).play()
 
