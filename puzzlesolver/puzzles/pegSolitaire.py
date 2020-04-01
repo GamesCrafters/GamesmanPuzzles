@@ -1,5 +1,5 @@
 from copy import deepcopy
-from .puzzle import Puzzle
+from ._models import Puzzle
 from ..util import *
 from ..solvers import GeneralSolver
 from ..puzzleplayer import PuzzlePlayer
@@ -282,6 +282,7 @@ class Peg(Puzzle):
 board = [[1],[0,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]]
 board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
 
-PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=False).play()
+puzzle = Peg(board=board)
+PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle), auto=False).play()
 # PuzzlePlayer(Peg()).play()
 
