@@ -11,7 +11,7 @@ class PuzzlePlayer:
         self.solver = solver
         self.auto = auto
         if solver:
-            self.solver.solve(self.puzzle)
+            self.solver.solve()
 
     # Starts the PuzzlePlayer
     def play(self):
@@ -29,7 +29,7 @@ class PuzzlePlayer:
         print("Turn:          ", self.turn), 
         print("Primitive:     ", self.puzzle.primitive())
         if self.solver:
-            print("Solver:        ", self.solver.solve(self.puzzle))
+            print("Solver:        ", self.solver.getValue(self.puzzle))
             print("Remoteness:    ", self.solver.getRemoteness(self.puzzle))
         self.turn += 1
 
@@ -39,7 +39,7 @@ class PuzzlePlayer:
             move = self.generateBestMove()
             self.puzzle = self.puzzle.doMove(move)
         else:
-            moves = self.puzzle.generateMoves(movetype="legal")
+            moves = list(self.puzzle.generateMoves(movetype="legal"))
             print("Possible Moves:")
             for count, m in enumerate(moves):
                 print(str(count) + " -> " + str(m))
