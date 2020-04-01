@@ -35,7 +35,9 @@ class Puzzle:
         raise NotImplementedError
 
     def doMove(self, move, **kwargs):
-        """Given a valid move, returns a new Puzzle object with that move executed
+        """Given a valid move, returns a new Puzzle object with that move executed.
+        
+        NOTE: Must be able to take any move, including `undo` moves
 
         Inputs:
             move -- type defined by generateMoves
