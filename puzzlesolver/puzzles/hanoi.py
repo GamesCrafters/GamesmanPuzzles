@@ -10,6 +10,12 @@ from ..puzzleplayer import PuzzlePlayer
 
 class Hanoi(ServerPuzzle):
 
+    author = "Anthony Ling"
+    puzzle_name = "Tower of Hanoi"
+    description = """Move smaller discs ontop of bigger discs. 
+        Fill the rightmost stack."""
+    date_created = "April 2, 2020"
+
     variants = {str(i) : PickleSolverWrapper for i in range(1, 11)}
 
     def __init__(self, size=3, **kwargs):

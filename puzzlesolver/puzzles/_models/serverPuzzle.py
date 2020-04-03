@@ -1,10 +1,15 @@
 from ...util import *
 from . import Puzzle
-from dataclasses import dataclass
 
 class ServerPuzzle(Puzzle):
     
     # Methods and attributes for Server
+    # Descriptions
+    author = "N/A"
+    puzzle_name = "N/A"
+    description = "N/A"
+    date_created = "N/A"
+    
     """A dictionary with the following
     - variantId as the string key
     - A Solver class object as the value
@@ -18,15 +23,6 @@ class ServerPuzzle(Puzzle):
     def variant(self):
         raise NotImplementedError
     
-    @dataclass
-    class PuzzleDetails:
-        name: str
-        authors: str
-        description: str
-        date_added: str
-
-    details = PuzzleDetails("Hanoi", "Anthony Ling", "A puzzle", "May 27, 2020")
-
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
         """Returns a Puzzle object containing the start position.

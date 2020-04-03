@@ -1,7 +1,7 @@
 import flask
 from flask import request, jsonify, abort
-from puzzlesolver.puzzles import puzzleList
-from puzzlesolver.util import PuzzleException
+from .puzzles import puzzleList
+from .util import PuzzleException
 
 from werkzeug.exceptions import InternalServerError
 
@@ -38,12 +38,16 @@ def puzzles():
     }
     return format_response(response)
 
-@app.route('/puzzles/<puzzle_name>/', methods=['GET'])
-def puzzle(puzzle_name):
-    validate(puzzle_name)
+@app.route('/puzzles/<puzzle_id>/', methods=['GET'])
+def puzzle(puzzle_id):
+    validate(puzzle_id)
+    puzzle = puzzleList[puzzle_id]
     response = {
-        "puzzle name": puzzle_name,
-        "variants": list(puzzleList[puzzle_name].variants.keys())
+        "puzzle_id": puzzle_id,
+        "puzzle_name": puzzle.puzzle_name,
+        "description": puzzle.description,
+        "date_created": puzzle.date_created,
+        "variants": list(puzzle.variants.keys())
     }
     return format_response(response)
 
@@ -84,4 +88,5 @@ def handle_500(e):
 def handle_404(e):
     return format_response(str(e), "error")
 
-app.run()
+if __name__ == "__main__":
+    app.run()
