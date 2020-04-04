@@ -18,7 +18,7 @@ class Hanoi(ServerPuzzle):
         Fill the rightmost stack."""
     date_created = "April 2, 2020"
 
-    variants = {str(i) : PickleSolverWrapper for i in range(1, 11)}
+    variants = {str(i) : SqliteSolver for i in range(1, 11)}
 
     def __init__(self, size=3, **kwargs):
         if not isinstance(size, int): raise ValueError 
