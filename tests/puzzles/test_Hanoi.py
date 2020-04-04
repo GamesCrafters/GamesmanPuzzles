@@ -1,8 +1,9 @@
 import pytest
 import json
+import tempfile
 
 from puzzlesolver.puzzles import Hanoi
-from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver.solvers import GeneralSolver, sqlitesolver
 from puzzlesolver.util import *
 from puzzlesolver.server import app
 
@@ -36,6 +37,8 @@ def testValidation():
 
 def test_server_puzzle():
     client = app.test_client()
+
+    sqlitesolver.PATH = tempfile.mkdtemp()
 
     rv = client.get('/puzzles/hanoi/')
     d = json.loads(rv.data)
