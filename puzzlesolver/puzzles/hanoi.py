@@ -8,6 +8,8 @@ from ..util import *
 from ..solvers import *
 from ..puzzleplayer import PuzzlePlayer
 
+from hashlib import sha1
+
 class Hanoi(ServerPuzzle):
 
     author = "Anthony Ling"
@@ -24,7 +26,7 @@ class Hanoi(ServerPuzzle):
             list(range(size, 0, -1)),
             [],
             []
-        ]
+        ]   
     
     @property
     def variant(self):
@@ -33,11 +35,12 @@ class Hanoi(ServerPuzzle):
             size += len(stack)
         return str(size)
 
-    def __key(self):
-        return (str(self.stacks))
-
     def __hash__(self):
-        return hash(self.__key())
+        # We're being really lazy here and using built in hashlib functions.
+        # Can't use regular hash because those are random
+        h = sha1()
+        h.update(str(self.stacks).encode())
+        return int(h.hexdigest(), 16)
 
     def __str__(self):
         return str(self.stacks)
@@ -112,5 +115,5 @@ class Hanoi(ServerPuzzle):
         return True
 
 if __name__ == "__main__":
-    puzzle = Hanoi(size=3)
-    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle)).play()
+    puzzle = Hanoi(size=9)
+    PuzzlePlayer(puzzle, SqliteSolver(puzzle=puzzle)).play()
