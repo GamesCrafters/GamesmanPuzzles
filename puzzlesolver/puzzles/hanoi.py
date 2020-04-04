@@ -106,6 +106,7 @@ class Hanoi(ServerPuzzle):
                 
     def isLegalPosition(self):
         unique = set()
+        if len(self.stacks) != 3: raise PuzzleException("Number of stacks does not equal 3")
         for stack in self.stacks:
             if stack != sorted(stack, reverse=True):
                 return False
