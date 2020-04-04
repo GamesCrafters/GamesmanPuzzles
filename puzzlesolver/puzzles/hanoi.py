@@ -5,8 +5,10 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 from copy import deepcopy
 from . import Puzzle
 from ..util import *
-from ..solvers import GeneralSolver
+from ..solvers import SqliteSolver
 from ..puzzleplayer import PuzzlePlayer
+
+from hashlib import sha1
 
 class Hanoi(Puzzle):
 
@@ -17,13 +19,14 @@ class Hanoi(Puzzle):
             list(range(self.size, 0, -1)),
             [],
             []
-        ]
+        ]   
     
-    def __key(self):
-        return (str(self.stacks))
-
     def __hash__(self):
-        return hash(self.__key())
+        # We're being really lazy here and using built in hashlib functions.
+        # Can't use regular hash because those are random
+        h = sha1()
+        h.update(str(self.stacks).encode())
+        return int(h.hexdigest(), 16)
 
     def __str__(self):
         return str(self.stacks)
@@ -64,5 +67,5 @@ class Hanoi(Puzzle):
         return [newPuzzle]
 
 if __name__ == "__main__":
-    puzzle = Hanoi(size=3)
-    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle)).play()
+    puzzle = Hanoi(size=9)
+    PuzzlePlayer(puzzle, SqliteSolver(puzzle=puzzle)).play()
