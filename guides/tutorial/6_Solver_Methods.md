@@ -26,9 +26,9 @@ Splitting the algorithm into two separate parts:
 
 Step 1: (the ```helper``` function would be defined in Step 2, 3, & 4)
 ```python
-def solve(self, puzzle, **kwargs):
+def solve(self, **kwargs):
     # continued...
-    ends = puzzle.generateSolutions()
+    ends = self.puzzle.generateSolutions()
     for end in ends: 
         self.remoteness[hash(end)] = 0
     helper(self, ends)
@@ -72,7 +72,7 @@ def solve(self, **kwargs):
 ### Execute
 Once you have implemented all the required functions, change the last line of the Python file outside of the class to:
 ```python
-PuzzlePlayer(Hanoi(), solver=GeneralSolver()).play()
+PuzzlePlayer(Hanoi(), solver=GeneralSolver(Hanoi())).play()
 ```
 On your CLI, execute
 ```bash
