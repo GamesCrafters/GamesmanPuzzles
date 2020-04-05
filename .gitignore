@@ -128,5 +128,5 @@ dmypy.json
 *.pkl
 database*
 
-# tempfiles
+# Temp
 temp*

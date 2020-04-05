@@ -3,13 +3,13 @@ from ..util import *
 
 from sqlitedict import SqliteDict
 
-PATH = 'databases/'
+DATABASE_DIR = 'databases/'
 
 class SqliteSolver(GeneralSolver):
 
-    def __init__(self, puzzle, *args, path=PATH, **kwargs):
+    def __init__(self, puzzle, *args, dir_path=DATABASE_DIR, **kwargs):
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
-        self.path = '{}{}.sqlite'.format(path, puzzle.getName())
+        self.path = '{}{}.sqlite'.format(dir_path, puzzle.getName())
 
     def getRemoteness(self, puzzle, **kwargs):
         with SqliteDict(self.path) as self.remoteness:
