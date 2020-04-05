@@ -35,10 +35,7 @@ def testValidation():
     pytest.raises(PuzzleException, Hanoi.validate, valid_puzzle, "4")
     Hanoi.validate(valid_puzzle, "3")
 
-def test_server_puzzle(tmpdir):
-    client = app.test_client()
-    sqlitesolver.DATABASE_DIR = tmpdir
-
+def test_server_puzzle(client):
     rv = client.get('/puzzles/hanoi/')
     d = json.loads(rv.data)
 

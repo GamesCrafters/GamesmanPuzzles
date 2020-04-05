@@ -3,14 +3,16 @@ from ..util import *
 
 from sqlitedict import SqliteDict
 
-DATABASE_DIR = 'databases/'
-
 class SqliteSolver(GeneralSolver):
+    DATABASE_DIR = 'databases'
 
-    def __init__(self, puzzle, *args, dir_path=DATABASE_DIR, **kwargs):
+    def __init__(self, puzzle, *args, **kwargs):
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
-        self.path = '{}{}.sqlite'.format(dir_path, puzzle.getName())
 
+    @property
+    def path(self): 
+        return '{}/{}.sqlite'.format(SqliteSolver.DATABASE_DIR, self.puzzle.getName())
+        
     def getRemoteness(self, puzzle, **kwargs):
         with SqliteDict(self.path) as self.remoteness:
             if str(hash(puzzle)) in self.remoteness:
