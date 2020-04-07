@@ -1,9 +1,23 @@
 #These are general functions that you might want to implement if you are to use the PuzzlePlayer
+from ..util import *
 
 class Solver:
 
-    def solve(self, puzzle, **kwargs):
-        """Finds the value of the puzzle
+    def __init__(self, puzzle, **kwargs):
+        """Creates a Solver object initialized with puzzle
+
+        Inputs
+        puzzle -- the puzzle to be solved on
+        """
+        raise NotImplementedError
+
+    def solve(self, *args, **kwargs):
+        """Solves the puzzle initialized in the init function
+        """
+        raise NotImplementedError
+    
+    def getValue(self, puzzle, **kwargs):
+        """Returns solved value of the puzzle
 
         Inputs
         puzzle -- the puzzle in question
@@ -11,8 +25,10 @@ class Solver:
         Outputs:
         value of puzzle
         """
-        raise NotImplementedError
-    
+        remoteness = self.getRemoteness(puzzle, **kwargs)
+        if remoteness == PuzzleValue.UNSOLVABLE: return PuzzleValue.UNSOLVABLE
+        return PuzzleValue.SOLVABLE
+
     def getRemoteness(self, puzzle, **kwargs):
         """Finds the remoteness of the puzzle
 
@@ -22,4 +38,4 @@ class Solver:
         Outputs:
         remoteness of puzzle
         """
-        return "Not implemented :)"        
+        raise NotImplementedError      

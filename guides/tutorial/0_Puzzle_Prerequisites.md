@@ -18,9 +18,9 @@ Create a new Python file and import the following:
 ```python
 from copy import deepcopy
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.puzzle import Puzzle
-from puzzlesolver.solvers.generalsolver import GeneralSolver
-from puzzlesolver.puzzleplayer import PuzzlePlayer
+from puzzlesolver.puzzles import Puzzle
+from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver import PuzzlePlayer
 ```
 
 The rest of guide will implement the instance methods of this class.

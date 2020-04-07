@@ -8,5 +8,6 @@ def testGeneral():
     for i in range(5):
         puzzle = Hanoi(size=i)
         solver = GeneralSolver(puzzle=puzzle)
-        assert solver.solve(puzzle) == PuzzleValue.SOLVABLE
+        solver.solve()
+        assert solver.getValue(puzzle) == PuzzleValue.SOLVABLE
         assert solver.getRemoteness(puzzle) == 2**i - 1
