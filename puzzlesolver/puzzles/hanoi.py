@@ -12,6 +12,7 @@ from hashlib import sha1
 
 class Hanoi(ServerPuzzle):
 
+    puzzleid = 'hanoi'
     author = "Anthony Ling"
     puzzle_name = "Tower of Hanoi"
     description = """Move smaller discs ontop of bigger discs. 
