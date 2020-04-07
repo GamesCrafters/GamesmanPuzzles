@@ -24,7 +24,7 @@ The best way to start a pull request is to create a new branch.
 git pull # Update all branches
 git checkout -b <your-branch-name>
 ```
-There is no conventional branch naming system as of yet, but its best that the branch name is unique and nonambiguous.
+The conventional branch naming system is `<your_name>/<feature_name>`.
 
 After you make your changes, commit and push. As a nonspoken rule, **COMMIT WELL, PUSH OFTEN**. Making good commit messages allows others to understand your work, as well as pushing your changes allow others to see your work and comment on potential fixes.
 ```bash
