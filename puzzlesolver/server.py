@@ -3,6 +3,8 @@ from flask import request, jsonify, abort
 from .puzzles import puzzleList
 from .util import PuzzleException
 
+import os
+
 from werkzeug.exceptions import InternalServerError
 
 app = flask.Flask(__name__)
@@ -89,4 +91,9 @@ def handle_404(e):
     return format_response(str(e), "error")
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=9001)
+    host, port = '127.0.0.1', 9001
+    if 'GMP_HOST' in os.environ:
+        host = os.environ['GMP_HOST']
+    if 'GMP_PORT' in os.environ:
+        port = os.environ['GMP_PORT']
+    app.run(host=host, port=port)
