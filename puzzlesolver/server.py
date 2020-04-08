@@ -11,6 +11,12 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = False
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
+# Test your server puzzle
+def test_puzzle(puzzle):
+    global puzzleList
+    puzzleList = {puzzle.puzzleid: puzzle}
+    app.run()
+
 # Helper functions
 def validate(puzzle_name=None, variant_id=None, position=None):
     if puzzle_name == None:

@@ -1,8 +1,9 @@
 import pytest
 import json
+import tempfile
 
 from puzzlesolver.puzzles import Hanoi
-from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver.solvers import GeneralSolver, sqlitesolver
 from puzzlesolver.util import *
 from puzzlesolver.server import app
 
@@ -34,9 +35,7 @@ def testValidation():
     pytest.raises(PuzzleException, Hanoi.validate, valid_puzzle, "4")
     Hanoi.validate(valid_puzzle, "3")
 
-def test_server_puzzle():
-    client = app.test_client()
-
+def test_server_puzzle(client):
     rv = client.get('/puzzles/hanoi/')
     d = json.loads(rv.data)
 

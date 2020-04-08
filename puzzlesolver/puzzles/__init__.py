@@ -4,7 +4,7 @@ from .hanoi import Hanoi
 from .graphpuzzle import GraphPuzzle
 
 puzzleList = {
-    'hanoi': Hanoi
+    Hanoi.puzzleid: Hanoi
 }
 
 for puzzle in puzzleList.values():

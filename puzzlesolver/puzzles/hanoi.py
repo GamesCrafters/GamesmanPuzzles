@@ -12,6 +12,7 @@ from hashlib import sha1
 
 class Hanoi(ServerPuzzle):
 
+    puzzleid = 'hanoi'
     author = "Anthony Ling"
     puzzle_name = "Tower of Hanoi"
     description = """Move smaller discs ontop of bigger discs. 
@@ -106,6 +107,7 @@ class Hanoi(ServerPuzzle):
                 
     def isLegalPosition(self):
         unique = set()
+        if len(self.stacks) != 3: raise PuzzleException("Number of stacks does not equal 3")
         for stack in self.stacks:
             if stack != sorted(stack, reverse=True):
                 return False
