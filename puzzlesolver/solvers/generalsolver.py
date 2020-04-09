@@ -28,7 +28,8 @@ class GeneralSolver(Solver):
                 for move in puzzle.generateMoves('undo'):
                     nextPuzzle = puzzle.doMove(move)
                     if hash(nextPuzzle) not in self.remoteness:
-                        self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
+                        remoteness = self.remoteness[hash(puzzle)]
+                        self.remoteness[hash(nextPuzzle)] = remoteness + 1
                         queue.put(nextPuzzle)
                         
         ends = self.puzzle.generateSolutions()

@@ -37,17 +37,32 @@ class Hanoi(ServerPuzzle):
         return str(size)
 
     def __hash__(self):
-        # We're being really lazy here and using built in hashlib functions.
-        # Can't use regular hash because those are random
-        h = sha1()
-        h.update(str(self.stacks).encode())
-        return int(h.hexdigest(), 16)
+        # Assign discs to stack num
+        num_to_stack = {}
+        for entry in self.stacks[2]:
+            num_to_stack[entry] = 0
+
+        bigger_stack = 1 if max(self.stacks[0] + [0]) < max(self.stacks[1] + [0]) else 0
+        for entry in self.stacks[bigger_stack]:
+            num_to_stack[entry] = 1
+        
+        smaller_stack = 0 if bigger_stack == 1 else 1
+        for entry in self.stacks[smaller_stack]:
+            num_to_stack[entry] = 2
+        
+        # Compute hash
+        result = 0
+        multiply = 1
+        for i in range(1, int(self.variant) + 1):
+            result += num_to_stack[i] * multiply
+            multiply *= 3
+        return result
 
     def __str__(self):
         return str(self.stacks)
 
     def getName(self):
-        return 'Hanoi' + self.variant
+        return 'Hanoi'
 
     def primitive(self, **kwargs):
         if self.stacks[2] == list(range(int(self.variant), 0, -1)):
