@@ -2,9 +2,9 @@ import pytest
 
 from copy import deepcopy
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.puzzle import Puzzle
-from puzzlesolver.solvers.generalsolver import GeneralSolver
-from puzzlesolver.puzzleplayer import PuzzlePlayer
+from puzzlesolver.puzzles import Puzzle
+from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver import PuzzlePlayer
 
 class Hanoi(Puzzle):
     def __init__(self, **kwargs):
@@ -50,6 +50,6 @@ class Hanoi(Puzzle):
 
 def testTutorial():
     puzzle = Hanoi()
-    solver = GeneralSolver()
-    solver.solve(puzzle)
+    solver = GeneralSolver(puzzle)
+    solver.solve()
     assert solver.getRemoteness(puzzle) == 7

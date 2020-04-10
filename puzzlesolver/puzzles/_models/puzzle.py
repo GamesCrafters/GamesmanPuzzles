@@ -4,7 +4,7 @@
 class Puzzle:
     
     # Intializer
-    def __init__(self, variantid=None, **kwargs):
+    def __init__(self, **kwargs):
         pass
 
     # Gameplay methods
@@ -30,6 +30,7 @@ class Puzzle:
 
     def doMove(self, move, **kwargs):
         """Given a valid move, returns a new Puzzle object with that move executed.
+        Does nothing to the original Puzzle object
         
         NOTE: Must be able to take any move, including `undo` moves
 

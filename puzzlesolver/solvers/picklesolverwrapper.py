@@ -6,7 +6,7 @@ from copy import deepcopy
 
 class PickleSolverWrapper(Solver):
 
-    def __init__(self, puzzle=None, path="./databases", solver=GeneralSolver, **kwargs):
+    def __init__(self, puzzle, path="./databases", solver=GeneralSolver, **kwargs):
         Path(path).mkdir(parents=True, exist_ok=True)
         assert puzzle
         try:
@@ -16,9 +16,9 @@ class PickleSolverWrapper(Solver):
             f.close()
         except FileNotFoundError:
             print("WARNING: File not found, intializing new memory storage")
-            self.solver = solver()
+            self.solver = solver(puzzle)
             assert isinstance(self.solver, Solver), "Not a solver"
-            self.solver.solve(puzzle)
+            self.solver.solve()
             f = open(path + "/" + puzzle.getName() + ".pkl", 'wb')
             pickle.dump(self.solver, f)
             f.close()
