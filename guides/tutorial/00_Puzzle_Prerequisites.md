@@ -25,4 +25,4 @@ from puzzlesolver import PuzzlePlayer
 
 The rest of guide will implement the instance methods of this class.
 
-[Next step: Gameplay Methods](1_Gameplay_Methods.md)
+[Next step: Gameplay Methods](01_Gameplay_Methods.md)

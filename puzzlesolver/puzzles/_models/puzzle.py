@@ -1,14 +1,16 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
 from ...util import PuzzleException
+from abc import ABC, abstractmethod
 
-class Puzzle:
+class Puzzle(ABC):
     
     # Intializer
     def __init__(self, **kwargs):
         pass
 
     # Gameplay methods
+    @abstractmethod
     def __str__(self):
         """Returns the string representation of the puzzle.
         
@@ -17,6 +19,7 @@ class Puzzle:
         """
         return "No String representation available"
 
+    @abstractmethod
     def primitive(self, **kwargs):
         """If the Puzzle is at an endstate, return GameValue.WIN or GameValue.LOSS
         else return GameValue.UNDECIDED
@@ -29,6 +32,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
+    @abstractmethod
     def doMove(self, move, **kwargs):
         """Given a valid move, returns a new Puzzle object with that move executed.
         Does nothing to the original Puzzle object
@@ -43,6 +47,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
+    @abstractmethod
     def generateMoves(self, movetype="all", **kwargs):
         """Generate moves from self (including undos)
 
@@ -61,6 +66,7 @@ class Puzzle:
         raise NotImplementedError
 
     # Solver methods
+    @abstractmethod
     def __hash__(self):
         """Returns a hash of the puzzle.
         Requirements:
@@ -78,6 +84,7 @@ class Puzzle:
         """
         raise NotImplementedError
     
+    @abstractmethod
     def generateSolutions(self, **kwargs):
         """Returns a Iterable of Puzzle objects that are solved states
 

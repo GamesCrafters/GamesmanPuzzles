@@ -1,5 +1,6 @@
 from ...util import *
 from . import Puzzle
+from abc import abstractproperty, abstractclassmethod, abstractmethod
 
 class ServerPuzzle(Puzzle):
     
@@ -20,7 +21,7 @@ class ServerPuzzle(Puzzle):
     """
     variants = {}
 
-    @property
+    @abstractproperty
     def variant(self):
         """Returns a string defining the variant of this puzzleself.
 
@@ -28,7 +29,7 @@ class ServerPuzzle(Puzzle):
         """
         raise NotImplementedError
     
-    @classmethod
+    @abstractclassmethod
     def deserialize(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid
 
@@ -51,7 +52,8 @@ class ServerPuzzle(Puzzle):
         """
         return str(self)
     
-    def isLegalPostion(self):
+    @abstractmethod
+    def isLegalPosition(self):
         """Checks if the Puzzle is valid given the rules.
         For example, Hanoi cannot have a larger ring on top of a smaller one.
 
@@ -60,7 +62,7 @@ class ServerPuzzle(Puzzle):
         """
         raise NotImplementedError 
 
-    @classmethod
+    @abstractclassmethod
     def generateStartPosition(cls, variantid, **kwargs):
         """Returns a Puzzle object containing the start position.
         
