@@ -53,6 +53,7 @@ def puzzle(puzzle_id):
     response = {
         "puzzle_id": puzzle_id,
         "puzzle_name": puzzle.puzzle_name,
+        "author": puzzle.author,
         "description": puzzle.description,
         "date_created": puzzle.date_created,
         "variants": list(puzzle.variants.keys())
