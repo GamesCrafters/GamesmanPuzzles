@@ -1,12 +1,11 @@
 from collections.abc import MutableMapping
-from . import GeneralSolver
+from . import GeneralSolver, DATABASE_DIR
 from functools import partial
 import os
 
 from ..util import *
 
 class GZipSolver(GeneralSolver):
-    DATABASE_DIR = 'databases'
 
     def __init__(self, puzzle, *args, **kwargs):
         self.path = '{}/{}.txt'.format(DATABASE_DIR, puzzle.getName())
