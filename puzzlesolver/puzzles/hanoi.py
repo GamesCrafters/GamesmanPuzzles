@@ -5,7 +5,7 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import *
+from ..solvers.gzipsolver import GZipSolver
 from ..puzzleplayer import PuzzlePlayer
 
 from hashlib import sha1
@@ -19,7 +19,7 @@ class Hanoi(ServerPuzzle):
         Fill the rightmost stack."""
     date_created = "April 2, 2020"
 
-    variants = {str(i) : SqliteSolver for i in range(1, 11)}
+    variants = {str(i) : GZipSolver for i in range(1, 11)}
 
     def __init__(self, size=3, **kwargs):
         if not isinstance(size, int): raise ValueError 
@@ -62,7 +62,7 @@ class Hanoi(ServerPuzzle):
         return str(self.stacks)
 
     def getName(self):
-        return 'Hanoi'
+        return 'Test'
 
     def primitive(self, **kwargs):
         if self.stacks[2] == list(range(int(self.variant), 0, -1)):
@@ -132,5 +132,5 @@ class Hanoi(ServerPuzzle):
         return True
 
 if __name__ == "__main__":
-    puzzle = Hanoi(size=9)
-    PuzzlePlayer(puzzle, SqliteSolver(puzzle=puzzle)).play()
+    puzzle = Hanoi(size=3)
+    PuzzlePlayer(puzzle, GZipSolver(puzzle=puzzle)).play()

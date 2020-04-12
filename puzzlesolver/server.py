@@ -74,7 +74,6 @@ def puzzle_position(puzzle_name, variant_id, position):
     validate(puzzle_name, variant_id, position)
     p = puzzleList[puzzle_name].deserialize(position)
     s = puzzleList[puzzle_name].variants[variant_id](p)
-    s.solve()
     moves = p.generateMovePositions()
     response = {
         "position": p.serialize(),
