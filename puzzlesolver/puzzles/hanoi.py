@@ -62,7 +62,7 @@ class Hanoi(ServerPuzzle):
         return str(self.stacks)
 
     def getName(self):
-        return 'Test'
+        return 'Hanoi'
 
     def primitive(self, **kwargs):
         if self.stacks[2] == list(range(int(self.variant), 0, -1)):
@@ -132,5 +132,5 @@ class Hanoi(ServerPuzzle):
         return True
 
 if __name__ == "__main__":
-    puzzle = Hanoi(size=3)
+    puzzle = Hanoi(size=14)
     PuzzlePlayer(puzzle, GZipSolver(puzzle=puzzle)).play()

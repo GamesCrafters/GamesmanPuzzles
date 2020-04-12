@@ -11,7 +11,6 @@ class GZipSolver(GeneralSolver):
 
     def __init__(self, puzzle, *args, **kwargs):
         self.path = '{}/{}.txt'.format(DATABASE_DIR, puzzle.getName())
-        if not os.path.exists(self.path): open(self.path, 'w+')
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
 
     def getRemoteness(self, puzzle, *args, **kwargs):
@@ -30,6 +29,7 @@ class GZipSolver(GeneralSolver):
             self._write()
 
     def _read(self):
+        if not os.path.exists(self.path): open(self.path, 'w+')
         with open(self.path, 'r+b') as fo:
             cur_index = 0
             for chunk in iter(partial(fo.read, 2), b''):
