@@ -279,9 +279,9 @@ class Peg(Puzzle):
 
                 
 
-board = [[1],[0,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]]
+board = [[1],[1,1],[0,1,1],[1,1,1,1],[1,1,1,1,1]]
 board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
 
-PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=False).play()
+PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=True).play()
 # PuzzlePlayer(Peg()).play()
 

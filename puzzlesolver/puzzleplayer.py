@@ -42,7 +42,7 @@ class PuzzlePlayer:
             moves = self.puzzle.generateMoves(movetype="legal")
             print("Possible Moves:")
             for count, m in enumerate(moves):
-                print(str(count) + " -> " + str(m))
+                print("(" + str(count) + ") -> " + str(m))
             print("Enter Piece: ")
             index = int(input())
             if index >= len(moves):
