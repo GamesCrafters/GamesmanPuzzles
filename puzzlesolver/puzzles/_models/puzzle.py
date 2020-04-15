@@ -1,10 +1,11 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
+from ...util import PuzzleException
 
 class Puzzle:
     
     # Intializer
-    def __init__(self, variantid=None, **kwargs):
+    def __init__(self, **kwargs):
         pass
 
     # Gameplay methods
@@ -36,6 +37,7 @@ class Puzzle:
 
     def doMove(self, move, **kwargs):
         """Given a valid move, returns a new Puzzle object with that move executed.
+        Does nothing to the original Puzzle object
         
         NOTE: Must be able to take any move, including `undo` moves
 
@@ -90,7 +92,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
-    # Method for PickleSolverWrapper
+    # Built-in functions
     def getName(self, **kwargs):
         """Returns the name of the Puzzle.
 
@@ -98,3 +100,18 @@ class Puzzle:
             String name
         """
         return self.__class__.__name__
+
+    def generateMovePositions(self, movetype="legal", **kwargs):
+        """Generate an iterable of puzzles with all moves fitting movetype
+        executed.
+
+        Inputs:
+            - movetype: The type of move to generate the puzzles
+        
+        Outputs:
+            - Iterable of puzzles 
+        """
+        puzzles = []
+        for move in self.generateMoves(movetype=movetype, **kwargs):
+            puzzles.append((move, self.doMove(move)))
+        return puzzles

@@ -1,23 +1,25 @@
-from puzzlesolver.solvers.solver import Solver
 from puzzlesolver.util import *
-from puzzlesolver.puzzles.hanoi import Hanoi
-from puzzlesolver.puzzleplayer import PuzzlePlayer
+from puzzlesolver.solvers import Solver
+from puzzlesolver.puzzles import Hanoi
+from puzzlesolver import PuzzlePlayer
 import queue as q
 
 class GeneralSolver(Solver):
 
-    def __init__(self, **kwargs):
-        self.values = {}
+    def __init__(self, puzzle, **kwargs):
         self.remoteness = {}
+        self.puzzle = puzzle
     
     def getRemoteness(self, puzzle, **kwargs):
-        self.solve(puzzle)
         if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
         return PuzzleValue.UNSOLVABLE
 
-    def solve(self, puzzle, **kwargs):
-        if hash(puzzle) in self.values: return self.values[hash(puzzle)]
-        
+    def getValue(self, puzzle, **kwargs):
+        remoteness = self.getRemoteness(puzzle, **kwargs)
+        if remoteness == PuzzleValue.UNSOLVABLE: return PuzzleValue.UNSOLVABLE
+        return PuzzleValue.SOLVABLE
+
+    def solve(self, **kwargs):
         # BFS for remoteness classification
         def helper(self, puzzles):
             queue = q.Queue()
@@ -27,20 +29,16 @@ class GeneralSolver(Solver):
                 for move in puzzle.generateMoves():
                     nextPuzzle = puzzle.doMove(move)
                     if hash(nextPuzzle) not in self.remoteness:
-                        self.values[hash(nextPuzzle)] = PuzzleValue.SOLVABLE
                         self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
                         queue.put(nextPuzzle)
 
-        ends = puzzle.generateSolutions()
+        ends = self.puzzle.generateSolutions()
         for end in ends: 
-            self.values[hash(end)] = PuzzleValue.SOLVABLE
             self.remoteness[hash(end)] = 0
         helper(self, ends)
-        if hash(puzzle) not in self.values: self.values[hash(puzzle)] = PuzzleValue.UNSOLVABLE
-        return self.values[hash(puzzle)]
 
 def testTutorial():
     puzzle = Hanoi()
-    solver = GeneralSolver()
-    solver.solve(puzzle)
+    solver = GeneralSolver(Hanoi())
+    solver.solve()
     assert solver.getRemoteness(puzzle) == 7
