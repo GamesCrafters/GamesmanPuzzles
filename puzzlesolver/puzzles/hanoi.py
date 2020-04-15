@@ -65,4 +65,4 @@ class Hanoi(Puzzle):
 
 if __name__ == "__main__":
     puzzle = Hanoi(size=3)
-    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle)).play()
+    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle), bestmove=True).play()

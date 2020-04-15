@@ -1,6 +1,6 @@
 # GamesmanPuzzles
 [![Build Status](https://travis-ci.com/GamesCrafters/GamesmanPuzzles.svg?branch=master)](https://travis-ci.com/GamesCrafters/GamesmanPuzzles)
-[![codecov](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles/branch/dev/graph/badge.svg)](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles)
+[![codecov](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles/branch/mark%2fPuzzlePlayer/graph/badge.svg)](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles)
 
 A Python Package dedicated to Puzzle solving. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
 ## Getting Started
