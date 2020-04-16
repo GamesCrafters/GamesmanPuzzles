@@ -36,13 +36,13 @@ def testValidation():
     Hanoi.validate(valid_puzzle, "3")
 
 def test_server_puzzle(client):
-    rv = client.get('/puzzles/hanoi/')
+    rv = client.get('/hanoi/')
     d = json.loads(rv.data)
 
     assert d['response']['variants'] == list(Hanoi.variants.keys())
 
     def helper(code, variantid, remoteness):
-        rv = client.get('/puzzles/hanoi/{}/{}/'.format(variantid, code))
+        rv = client.get('/hanoi/{}/{}/'.format(variantid, code))
         d = json.loads(rv.data)
         assert d['response']['remoteness'] == remoteness
     

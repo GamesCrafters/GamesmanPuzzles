@@ -39,14 +39,14 @@ def format_response(response, status="available"):
     return jsonify(response)
 
 # Routes
-@app.route('/puzzles/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def puzzles():
     response = {
         "puzzles": list(puzzleList.keys())
     }
     return format_response(response)
 
-@app.route('/puzzles/<puzzle_id>/', methods=['GET'])
+@app.route('/<puzzle_id>/', methods=['GET'])
 def puzzle(puzzle_id):
     validate(puzzle_id)
     puzzle = puzzleList[puzzle_id]
@@ -60,20 +60,20 @@ def puzzle(puzzle_id):
     }
     return format_response(response)
 
-@app.route('/puzzles/<puzzle_name>/<variant_id>/', methods=['GET'])
-def puzzle_variant(puzzle_name, variant_id):
-    validate(puzzle_name, variant_id)
-    p = puzzleList[puzzle_name].generateStartPosition(variant_id)
+@app.route('/<puzzle_id>/<variant_id>/', methods=['GET'])
+def puzzle_variant(puzzle_id, variant_id):
+    validate(puzzle_id, variant_id)
+    p = puzzleList[puzzle_id].generateStartPosition(variant_id)
     response = {
         "starting_pos": p.serialize()
     }
     return format_response(response)
 
-@app.route('/puzzles/<puzzle_name>/<variant_id>/<position>/', methods=['GET'])
-def puzzle_position(puzzle_name, variant_id, position):
-    validate(puzzle_name, variant_id, position)
-    p = puzzleList[puzzle_name].deserialize(position)
-    s = puzzleList[puzzle_name].variants[variant_id](p)
+@app.route('/<puzzle_id>/<variant_id>/<position>/', methods=['GET'])
+def puzzle_position(puzzle_id, variant_id, position):
+    validate(puzzle_id, variant_id, position)
+    p = puzzleList[puzzle_id].deserialize(position)
+    s = puzzleList[puzzle_id].variants[variant_id](p)
     moves = p.generateMovePositions()
     response = {
         "position": p.serialize(),
