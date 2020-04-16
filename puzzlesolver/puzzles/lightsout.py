@@ -1,5 +1,5 @@
 from . import ServerPuzzle
-from ..solvers import SqliteSolver
+from ..solvers import SqliteSolver, gzipsolver
 from ..util import *
 
 class LightsOut(ServerPuzzle):
@@ -11,7 +11,7 @@ class LightsOut(ServerPuzzle):
     date_created = "April 6, 2020"
 
     variants = {
-        '2': SqliteSolver,
+        '2': gzipsolver.GZipSolver,
         '3': SqliteSolver,
         '4': SqliteSolver
     }
@@ -26,7 +26,7 @@ class LightsOut(ServerPuzzle):
         return str(len(self.grid))
 
     def __str__(self):
-        return "\n".join([str(int(row)) for row in self.grid])
+        return "\n".join([str([int(i) for i in row]) for row in self.grid])
     
     def primitive(self, **kwargs):
         for row in self.grid:
