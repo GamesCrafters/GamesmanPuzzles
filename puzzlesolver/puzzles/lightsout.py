@@ -16,7 +16,8 @@ class LightsOut(ServerPuzzle):
         '4': SqliteSolver
     }
 
-    def __init__(self, variant=3, **kwargs):
+    def __init__(self, variant='3', **kwargs):
+        variant = int(variant)
         self.grid = [[True for _ in range(variant)] for _ in range(variant)]
         self.size = variant
 
@@ -25,7 +26,7 @@ class LightsOut(ServerPuzzle):
         return str(len(self.grid))
 
     def __str__(self):
-        return "/n".join([str(row)for row in self.grid])
+        return "\n".join([str(int(row)) for row in self.grid])
     
     def primitive(self, **kwargs):
         for row in self.grid:
@@ -36,11 +37,13 @@ class LightsOut(ServerPuzzle):
     def doMove(self, move, **kwargs):
         from copy import deepcopy
         x, y = move[0], move[1]
-        puzzle = LightsOut()
+        puzzle = LightsOut(variant=str(self.size))
         puzzle.grid = deepcopy(self.grid)
-        for i in range(max(x - 1, 0), min(len(self.grid), x + 1)):
-            for j in range(max(y - 1, 0), min(len(self.grid), y + 1)):
-                puzzle.grid[i][j] = not puzzle.grid[i][j]
+        for i in range(max(x - 1, 0), min(self.size, x + 2)):
+            puzzle.grid[y][i] = not puzzle.grid[y][i]
+        for j in range(max(y - 1, 0), min(self.size, y + 2)):
+            puzzle.grid[j][x] = not puzzle.grid[j][x]
+        puzzle.grid[x][y] = not puzzle.grid[x][y]
         return puzzle
 
     def generateMoves(self, movetype="all", **kwargs):
@@ -60,17 +63,21 @@ class LightsOut(ServerPuzzle):
         return [puzzle]
 
     @classmethod
+    def generateStartPosition(cls, variantid, **kwargs):
+        variant = int(variantid)
+        if variant == 2: position = '1001'
+        else: raise Exception("Not done yet")
+        return cls.deserialize(position)
+
+    @classmethod
     def deserialize(cls, position, **kwargs):
-        length, variant = len(position), int(len(position) ** (1/2))
+        variant = int(len(position) ** (1/2))
         puzzle = cls(variant=variant)
         puzzle.grid = []
-        row = []
-        while length > 0:
-            row.append(position[len(position) - length])
-            if len(row) == variant:
-                puzzle.grid.append(row)
-                row = []
-            length-=1
+        for i in range(variant):
+            row = position[i*variant:(i+1)*variant]
+            row = [bool(int(i)) for i in row]
+            puzzle.grid.append(row)
         return puzzle
 
     def serialize(self, **kwargs):
