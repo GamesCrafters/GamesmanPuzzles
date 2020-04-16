@@ -1,17 +1,16 @@
-from . import GeneralSolver
+from . import GeneralSolver, DATABASE_DIR
 from ..util import *
 
 from sqlitedict import SqliteDict
 
 class SqliteSolver(GeneralSolver):
-    DATABASE_DIR = 'databases'
 
     def __init__(self, puzzle, *args, **kwargs):
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
 
     @property
     def path(self): 
-        return '{}/{}.sqlite'.format(SqliteSolver.DATABASE_DIR, self.puzzle.getName())
+        return '{}/{}.sqlite'.format(DATABASE_DIR, self.puzzle.getName())
         
     def getRemoteness(self, puzzle, **kwargs):
         with SqliteDict(self.path) as self.remoteness:
