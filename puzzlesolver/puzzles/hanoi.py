@@ -88,10 +88,10 @@ class Hanoi(ServerPuzzle):
         return Hanoi(size=int(variantid))
                   
     @classmethod
-    def deserialize(cls, puzzleid, **kwargs):
+    def deserialize(cls, positionid, **kwargs):
         puzzle = Hanoi()
         puzzle.stacks = []
-        stacks = puzzleid.split("-")
+        stacks = positionid.split("-")
         for string in stacks:
             if string != "":
                 stack = [int(x) for x in string.split("_")]
@@ -105,14 +105,17 @@ class Hanoi(ServerPuzzle):
             result.append("_".join(str(x) for x in stack))
         return "-".join(result)
                 
-    def isLegalPosition(self):
+    @classmethod
+    def isLegalPosition(cls, positionid, variantid=None, **kwargs):
+        try: puzzle = cls.deserialize(positionid)
+        except: raise PuzzleException("Position is invalid")
         unique = set()
-        if len(self.stacks) != 3: raise PuzzleException("Number of stacks does not equal 3")
-        for stack in self.stacks:
+        if len(puzzle.stacks) != 3: raise PuzzleException("Number of stacks does not equal 3")
+        for stack in puzzle.stacks:
             if stack != sorted(stack, reverse=True):
                 return False
             unique.update(stack)
-        if len(unique) != int(self.variant) or min(unique) != 1 or max(unique) != int(self.variant):
+        if len(unique) != int(puzzle.variant) or min(unique) != 1 or max(unique) != int(puzzle.variant):
             return False
         return True
 
