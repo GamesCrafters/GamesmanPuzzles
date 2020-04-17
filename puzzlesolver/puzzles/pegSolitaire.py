@@ -1,10 +1,21 @@
 from copy import deepcopy
-from .puzzle import Puzzle
+from .puzzle import ServerPuzzle
 from ..util import *
 from ..solvers import GeneralSolver
 from ..puzzleplayer import PuzzlePlayer
 
-class Peg(Puzzle):
+class Peg(ServerPuzzle):
+
+    puzzleid = 'pegSolitaire'
+    author = "Mark Presten"
+    puzzle_name = "Peg Solitaire"
+    description = """Jump over a peg with another, removing it from the board.
+        Have one peg remaining by end of the game."""
+    date_created = "April 15, 2020"
+
+    variants = {"Triangle"}
+
+
     def __init__(self, **kwargs):
         if len(kwargs) == 1:
             for key,value in kwargs.items():
@@ -25,6 +36,10 @@ class Peg(Puzzle):
 
     def __str__(self, **kwargs):
         return str(self.board)
+
+    @property
+    def variant(self):
+        return "Triangle"
 
     ### _________ Print Funcs _______________
     def printInfo(self):
@@ -267,6 +282,62 @@ class Peg(Puzzle):
     def __hash__(self):
         return hash(str(self.board))
 
+    @classmethod
+    def generateStartPosition(cls, variantid, **kwargs):
+        if not isinstance(variantid, str): raise TypeError("Invalid variantid")
+        if variantid not in Peg.variants: raise IndexError("Out of bounds variantid")
+        return Peg(board=[[0],[1,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]])
+
+    @classmethod
+    def deserialize(cls, positionid, **kwargs):
+        """Returns a Puzzle object based on positionid
+
+        Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
+        with two stacks of discs ((3,2) and (1))
+
+        Inputs:
+            positionid - String id from puzzle, serialize() must be able to generate it
+
+        Outputs:
+            Puzzle object based on puzzleid and variantid
+        """
+        puzzle = Peg()
+        out = []
+        temp = []
+        for i in s:
+            if i == '_':
+                out.append(temp)
+                temp = []
+                continue
+            temp.append(int(i))
+        puzzle.board = out
+        return puzzle
+
+    def serialize(self, **kwargs):
+        """Returns a serialized based on self
+
+        Outputs:
+            String Puzzle
+        """
+        s = ""
+        check = True
+        for outer in range(5):
+            for inner in range(outer + 1):
+                s += str(self.board[outer][inner])
+            s += "_"
+        return s
+    
+    def isLegalPostion(self):
+        """Checks if the Puzzle is valid given the rules.
+        For example, Hanoi cannot have a larger ring on top of a smaller one.
+
+        Outputs:
+            - True if Puzzle is valid, else False
+        """
+        if self.pins == 15:
+            return False
+        return True
+
     def generateSolutions(self, **kwargs):
         solutions = []
         for outer in range(5):
@@ -279,9 +350,8 @@ class Peg(Puzzle):
 
                 
 
-board = [[1],[1,1],[0,1,1],[1,1,1,1],[1,1,1,1,1]]
-board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
-
-PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=True).play()
+# board = [[1],[1,1],[0,1,1],[1,1,1,1],[1,1,1,1,1]]
+# board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
+# PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=True).play()
 # PuzzlePlayer(Peg()).play()
 
