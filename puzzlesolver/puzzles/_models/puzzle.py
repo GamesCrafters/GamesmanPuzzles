@@ -1,6 +1,5 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
-from ...util import PuzzleException
 from abc import ABC, abstractmethod
 
 class Puzzle(ABC):
@@ -101,6 +100,12 @@ class Puzzle(ABC):
             String name
         """
         return self.__class__.__name__
+
+    def printInfo(self):
+        """Prints the string representation of the puzzle. 
+        Can be custom defined"""
+
+        print(str(self))
 
     def generateMovePositions(self, movetype="legal", **kwargs):
         """Generate an iterable of puzzles with all moves fitting movetype
