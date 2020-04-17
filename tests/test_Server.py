@@ -13,7 +13,7 @@ def client():
         yield client
 
 def test_default_path(client):
-    rv = client.get('/puzzles/')
+    rv = client.get('/')
     d = json.loads(rv.data)
     for puzzle in d['response']['puzzles']:
         assert puzzle in puzzleList
