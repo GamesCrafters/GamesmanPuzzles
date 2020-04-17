@@ -39,15 +39,10 @@ class PuzzlePlayer:
             move = self.generateBestMove()
             self.puzzle = self.puzzle.doMove(move)
         else:
-<<<<<<< HEAD
             moves = self.puzzle.generateMoves(movetype="legal")
             print("Possible Moves:")
             for count, m in enumerate(moves):
                 print("(" + str(count) + ") -> " + str(m))
-=======
-            moves = list(self.puzzle.generateMoves(movetype="legal"))
-            print("Possible Moves:", moves)
->>>>>>> d666e340aa815ce8aa6084d734f812e419458108
             print("Enter Piece: ")
             index = int(input())
             if index >= len(moves):

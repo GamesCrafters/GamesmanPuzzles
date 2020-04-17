@@ -34,10 +34,4 @@ class GeneralSolver(Solver):
         ends = self.puzzle.generateSolutions()
         for end in ends: 
             self.remoteness[hash(end)] = 0
-<<<<<<< HEAD
         helper(self, ends)
-        if hash(puzzle) not in self.values: self.values[hash(puzzle)] = PuzzleValue.UNSOLVABLE
-        return self.values[hash(puzzle)]
-=======
-        helper(self, ends)
->>>>>>> d666e340aa815ce8aa6084d734f812e419458108
