@@ -1,7 +1,7 @@
 from copy import deepcopy
-from .puzzle import ServerPuzzle
+from . import ServerPuzzle
 from ..util import *
-from ..solvers import GeneralSolver
+from ..solvers import GeneralSolver, SqliteSolver
 from ..puzzleplayer import PuzzlePlayer
 
 class Peg(ServerPuzzle):
@@ -13,8 +13,7 @@ class Peg(ServerPuzzle):
         Have one peg remaining by end of the game."""
     date_created = "April 15, 2020"
 
-    variants = {"Triangle"}
-
+    variants = {"Triangle": SqliteSolver}
 
     def __init__(self, **kwargs):
         if len(kwargs) == 1:
@@ -327,7 +326,7 @@ class Peg(ServerPuzzle):
             s += "_"
         return s
     
-    def isLegalPostion(self):
+    def isLegalPosition(self):
         """Checks if the Puzzle is valid given the rules.
         For example, Hanoi cannot have a larger ring on top of a smaller one.
 
@@ -348,10 +347,7 @@ class Peg(ServerPuzzle):
                 solutions.append(newPuzzle)
         return solutions
 
-                
-
 # board = [[1],[1,1],[0,1,1],[1,1,1,1],[1,1,1,1,1]]
 # board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
 # PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=True).play()
 # PuzzlePlayer(Peg()).play()
-
