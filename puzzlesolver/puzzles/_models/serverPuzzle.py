@@ -86,7 +86,9 @@ class ServerPuzzle(Puzzle):
             if variantid not in cls.variants: raise PuzzleException("Out of bounds variantid")
         if positionid is not None:
             try: p = cls.deserialize(positionid)
-            except Exception as e: raise PuzzleException("position is not a valid puzzle") 
+            except Exception as e: 
+                print(e)
+                raise PuzzleException("position is not a valid puzzle") 
             if variantid is not None and p.variant != variantid: 
                 raise PuzzleException("variantid doesn't match puzzleid")
             if not p.isLegalPosition(): raise PuzzleException("position is not a valid puzzle")
