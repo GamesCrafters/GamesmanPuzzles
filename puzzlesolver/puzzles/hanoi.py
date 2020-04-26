@@ -20,7 +20,7 @@ class Hanoi(ServerPuzzle):
     date_created = "April 2, 2020"
 
     variants = {str(i) : GZipSolver for i in range(1, 15)}
-    test_variants = {str(i) : GZipSolver for i in range(1, 3)}
+    test_variants = {str(i) : GZipSolver for i in range(3, 0, -1)}
 
     def __init__(self, size=3, **kwargs):
         if not isinstance(size, int): raise ValueError 
