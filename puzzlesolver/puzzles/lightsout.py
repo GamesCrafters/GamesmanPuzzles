@@ -12,8 +12,6 @@ class LightsOut(ServerPuzzle):
 
     variants = {
         '2': gzipsolver.GZipSolver,
-        '3': SqliteSolver,
-        '4': SqliteSolver
     }
 
     def __init__(self, variant='3', **kwargs):
