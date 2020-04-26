@@ -1,5 +1,5 @@
 from collections.abc import MutableMapping
-from . import GeneralSolver, DATABASE_DIR
+from . import GeneralSolver
 from functools import partial
 import os
 
@@ -7,8 +7,8 @@ from ..util import *
 
 class GZipSolver(GeneralSolver):
 
-    def __init__(self, puzzle, *args, **kwargs):
-        self.path = '{}/{}.txt'.format(DATABASE_DIR, puzzle.getName())
+    def __init__(self, puzzle, *args, dir_path='databases', **kwargs):
+        self.path = '{}/{}.txt'.format(dir_path, puzzle.getName())
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
 
     def getRemoteness(self, puzzle, *args, **kwargs):
