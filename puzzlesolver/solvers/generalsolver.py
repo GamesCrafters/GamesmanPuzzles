@@ -19,19 +19,16 @@ class GeneralSolver(Solver):
         positions with values and remoteness
         - If position already exists in memory, returns its value
         """        
-        # BFS for remoteness classification
-        def helper(self, puzzles):
-            queue = q.Queue()
-            for puzzle in puzzles: queue.put(puzzle)
-            while not queue.empty():
-                puzzle = queue.get()
-                for move in puzzle.generateMoves('undo'):
-                    nextPuzzle = puzzle.doMove(move)
-                    if hash(nextPuzzle) not in self.remoteness:
-                        self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
-                        queue.put(nextPuzzle)
-                        
-        ends = self.puzzle.generateSolutions()
-        for end in ends: 
-            self.remoteness[hash(end)] = 0
-        helper(self, ends)
+        solutions, queue = self.puzzle.generateSolutions(), q.Queue()
+        for solution in solutions: 
+            self.remoteness[hash(solution)] = 0
+            queue.put(solution)
+
+        # BFS for remoteness classification                        
+        while not queue.empty():
+            puzzle = queue.get()
+            for move in puzzle.generateMoves('undo'):
+                nextPuzzle = puzzle.doMove(move)
+                if hash(nextPuzzle) not in self.remoteness:
+                    self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
+                    queue.put(nextPuzzle)
