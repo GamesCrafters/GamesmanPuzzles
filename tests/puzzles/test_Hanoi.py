@@ -1,6 +1,5 @@
 import pytest
 import json
-import tempfile
 
 from puzzlesolver.puzzles import Hanoi
 from puzzlesolver.solvers import GeneralSolver, sqlitesolver
