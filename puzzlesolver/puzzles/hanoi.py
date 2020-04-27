@@ -109,9 +109,9 @@ class Hanoi(ServerPuzzle):
     @classmethod
     def isLegalPosition(cls, positionid, variantid=None, **kwargs):
         try: puzzle = cls.deserialize(positionid)
-        except: raise PuzzleException("Position is invalid")
+        except: return False
         unique = set()
-        if len(puzzle.stacks) != 3: raise PuzzleException("Number of stacks does not equal 3")
+        if len(puzzle.stacks) != 3: return False
         for stack in puzzle.stacks:
             if stack != sorted(stack, reverse=True):
                 return False

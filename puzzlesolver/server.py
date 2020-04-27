@@ -10,11 +10,13 @@ from werkzeug.exceptions import InternalServerError
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False
 app.config['DATABASE_DIR'] = 'databases'
+app.config['SOLVE'] = True
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 # Test your server puzzle
 def test_puzzle(puzzle):
     global puzzleList
+    app.config['SOLVE'] = True
     puzzleList = {puzzle.puzzleid: puzzle}
     app.run()
 
@@ -76,6 +78,7 @@ def puzzle_position(puzzle_id, variant_id, position):
     p = puzzleList[puzzle_id].deserialize(position)
     solver_cls = puzzleList[puzzle_id].variants[variant_id]
     s = solver_cls(p, dir_path=app.config['DATABASE_DIR'])
+    s.solve()
     moves = p.generateMovePositions()
     response = {
         "position": p.serialize(),
