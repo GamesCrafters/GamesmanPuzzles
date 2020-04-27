@@ -4,6 +4,8 @@ from ..util import *
 from ..solvers import GeneralSolver, SqliteSolver
 from ..puzzleplayer import PuzzlePlayer
 
+from hashlib import sha1
+
 class Peg(ServerPuzzle):
 
     puzzleid = 'pegSolitaire'
@@ -59,7 +61,7 @@ class Peg(ServerPuzzle):
             print("")
 
     def getName(self, **kwargs):
-        return "Peg Solitaire " + self.variant() 
+        return "Peg Solitaire " + self.variant
 
     # ________ End Print Funcs _________
 
@@ -279,7 +281,9 @@ class Peg(ServerPuzzle):
     ### ____________ Solver Funcs ________________
 
     def __hash__(self):
-        return hash(str(self.board))
+        h = sha1()
+        h.update(str(self.board).encode())
+        return int(h.hexdigest(), 16)
 
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
@@ -326,14 +330,16 @@ class Peg(ServerPuzzle):
             s += "_"
         return s
     
-    def isLegalPosition(self):
+    @classmethod
+    def isLegalPosition(cls, positionid, variantid=None, **kwargs):
         """Checks if the Puzzle is valid given the rules.
         For example, Hanoi cannot have a larger ring on top of a smaller one.
 
         Outputs:
             - True if Puzzle is valid, else False
         """
-        if self.pins == 15:
+        puzzle = cls.deserialize(positionid)
+        if puzzle.pins == 15:
             return False
         return True
 

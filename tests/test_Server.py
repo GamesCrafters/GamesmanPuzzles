@@ -1,16 +1,10 @@
 import json
 
 import pytest
+import tempfile
 
 from puzzlesolver.server import app
 from puzzlesolver.puzzles import puzzleList
-
-@pytest.fixture
-def client():
-    app.config['TESTING'] = True
-
-    with app.test_client() as client:
-        yield client
 
 def test_default_path(client):
     rv = client.get('/')
