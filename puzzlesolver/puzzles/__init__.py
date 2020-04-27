@@ -3,10 +3,12 @@ from ._models import *
 from .hanoi import Hanoi
 from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
+from .lightsout import LightsOut
 
 puzzleList = {
     Peg.puzzleid: Peg,
-    Hanoi.puzzleid: Hanoi
+    Hanoi.puzzleid: Hanoi,
+    LightsOut.puzzleid: LightsOut
 }
 
 for puzzle in puzzleList.values():
