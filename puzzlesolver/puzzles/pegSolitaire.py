@@ -9,7 +9,7 @@ class Peg(ServerPuzzle):
     puzzleid = 'pegSolitaire'
     author = "Mark Presten"
     puzzle_name = "Peg Solitaire"
-    description = """Jump over a peg with another, removing it from the board.
+    description = """Jump over a peg with an adjacent peg, removing it from the board.
         Have one peg remaining by end of the game."""
     date_created = "April 15, 2020"
 
@@ -59,7 +59,7 @@ class Peg(ServerPuzzle):
             print("")
 
     def getName(self, **kwargs):
-        return "Peg Solitaire"
+        return "Peg Solitaire " + self.variant() 
 
     # ________ End Print Funcs _________
 
@@ -303,7 +303,7 @@ class Peg(ServerPuzzle):
         puzzle = Peg()
         out = []
         temp = []
-        for i in s:
+        for i in positionid:
             if i == '_':
                 out.append(temp)
                 temp = []
