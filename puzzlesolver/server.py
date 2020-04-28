@@ -9,16 +9,30 @@ from werkzeug.exceptions import InternalServerError
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False
+app.config["TESTING"] = False
 app.config['DATABASE_DIR'] = 'databases'
-app.config['SOLVE'] = True
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 # Test your server puzzle
 def test_puzzle(puzzle):
     global puzzleList
-    app.config['SOLVE'] = True
     puzzleList = {puzzle.puzzleid: puzzle}
+    init_data()
     app.run()
+
+# Initalizes the data
+# TODO: Check if data already exists in disk before solving
+def init_data():
+    for p_cls in puzzleList.values():
+        if app.config["TESTING"] and hasattr(p_cls, 'test_variants'): 
+            variants = p_cls.test_variants
+        else:
+            variants = p_cls.variants
+        for variant in variants:
+            s_cls = variants[variant]
+            puzzle = p_cls.generateStartPosition(variant)
+            solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
+            solver.solve(verbose=True)
 
 # Helper functions
 def validate(puzzle_name=None, variant_id=None, position=None):
@@ -78,7 +92,6 @@ def puzzle_position(puzzle_id, variant_id, position):
     p = puzzleList[puzzle_id].deserialize(position)
     solver_cls = puzzleList[puzzle_id].variants[variant_id]
     s = solver_cls(p, dir_path=app.config['DATABASE_DIR'])
-    s.solve()
     moves = p.generateMovePositions()
     response = {
         "position": p.serialize(),
@@ -102,6 +115,7 @@ def handle_404(e):
     return format_response(str(e), "error")
 
 if __name__ == "__main__":
+    init_data()
     host, port = '127.0.0.1', 9001
     if 'GMP_HOST' in os.environ:
         host = os.environ['GMP_HOST']
