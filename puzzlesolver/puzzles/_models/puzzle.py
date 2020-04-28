@@ -1,6 +1,7 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
 from abc import ABC, abstractmethod
+import progressbar
 
 class Puzzle(ABC):
     
@@ -91,6 +92,14 @@ class Puzzle(ABC):
             Iterable of Puzzles
         """
         raise NotImplementedError
+
+    @property
+    def numPositions(self):
+        """Returns the max number of possible positions from the solution state.
+        Main use is for the progressbar module. 
+        Default is unknown length, can be overwritten
+        """
+        return progressbar.base.UnknownLength
 
     # Built-in functions
     def getName(self, **kwargs):
