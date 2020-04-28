@@ -1,7 +1,6 @@
 astroid==2.3.3
 attrs==19.3.0
 Click==7.0
-decorator==4.4.2
 coverage==5.0.3
 decorator==4.4.2
 Flask==1.1.1
@@ -15,12 +14,15 @@ mccabe==0.6.1
 more-itertools==8.2.0
 networkx==2.4
 packaging==20.1
+pkg-resources==0.0.0
 pluggy==0.13.1
+progressbar2==3.51.0
 py==1.8.1
 pylint==2.4.4
 pyparsing==2.4.6
 pytest==5.3.5
 pytest-cov==2.8.1
+python-utils==2.4.0
 six==1.14.0
 sqlitedict==1.6.0
 typed-ast==1.4.1

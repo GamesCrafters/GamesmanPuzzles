@@ -16,13 +16,15 @@ class GeneralSolver(Solver):
         return PuzzleValue.UNSOLVABLE
 
     def solve(self, *args, verbose=False, **kwargs):
-        """Traverse the entire puzzle tree and classifiers all the 
+        """Traverse the entire puzzle tree and classifies all the 
         positions with values and remoteness
-        - If position already exists in memory, returns its value
         """
+        # Progressbar
         if verbose: 
+            print('Solving: {}'.format(self.puzzle.getName()))
             bar = progressbar.ProgressBar()
-            if hasattr(self.puzzle, 'numPositions'): bar.max_value = self.puzzle.numPositions
+            bar.max_value = self.puzzle.numPositions
+        
         solutions, queue = self.puzzle.generateSolutions(), q.Queue()
         for solution in solutions: 
             self.remoteness[hash(solution)] = 0
@@ -30,7 +32,7 @@ class GeneralSolver(Solver):
 
         # BFS for remoteness classification                        
         while not queue.empty():
-            if verbose: bar.update(len(self.remoteness) + 1)
+            if verbose: bar.update(len(self.remoteness))
             puzzle = queue.get()
             for move in puzzle.generateMoves('undo'):
                 nextPuzzle = puzzle.doMove(move)

@@ -37,6 +37,10 @@ class Hanoi(ServerPuzzle):
             size += len(stack)
         return str(size)
 
+    @property
+    def numPositions(self):
+        return 3 ** int(self.variant)
+
     def __hash__(self):
         # We're being really lazy here and using built in hashlib functions.
         # Can't use regular hash because those are random
