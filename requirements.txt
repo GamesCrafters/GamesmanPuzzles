@@ -14,7 +14,6 @@ mccabe==0.6.1
 more-itertools==8.2.0
 networkx==2.4
 packaging==20.1
-pkg-resources==0.0.0
 pluggy==0.13.1
 progressbar2==3.51.0
 py==1.8.1
