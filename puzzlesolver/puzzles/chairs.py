@@ -1,14 +1,9 @@
 from copy import deepcopy
-from .puzzle import Puzzle
+from . import Puzzle
 from ..util import *
 from ..solvers import GeneralSolver
 from ..puzzleplayer import PuzzlePlayer
 
-from copy import deepcopy
-from .puzzle import Puzzle
-from ..util import *
-from ..solvers import GeneralSolver
-from ..puzzleplayer import PuzzlePlayer
 
 class Chairs(Puzzle):
     def __init__(self, **kwargs):

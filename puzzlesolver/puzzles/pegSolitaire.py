@@ -11,8 +11,7 @@ class Peg(ServerPuzzle):
     puzzleid = 'pegSolitaire'
     author = "Mark Presten"
     puzzle_name = "Peg Solitaire"
-    description = """Jump over a peg with an adjacent peg, removing it from the board.
-        Have one peg remaining by end of the game."""
+    description = """Jump over a peg with an adjacent peg, removing it from the board. Have one peg remaining by end of the game."""
     date_created = "April 15, 2020"
 
     variants = {"Triangle": SqliteSolver}
