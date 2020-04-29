@@ -2,6 +2,12 @@ from . import ServerPuzzle
 from ..solvers import SqliteSolver, gzipsolver
 from ..util import *
 
+from copy import deepcopy
+from . import ServerPuzzle
+from ..util import *
+from ..solvers.gzipsolver import GZipSolver
+from ..puzzleplayer import PuzzlePlayer
+
 class LightsOut(ServerPuzzle):
 
     puzzleid = "lightsout"
@@ -87,3 +93,7 @@ class LightsOut(ServerPuzzle):
 
     def isLegalPosition(self):
         return True
+
+if __name__ == "__main__":
+    puzzle = LightsOut()
+    PuzzlePlayer(puzzle).play()
