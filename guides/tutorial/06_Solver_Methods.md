@@ -70,7 +70,8 @@ def solve(self, *args, **kwargs):
 ### Execute
 Once you have implemented all the required functions, change the last line of the Python file outside of the class to:
 ```python
-PuzzlePlayer(Hanoi(), solver=GeneralSolver(Hanoi())).play()
+puzzle = Hanoi()
+PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle)).play()
 ```
 On your CLI, execute
 ```bash
