@@ -1,27 +1,18 @@
 import pytest
 import tempfile
 
-import puzzlesolver.solvers
-from puzzlesolver.server import app
+from puzzlesolver import server
 from puzzlesolver.puzzles import puzzleList, GraphPuzzle
 from puzzlesolver.util import PuzzleValue
 
 @pytest.fixture
 def client(tmpdir):
-    app.config['TESTING'] = True
-    dir_path = tmpdir
-    app.config['DATABASE_DIR'] = dir_path
+    app = server.app
+    if app.config['TESTING'] != True:
+        app.config['TESTING'] = True
+        app.config['DATABASE_DIR'] = tmpdir
 
-    for p_cls in puzzleList.values():
-        if hasattr(p_cls, 'test_variants'):
-            variants = p_cls.test_variants
-        else: 
-            variants = p_cls.variants
-        for variant in variants:
-            s_cls = variants[variant]
-            puzzle = p_cls.generateStartPosition(variant)
-            solver = s_cls(puzzle, dir_path=dir_path)
-            solver.solve()
+        server.init_data()
 
     with app.test_client() as client:
         yield client

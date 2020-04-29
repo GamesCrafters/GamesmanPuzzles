@@ -1,12 +1,13 @@
 from . import GeneralSolver, DATABASE_DIR
 from ..util import *
-
+from pathlib import Path
 from sqlitedict import SqliteDict
 
 class SqliteSolver(GeneralSolver):
 
     def __init__(self, puzzle, *args, dir_path='databases', **kwargs):
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
+        Path(dir_path).mkdir(parents=True, exist_ok=True)
         self.database_path = dir_path
 
     @property
