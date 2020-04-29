@@ -245,6 +245,8 @@ class Peg(ServerPuzzle):
     ### _________ end HELPERS _________________ ###
 
     def doMove(self, move, **kwargs):
+        if move not in self.generateMoves(): raise ValueError
+
         new_board = deepcopy(self.board)
         from_peg = move[0]
         to_peg = move[1]
@@ -303,16 +305,21 @@ class Peg(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        puzzle = Peg()
+        val = 0
+        new_val = 0
         out = []
         temp = []
         for i in positionid:
             if i == '_':
+                new_val = len(temp)
+                if new_val - 1 != val:
+                    raise ValueError
+                val = new_val
                 out.append(temp)
                 temp = []
                 continue
             temp.append(int(i))
-        puzzle.board = out
+        puzzle = Peg(board=out)
         return puzzle
 
     def serialize(self, **kwargs):
@@ -337,8 +344,9 @@ class Peg(ServerPuzzle):
         Outputs:
             - True if Puzzle is valid, else False
         """
-        puzzle = cls.deserialize(positionid)
-        if puzzle.pins == 15:
+        try: puzzle = cls.deserialize(positionid)
+        except: return False
+        if puzzle.pins == 15 or puzzle.pins == 0:
             return False
         return True
 
