@@ -83,3 +83,5 @@ Ponder on these questions in how we can optimize this solver
 - Try thinking of a way to optimize the algorithm for this solver.
 - Are there any ways we can solve this not through BFS?
 - This solver will not save the positions it classifies after execution is over. Think about ways we can add persistance to our solvers.
+
+[Next Step: 7 Server Introduction](07_Server_Introduction.md)
