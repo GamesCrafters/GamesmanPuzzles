@@ -126,6 +126,6 @@ class Chairs(Puzzle):
         newPuzzle.board = ['o','o','o','o','o','-','x','x','x','x','x']
         return [newPuzzle]
 
-PuzzlePlayer(Chairs(), solver=GeneralSolver(), auto=True).play()
+# PuzzlePlayer(Chairs(), solver=GeneralSolver(), auto=True).play()
 # PuzzlePlayer(Peg()).play()
 
