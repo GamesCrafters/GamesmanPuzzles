@@ -1,4 +1,4 @@
-from . import GeneralSolver, DATABASE_DIR
+from . import GeneralSolver
 from ..util import *
 from pathlib import Path
 from sqlitedict import SqliteDict
