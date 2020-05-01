@@ -83,5 +83,6 @@ def testPuzzleServer(client):
     helper(pid, '0_00_000_0000_10000_', 'Triangle', 0)
     helper(pid, '0_00_000_0000_01100_', 'Triangle', 1)    
     helper(pid, '1_00_000_0000_00000_', 'Triangle', 0)
+    helper(pid, '1_00_000_0000_10000_', 'Triangle', PuzzleValue.UNSOLVABLE)
 
     helper(pid, '1_11_000_0111_11111_', 'Triangle', 10)
