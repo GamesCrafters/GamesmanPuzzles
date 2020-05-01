@@ -1,3 +1,3 @@
 from .generalsolver import GeneralSolver
-from .picklesolverwrapper import PickleSolverWrapper
+from .sqlitesolver import SqliteSolver
 from .solver import Solver

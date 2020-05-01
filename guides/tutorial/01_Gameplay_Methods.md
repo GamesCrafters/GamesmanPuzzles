@@ -35,4 +35,4 @@ def primitive(self, **kwargs):
         return PuzzleValue.SOLVABLE 
     return PuzzleValue.UNDECIDED
 ```
-[Next step: Implementing the Move functions](2_Moves.md)
+[Next step: Implementing the Move functions](02_Moves.md)

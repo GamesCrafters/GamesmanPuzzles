@@ -7,7 +7,7 @@ The `solve` function is the core of all solvers in the GamesmanPuzzles and is us
 
 Our GeneralSolver traverses the puzzle tree using the solve function. First, start with the function initalization:
 ```python
-def solve(self, **kwargs)
+def solve(self, puzzle, **kwargs):
 ```
 
 Remember back in the puzzle project, we defined a few important functions that were meant to be used for this solver. These functions are:
@@ -70,7 +70,8 @@ def solve(self, *args, **kwargs):
 ### Execute
 Once you have implemented all the required functions, change the last line of the Python file outside of the class to:
 ```python
-PuzzlePlayer(Hanoi(), solver=GeneralSolver(Hanoi())).play()
+puzzle = Hanoi()
+PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle)).play()
 ```
 On your CLI, execute
 ```bash
@@ -83,3 +84,5 @@ Ponder on these questions in how we can optimize this solver
 - Try thinking of a way to optimize the algorithm for this solver.
 - Are there any ways we can solve this not through BFS?
 - This solver will not save the positions it classifies after execution is over. Think about ways we can add persistance to our solvers.
+
+[Next Step: 7 Server Introduction](07_Server_Introduction.md)

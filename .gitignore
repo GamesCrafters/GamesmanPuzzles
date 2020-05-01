@@ -128,3 +128,6 @@ dmypy.json
 # Databases
 *.pkl
 database*
+
+# Temp
+temp*
