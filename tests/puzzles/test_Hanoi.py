@@ -70,18 +70,19 @@ def testValidation():
 
 # Server methods
 def test_server_puzzle(client):
-    rv = client.get('/hanoi/')
+    rv = client.get('/{}/'.format(Hanoi.puzzleid))
     d = json.loads(rv.data)
 
     assert d['response']['variants'] == list(Hanoi.variants.keys())
 
-    def helper(code, variantid, remoteness):
-        rv = client.get('/hanoi/{}/{}/'.format(variantid, code))
+    def helper(puzzleid, code, variantid, remoteness):
+        rv = client.get('/{}/{}/{}/'.format(puzzleid, variantid, code))
         d = json.loads(rv.data)
         assert d['response']['remoteness'] == remoteness
     
-    helper('1--', 1, 1)
-    helper('-1-', 1, 1)    
-    helper('--1', 1, 0)
+    pid = Hanoi.puzzleid
+    helper(pid, '1--', 1, 1)
+    helper(pid, '-1-', 1, 1)    
+    helper(pid, '--1', 1, 0)
 
-    helper('2_1-3-', 3, 4)
+    helper(pid, '2_1-3-', 3, 4)

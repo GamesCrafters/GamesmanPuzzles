@@ -1,10 +1,14 @@
 from ._models import *
 
 from .hanoi import Hanoi
+from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
+from .chairs import Chairs
 
 puzzleList = {
-    Hanoi.puzzleid: Hanoi
+    Peg.puzzleid: Peg,
+    Hanoi.puzzleid: Hanoi,
+    Chairs.puzzleid: Chairs
 }
 
 for puzzle in puzzleList.values():
