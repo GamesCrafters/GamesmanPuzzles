@@ -16,6 +16,18 @@ class Solver:
         """
         raise NotImplementedError
     
+    def getRemoteness(self, puzzle, **kwargs):
+        """Finds the remoteness of the puzzle
+
+        Inputs:
+        puzzle -- the puzzle in question
+
+        Outputs:
+        remoteness of puzzle
+        """
+        raise NotImplementedError
+
+    # Built-in functions
     def getValue(self, puzzle, **kwargs):
         """Returns solved value of the puzzle
 
@@ -28,14 +40,3 @@ class Solver:
         remoteness = self.getRemoteness(puzzle, **kwargs)
         if remoteness == PuzzleValue.UNSOLVABLE: return PuzzleValue.UNSOLVABLE
         return PuzzleValue.SOLVABLE
-
-    def getRemoteness(self, puzzle, **kwargs):
-        """Finds the remoteness of the puzzle
-
-        Inputs:
-        puzzle -- the puzzle in question
-
-        Outputs:
-        remoteness of puzzle
-        """
-        raise NotImplementedError      

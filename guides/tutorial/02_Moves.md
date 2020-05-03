@@ -59,4 +59,4 @@ python <your_python_file_name>.py
 ```
 If everything runs smoothly, congrats! You have created a playable puzzle!
 
-[Next step: Implementing the Solver methods](3_Solver_Methods.md)
+[Next step: Implementing the Solver methods](03_Solver_Methods.md)

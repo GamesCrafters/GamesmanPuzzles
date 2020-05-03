@@ -1,13 +1,16 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
+from abc import ABC, abstractmethod
+import progressbar
 
-class Puzzle:
+class Puzzle(ABC):
     
     # Intializer
     def __init__(self, **kwargs):
         pass
 
     # Gameplay methods
+    @abstractmethod
     def __str__(self):
         """Returns the string representation of the puzzle.
         
@@ -16,6 +19,7 @@ class Puzzle:
         """
         return "No String representation available"
 
+    @abstractmethod
     def primitive(self, **kwargs):
         """If the Puzzle is at an endstate, return GameValue.WIN or GameValue.LOSS
         else return GameValue.UNDECIDED
@@ -28,6 +32,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
+    @abstractmethod
     def doMove(self, move, **kwargs):
         """Given a valid move, returns a new Puzzle object with that move executed.
         Does nothing to the original Puzzle object
@@ -42,6 +47,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
+    @abstractmethod
     def generateMoves(self, movetype="all", **kwargs):
         """Generate moves from self (including undos)
 
@@ -60,6 +66,7 @@ class Puzzle:
         raise NotImplementedError
 
     # Solver methods
+    @abstractmethod
     def __hash__(self):
         """Returns a hash of the puzzle.
         Requirements:
@@ -77,6 +84,7 @@ class Puzzle:
         """
         raise NotImplementedError
     
+    @abstractmethod
     def generateSolutions(self, **kwargs):
         """Returns a Iterable of Puzzle objects that are solved states
 
@@ -85,7 +93,15 @@ class Puzzle:
         """
         raise NotImplementedError
 
-    # Method for PickleSolverWrapper
+    @property
+    def numPositions(self):
+        """Returns the max number of possible positions from the solution state.
+        Main use is for the progressbar module. 
+        Default is unknown length, can be overwritten
+        """
+        return progressbar.base.UnknownLength
+
+    # Built-in functions
     def getName(self, **kwargs):
         """Returns the name of the Puzzle.
 
@@ -93,3 +109,24 @@ class Puzzle:
             String name
         """
         return self.__class__.__name__
+
+    def printInfo(self):
+        """Prints the string representation of the puzzle. 
+        Can be custom defined"""
+
+        print(str(self))
+
+    def generateMovePositions(self, movetype="legal", **kwargs):
+        """Generate an iterable of puzzles with all moves fitting movetype
+        executed.
+
+        Inputs:
+            - movetype: The type of move to generate the puzzles
+        
+        Outputs:
+            - Iterable of puzzles 
+        """
+        puzzles = []
+        for move in self.generateMoves(movetype=movetype, **kwargs):
+            puzzles.append((move, self.doMove(move)))
+        return puzzles

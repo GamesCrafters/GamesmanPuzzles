@@ -1,6 +1,7 @@
 from .solver import Solver
 from ..util import *
 import queue as q
+import progressbar
 
 class GeneralSolver(Solver):
 
@@ -14,24 +15,28 @@ class GeneralSolver(Solver):
         if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
         return PuzzleValue.UNSOLVABLE
 
-    def solve(self, *args, **kwargs):
-        """Traverse the entire puzzle tree and classifiers all the 
+    def solve(self, *args, verbose=False, **kwargs):
+        """Traverse the entire puzzle tree and classifies all the 
         positions with values and remoteness
-        - If position already exists in memory, returns its value
-        """        
-        # BFS for remoteness classification
-        def helper(self, puzzles):
-            queue = q.Queue()
-            for puzzle in puzzles: queue.put(puzzle)
-            while not queue.empty():
-                puzzle = queue.get()
-                for move in puzzle.generateMoves('undo'):
-                    nextPuzzle = puzzle.doMove(move)
-                    if hash(nextPuzzle) not in self.remoteness:
-                        self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
-                        queue.put(nextPuzzle)
-                        
-        ends = self.puzzle.generateSolutions()
-        for end in ends: 
-            self.remoteness[hash(end)] = 0
-        helper(self, ends)
+        """
+        # Progressbar
+        if verbose: 
+            print('Solving: {}'.format(self.puzzle.getName()))
+            bar = progressbar.ProgressBar()
+            bar.max_value = self.puzzle.numPositions
+        
+        solutions, queue = self.puzzle.generateSolutions(), q.Queue()
+        for solution in solutions: 
+            self.remoteness[hash(solution)] = 0
+            queue.put(solution)
+
+        # BFS for remoteness classification                        
+        while not queue.empty():
+            if verbose: bar.update(len(self.remoteness))
+            puzzle = queue.get()
+            for move in puzzle.generateMoves('undo'):
+                nextPuzzle = puzzle.doMove(move)
+                if hash(nextPuzzle) not in self.remoteness:
+                    self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
+                    queue.put(nextPuzzle)
+        if verbose: bar.finish()
