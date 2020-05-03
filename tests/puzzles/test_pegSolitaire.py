@@ -68,6 +68,7 @@ def testValidation():
     pytest.raises(PuzzleException, Peg.validate, invalid_puzzle, "Triangle")
     Peg.validate(valid_puzzle, "Triangle")
 
+"""
 def testPuzzleServer(client):
     pid = Peg.puzzleid
     rv = client.get('/{}/'.format(pid))
@@ -86,3 +87,4 @@ def testPuzzleServer(client):
     helper(pid, '1_00_000_0000_10000_', 'Triangle', PuzzleValue.UNSOLVABLE)
 
     helper(pid, '1_11_000_0111_11111_', 'Triangle', 10)
+"""
