@@ -10,15 +10,13 @@ from ..puzzleplayer import PuzzlePlayer
 
 class LightsOut(ServerPuzzle):
 
-    puzzleid = "lightsout"
+    puzzleid = "lights"
     author = "Anthony Ling"
     puzzle_name = "Lights Out"
     description = "Meh"
     date_created = "April 6, 2020"
 
-    variants = {
-        '2': gzipsolver.GZipSolver,
-    }
+    variants = { str(i) : GZipSolver for i in range(2, 5)}
 
     def __init__(self, variant='3', **kwargs):
         variant = int(variant)
@@ -47,7 +45,7 @@ class LightsOut(ServerPuzzle):
             puzzle.grid[y][i] = not puzzle.grid[y][i]
         for j in range(max(y - 1, 0), min(self.size, y + 2)):
             puzzle.grid[j][x] = not puzzle.grid[j][x]
-        puzzle.grid[x][y] = not puzzle.grid[x][y]
+        puzzle.grid[y][x] = not puzzle.grid[y][x]
         return puzzle
 
     def generateMoves(self, movetype="all", **kwargs):
@@ -59,7 +57,8 @@ class LightsOut(ServerPuzzle):
         return moves
 
     def __hash__(self):
-        return int(self.serialize())
+        result = int(self.serialize(), 2)
+        return result
 
     def generateSolutions(self, **kwargs):
         puzzle = LightsOut(variant=self.size)
@@ -69,8 +68,7 @@ class LightsOut(ServerPuzzle):
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
         variant = int(variantid)
-        if variant == 2: position = '1001'
-        else: raise Exception("Not done yet")
+        position = '1' * (variant ** 2)
         return cls.deserialize(position)
 
     @classmethod
