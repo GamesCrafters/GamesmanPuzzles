@@ -25,7 +25,7 @@ to access the webserver. The server should be running at http://127.0.0.1:9001/p
 
 ## Exploring GamesmanPuzzles
 Tips for exploring this repository:
-1. [Follow the guides and learn how to create a puzzle and a solver!](guides)
+1. [Follow the guides and learn how to create a puzzle and a solver!](guides/tutorial/README.md)
 2. Definitely explore the [puzzlesolver](puzzlesolver) in depth.
 3. Understand what a [puzzle tree](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree) is. 
 
