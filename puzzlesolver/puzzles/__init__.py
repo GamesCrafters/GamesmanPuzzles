@@ -1,10 +1,12 @@
 from ._models import *
 
+# Put your dependencies here
 from .hanoi import Hanoi
 from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
 from .chairs import Chairs
 
+# Add your puzzle in the puzzleList
 puzzleList = {
     Peg.puzzleid: Peg,
     Hanoi.puzzleid: Hanoi,
