@@ -43,19 +43,19 @@ Submit your writeup at Gradescope by the listed time.
 ## Develop
 Similar to how you implemented Hanoi, implement your ServePuzzle and follow the tutorial steps. You are also responsible for implementing test sets following the format, located in `GamesmanPuzzles/tests/puzzles/test_<your_puzzle_name here>`. You may refer to the already existing puzzles ([Hanoi](../../puzzlesolver/puzzles/hanoi.py)) for guidance.
 
-- ### `testHash()`
+- `testHash()`
     - Tests the expected behavior of the hash function on the puzzle states. 
-- ### `testSerialization()`
+- `testSerialization()`
     - Tests if serialization and deserialization works both ways.
-- ### `testPrimitive()`
+- `testPrimitive()`
     - Tests if the start state and end state outputted the right primitives.
-- ### `testMoves()`
+- `testMoves()`
     - Tests a specific scenario and checks if the moves inputted resulted in the expected state, generated moves, and expected invalid moves.
-- ### `testPositions()`
+- `testPositions()`
     - Tests the default start state and finish positions matches the expected serializations.
-- ### `testValidation()`
+- `testValidation()`
     - Tests four invalid serializations and checks if it raises an error.
-- ### `testServerPuzzle()`
+- `testServerPuzzle()`
     - Tests server functionality by trying out a series of inputs.
 
  You are EXPECTED to take much inspiration from the [example test suite of Hanoi](../../tests/puzzles/test_Hanoi.py). 
