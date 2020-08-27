@@ -41,7 +41,10 @@ This design process will be represented with a writeup. You must submit the writ
 Submit your writeup at Gradescope by the listed time. 
 
 ## Develop
-Similar to how you implemented Hanoi, implement your ServePuzzle and follow the tutorial steps. You are also responsible for implementing test sets following the format, located in `GamesmanPuzzles/tests/puzzles/test_<your_puzzle_name here>`. You may refer to the already existing puzzles ([Hanoi](../../puzzlesolver/puzzles/hanoi.py)) for guidance.
+Similar to how you implemented Hanoi, implement your ServePuzzle and follow the tutorial steps. You may refer to the already existing puzzles ([Hanoi](../../puzzlesolver/puzzles/hanoi.py)) for guidance.
+
+### Testing
+You are also responsible for implementing test sets following the format, located in `GamesmanPuzzles/tests/puzzles/test_<your_puzzle_name here>`. 
 
 - `testHash()`
     - Tests the expected behavior of the hash function on the puzzle states. 
