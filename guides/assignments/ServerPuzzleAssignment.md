@@ -67,7 +67,7 @@ You are also responsible for implementing test sets following the format, locate
 ```
 pytest --cov puzzlesolver
 ```
-Submit this project by creating a pull request to the Master branch.
+Submit this project by creating a pull request to the Master branch. Refer to [Contributing](../Contributing.md) for more info.
 
 ### Additional Steps and Tips To Consider
 - A real ServerPuzzle should not be using GeneralSolver as its main solver, as each request for the remoteness of a position for our server would have the GeneralSolver solve the puzzle. Consider using one of our persistence solvers like SqliteSolver or IndexSolver. The hash used in the tutorial should NOT be used for IndexSolver.
