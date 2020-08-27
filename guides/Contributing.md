@@ -1,10 +1,10 @@
 # Contributing
 ## About
-This repository has two main branches.
+This repository has <s>two</s> one main branches.
 - `master`, which is the main branch used to regulate releases and contains the most up to date release.
-- `dev`, which is the main branch for development, experimental, and testing purposes. It will usually contain the next release.
+- <s>`dev`, which is the main branch for development, experimental, and testing purposes. It will usually contain the next release.</s>
 
-Contributors to this repository should clone and be up to date with the `dev` branch, while using `master` as reference. 
+<s>Contributors to this repository should clone and be up to date with the `dev` branch, while using `master` as reference. </s>
 ## Setting up your workflow
 Start by cloning this repository and switching to the dev branch.
 ```bash
