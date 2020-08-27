@@ -5,7 +5,7 @@ import os
 
 from ..util import *
 
-class GZipSolver(GeneralSolver):
+class IndexSolver(GeneralSolver):
 
     def __init__(self, puzzle, *args, dir_path='databases', **kwargs):
         self.path = '{}/{}.txt'.format(dir_path, puzzle.getName())
