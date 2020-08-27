@@ -125,5 +125,5 @@ class Hanoi(ServerPuzzle):
         return True
 
 if __name__ == "__main__":
-    puzzle = Hanoi(size=3)
+    puzzle = Hanoi(size=9)
     PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle), bestmove=True).play()
