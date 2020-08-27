@@ -11,7 +11,7 @@ A **variant** is a modified version of a puzzle (i.e. more pieces, different ori
 
 Each initialized puzzle will have a different variant, so we need to modify the `__init__()` and `generateSolutions()` functions to support different variant (size) numbers.
 
-**`__init__()`**
+#### **`__init__()`**
 ```python
 def __init__(self, size=3, **kwargs):
     self.stacks = [
@@ -21,7 +21,7 @@ def __init__(self, size=3, **kwargs):
     ]
 ```
 
-**`generateSolutions()`**
+#### **`generateSolutions()`**
 ```python
 def generateSolutions(self, **kwargs):
     newPuzzle = Hanoi(size=int(self.variant))
