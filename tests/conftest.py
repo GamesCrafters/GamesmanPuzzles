@@ -1,7 +1,6 @@
 import pytest
 import tempfile
 
-from puzzlesolver.solvers import SqliteSolver
 from puzzlesolver import server
 from puzzlesolver.puzzles import puzzleList, GraphPuzzle
 from puzzlesolver.util import PuzzleValue
