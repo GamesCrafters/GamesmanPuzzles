@@ -17,6 +17,8 @@ Load the dependencies. It's recommended to use a [virtualenv](https://docs.pytho
 pip install -r requirements.txt
 ```
 ## Contributing a Change
+Refer to [Where to Put My Stuff](wheretoputmystuff.md) for guidance when contributing.
+
 Whenever you want to make a change to any of the main branches, you must use pull requests. Push access to these branches is restricted to only administrators. 
 
 The best way to start a pull request is to create a new branch. 
