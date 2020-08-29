@@ -19,6 +19,7 @@ class Npuzzle(ServerPuzzle):
     date_created = "April 10, 2020"
     
     variants = {str(i) : SqliteSolver for i in range(2, 4)}
+    test_variants = {"2" : SqliteSolver}
 
     def __init__(self, size=3):
         if not isinstance(size,int): raise ValueError
@@ -86,10 +87,13 @@ class Npuzzle(ServerPuzzle):
 
     @classmethod
     def deserialize(cls, puzzleid, **kwargs):
-        puzzle = Npuzzle()
-        puzzle.position = [int(i) for i in puzzleid.split('-')]
-        puzzle.size = int(math.sqrt(len(puzzle.position)))
-        return puzzle
+        try:
+            puzzle = Npuzzle()
+            puzzle.position = [int(i) for i in puzzleid.split('-')]
+            puzzle.size = int(math.sqrt(len(puzzle.position)))
+            return puzzle
+        except:
+            raise PuzzleException("Invalid puzzleid")
 
     def serialize(self, **kwargs):
         return '-'.join([str(x) for x in self.position])
@@ -122,34 +126,17 @@ class Npuzzle(ServerPuzzle):
     def findBlankRow(self):
         return self.size - (self.position.index(0) // self.size)
 
-    def isLegalPosition(self):
-        if len(self.position) != self.size ** 2:
+    @classmethod
+    def isLegalPosition(cls, positionid):
+        puzzle = cls.deserialize(positionid)
+        if len(puzzle.position) != puzzle.size ** 2:
             raise PuzzleException("Incorrect puzzle length.")
 
-        for i in range(self.size ** 2):
-            if self.position.count(i) != 1:
+        for i in range(puzzle.size ** 2):
+            if puzzle.position.count(i) != 1:
                 raise PuzzleException("Incorrect pieces.")
 
-        return True
-
-        # https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
-        # TODO validate solvable
-        inv = self.invCount()
-        if self.size % 2 == 1: # odd
-            print("odd HERE")
-            return inv % 2 == 0
-        # even
-        print("even HERE")
-        blank = self.findBlankRow()
-        print('blank', blank)
-        print('inv', inv)
-        if blank % 2 == 0:
-            print("also even")
-            return inv % 2 == 1
-        else:
-            print("odd this time")
-            return inv % 2 == 0
-            
+        return True            
 
 if __name__ == "__main__":
     puzzle = Npuzzle(size=3)

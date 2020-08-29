@@ -6,7 +6,7 @@ from puzzlesolver.solvers import GeneralSolver, sqlitesolver
 from puzzlesolver.util import PuzzleValue, PuzzleException
 
 def testRemotenessSanity():
-    for i in range(2,4):
+    for i in range(2,3):
         puzzle = Npuzzle(size=i)
         solver = GeneralSolver(puzzle=puzzle)
         solver.solve()
@@ -14,7 +14,7 @@ def testRemotenessSanity():
         assert solver.getRemoteness(puzzle) == 1
 
 def testSerialization():
-    for i in range(2,4):
+    for i in range(2,3):
         puzzle = Npuzzle(size=i)
         solver = GeneralSolver(puzzle=puzzle)
         solver.solve()
