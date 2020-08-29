@@ -13,4 +13,4 @@ import queue as q
 
 The rest of guide will implement the instance methods of this class.
 
-[Next step: Helper Methods](5_Helper_Methods.md)
+[Next step: Helper Methods](05_Helper_Methods.md)

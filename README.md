@@ -1,6 +1,6 @@
 # GamesmanPuzzles
 [![Build Status](https://travis-ci.com/GamesCrafters/GamesmanPuzzles.svg?branch=master)](https://travis-ci.com/GamesCrafters/GamesmanPuzzles)
-[![codecov](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles/branch/dev/graph/badge.svg)](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles)
+[![codecov](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles/branch/master/graph/badge.svg)](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles)
 
 A Python Package dedicated to Puzzle solving. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
 ## Getting Started
@@ -16,6 +16,12 @@ Run from the base directory of the repositiory
 python -m puzzlesolver.puzzles.hanoi
 ```
 to play a puzzle of Towers of Hanoi
+
+Run from the base directory of the respository
+```
+python server.py
+```
+to access the webserver. The server should be running at http://127.0.0.1:5000/puzzles/.
 
 ## Exploring GamesmanPuzzles
 Tips for exploring this repository:
