@@ -90,7 +90,7 @@ class ServerPuzzle(Puzzle):
             if not cls.isLegalPosition(positionid): raise PuzzleException("position is not a valid puzzle")
             p = cls.deserialize(positionid)
             if variantid is not None and p.variant != variantid: 
-                raise PuzzleException("variantid doesn't match puzzleid")
+                raise PuzzleException("variantid doesn't match puzzleid")            
 
     def getName(self, **kwargs):
         """Returns the name of the Puzzle.

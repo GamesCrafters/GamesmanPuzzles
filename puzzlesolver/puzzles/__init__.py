@@ -4,10 +4,12 @@ from ._models import *
 from .hanoi import Hanoi
 from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
+from .npuzzle import Npuzzle
 from .chairs import Chairs
 
 # Add your puzzle in the puzzleList
 puzzleList = {
+    Npuzzle.puzzleid: Npuzzle,
     Peg.puzzleid: Peg,
     Hanoi.puzzleid: Hanoi,
     Chairs.puzzleid: Chairs
