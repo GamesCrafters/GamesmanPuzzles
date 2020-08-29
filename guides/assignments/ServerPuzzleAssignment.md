@@ -2,46 +2,46 @@
 Alright, now it's time to take the training wheels off and develop your own ServerPuzzle. Your assignment is to design and develop a ServerPuzzle based on the tutorials and format set up in GamesmanPuzzles.
 
 ### Table of Contents
-- [Design](##Design)
-- [Develop](##Develop)
-- [Examples](##Examples)
+- [Design](#design)
+- [Develop](#develop)
+- [Examples](#examples)
 
 ## Design
 Before developing the ServerPuzzle, you must visualize how your Puzzle would work. What should be the default variant? How many positions must be hashed? How will the puzzle progress? 
 
-This design process will be represented with a writeup. You must submit the write-up in PDF form. Include these in your writeup:
+This design process will be represented with a writeup. You must submit the writeup in PDF form. Include these in your writeup:
 
 - Your name/Team names
 - Puzzle
     - Puzzle Name
     - Puzzle ID
+        - Simple identifier of a Puzzle. (Example: 'hanoi') 
     - Puzzle Visualization
-        - Must match default variant (more below)
+        - A picture of the Puzzle.
+        - Must match default Variant
     - Short Description of Puzzle 
         - About 1-2 paragraphs
         - Should contain how to play and win.
 - Position
     - Position representation ([example](###Example-A))
 - Moves
-    - The type of moves in the Puzzle: Forward, Bidirectional, or Both
+    - The type of Legal moves in the Puzzle 
+        - Forward, Bidirectional, or Both
     - Move representation ([example](###Example-A))
         - Moves should be represented as a tuple with two entries. 
         - You should represent complex entries as single numbers or letters.
-- Variants 
-    - Must have at least two, including the Default Variant
-    - Default Variant
-        - Variant Name
-        - Number of possible positions
-            - Also include calculation
-        - A Default Variant should have a small minimum remoteness (5-20 moves) and be easy to solve (20000 positions at max). You wouldn't have any problems solving it multiple times.
-    - Other Variants (same as Default Variant)
+- Variants (Must have at least two Variants, including the default Variant)
+    - Variant Name
+    - Number of possible positions
+        - Also include calculation
+    - A Default Variant should have a small minimum remoteness (5-20 moves) and be easy to solve (20000 positions at max). You wouldn't have any problems solving it multiple times.
 - (Optional) Optimization
     - Example topic: Reduced number of positions with Hash tricks
 
 Submit your writeup at Gradescope by the listed time. 
 
 ## Develop
-Similar to how you implemented Hanoi, implement your ServePuzzle and follow the tutorial steps. You may refer to the already existing puzzles ([Hanoi](../../puzzlesolver/puzzles/hanoi.py)) for guidance.
+Similar to how you implemented Hanoi, implement your ServePuzzle and follow the [tutorial steps](../tutorial). You may refer to the already existing puzzles ([Hanoi](../../puzzlesolver/puzzles/hanoi.py)) for guidance.
 
 ### Testing
 You are also responsible for implementing test sets following the format, located in `GamesmanPuzzles/tests/puzzles/test_<your_puzzle_name here>`. 
