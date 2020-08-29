@@ -3,6 +3,8 @@ import pytest
 from puzzlesolver.puzzles import Npuzzle
 from puzzlesolver.solvers import GeneralSolver, sqlitesolver
 
+from puzzlesolver.util import PuzzleValue
+
 def testRemotenessSanity():
     for i in range(2,4):
         puzzle = Npuzzle(size=i)
