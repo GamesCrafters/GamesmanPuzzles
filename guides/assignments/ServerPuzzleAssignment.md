@@ -22,6 +22,7 @@ This design process will be represented with a writeup. You must submit the writ
     - Short Description of Puzzle 
         - About 1-2 paragraphs
         - Should contain how to play and win.
+        - State why you think it's a good addition to GamesmanPuzzles
 - Position
     - Position representation ([example](###Example-A))
 - Moves
@@ -34,7 +35,7 @@ This design process will be represented with a writeup. You must submit the writ
     - Variant Name
     - Number of possible positions
         - Also include calculation
-    - A Default Variant should have a small minimum remoteness (5-20 moves) and be easy to solve (20000 positions at max). You wouldn't have any problems solving it multiple times.
+    - A Default Variant should have a small minimum remoteness (5-20 moves) and be easy to solve (10000 positions at max). You wouldn't have any problems solving it multiple times.
 - (Optional) Optimization
     - Example topic: Reduced number of positions with Hash tricks
 
