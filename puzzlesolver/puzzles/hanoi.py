@@ -5,7 +5,7 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers.gzipsolver import GZipSolver
+from ..solvers import IndexSolver
 from ..puzzleplayer import PuzzlePlayer
 
 from hashlib import sha1
@@ -19,8 +19,8 @@ class Hanoi(ServerPuzzle):
         Fill the rightmost stack."""
     date_created = "April 2, 2020"
 
-    variants = {str(i) : GZipSolver for i in range(14, 0, -1)}
-    test_variants = {str(i) : GZipSolver for i in range(3, 0, -1)}
+    variants = {str(i) : IndexSolver for i in range(15, 0, -1)}
+    test_variants = {str(i) : IndexSolver for i in range(3, 0, -1)}
 
     def __init__(self, size=3, **kwargs):
         if not isinstance(size, int): raise ValueError 
@@ -141,4 +141,4 @@ class Hanoi(ServerPuzzle):
 
 if __name__ == "__main__":
     puzzle = Hanoi(size=14)
-    PuzzlePlayer(puzzle, GZipSolver(puzzle=puzzle)).play()
+    PuzzlePlayer(puzzle, IndexSolver(puzzle=puzzle)).play()

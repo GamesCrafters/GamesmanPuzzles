@@ -22,6 +22,9 @@ def serialize(self, **kwargs):
 #### **`deserialize()`**
 
 Deserializing is to take a string and encode it back into an object. After serializing an puzzle, deserializing the serialization must return the same puzzle.
+
+**Note:** Deserializing should raise a `PuzzleException` (found in the `puzzlesolver.util` module) if it encounters invalid puzzleid input.
+
 ```python
 @classmethod
 def deserialize(cls, positionid, **kwargs):
@@ -38,7 +41,7 @@ def deserialize(cls, positionid, **kwargs):
 
 ## Validation
 
-We want to make sure the user inputs proper strings, and return helpful messages when they don't. Thus, we must be able handle any input string and check if it's valid. Most of the validation is already handled by default, and `isLegalPosition()` is the only function that needs to be implemented.
+When the user interacts with the server, occasionally the user may input positionids that are not valid. We want to make sure the user inputs proper strings, and return helpful messages when they don't. Thus, we must be ablle to validate user input. Validation is built-in as default behavior for every ServerPuzzle and can be observed in the `validate` function. It relies on the implementation of `deserialize` and a new function `isLegalPosition`.
 
 #### **`isLegalPosition()`**
 

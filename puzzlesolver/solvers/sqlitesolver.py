@@ -4,7 +4,9 @@ from pathlib import Path
 from sqlitedict import SqliteDict
 
 class SqliteSolver(GeneralSolver):
-
+    """
+    A persistence solver that uses sqlite databases as a way to store data
+    """
     def __init__(self, puzzle, *args, dir_path='databases', **kwargs):
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
         Path(dir_path).mkdir(parents=True, exist_ok=True)
