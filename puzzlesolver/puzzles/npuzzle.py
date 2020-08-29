@@ -6,7 +6,6 @@ from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import *
-from ..puzzleplayer import PuzzlePlayer, PuzzleException
 
 import math
 
@@ -18,8 +17,8 @@ class Npuzzle(ServerPuzzle):
     description = "Shift pieces to get puzzle in ascending order."
     date_created = "April 10, 2020"
     
-    variants = {str(i) : SqliteSolver for i in range(2, 4)}
-    test_variants = {"2" : SqliteSolver}
+    variants = {str(i) : IndexSolver for i in range(2, 4)}
+    test_variants = {"2" : IndexSolver}
 
     def __init__(self, size=3):
         if not isinstance(size,int): raise ValueError
@@ -34,10 +33,11 @@ class Npuzzle(ServerPuzzle):
         return str(self.size)
 
     def __hash__(self):
-        h = ''
+        h = 0
         for i in self.position:
-            h += str(i)
-        return int(h)
+            h += i
+            h *= len(self.position)
+        return h
 
     def __str__(self):
         ret = ""
@@ -137,7 +137,3 @@ class Npuzzle(ServerPuzzle):
                 raise PuzzleException("Incorrect pieces.")
 
         return True            
-
-if __name__ == "__main__":
-    puzzle = Npuzzle(size=3)
-    PuzzlePlayer(puzzle, ServerPuzzle(puzzle=puzzle)).play()

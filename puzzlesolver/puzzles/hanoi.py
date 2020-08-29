@@ -6,7 +6,6 @@ from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import IndexSolver
-from ..puzzleplayer import PuzzlePlayer
 
 from hashlib import sha1
 
@@ -19,7 +18,7 @@ class Hanoi(ServerPuzzle):
         Fill the rightmost stack."""
     date_created = "April 2, 2020"
 
-    variants = {str(i) : IndexSolver for i in range(1, 15)}
+    variants = {str(i) : IndexSolver for i in range(15, 0, -1)}
     test_variants = {str(i) : IndexSolver for i in range(3, 0, -1)}
 
     def __init__(self, size=3, **kwargs):
@@ -138,7 +137,3 @@ class Hanoi(ServerPuzzle):
         if len(unique) != int(puzzle.variant) or min(unique) != 1 or max(unique) != int(puzzle.variant):
             return False
         return True
-
-if __name__ == "__main__":
-    puzzle = Hanoi(size=14)
-    PuzzlePlayer(puzzle, IndexSolver(puzzle=puzzle)).play()
