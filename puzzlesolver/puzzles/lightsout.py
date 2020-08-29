@@ -1,11 +1,10 @@
 from . import ServerPuzzle
-from ..solvers import SqliteSolver, gzipsolver
 from ..util import *
 
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers.gzipsolver import GZipSolver
+from ..solvers import IndexSolver
 from ..puzzleplayer import PuzzlePlayer
 
 class LightsOut(ServerPuzzle):
@@ -16,7 +15,7 @@ class LightsOut(ServerPuzzle):
     description = "Meh"
     date_created = "April 6, 2020"
 
-    variants = { str(i) : GZipSolver for i in range(2, 5)}
+    variants = { str(i) : IndexSolver for i in range(2, 5)}
 
     def __init__(self, variant='3', **kwargs):
         variant = int(variant)
