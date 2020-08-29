@@ -68,6 +68,7 @@ def testValidation():
     pytest.raises(PuzzleException, Peg.validate, invalid_puzzle, "Triangle")
     Peg.validate(valid_puzzle, "Triangle")
 
+@pytest.mark.skip(reason="will fail due to removal of PegSolitaire from TestServer")
 def testPuzzleServer(client):
     pid = Peg.puzzleid
     rv = client.get('/{}/'.format(pid))
