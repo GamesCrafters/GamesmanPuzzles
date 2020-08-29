@@ -5,7 +5,7 @@ You can manually run the server by running
 ```python
 python -m puzzlesolver.server
 ```
-and accessing [http://localhost:5000/puzzles](http://localhost:5000/puzzles). You can explore the Web API using the documentation (to do soon).
+and accessing [http://localhost:9001](http://localhost:9001).
 
 ## Prerequisites
 

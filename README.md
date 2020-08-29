@@ -19,14 +19,14 @@ to play a puzzle of Towers of Hanoi
 
 Run from the base directory of the respository
 ```
-python server.py
+python -m puzzlesolver.server
 ```
-to access the webserver. The server should be running at http://127.0.0.1:5000/puzzles/.
+to access the webserver. The server should be running at http://127.0.0.1:9001/puzzles/.
 
 ## Exploring GamesmanPuzzles
 Tips for exploring this repository:
 1. [Follow the guides and learn how to create a puzzle and a solver!](guides)
-2. Definitely explore the [puzzlesolver](puzzlesolver) in depth. There should be a README.md in every important directory to explain what each file does.
+2. Definitely explore the [puzzlesolver](puzzlesolver) in depth.
 3. Understand what a [puzzle tree](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree) is. 
 
 ## Contributing to GamesmanPuzzles

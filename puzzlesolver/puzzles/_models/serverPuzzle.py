@@ -1,5 +1,6 @@
 from ...util import *
 from . import Puzzle
+from abc import abstractproperty, abstractclassmethod, abstractmethod
 
 class ServerPuzzle(Puzzle):
     
@@ -20,7 +21,7 @@ class ServerPuzzle(Puzzle):
     """
     variants = {}
 
-    @property
+    @abstractproperty
     def variant(self):
         """Returns a string defining the variant of this puzzleself.
 
@@ -28,7 +29,7 @@ class ServerPuzzle(Puzzle):
         """
         raise NotImplementedError
     
-    @classmethod
+    @abstractclassmethod
     def deserialize(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid
 
@@ -43,6 +44,7 @@ class ServerPuzzle(Puzzle):
         """
         raise NotImplementedError
 
+    @abstractmethod
     def serialize(self, **kwargs):
         """Returns a serialized based on self
 
@@ -51,8 +53,10 @@ class ServerPuzzle(Puzzle):
         """
         return str(self)
     
-    def isLegalPostion(self):
-        """Checks if the Puzzle is valid given the rules.
+    @abstractclassmethod
+    def isLegalPosition(cls, positionid, variantid=None, **kwargs):
+        """Checks if the positionid is valid given the rules of the Puzzle cls. 
+        This function is invariant and only checks if all the rules are satisified
         For example, Hanoi cannot have a larger ring on top of a smaller one.
 
         Outputs:
@@ -60,7 +64,7 @@ class ServerPuzzle(Puzzle):
         """
         raise NotImplementedError 
 
-    @classmethod
+    @abstractclassmethod
     def generateStartPosition(cls, variantid, **kwargs):
         """Returns a Puzzle object containing the start position.
         
@@ -73,7 +77,7 @@ class ServerPuzzle(Puzzle):
     @classmethod
     def validate(cls, positionid=None, variantid=None, **kwargs):
         """Checks if the positionid fits the rules set for the puzzle, as
-        well as fits the variantid as well
+        well as if it's supported by the app.
         
         Inputs:
             - positionid: 
@@ -83,11 +87,10 @@ class ServerPuzzle(Puzzle):
             if not isinstance(variantid, str): raise PuzzleException("Invalid variantid")
             if variantid not in cls.variants: raise PuzzleException("Out of bounds variantid")
         if positionid is not None:
-            try: p = cls.deserialize(positionid)
-            except Exception as e: raise PuzzleException("position is not a valid puzzle") 
+            if not cls.isLegalPosition(positionid): raise PuzzleException("position is not a valid puzzle")
+            p = cls.deserialize(positionid)
             if variantid is not None and p.variant != variantid: 
                 raise PuzzleException("variantid doesn't match puzzleid")
-            if not p.isLegalPosition(): raise PuzzleException("position is not a valid puzzle")
 
     def getName(self, **kwargs):
         """Returns the name of the Puzzle.

@@ -24,24 +24,21 @@ Following the steps of the algorithm we defined in [puzzle tree:](https://nyc.cs
 
 Splitting the algorithm into two separate parts:
 
-Step 1: (the ```helper``` function would be defined in Step 2, 3, & 4)
+Step 1: Initializations of the winstates (solutions) of the puzzle as well as setting their remotenesses to 0. Additionally also initalizing the Queue data structure used for BFS.
 ```python
 def solve(self, **kwargs):
-    # continued...
-    ends = self.puzzle.generateSolutions()
-    for end in ends: 
-        self.remoteness[hash(end)] = 0
-    helper(self, ends)
+    solutions, queue = self.puzzle.generateSolutions(), q.Queue()
+    for solution in solutions: 
+        self.remoteness[hash(solution)] = 0
+        queue.put(solution)
 ```
 
-Step 2, 3, & 4: 
+Step 2, 3, & 4: The following performs the BFS portion of the algorithm. 
 ```python
-def helper(self, puzzles):
-    queue = q.Queue()
-    for puzzle in puzzles: queue.put(puzzle)
+    # BFS for remoteness classification                        
     while not queue.empty():
         puzzle = queue.get()
-        for move in puzzle.generateMoves(movetype="undo"):
+        for move in puzzle.generateMoves('undo'):
             nextPuzzle = puzzle.doMove(move)
             if hash(nextPuzzle) not in self.remoteness:
                 self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
@@ -50,37 +47,42 @@ def helper(self, puzzles):
 
 The final solve function should look like this:
 ```python
-def solve(self, **kwargs):
-    # BFS for remoteness classification
-    def helper(self, puzzles):
-        queue = q.Queue()
-        for puzzle in puzzles: queue.put(puzzle)
-        while not queue.empty():
-            puzzle = queue.get()
-            for move in puzzle.generateMoves():
-                nextPuzzle = puzzle.doMove(move)
-                if hash(nextPuzzle) not in self.remoteness:
-                    self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
-                    queue.put(nextPuzzle)
+def solve(self, *args, **kwargs):
+    """Traverse the entire puzzle tree and classifiers all the 
+    positions with values and remoteness
+    - If position already exists in memory, returns its value
+    """        
+    solutions, queue = self.puzzle.generateSolutions(), q.Queue()
+    for solution in solutions: 
+        self.remoteness[hash(solution)] = 0
+        queue.put(solution)
 
-    ends = self.puzzle.generateSolutions()
-    for end in ends: 
-        self.remoteness[hash(end)] = 0
-    helper(self, ends)
+    # BFS for remoteness classification                        
+    while not queue.empty():
+        puzzle = queue.get()
+        for move in puzzle.generateMoves('undo'):
+            nextPuzzle = puzzle.doMove(move)
+            if hash(nextPuzzle) not in self.remoteness:
+                self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
+                queue.put(nextPuzzle)
 ```
 
 ### Execute
 Once you have implemented all the required functions, change the last line of the Python file outside of the class to:
 ```python
-PuzzlePlayer(Hanoi(), solver=GeneralSolver(Hanoi())).play()
+puzzle = Hanoi()
+PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle)).play()
 ```
 On your CLI, execute
 ```bash
 python <your_python_file_name>.py
 ```
-If you have a Solver value of SOLVABLE, congrats! You have successfully implemented a Solver!
+If you have a Solver value of SOLVABLE, congrats! You have successfully implemented a BFS Solver!
 
 ## Extras
 Ponder on these questions in how we can optimize this solver
-- Try thinking of a way to parallelize this solver.
+- Try thinking of a way to optimize the algorithm for this solver.
 - Are there any ways we can solve this not through BFS?
+- This solver will not save the positions it classifies after execution is over. Think about ways we can add persistance to our solvers.
+
+[Next Step: 7 Server Introduction](07_Server_Introduction.md)
