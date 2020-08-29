@@ -6,7 +6,7 @@ from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import *
-from ..puzzleplayer import PuzzlePlayer
+from ..puzzleplayer import PuzzlePlayer, PuzzleException
 
 import math
 
