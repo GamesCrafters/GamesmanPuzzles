@@ -46,7 +46,7 @@ class PuzzlePlayer:
         else:
             moves = list(self.puzzle.generateMoves(movetype="legal"))
             # Have the best move be the first index
-            if solver and self.info: 
+            if self.solver and self.info: 
                 moves.remove(move)
                 moves.insert(0, move)
             print("Possible Moves:")
@@ -82,11 +82,15 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--position", help="Specific position of puzzle (overrides variant)")
     parser.add_argument("-i", "--info", action="store_true", help="Solver reveals some helpful info")
     parser.add_argument("-a", "--auto", action="store_true", help="Puzzle plays itself")
+    parser.add_argument("-l", "--list", action="store_true", help="Lists puzzles and their ids")
 
     args = parser.parse_args()
 
     if args.puzzleid not in puzzleList:
+        print("Possible puzzles:")
+        print("\n".join(puzzleList.keys()))
         raise Exception("Puzzleid is not recorded in PuzzleList")
+
     p_cls = puzzleList[args.puzzleid]
 
     puzzle = None    
