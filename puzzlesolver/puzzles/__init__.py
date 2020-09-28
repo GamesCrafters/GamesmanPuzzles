@@ -14,10 +14,9 @@ puzzleList = {
     Npuzzle.puzzleid: Npuzzle,
     Hanoi.puzzleid: Hanoi,
     Chairs.puzzleid: Chairs,
-    Rubiks.puzzleid: Rubiks
+    Rubiks.puzzleid: Rubiks,
     LightsOut.puzzleid: LightsOut,
-    Peg.puzzleid: Peg,
-    Chairs.puzzleid: Chairs
+    Peg.puzzleid: Peg
 }
 
 for puzzle in puzzleList.values():
