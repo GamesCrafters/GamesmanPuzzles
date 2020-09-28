@@ -17,9 +17,14 @@ class PuzzlePlayer:
 
     # Starts the PuzzlePlayer
     def play(self):
+        print("-----STARTING----")
         self.puzzle = self.base
         self.turn = 0
+        print("-----ENTER WHILE-----")
+        count = 0
         while self.puzzle.primitive() == PuzzleValue.UNDECIDED:
+            print("COUNT: ", count)
+            count +=1
             self.printInfo()
             self.puzzle.printInfo()
             self.printTurn()

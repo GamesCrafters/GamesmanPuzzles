@@ -4,11 +4,14 @@ from .hanoi import Hanoi
 from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
 from .chairs import Chairs
+from .rubiks import Rubiks
 
 puzzleList = {
     Peg.puzzleid: Peg,
     Hanoi.puzzleid: Hanoi,
-    Chairs.puzzleid: Chairs
+    Chairs.puzzleid: Chairs,
+    Rubiks.puzzleid: Rubiks
+
 }
 
 for puzzle in puzzleList.values():

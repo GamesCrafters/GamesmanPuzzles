@@ -208,5 +208,9 @@ class Chairs(ServerPuzzle):
         if variantid not in Chairs.variants: raise IndexError("Out of bounds variantid")
         return Chairs()
 
+if __name__ == "__main__":
+    puzzle = Chairs()
+    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle), bestmove=True, auto=True).play()
+
 # PuzzlePlayer(Chairs(), solver=GeneralSolver(), auto=True).play()
 # PuzzlePlayer(Peg()).play()

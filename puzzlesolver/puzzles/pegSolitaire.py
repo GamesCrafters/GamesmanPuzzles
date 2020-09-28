@@ -360,6 +360,10 @@ class Peg(ServerPuzzle):
                 solutions.append(newPuzzle)
         return solutions
 
+if __name__ == "__main__":
+    puzzle = Peg()
+    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle), bestmove=True).play()
+
 # board = [[1],[1,1],[0,1,1],[1,1,1,1],[1,1,1,1,1]]
 # board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
 # PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=True).play()
