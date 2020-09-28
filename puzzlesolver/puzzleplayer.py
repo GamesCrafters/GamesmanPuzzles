@@ -10,6 +10,8 @@ class PuzzlePlayer:
         self.puzzle = puzzle
         self.solver = solver
         self.solverinfo = solverinfo
+        if not solver and (auto or bestmove):
+            raise Exception("Cannot have auto or bestmove arguments without a solver")
         self.auto = auto
         self.bestmove = bestmove
         if solver:
@@ -43,9 +45,10 @@ class PuzzlePlayer:
 
     # Prompts for input and moves
     def printTurn(self):
-        move = self.generateBestMove()
+        if self.solver: move = self.generateBestMove() 
         # Auto generate a possible solution
-        if self.auto: self.puzzle = self.puzzle.doMove(move)
+        if self.auto:
+            self.puzzle = self.puzzle.doMove(move)
         else:
             moves = list(self.puzzle.generateMoves(movetype="legal"))
             # Have the best move be the first index

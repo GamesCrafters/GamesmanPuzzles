@@ -68,3 +68,22 @@ def testValidation():
     pytest.raises(PuzzleException, Peg.validate, invalid_puzzle, "Triangle")
     Peg.validate(valid_puzzle, "Triangle")
 
+@pytest.mark.skip(reason="will fail due to removal of PegSolitaire from TestServer")
+def testPuzzleServer(client):
+    pid = Peg.puzzleid
+    rv = client.get('/{}/'.format(pid))
+    d = json.loads(rv.data)
+
+    assert d['response']['variants'] == list(Peg.variants.keys())
+
+    def helper(puzzleid, code, variantid, remoteness):
+        rv = client.get('/{}/{}/{}/'.format(puzzleid, variantid, code))
+        d = json.loads(rv.data)
+        assert d['response']['remoteness'] == remoteness
+    
+    helper(pid, '0_00_000_0000_10000_', 'Triangle', 0)
+    helper(pid, '0_00_000_0000_01100_', 'Triangle', 1)    
+    helper(pid, '1_00_000_0000_00000_', 'Triangle', 0)
+    helper(pid, '1_00_000_0000_10000_', 'Triangle', PuzzleValue.UNSOLVABLE)
+
+    helper(pid, '1_11_000_0111_11111_', 'Triangle', 10)

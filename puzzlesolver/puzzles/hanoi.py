@@ -5,7 +5,7 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import *
+from ..solvers import IndexSolver
 from ..puzzleplayer import PuzzlePlayer
 
 from hashlib import sha1
@@ -19,8 +19,8 @@ class Hanoi(ServerPuzzle):
         Fill the rightmost stack."""
     date_created = "April 2, 2020"
 
-    variants = {str(i) : SqliteSolver for i in range(1, 11)}
-    test_variants = {str(i) : SqliteSolver for i in range(1, 5)}
+    variants = {str(i) : IndexSolver for i in range(15, 0, -1)}
+    test_variants = {str(i) : IndexSolver for i in range(3, 0, -1)}
 
     def __init__(self, size=3, **kwargs):
         if not isinstance(size, int): raise ValueError 
@@ -42,17 +42,32 @@ class Hanoi(ServerPuzzle):
         return 3 ** int(self.variant)
 
     def __hash__(self):
-        # We're being really lazy here and using built in hashlib functions.
-        # Can't use regular hash because those are random
-        h = sha1()
-        h.update(str(self.stacks).encode())
-        return int(h.hexdigest(), 16)
+        # Assign discs to stack num
+        num_to_stack = {}
+        for entry in self.stacks[2]:
+            num_to_stack[entry] = 0
+
+        bigger_stack = 1 if max(self.stacks[0] + [0]) < max(self.stacks[1] + [0]) else 0
+        for entry in self.stacks[bigger_stack]:
+            num_to_stack[entry] = 1
+        
+        smaller_stack = 0 if bigger_stack == 1 else 1
+        for entry in self.stacks[smaller_stack]:
+            num_to_stack[entry] = 2
+        
+        # Compute hash
+        result = 0
+        multiply = 1
+        for i in range(1, int(self.variant) + 1):
+            result += num_to_stack[i] * multiply
+            multiply *= 3
+        return result
 
     def __str__(self):
         return str(self.stacks)
 
     def getName(self):
-        return 'Hanoi' + self.variant
+        return 'Hanoi'
 
     def primitive(self, **kwargs):
         if self.stacks[2] == list(range(int(self.variant), 0, -1)):
@@ -125,5 +140,5 @@ class Hanoi(ServerPuzzle):
         return True
 
 if __name__ == "__main__":
-    puzzle = Hanoi(size=3)
-    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle), bestmove=True).play()
+    puzzle = Hanoi(size=14)
+    PuzzlePlayer(puzzle, IndexSolver(puzzle=puzzle)).play()

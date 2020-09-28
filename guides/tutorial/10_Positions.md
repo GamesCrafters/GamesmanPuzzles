@@ -8,7 +8,7 @@ Positions strings allow users to query into our PuzzleSolver and find the remote
 ## Serialization
 When users are accessing the Web API, they need a way to input a puzzle position and return a result. We can do this by **serializing** the puzzle into a string code, which can be **deserialized** back into a puzzle.
 
-**`serialize()`**
+#### **`serialize()`**
 
 Serializing is to take an object and convert it into string form. The string returned must be unique enough to turn back to said object. *Note: this is different from a hash, as a hash can be the same for two puzzles if one is simply a variation of the other.*
 ```python
@@ -19,9 +19,12 @@ def serialize(self, **kwargs):
     return "-".join(result)
 ```
 
-**`deserialize()`**
+#### **`deserialize()`**
 
 Deserializing is to take a string and encode it back into an object. After serializing an puzzle, deserializing the serialization must return the same puzzle.
+
+**Note:** Deserializing should raise a `PuzzleException` (found in the `puzzlesolver.util` module) if it encounters invalid puzzleid input.
+
 ```python
 @classmethod
 def deserialize(cls, positionid, **kwargs):
@@ -38,9 +41,9 @@ def deserialize(cls, positionid, **kwargs):
 
 ## Validation
 
-We want to make sure the user inputs proper strings, and return helpful messages when they don't. Thus, we must be able handle any input string and check if it's valid. Most of the validation is already handled by default, and `isLegalPosition()` is the only function that needs to be implemented.
+When the user interacts with the server, occasionally the user may input positionids that are not valid. We want to make sure the user inputs proper strings, and return helpful messages when they don't. Thus, we must be able to validate user input. Validation is built-in as default behavior for every ServerPuzzle and can be observed in the `validate` function. It relies on the implementation of `deserialize` and a new function `isLegalPosition`.
 
-**`isLegalPosition()`**
+#### **`isLegalPosition()`**
 
 `isLegalPosition()` is a classmethod that checks if a given string is a valid Puzzle object as well as follows the rules of the given puzzle. For example, you cannot stack a larger disc ontop of a smaller disc in Towers of Hanoi.
 ```python
@@ -60,7 +63,7 @@ def isLegalPosition(cls, positionid, variantid=None, **kwargs):
 ```
 
 ## Start Position
-**`generateStartPosition()`**
+#### **`generateStartPosition()`**
 
 This function is mainly here to give a starting and example position for a variant in a puzzle, and will be on display at `/puzzles/<puzzle_id>/<variant_id>/`.
 ```python

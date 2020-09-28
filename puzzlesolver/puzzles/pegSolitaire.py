@@ -15,6 +15,7 @@ class Peg(ServerPuzzle):
     date_created = "April 15, 2020"
 
     variants = {"Triangle": SqliteSolver}
+    test_variants = {}
 
     def __init__(self, **kwargs):
         if len(kwargs) == 1:

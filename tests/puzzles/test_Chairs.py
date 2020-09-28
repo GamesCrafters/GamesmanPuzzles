@@ -64,3 +64,18 @@ def testValidation():
     pytest.raises(PuzzleException, Chairs.validate, invalid_puzzle, "10")
     Chairs.validate(valid_puzzle, "10")
 
+def testPuzzleServer(client):
+    pid = Chairs.puzzleid
+    rv = client.get('/{}/'.format(pid))
+    d = json.loads(rv.data)
+
+    assert d['response']['variants'] == list(Chairs.variants.keys())
+
+    def helper(puzzleid, code, variantid, remoteness):
+        rv = client.get('/{}/{}/{}/'.format(puzzleid, variantid, code))
+        d = json.loads(rv.data)
+        assert d['response']['remoteness'] == remoteness
+    
+    helper(pid, 'ooooo-xxxxx', '10', 0)
+    helper(pid, 'xxxxx-ooooo', '10', 35)
+    helper(pid, 'xxxxxooooo-', '10', PuzzleValue.UNSOLVABLE)
