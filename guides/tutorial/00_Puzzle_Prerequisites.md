@@ -14,7 +14,7 @@ Make sure you installed all the dependencies! It's recommended to use a virtuale
 pip install -r requirements.txt
 ```
 
-Create a new Python file and import the following:
+Create a new Python file **in the GamesmanPuzzles directory** (making sure the dependencies are in the right location) and import the following:
 ```python
 from copy import deepcopy
 from puzzlesolver.util import *
