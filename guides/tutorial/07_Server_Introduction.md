@@ -1,7 +1,7 @@
 # Server Introduction
 GamesmanPuzzles provides a Web API to display values of puzzles. This guide will adapt our puzzle from the previous steps into a format which can be displayed onto the Web API.
 
-You can manually run the server by running
+You can manually run the server by running **only after all the puzzles have been solved and stored in binary files. This probably hasn't been done in your local system yet, but it is not necessary for this tutorial.**
 ```python
 python -m puzzlesolver.server
 ```
