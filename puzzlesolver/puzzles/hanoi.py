@@ -19,7 +19,7 @@ class Hanoi(ServerPuzzle):
         Fill the rightmost stack."""
     date_created = "April 2, 2020"
 
-    variants = {str(i) : IndexSolver for i in range(15, 0, -1)}
+    variants = {str(i) : IndexSolver for i in range(14, 0, -1)}
     test_variants = {str(i) : IndexSolver for i in range(3, 0, -1)}
 
     def __init__(self, size=3, **kwargs):
