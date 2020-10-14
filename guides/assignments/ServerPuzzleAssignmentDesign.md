@@ -1,7 +1,6 @@
-# Assignment: Develop your own ServerPuzzle
+# Server Puzzle Assignment (Design part)
 Alright, now it's time to take the training wheels off and develop your own ServerPuzzle. Your assignment is to design and develop a ServerPuzzle based on the tutorials and format set up in GamesmanPuzzles.
 
-## Design
 Before developing the ServerPuzzle, you must visualize how your Puzzle would work. What should be the default variant? How many positions must be hashed? How will the puzzle progress? 
 
 This design process will be represented with a writeup. You must submit the writeup in PDF form. Include these in your writeup:
