@@ -39,7 +39,7 @@ This design process will be represented with a writeup. You must submit the writ
 - (Optional) Optimization
     - Example topic: Reduced number of positions with Hash tricks
 
-Submit your writeup at Gradescope by the listed time. 
+Submit your writeup in the shared Google Drive folder by the listed time (10/21/20). The Google Drive link will be posted on Slack. 
 
 ## Develop
 Similar to how you implemented Hanoi, implement your ServePuzzle and follow the [tutorial steps](../tutorial). You may refer to the already existing puzzles ([Hanoi](../../puzzlesolver/puzzles/hanoi.py)) for guidance.
