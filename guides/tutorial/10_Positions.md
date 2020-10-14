@@ -41,7 +41,7 @@ def deserialize(cls, positionid, **kwargs):
 
 ## Validation
 
-When the user interacts with the server, occasionally the user may input positionids that are not valid. We want to make sure the user inputs proper strings, and return helpful messages when they don't. Thus, we must be ablle to validate user input. Validation is built-in as default behavior for every ServerPuzzle and can be observed in the `validate` function. It relies on the implementation of `deserialize` and a new function `isLegalPosition`.
+When the user interacts with the server, occasionally the user may input positionids that are not valid. We want to make sure the user inputs proper strings, and return helpful messages when they don't. Thus, we must be able to validate user input. Validation is built-in as default behavior for every ServerPuzzle and can be observed in the `validate` function. It relies on the implementation of `deserialize` and a new function `isLegalPosition`.
 
 #### **`isLegalPosition()`**
 

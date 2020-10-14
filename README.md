@@ -21,7 +21,7 @@ Run from the base directory of the respository
 ```
 python -m puzzlesolver.server
 ```
-to access the webserver. The server should be running at http://127.0.0.1:9001/puzzles/.
+to access the webserver. The server should be running at http://127.0.0.1:9001/.
 
 ## Exploring GamesmanPuzzles
 Tips for exploring this repository:
