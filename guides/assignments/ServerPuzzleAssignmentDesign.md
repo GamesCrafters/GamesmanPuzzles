@@ -18,11 +18,11 @@ This design process will be represented with a writeup. You must submit the writ
         - Should contain how to play and win.
         - State why you think it's a good addition to GamesmanPuzzles
 - Position
-    - Position representation ([example](###Example-A))
+    - Position representation (Check Example A below)
 - Moves
     - The type of Legal moves in the Puzzle 
         - Forward, Bidirectional, or Both
-    - Move representation ([example](###Example-A))
+    - Move representation (Check Example A below)
         - Moves should be represented as a tuple with two entries. 
         - You should represent complex entries as single numbers or letters.
 - Variants (Must have at least two Variants, including the default Variant)
