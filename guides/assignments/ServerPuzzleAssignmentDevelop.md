@@ -1,4 +1,4 @@
-# Server Puzzle Assignment (Develop part)
+# Server Puzzle Assignment (Develop part) (Due 11/4/20)
 Now that you have a general idea of what kind of Puzzle you want to implement, it is time to develop!. Similar to how you implemented Hanoi, implement your ServerPuzzle and follow the [tutorial steps](../tutorial). You may refer to the already existing puzzles ([Hanoi](../../puzzlesolver/puzzles/hanoi.py)) for guidance.
 
 ### Testing
