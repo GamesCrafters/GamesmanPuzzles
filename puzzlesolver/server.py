@@ -58,12 +58,18 @@ def format_response(response, status="available"):
 # Routes
 @app.route('/', methods=['GET'])
 def puzzles():
-    response = {
-        "puzzles": list(puzzleList.keys())
-    }
+    response = [
+        {
+            "gameId": puzzle_id,
+            "name"  : puzzleList[puzzle_id].puzzle_name,
+            "status": "available"
+        }
+        for puzzle_id in puzzleList 
+    ]
     return format_response(response)
 
 @app.route('/<puzzle_id>/', methods=['GET'])
+@app.route('/<puzzle_id>/variants/', methods=['GET'])
 def puzzle(puzzle_id):
     validate(puzzle_id)
     puzzle = puzzleList[puzzle_id]
@@ -73,20 +79,31 @@ def puzzle(puzzle_id):
         "author": puzzle.author,
         "description": puzzle.description,
         "date_created": puzzle.date_created,
-        "variants": list(puzzle.variants.keys())
+        "variants": [{
+            "description": variant_id,
+            "startPosition": puzzleList[puzzle_id].generateStartPosition(variant_id).serialize(),
+            "status": "stable",
+            "variantId": variant_id
+        }
+        for variant_id in puzzle.variants.keys()]
     }
     return format_response(response)
 
 @app.route('/<puzzle_id>/<variant_id>/', methods=['GET'])
+@app.route('/<puzzle_id>/variants/<variant_id>/', methods=['GET'])
 def puzzle_variant(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)
     p = puzzleList[puzzle_id].generateStartPosition(variant_id)
     response = {
-        "starting_pos": p.serialize()
+        "description": variant_id,
+        "startPosition": p.serialize(),
+        "status": "stable",
+        "variantId": variant_id
     }
     return format_response(response)
 
 @app.route('/<puzzle_id>/<variant_id>/<position>/', methods=['GET'])
+@app.route('/<puzzle_id>/variants/<variant_id>/positions/<position>/', methods=['GET'])
 def puzzle_position(puzzle_id, variant_id, position):
     validate(puzzle_id, variant_id, position)
     p = puzzleList[puzzle_id].deserialize(position)
@@ -97,11 +114,12 @@ def puzzle_position(puzzle_id, variant_id, position):
         "position": p.serialize(),
         "remoteness": s.getRemoteness(p),
         "value": s.getValue(p),
-        "moves": {str(move[0]) : {
+        "moves": [{
             "position": move[1].serialize(),
+            "move": str(move[0]),
             "remoteness": s.getRemoteness(move[1]),
             "value": s.getValue(move[1])
-        } for move in moves}
+        } for move in moves]
     }
     return format_response(response)
 
