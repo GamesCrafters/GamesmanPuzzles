@@ -1,7 +1,7 @@
 import pytest
 from unittest import mock
 
-from puzzlesolver.puzzleplayer import PuzzlePlayer
+from puzzleplayer import PuzzlePlayer
 from puzzlesolver.puzzles.graphpuzzle import GraphPuzzle
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import *
@@ -21,6 +21,6 @@ def testGeneral():
 
     input_mock = mock.Mock(return_value=0)
 
-    with mock.patch('puzzlesolver.puzzleplayer.input', input_mock):
+    with mock.patch('puzzleplayer.input', input_mock):
         pp.play()
     assert input_mock.call_count == 3

@@ -20,7 +20,7 @@ from copy import deepcopy
 from puzzlesolver.util import *
 from puzzlesolver.puzzles import Puzzle
 from puzzlesolver.solvers import GeneralSolver
-from puzzlesolver import PuzzlePlayer
+from puzzleplayer import PuzzlePlayer
 ```
 
 The rest of guide will implement the instance methods of this class.

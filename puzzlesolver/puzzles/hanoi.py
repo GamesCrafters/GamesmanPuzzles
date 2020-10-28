@@ -6,7 +6,6 @@ from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import IndexSolver
-from ..puzzleplayer import PuzzlePlayer
 
 from hashlib import sha1
 
@@ -138,7 +137,3 @@ class Hanoi(ServerPuzzle):
         if len(unique) != int(puzzle.variant) or min(unique) != 1 or max(unique) != int(puzzle.variant):
             return False
         return True
-
-if __name__ == "__main__":
-    puzzle = Hanoi(size=14)
-    PuzzlePlayer(puzzle, IndexSolver(puzzle=puzzle)).play()

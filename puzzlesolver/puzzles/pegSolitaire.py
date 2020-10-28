@@ -1,8 +1,7 @@
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import GeneralSolver, SqliteSolver
-from ..puzzleplayer import PuzzlePlayer
+from ..solvers import SqliteSolver
 
 from hashlib import sha1
 
@@ -360,8 +359,3 @@ class Peg(ServerPuzzle):
                 newPuzzle = Peg(board=temp_board)
                 solutions.append(newPuzzle)
         return solutions
-
-# board = [[1],[1,1],[0,1,1],[1,1,1,1],[1,1,1,1,1]]
-# board2 = [[0],[0,0],[0,0,0],[1,0,0,0],[1,0,0,0,0]]
-# PuzzlePlayer(Peg(board=board), solver=GeneralSolver(), auto=True).play()
-# PuzzlePlayer(Peg()).play()
