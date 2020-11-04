@@ -20,6 +20,7 @@ class GeneralSolver(Solver):
         positions with values and remoteness
         """
         # Progressbar
+        print("START")
         if verbose: 
             print('Solving: {}'.format(self.puzzle.getName()))
             bar = progressbar.ProgressBar()
@@ -30,7 +31,10 @@ class GeneralSolver(Solver):
             self.remoteness[hash(solution)] = 0
             queue.put(solution)
 
-        # BFS for remoteness classification                        
+        # BFS for remoteness classification
+        count = 0    
+        print("ENTER LOOP")
+                    
         while not queue.empty():
             if verbose: bar.update(len(self.remoteness))
             puzzle = queue.get()
@@ -39,4 +43,8 @@ class GeneralSolver(Solver):
                 if hash(nextPuzzle) not in self.remoteness:
                     self.remoteness[hash(nextPuzzle)] = self.remoteness[hash(puzzle)] + 1
                     queue.put(nextPuzzle)
+                    count +=1
+                    # if count % 10000 == 0:
+                    # print("COUNT: ",count)
+                        # print("QUEUE: ", queue.qsize())
         if verbose: bar.finish()

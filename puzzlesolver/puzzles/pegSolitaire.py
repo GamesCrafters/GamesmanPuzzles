@@ -117,7 +117,7 @@ class Peg(ServerPuzzle):
                         for i in range(check3_len):
                             moves.append(check3[i])
         return moves
-
+    # d = {str([0,0])}
     ### _____ generateMoves HELPERS _______ ###
     
     # left vertical

@@ -8,6 +8,7 @@ from .graphpuzzle import GraphPuzzle
 from .npuzzle import Npuzzle
 from .chairs import Chairs
 from .rubiks import Rubiks
+from .hopNdrop import HopNDrop
 
 # Add your puzzle in the puzzleList
 puzzleList = {
@@ -16,7 +17,8 @@ puzzleList = {
     Chairs.puzzleid: Chairs,
     Rubiks.puzzleid: Rubiks,
     LightsOut.puzzleid: LightsOut,
-    Peg.puzzleid: Peg
+    Peg.puzzleid: Peg,
+    HopNDrop.puzzleid: HopNDrop
 }
 
 for puzzle in puzzleList.values():

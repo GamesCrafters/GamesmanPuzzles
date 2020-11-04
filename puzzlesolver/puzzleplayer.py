@@ -52,9 +52,13 @@ class PuzzlePlayer:
         else:
             moves = list(self.puzzle.generateMoves(movetype="legal"))
             # Have the best move be the first index
-            if self.bestmove: 
-                moves.remove(move)
-                moves.insert(0, move)
+            if len(moves) == 0:
+                print("Game Over")
+                exit()
+            elif self.bestmove: 
+                if move in moves:
+                    moves.remove(move)
+                    moves.insert(0, move)
             print("Possible Moves:")
             for count, m in enumerate(moves):
                 print(str(count) + " -> " + str(m))

@@ -7,6 +7,13 @@ from ..puzzleplayer import PuzzlePlayer
 
 from hashlib import sha1
 
+rot_tile_r = [2,0,3,1]
+rot_cube_r = [1,4,2,0,3]
+rot_tile_l = [1,3,0,2]
+rot_cube_l = [3,0,2,4,1]
+rot_tile_2 = [3,2,1,0]
+rot_cube_2 = [4,3,2,1,0,5]
+
 class Rubiks(ServerPuzzle):
 
     puzzleid = 'rubiks'
@@ -22,8 +29,40 @@ class Rubiks(ServerPuzzle):
         # [1][2][3]
         #    [4]
         #    [5]
-        self.board = [[0,0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
-        # self.board = [[0,0,0,0],[2,2,1,1],[3,3,2,2],[5,5,3,3],[4,4,4,4],[5,5,1,1]]
+        b = [['O',0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
+        r = random.randint(15, 25)
+        moves = ["TopRow->Right", "TopRow->Left", "BottomRow->Right", "BottomRow->Left", "LeftColumn->Up", "LeftColumn->Down", "RightColumn->Up", "RightColumn->Down", "TopTile->Right", "TopTile->Left", "BottomTile->Right", "BottomTile->Left"]
+        for i in range(r):
+            index = random.randint(0,7)
+            move = moves[index]
+            if move == "TopRow->Right":
+                b = self.topR(b)
+            elif move == "TopRow->Left":
+                b = self.topL(b)
+            elif move == "BottomRow->Right":
+                b = self.bottomR(b)
+            elif move == "BottomRow->Left":
+                b = self.bottomL(b)
+            elif move == "LeftColumn->Up":
+                b = self.leftUp(b)       
+            elif move == "LeftColumn->Down":
+                b = self.leftDown(b)  
+            elif move == "RightColumn->Up":
+                b = self.rightUp(b)  
+            elif move == "RightColumn->Down":
+                b = self.rightDown(b)
+            elif move == "TopTile->Right":
+                b = self.topTileRight(b)
+            elif move == "TopTile->Left":
+                b = self.topTileLeft(b)
+            elif move == "BottomTile->Left":
+                b = self.bottomTileLeft(b)
+            elif move == "BottomTile->Right":
+                b = self.bottomTileRight(b)
+        self.board = b
+        # self.board = [[4, 5, 0, 0], [2, 2, 4, 'O'], [3, 3, 1, 2], [5, 4, 1, 4], [5, 0, 3, 2], [5, 1, 3, 1]]
+        # self.board = [[5, 5, 'O', 0], [4, 5, 1, 1], [1, 1, 2, 0], [2, 0, 3, 3], [4, 2, 4, 2], [5, 4, 3, 3]]
+        # self.board = [[4, 2, 4, 5], [3, 3, 5, 0], [2, 0, 3, 1], [3, 1, 4, 2], [2, 5, 'O', 0], [1, 1, 5, 4]]
 
 
     def __str__(self, **kwargs):
@@ -76,14 +115,18 @@ class Rubiks(ServerPuzzle):
     def primitive(self, **kwargs):
         for side in self.board:
             item = side[0]
+            if item == 'O':
+                item = 0
             for i in side:
+                if i == 'O':
+                    i = 0
                 if i != item:
                     return PuzzleValue.UNDECIDED
         return PuzzleValue.SOLVABLE
 
     # Generate Legal Moves & all undo moves
     def generateMoves(self, movetype="all", **kwargs):
-        moves = ["Top->Right", "Top->Left", "Bottom->Right", "Bottom->Left", "Left->Up", "Left->Down", "Right->Up", "Right->Down"]
+        moves = ["TopRow->Right", "TopRow->Left", "BottomRow->Right", "BottomRow->Left", "LeftColumn->Up", "LeftColumn->Down", "RightColumn->Up", "RightColumn->Down", "TopTile->Right", "TopTile->Left", "BottomTile->Right", "BottomTile->Left"]
         if movetype=='bi' or movetype=='legal' or movetype=='all' or movetype=='undo':
             return moves
         elif movetype=='for' or movetype=='back':
@@ -211,54 +254,171 @@ class Rubiks(ServerPuzzle):
         new_board[3] = [b[3][1], b[3][3], b[3][0], b[3][2]]
         return new_board 
 
+    def topTileLeft(self, b):
+        #2x close components: 0 -> 1,     1 ->  4,   4 ->  3,    3  ->  0
+        #                   (3,2) (1,3) (1,3) (0,1) (0,1) (2,0) (2,0)  (3,2)
+        new_board = deepcopy(b)
+        cells = [0,1,4,3,0]
+        d = {0: (3,2), 1: (1,3), 4: (0,1), 3: (2,0)}
+        for c in range(4):
+            sp_cell = cells[c]
+            rot_items = [b[sp_cell][d[sp_cell][0]], b[sp_cell][d[sp_cell][1]]]
+            sp_cell_1 = cells[c+1]
+            new_board[sp_cell_1][d[sp_cell_1][0]], new_board[sp_cell_1][d[sp_cell_1][1]] = rot_items[0], rot_items[1]
+        new_board[2] = [new_board[2][r] for r in rot_tile_l]
+        return new_board 
+
+    def topTileRight(self, b):
+        #2x close components: 0 -> 3,     3 ->  4,   4 ->  1,    1  ->  0
+        #                   (2,3) (0,2) (0,2) (1,0) (1,0) (3,1) (3,1)  (2,3)
+        new_board = deepcopy(b)
+        cells = [0,3,4,1,0]
+        d = {0: (2,3), 3: (0,2), 4: (1,0), 1: (3,1)}
+        for c in range(4):
+            sp_cell = cells[c]
+            rot_items = [b[sp_cell][d[sp_cell][0]], b[sp_cell][d[sp_cell][1]]]
+            sp_cell_1 = cells[c+1]
+            new_board[sp_cell_1][d[sp_cell_1][0]], new_board[sp_cell_1][d[sp_cell_1][1]] = rot_items[0], rot_items[1]
+        new_board[2] = [new_board[2][r] for r in rot_tile_r]
+        return new_board 
+
+    def bottomTileLeft(self, b):
+        #2x close components: 0 -> 1,     1 ->  4,   4 ->  3,    3  ->  0
+        #                   (1,0) (0,2) (0,2) (2,3) (2,3) (3,1) (3,1)  (1,0)
+        new_board = deepcopy(b)
+        cells = [0,1,4,3,0]
+        d = {0: (1,0), 1: (0,2), 4: (2,3), 3: (3,1)}
+        for c in range(4):
+            sp_cell = cells[c]
+            rot_items = [b[sp_cell][d[sp_cell][0]], b[sp_cell][d[sp_cell][1]]]
+            sp_cell_1 = cells[c+1]
+            new_board[sp_cell_1][d[sp_cell_1][0]], new_board[sp_cell_1][d[sp_cell_1][1]] = rot_items[0], rot_items[1]
+        new_board[5] = [new_board[5][r] for r in rot_tile_r]
+        return new_board 
+
+    def bottomTileRight(self, b):
+        #2x close components: 0 -> 3,     3 ->  4,   4 ->  1,    1  ->  0
+        #                   (0,1) (1,3) (1,3) (3,2) (3,2) (2,0) (2,0)  (0,1)
+        new_board = deepcopy(b)
+        cells = [0,3,4,1,0]
+        d = {0: (0,1), 3: (1,3), 4: (3,2), 1: (2,0)}
+        for c in range(4):
+            sp_cell = cells[c]
+            rot_items = [b[sp_cell][d[sp_cell][0]], b[sp_cell][d[sp_cell][1]]]
+            sp_cell_1 = cells[c+1]
+            new_board[sp_cell_1][d[sp_cell_1][0]], new_board[sp_cell_1][d[sp_cell_1][1]] = rot_items[0], rot_items[1]
+        new_board[5] = [new_board[5][r] for r in rot_tile_l]
+        return new_board 
+
     ### _________ end HELPERS _________________ ###
 
     def doMove(self, move, **kwargs):
         if move not in self.generateMoves(): raise ValueError
         newPuzzle = Rubiks()
-        if move == "Top->Right":
+        if move == "TopRow->Right":
             new_board = self.topR(self.board)
-        elif move == "Top->Left":
+        elif move == "TopRow->Left":
             new_board = self.topL(self.board)
-        elif move == "Bottom->Right":
+        elif move == "BottomRow->Right":
             new_board = self.bottomR(self.board)
-        elif move == "Bottom->Left":
+        elif move == "BottomRow->Left":
             new_board = self.bottomL(self.board)
-        elif move == "Left->Up":
+        elif move == "LeftColumn->Up":
             new_board = self.leftUp(self.board)       
-        elif move == "Left->Down":
+        elif move == "LeftColumn->Down":
             new_board = self.leftDown(self.board)  
-        elif move == "Right->Up":
+        elif move == "RightColumn->Up":
             new_board = self.rightUp(self.board)  
-        elif move == "Right->Down":
+        elif move == "RightColumn->Down":
             new_board = self.rightDown(self.board)  
-
+        elif move == "TopTile->Right":
+            new_board = self.topTileRight(self.board)
+        elif move == "TopTile->Left":
+            new_board = self.topTileLeft(self.board)
+        elif move == "BottomTile->Right":
+            new_board = self.bottomTileRight(self.board)
+        elif move == "BottomTile->Left":
+            new_board = self.bottomTileLeft(self.board)
         newPuzzle.board = new_board
         return newPuzzle   
 
     ### ____________ Solver Funcs ________________
 
+
+    ### ___ HASH ____ ###
+    def center_cube(self, board):
+        #Find which tile contains 'O'
+        ind = [('O' in x) for x in board].index(True)
+        #Get this tile to the center
+        if ind == 0:
+            #rotate left->down & right->down
+            board = self.leftDown(board)
+            board = self.rightDown(board)
+        elif ind == 1:
+            # rotate top->right & bottom-> right
+            board = self.topR(board)
+            board = self.bottomR(board)
+        elif ind == 2:
+            temp = 0 #Nothing
+        elif ind == 3:
+            # rotate top->left & bottom-> left
+            board = self.topL(board)
+            board = self.bottomL(board)
+        elif ind == 4:
+            #rotate left->up & right->up
+            board = self.leftUp(board)
+            board = self.rightUp(board)
+        else:
+            #rotate left->up x2 & right->up x2
+            board = self.leftUp(board)
+            board = self.rightUp(board)
+            board = self.leftUp(board)
+            board = self.rightUp(board)
+        #Rotate tile s.t. 'O' in top left
+        ind = board[2].index('O')
+        if ind == 0:
+            # print("Nothing")
+            new_board = board
+        elif ind == 1:
+            #rotate left
+            new_board = [[board[x][r] for r in rot_tile_l] for x in range(5)]
+            new_board = [new_board[r] for r in rot_cube_l]
+            new_board.append([board[5][r] for r in rot_tile_r])
+        elif ind == 2:
+            #rotate right
+            new_board = [[board[x][r] for r in rot_tile_r] for x in range(5)]
+            new_board = [new_board[r] for r in rot_cube_r]
+            new_board.append([board[5][r] for r in rot_tile_l])
+        else:
+            #rotate right x2
+            new_board = [[board[x][r] for r in rot_tile_2] for x in range(6)]
+            new_board = [new_board[r] for r in rot_cube_2]
+        return new_board
+
     def __hash__(self):
         h = sha1()
-        h.update(str(self.board).encode())
+        b = self.center_cube(self.board)
+        h.update(str(b).encode())
         return int(h.hexdigest(), 16)
-        
+
+    ### _____ END HASH ________ ###
         
 
     def generateSolutions(self, **kwargs):
         newPuzzle1 = Rubiks()
-        newPuzzle1.board = [[0,0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
-        newPuzzle2 = Rubiks()
-        newPuzzle2.board = [[5,5,5,5],[1,1,1,1],[0,0,0,0],[3,3,3,3],[2,2,2,2],[4,4,4,4]]
-        newPuzzle3 = Rubiks()
-        newPuzzle3.board = [[4,4,4,4],[1,1,1,1],[5,5,5,5],[3,3,3,3],[0,0,0,0],[2,2,2,2]]
-        newPuzzle4 = Rubiks()
-        newPuzzle4.board = [[2,2,2,2],[1,1,1,1],[4,4,4,4],[3,3,3,3],[5,5,5,5],[0,0,0,0]]
-        newPuzzle5 = Rubiks()
-        newPuzzle5.board = [[0,0,0,0],[5,5,5,5],[1,1,1,1],[2,2,2,2],[4,4,4,4],[3,3,3,3]]
-        newPuzzle6 = Rubiks()
-        newPuzzle6.board = [[0,0,0,0],[2,2,2,2],[3,3,3,3],[5,5,5,5],[4,4,4,4],[1,1,1,1]]
-        return [newPuzzle1,newPuzzle2, newPuzzle3, newPuzzle4, newPuzzle5, newPuzzle6]
+        newPuzzle1.board = [['O',0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
+        # newPuzzle2 = Rubiks()
+        # newPuzzle2.board = [[5,5,5,5],[1,1,1,1],['O',0,0,0],[3,3,3,3],[2,2,2,2],[4,4,4,4]]
+        # newPuzzle3 = Rubiks()
+        # newPuzzle3.board = [[4,4,4,4],[1,1,1,1],[5,5,5,5],[3,3,3,3],['O',0,0,0],[2,2,2,2]]
+        # newPuzzle4 = Rubiks()
+        # newPuzzle4.board = [[2,2,2,2],[1,1,1,1],[4,4,4,4],[3,3,3,3],[5,5,5,5],['O',0,0,0]]
+        # newPuzzle5 = Rubiks()
+        # newPuzzle5.board = [['O',0,0,0],[5,5,5,5],[1,1,1,1],[2,2,2,2],[4,4,4,4],[3,3,3,3]]
+        # newPuzzle6 = Rubiks()
+        # newPuzzle6.board = [['O',0,0,0],[2,2,2,2],[3,3,3,3],[5,5,5,5],[4,4,4,4],[1,1,1,1]]
+        # return [newPuzzle1,newPuzzle2, newPuzzle3, newPuzzle4, newPuzzle5, newPuzzle6]
+        return [newPuzzle1]
 
     ### ________ Server _________
     @classmethod
@@ -322,37 +482,41 @@ class Rubiks(ServerPuzzle):
         """
         if not isinstance(variantid, str): raise TypeError("Invalid variantid")
         if variantid not in Rubiks.variants: raise IndexError("Out of bounds variantid")
-        b = [[0,0,0,0],[2,2,1,1],[3,3,2,2],[5,5,3,3],[4,4,4,4],[5,5,1,1]]
-        # b = [[0,0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
-        # r = random.randint(15, 25)
-        # r = 1
-        # moves = ["Top->Right", "Top->Left", "Bottom->Right", "Bottom->Left", "Left->Up", "Left->Down", "Right->Up", "Right->Down"]
-        # for i in range(r):
-        #     index = random.randint(0,7)
-        #     move = moves[index]
-        #     if move == "Top->Right":
-        #         b = self.topR(b)
-        #     elif move == "Top->Left":
-        #         b = self.topL(b)
-        #     elif move == "Bottom->Right":
-        #         b = self.bottomR(b)
-        #     elif move == "Bottom->Left":
-        #         b = self.bottomL(b)
-        #     elif move == "Left->Up":
-        #         b = self.leftUp(b)       
-        #     elif move == "Left->Down":
-        #         b = self.leftDown(b)  
-        #     elif move == "Right->Up":
-        #         b = self.rightUp(b)  
-        #     elif move == "Right->Down":
-        #         b = self.rightDown(b)
+        b = [['O',0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
+        r = random.randint(15, 25)
+        r = 15
+        moves = ["TopRow->Right", "TopRow->Left", "BottomRow->Right", "BottomRow->Left", "LeftColumn->Up", "LeftColumn->Down", "RightColumn->Up", "RightColumn->Down", "TopTile->Right", "TopTile->Left", "BottomTile->Right", "BottomTile->Left"]
+        for i in range(r):
+            index = random.randint(0,7)
+            move = moves[index]
+            if move == "TopRow->Right":
+                b = self.topR(b)
+            elif move == "TopRow->Left":
+                b = self.topL(b)
+            elif move == "BottomRow->Right":
+                b = self.bottomR(b)
+            elif move == "BottomRow->Left":
+                b = self.bottomL(b)
+            elif move == "LeftColumn->Up":
+                b = self.leftUp(b)       
+            elif move == "LeftColumn->Down":
+                b = self.leftDown(b)  
+            elif move == "RightColumn->Up":
+                b = self.rightUp(b)  
+            elif move == "RightColumn->Down":
+                b = self.rightDown(b)
+            elif move == "TopTile->Right":
+                b = self.topTileRight(b)
+            elif move == "TopTile->Left":
+                b = self.topTileLeft(b)
+            elif move == "BottomTile->Left":
+                b = self.bottomTileLeft(b)
+            elif move == "BottomTile->Right":
+                b = self.bottomTileRight(b)
         puzzle = Rubiks()
         puzzle.board = b
         return puzzle    
 
 if __name__ == "__main__":
     puzzle = Rubiks()
-    PuzzlePlayer(puzzle, GeneralSolver(puzzle=puzzle), bestmove=True, auto=False).play()
-
-# PuzzlePlayer(Chairs(), solver=GeneralSolver(), auto=True).play()
-# PuzzlePlayer(Peg()).play()
+    PuzzlePlayer(puzzle, SqliteSolver(puzzle=puzzle), bestmove=True, auto=False).play()
