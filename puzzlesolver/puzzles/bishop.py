@@ -2,7 +2,6 @@ from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import IndexSolver
-from ..puzzleplayer import PuzzlePlayer
 import math
 
 class Bishop(ServerPuzzle):
