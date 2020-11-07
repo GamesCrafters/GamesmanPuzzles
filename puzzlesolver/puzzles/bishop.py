@@ -2,7 +2,6 @@ from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import IndexSolver
-from ..puzzleplayer import PuzzlePlayer
 import math
 
 class Bishop(ServerPuzzle):
@@ -14,6 +13,7 @@ class Bishop(ServerPuzzle):
 	date_created = "October 30, 2020"
 	# Chessboard has y rows, 2x columns
 	variants = {str(i[0]) + "x" + str(i[1]): IndexSolver for i in ((2,5), (2,7), (3,7))}
+	test_variants = {str(i[0]) + "x" + str(i[1]): IndexSolver for i in ((2,5), (2,7))}
 	
 	def __init__(self, bishops=2, rows=5, **kwargs):
 		# The bottom left square has a bishop.
