@@ -1,11 +1,7 @@
-from . import ServerPuzzle
-from ..util import *
-
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import IndexSolver
-from ..puzzleplayer import PuzzlePlayer
 
 class LightsOut(ServerPuzzle):
 
@@ -90,7 +86,3 @@ class LightsOut(ServerPuzzle):
 
     def isLegalPosition(self):
         return True
-
-if __name__ == "__main__":
-    puzzle = LightsOut()
-    PuzzlePlayer(puzzle).play()

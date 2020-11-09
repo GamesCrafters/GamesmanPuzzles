@@ -13,7 +13,7 @@ pip install -r requirements.txt
 
 Run from the base directory of the repositiory
 ```
-python -m puzzlesolver.puzzles.hanoi
+python puzzleplayer.py hanoi
 ```
 to play a puzzle of Towers of Hanoi
 

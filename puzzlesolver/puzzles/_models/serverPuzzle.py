@@ -1,4 +1,4 @@
-from ...util import *
+from ...util import PuzzleException
 from . import Puzzle
 from abc import abstractproperty, abstractclassmethod, abstractmethod
 

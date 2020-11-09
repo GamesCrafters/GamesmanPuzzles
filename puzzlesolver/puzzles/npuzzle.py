@@ -6,7 +6,6 @@ from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import *
-from ..puzzleplayer import PuzzlePlayer, PuzzleException
 
 import math
 
@@ -138,7 +137,3 @@ class Npuzzle(ServerPuzzle):
                 raise PuzzleException("Incorrect pieces.")
 
         return True            
-
-if __name__ == "__main__":
-    puzzle = Npuzzle(size=3)
-    PuzzlePlayer(puzzle, ServerPuzzle(puzzle=puzzle)).play()

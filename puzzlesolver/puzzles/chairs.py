@@ -1,8 +1,7 @@
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import GeneralSolver, SqliteSolver
-from ..puzzleplayer import PuzzlePlayer
+from ..solvers import SqliteSolver
 
 from hashlib import sha1
 
@@ -207,6 +206,3 @@ class Chairs(ServerPuzzle):
         if not isinstance(variantid, str): raise TypeError("Invalid variantid")
         if variantid not in Chairs.variants: raise IndexError("Out of bounds variantid")
         return Chairs()
-
-# PuzzlePlayer(Chairs(), solver=GeneralSolver(), auto=True).play()
-# PuzzlePlayer(Peg()).play()
