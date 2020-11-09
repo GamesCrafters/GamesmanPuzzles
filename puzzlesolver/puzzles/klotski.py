@@ -8,7 +8,7 @@ from ..solvers import SqliteSolver
 class Klotski(ServerPuzzle):
     puzzleid = 'klotski'
     variants = {
-        '1': SqliteSolver
+        '1': GeneralSolver
     }
     def __init__(self, v = 1, **kwargs):
         """
@@ -83,7 +83,7 @@ class Klotski(ServerPuzzle):
 
     def primitive(self, **kwargs):
         # just check if block is in final position
-        if 9 in self.blocks and self.blocks[9].id == 0:
+        if 13 in self.blocks and self.blocks[13].id == 0:
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
 
@@ -119,16 +119,28 @@ class Klotski(ServerPuzzle):
                 down = [i+8, i+9]
                 left = [i-1, i+3]
                 right = [i+2, i+6]
-            elif b.type == 2:
+                if i % 4 == 2:
+                    right = [-1]
+                if i % 4 == 1:
+                    left = [-1]
+            elif b.type == 2: #2x1
                 up = [i - 4]
                 down = [i + 4]
                 left = [i - 1, i +3]
                 right = [i + 1, i+5]
-            elif b.type == 3:
+                if i % 4 == 2:
+                    right = [-1]
+                if i % 4 == 1:
+                    left = [-1]
+            elif b.type == 3: # 1x2
                 up = [i-4, i-3]
                 down = [i+4, i+5]
                 left = [i-1]
                 right =[i+2]
+                if i % 4 == 2:
+                    right = [-1]
+                if i % 4 == 1:
+                    left = [-1]
             if i % 4 == 0:
                 left = [-1]
             if i % 4 == 3:
@@ -162,6 +174,8 @@ class Klotski(ServerPuzzle):
             blocks[curr_position-4] = block
         elif dir == 'd':
             blocks[curr_position+4] = block
+            if block.type == 0:
+                newPuzzle.blocks = blocks
         elif dir == 'l':
             blocks[curr_position - 1] = block
         elif dir == 'r':
