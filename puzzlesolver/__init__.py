@@ -1,3 +1,3 @@
-from .puzzles import *
-from .solvers import *
-from .puzzleplayer import PuzzlePlayer
+from . import util
+from . import solvers
+from . import puzzles

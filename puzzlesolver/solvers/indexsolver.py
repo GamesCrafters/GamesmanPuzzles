@@ -1,5 +1,5 @@
 from collections.abc import MutableMapping
-from . import GeneralSolver
+from .generalsolver import GeneralSolver
 from functools import partial
 import os
 

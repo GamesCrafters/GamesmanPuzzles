@@ -2,8 +2,8 @@ import pytest
 import tempfile
 
 from puzzlesolver import server
-from puzzlesolver.puzzles import puzzleList, GraphPuzzle
 from puzzlesolver.util import PuzzleValue
+from puzzlesolver.puzzles import puzzleList, GraphPuzzle
 
 @pytest.fixture
 def client(tmpdir):
