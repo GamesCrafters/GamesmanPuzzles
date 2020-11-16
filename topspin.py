@@ -1,44 +1,29 @@
 from copy import deepcopy
 from puzzlesolver.util import *
-from puzzlesolver.puzzles import Puzzle
+from puzzlesolver.puzzles import Puzzle, ServerPuzzle
 from puzzlesolver.solvers import SqliteSolver
 from puzzlesolver.solvers import GeneralSolver
 from puzzleplayer import PuzzlePlayer
 from hashlib import sha1
 import random
 
-class TopSpin(Puzzle):
+class TopSpin(ServerPuzzle):
 
 	puzzleid = 'top_spin'
-	#variants = {'7' : SqliteSolver}
+	variants = {'6_2' : GeneralSolver}
 
-	def __init__(self, size = 6, **kwargs):
+	def __init__(self, size = 6, spin = 2, **kwargs):
 		self.size = size
+		self.spin = spin
 		self.all_nums = list(range(1, size+1))
 		if len(kwargs) == 1:
-			self.first = False
 			for key, value in kwargs.items():
-				if key == 'track':
-					self.track = value
-					self.spin = self.track[2]
-					self.loop = [
-						self.track[0], 
-						self.track[1], 
-						self.track[2][0], 
-						self.track[2][1],
-						self.track[3],
-						self.track[4]]
+				if key == 'loop':
+					self.loop  = value
 		else:
 			base = random.sample(self.all_nums,size)
-			self.first = True
-			self.spin = base[2:4]
-			self.track = [
-				base[0], 
-				base[1], 
-				self.spin,
-				base[4], 
-				base[5]]
 			self.loop = base
+		self.track = [self.loop[:spin]] + [item for item in self.loop[spin:]]
 
 			
 
@@ -46,11 +31,12 @@ class TopSpin(Puzzle):
 		return str(self.track)
 
 	def printInfo(self):
+		
 		print("Puzzle: ")
 		print('                           ')
-		print ("     "+str(self.track[2]) + '\n')
-		print (str(self.track[1]) + "               " + str(self.track[3]) + '\n')
-		print("     " + str(self.track[0]) + "     " + str(self.track[4]))
+		print ("     "+str(self.track[0]) + '\n')
+		print (str(self.track[4]) + "               " + str(self.track[1]) + '\n')
+		print("     " + str(self.track[3]) + "     " + str(self.track[2]))
 		print('                           ')
 
 
@@ -59,7 +45,7 @@ class TopSpin(Puzzle):
 		since the track is circular, you can find where the 1 is and wrap it around
 		to see if it is in sorted order
 		'''
-		if self.loop == [5,6,1,2,3,4]:
+		if self.loop == self.all_nums:
 			return PuzzleValue.SOLVABLE
 		return PuzzleValue.UNDECIDED
 
@@ -73,6 +59,7 @@ class TopSpin(Puzzle):
 		moves.append(('flip'))
 		return moves
 
+	#helper fucntion for doMove()
 	def handleMove(self, idx, move):
 		if 0 <= idx + move <= self.size - 1:
 			return idx + move
@@ -85,23 +72,19 @@ class TopSpin(Puzzle):
 	def doMove(self, move, **kwargs):
 		if move not in self.generateMoves():
 			raise ValueError
-		temp = [0 for _ in range(self.size)]
+		new_loop = [0 for _ in range(self.size)]
 		if len(move) == 2:
-			if move[1] == 'cntrclockwise':
-				idx_change = - move[0]
-			else:
-				idx_change = move[0]
+			idx_change = move[0]
 			for i in range(self.size):
-				temp[self.handleMove(i, idx_change)] = self.loop[i]
-			new_track = [temp[0],temp[1],[temp[2],temp[3]],temp[4],temp[5]]
+				new_loop[self.handleMove(i, idx_change)] = self.loop[i]
 		else:
-			spin = self.track[2][::-1]
-			new_track = [self.track[0],self.track[1],spin,self.track[3],self.track[4]]
-		new_puzzle = TopSpin(track = new_track)
+			spinned = self.loop[:self.spin][::-1]
+			new_loop = spinned + self.loop[self.spin:]
+		new_puzzle = TopSpin(loop = new_loop)
 		return new_puzzle
 
 	
-	#Solver Functions
+
 	def __hash__(self):
 		h = sha1()
 		h.update(str(self.loop).encode())
@@ -109,44 +92,61 @@ class TopSpin(Puzzle):
 
 	def generateSolutions(self, **kwargs):
 		solutions = []
-		temp = [5,6,[1,2],3,4]
-		solutions.append(TopSpin(track = temp))
+		temp = self.all_nums
+		solutions.append(TopSpin(loop = temp))
 		return solutions
 	
-	'''
+	
 	@property
 	def variant(self):
-		size = len(self.loop)
-		return str(size)
-
-
-	def serialize(self, **kwargs):
-		str_rep = ''
-		for item in self.track:
-			str_rep += str(item)
-			str_rep += '-'
-		return str_rep
-
-	@classmethod
-	def deserialize(cls, positionid, **kwargs):
-		puzzle = TopSpin()
-        puzzle.loop = []
-        stacks = positionid.split("-")
-        for string in stacks:
-            if string != "":
-                stack = [int(x) for x in string.split("_")]
-                puzzle.stacks.append(stack)
-            else: puzzle.stacks.append([])
-        return puzzle
-
+		size = str(len(self.loop))
+		spin = str(len(self.track[0]))
+		var = size + '_' + spin
+		return var
 
 	@classmethod
 	def generateStartPosition(cls, variantid, **kwargs):
 		if not isinstance(variantid, str): raise TypeError("Invalid variantid")
 		if variantid not in TopSpin.variants: raise IndexError("Out of bounds variantid")
-		return TopSpin(size=int(variantid))
-	'''
+		temp = variantid.split('_')
+		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
 
-puzzle = TopSpin()
-PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle)).play()
+	def serialize(self, **kwargs):
+		result = ''
+		result += '_'.join([str(item) for item in self.track[0]])
+		for item in self.track[1:]:
+			result += '-'
+			result += str(item)
+		return result
+
+	@classmethod
+	def deserialize(cls, positionid, **kwargs):
+		puzzle = TopSpin()
+		puzzle.loop = []
+		stacks = positionid.split('-')
+		in_spin = stacks[0].split('_')
+		for string in in_spin:
+			puzzle.loop.append(int(string))
+		for item in stacks[1:]:
+			puzzle.loop.append(int(item))
+		return puzzle
+
+	@classmethod
+	def isLegalPosition(cls, positionid, variantid=None, **kwargs):
+		try:
+			puzzle = cls.deserialize(positionid)
+		except:
+			return False
+		if len(puzzle.loop) != int(puzzle.variant[0]):
+			return False
+		elif len(puzzle.stacks[0]) != int(puzzle.variant[2]):
+			return False
+		return True
+
+
+
+# puzzle = TopSpin()
+# PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle)).play()
+from puzzlesolver.server import test_puzzle
+test_puzzle(TopSpin)
