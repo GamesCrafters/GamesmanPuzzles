@@ -1,16 +1,14 @@
 from copy import deepcopy
-from puzzlesolver.util import *
-from puzzlesolver.puzzles import Puzzle, ServerPuzzle
-from puzzlesolver.solvers import SqliteSolver
-from puzzlesolver.solvers import GeneralSolver
-from puzzleplayer import PuzzlePlayer
+from . import ServerPuzzle
+from ..util import *
+from ..solvers import SqliteSolver
 from hashlib import sha1
 import random
 
 class TopSpin(ServerPuzzle):
 
 	puzzleid = 'top_spin'
-	variants = {'6_2' : GeneralSolver}
+	variants = {'6_2' : SqliteSolver}
 
 	def __init__(self, size = 6, spin = 2, **kwargs):
 		self.size = size
@@ -104,10 +102,15 @@ class TopSpin(ServerPuzzle):
 		var = size + '_' + spin
 		return var
 
+	def getName(self, **kwargs):
+		return "Top Spin " + self.variant
+
 	@classmethod
 	def generateStartPosition(cls, variantid, **kwargs):
-		if not isinstance(variantid, str): raise TypeError("Invalid variantid")
-		if variantid not in TopSpin.variants: raise IndexError("Out of bounds variantid")
+		if not isinstance(variantid, str):
+			raise TypeError("Invalid variantid")
+		if variantid not in TopSpin.variants:
+			raise IndexError("Out of bounds variantid")
 		temp = variantid.split('_')
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
@@ -122,14 +125,14 @@ class TopSpin(ServerPuzzle):
 
 	@classmethod
 	def deserialize(cls, positionid, **kwargs):
-		puzzle = TopSpin()
-		puzzle.loop = []
+		new_loop = []
 		stacks = positionid.split('-')
 		in_spin = stacks[0].split('_')
 		for string in in_spin:
-			puzzle.loop.append(int(string))
+			new_loop.append(int(string))
 		for item in stacks[1:]:
-			puzzle.loop.append(int(item))
+			new_loop.append(int(item))
+		puzzle = TopSpin(loop=new_loop)
 		return puzzle
 
 	@classmethod
@@ -138,15 +141,16 @@ class TopSpin(ServerPuzzle):
 			puzzle = cls.deserialize(positionid)
 		except:
 			return False
-		if len(puzzle.loop) != int(puzzle.variant[0]):
+		size = int(puzzle.variant[0])
+		in_spinner = int(puzzle.variant[2])
+		if len(puzzle.loop) != size:
 			return False
-		elif len(puzzle.stacks[0]) != int(puzzle.variant[2]):
+		elif len(puzzle.track[0]) != in_spinner:
 			return False
+		elif max(puzzle.loop) > size or min(puzzle.loop) < 1:
+			return False 
+		for i in range(len(puzzle.loop)):
+			for j in range(i+1, len(puzzle.loop)):
+				if puzzle.loop[i] == puzzle.loop[j]:
+					return False
 		return True
-
-
-
-# puzzle = TopSpin()
-# PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle)).play()
-from puzzlesolver.server import test_puzzle
-test_puzzle(TopSpin)

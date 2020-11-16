@@ -8,6 +8,7 @@ from .graphpuzzle import GraphPuzzle
 from .npuzzle import Npuzzle
 from .chairs import Chairs
 from .bishop import Bishop
+from .topspin import TopSpin
 
 # Add your puzzle in the puzzleList
 puzzleList = {
@@ -16,7 +17,8 @@ puzzleList = {
     LightsOut.puzzleid: LightsOut,
     Peg.puzzleid: Peg,
     Chairs.puzzleid: Chairs,
-    Bishop.puzzleid: Bishop
+    Bishop.puzzleid: Bishop,
+    TopSpin.puzzleid: TopSpin,
 }
 
 for puzzle in puzzleList.values():
