@@ -7,6 +7,7 @@ from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
 from .npuzzle import Npuzzle
 from .chairs import Chairs
+from .bishop import Bishop
 
 # Add your puzzle in the puzzleList
 puzzleList = {
@@ -14,7 +15,8 @@ puzzleList = {
     Hanoi.puzzleid: Hanoi,
     LightsOut.puzzleid: LightsOut,
     Peg.puzzleid: Peg,
-    Chairs.puzzleid: Chairs
+    Chairs.puzzleid: Chairs,
+    Bishop.puzzleid: Bishop
 }
 
 for puzzle in puzzleList.values():
