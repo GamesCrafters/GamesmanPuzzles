@@ -7,8 +7,7 @@ class Puzzle(ABC):
     
     # Intializer
     def __init__(self, **kwargs):
-		# Change this to True if you cannot generate solutions
-        self.noGenerateSolutions = False
+        pass
 
     # Gameplay methods
     @abstractmethod
@@ -115,7 +114,7 @@ class Puzzle(ABC):
         Outputs:
             Iterable of Puzzles
         """
-        raise NotImplementedError
+        return []
 
     def generateMovePositions(self, movetype="legal", **kwargs):
         """Generate an iterable of puzzles with all moves fitting movetype
