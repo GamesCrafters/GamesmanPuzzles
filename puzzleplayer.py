@@ -29,48 +29,94 @@ class PuzzlePlayer:
         print("Game Over")
 
     def printInfo(self):
-        print("Turn:          ", self.turn), 
-        print("Primitive:     ", self.puzzle.primitive())
+        print("Turn:                  ", self.turn), 
+        if self.puzzle.primitive() == 'UNDECIDED':
+            prim = "UNDECIDED"
+        else:
+            prim = "SOLVED"
+        print("Primitive:             ", prim)
         if self.info and self.solver:
-            print("Solver:        ", self.solver.getValue(self.puzzle))
-            print("Remoteness:    ", self.solver.getRemoteness(self.puzzle)) 
-            print("Best Move:     ", self.generateBestMove())
+            if self.solver.getValue(self.puzzle) == 'UNSOLVABLE':
+                pos = "LOSE"
+            else: 
+                pos = "WIN"
+            print("Position:              ", pos)
+            print("Remoteness:            ", self.solver.getRemoteness(self.puzzle))
+            # print("Best Move:     ", self.generateBestMove()[0])
+            best_move, remotes, unsolve = self.generateBestMove()
+            self.printBestMoves(remotes, unsolve)
         self.turn += 1
 
     # Prompts for input and moves
     def printTurn(self):
-        if self.solver: move = self.generateBestMove() 
+        if self.solver: move, _, _ = self.generateBestMove() 
         # Auto generate a possible solution
         if self.auto:
             self.puzzle = self.puzzle.doMove(move)
         else:
             moves = list(self.puzzle.generateMoves(movetype="legal"))
             # Have the best move be the first index
-            if self.solver and self.info: 
+            if len(moves) == 0:
+                print("Game Over")
+                exit()
+            if self.solver and self.info and move: 
                 moves.remove(move)
                 moves.insert(0, move)
-            print("Possible Moves:")
-            for count, m in enumerate(moves):
-                print(str(count) + " -> " + str(m))
+            # print("Possible Moves:")
+            # for count, m in enumerate(moves):
+            #     print(str(count) + " -> " + str(m))
             print("Enter Piece: ")
-            index = int(input())
-            if index >= len(moves):
+            # index = int(input())
+            # if index >= len(moves):
+            #     print("Not a valid move, try again")
+            # else:
+            #     self.puzzle = self.puzzle.doMove(moves[index])
+            play = self.puzzle.playPuzzle()
+            if play == "BEST":
+                self.puzzle = self.puzzle.doMove(moves[0])
+            elif play not in moves or play == "OOPS":
                 print("Not a valid move, try again")
             else:
-                self.puzzle = self.puzzle.doMove(moves[index])
+                self.puzzle = self.puzzle.doMove(play)
         print("----------------------------")
 
     # Generates best move from the solver
     def generateBestMove(self):
-        if self.solver.getValue(self.puzzle) == PuzzleValue.UNSOLVABLE: return None
-        if self.puzzle.primitive() == PuzzleValue.SOLVABLE: return None
+        # if self.solver.getValue(self.puzzle) == PuzzleValue.UNSOLVABLE: return None, None, None
+        # if self.puzzle.primitive() == PuzzleValue.SOLVABLE: return None, None, None
         remotes = {
-            self.solver.getRemoteness(self.puzzle.doMove(move)) : move 
+            str(move) : self.solver.getRemoteness(self.puzzle.doMove(move)) 
             for move in self.puzzle.generateMoves(movetype="legal")
         }
-        if PuzzleValue.UNSOLVABLE in remotes:
-            del remotes[PuzzleValue.UNSOLVABLE]
-        return remotes[min(remotes.keys())]
+        min_remote = 1000000
+        best_move = None
+        unsolve = {}
+        for key, value in remotes.items():
+            if value == PuzzleValue.UNSOLVABLE:
+                unsolve[key] = value
+            elif value < min_remote:
+                min_remote = value
+                best_move = key
+        for key in unsolve.keys():
+            del remotes[key]
+        return best_move, remotes, unsolve
+
+    def printBestMoves(self, remotes, unsolve):
+        print("Winning Moves: ")
+        if remotes: 
+            sorted_remotes = {k: v for k, v in sorted(remotes.items(), key=lambda item: item[1])}
+            for k, v in sorted_remotes.items():
+                space = 22 - len(k)
+                printer = " " * space
+                print("- " + str(k) + printer + str(v))
+        else:
+            print("- <None>")
+        print("Losing Moves: ")
+        if unsolve:
+            for k in unsolve.keys():
+                print("- " + str(k))
+        else:
+            print("- <None>")
 
 if __name__ == "__main__":
     import argparse

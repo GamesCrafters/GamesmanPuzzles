@@ -9,6 +9,8 @@ from .npuzzle import Npuzzle
 from .chairs import Chairs
 from .bishop import Bishop
 from .topspin import TopSpin
+from .hopNdrop import HopNDrop
+from .rubiks import Rubiks
 
 # Add your puzzle in the puzzleList
 puzzleList = {
@@ -19,6 +21,8 @@ puzzleList = {
     Chairs.puzzleid: Chairs,
     Bishop.puzzleid: Bishop,
     TopSpin.puzzleid: TopSpin,
+    HopNDrop.puzzleid: HopNDrop,
+    Rubiks.puzzleid: Rubiks
 }
 
 for puzzle in puzzleList.values():

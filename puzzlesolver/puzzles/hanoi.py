@@ -5,7 +5,7 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import IndexSolver
+from ..solvers import IndexSolver, GeneralSolver
 
 from hashlib import sha1
 

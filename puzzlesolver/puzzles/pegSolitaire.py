@@ -44,6 +44,8 @@ class Peg(ServerPuzzle):
     ### _________ Print Funcs _______________
     def printInfo(self):
         #Print Puzzle
+        d = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
+            str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
         print("Puzzle: ")
         space = "                    "
         for outer in range(5):
@@ -56,13 +58,25 @@ class Peg(ServerPuzzle):
             space = "".join(temp)
             print(" " + space + " ", end="")
             for inner2 in range(outer + 1):
-                print("[" + str(outer) + "," + str(inner2) + "]" + "   ", end="")
+                print(" " +d[str([outer, inner2])] + "    ", end="")
             print("")
 
     def getName(self, **kwargs):
         return "Peg Solitaire " + self.variant
 
     # ________ End Print Funcs _________
+
+    def playPuzzle(self):
+        d = {'a':[0,0], 'b':[1,0], 'c':[1,1], 'd':[2,0], 'e':[2,1], 'f':[2,2], 'g':[3,0],
+            'h':[3,1], 'i':[3,2], 'j':[3,3], 'k':[4,0], 'l':[4,1], 'm':[4,2], 'n':[4,3], 'o':[4,4]}
+        print("| Type starting peg to ending peg in lower case, e.g. 'ca' |")
+        inp = str(input())
+        if inp == '':
+            return "BEST"
+        if len(inp) != 2:
+            return "OOPS"
+        command = [d[inp[0]],d[inp[1]]]
+        return command
 
     def primitive(self, **kwargs):
         if self.pins == 1:
