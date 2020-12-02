@@ -22,10 +22,10 @@ class PuzzlePlayer:
         print("-----STARTING----")
         self.puzzle = self.base
         self.turn = 0
-        print("-----ENTER WHILE-----")
+        # print("-----ENTER WHILE-----")
         count = 0
         while self.puzzle.primitive() == PuzzleValue.UNDECIDED:
-            print("COUNT: ", count)
+            # print("COUNT: ", count)
             count +=1
             self.printInfo()
             self.puzzle.printInfo()
@@ -36,9 +36,13 @@ class PuzzlePlayer:
 
     def printInfo(self):
         print("Turn:          ", self.turn), 
-        print("Primitive:     ", self.puzzle.primitive())
+        # print("Primitive:     ", self.puzzle.primitive())
         if self.solverinfo and self.solver:
-            print("Solver:        ", self.solver.getValue(self.puzzle))
+            if self.solver.getValue(self.puzzle) == 'UNSOLVABLE':
+                pos = "LOSE"
+            else: 
+                pos = "WIN"
+            print("Position:      ", pos)
             print("Remoteness:    ", self.solver.getRemoteness(self.puzzle))
         if self.bestmove: print("Best Move:     ", self.generateBestMove())
         self.turn += 1
@@ -59,15 +63,20 @@ class PuzzlePlayer:
                 if move in moves:
                     moves.remove(move)
                     moves.insert(0, move)
-            print("Possible Moves:")
-            for count, m in enumerate(moves):
-                print(str(count) + " -> " + str(m))
+            # print("Possible Moves:")
+            # for count, m in enumerate(moves):
+            #     print(str(count) + " -> " + str(m))
             print("Enter Piece: ")
-            index = int(input())
-            if index >= len(moves):
+            # index = int(input())
+            # if index >= len(moves):
+            #     print("Not a valid move, try again")
+            # else:
+            #     self.puzzle = self.puzzle.doMove(moves[index])
+            play = self.puzzle.playPuzzle()
+            if play not in moves:
                 print("Not a valid move, try again")
             else:
-                self.puzzle = self.puzzle.doMove(moves[index])
+                self.puzzle = self.puzzle.doMove(play)
         print("----------------------------")
 
     # Generates best move from the solver

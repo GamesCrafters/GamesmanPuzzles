@@ -25,11 +25,11 @@ class Rubiks(ServerPuzzle):
     variants = {"2x2" : SqliteSolver}
 
     def __init__(self, **kwargs):
-        #    [0]
-        # [1][2][3]
-        #    [4]
-        #    [5]
-        b = [['O',0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
+        #    [0]        [O]
+        # [1][2][3]   [B][G][W]
+        #    [4]        [R]
+        #    [5]        [Y]
+        b = [['0','O','O','O'],['B','B','B','B'],['G','G','G','G'],['W','W','W','W'],['R','R','R','R'],['Y','Y','Y','Y']]
         r = random.randint(15, 25)
         moves = ["TopRow->Right", "TopRow->Left", "BottomRow->Right", "BottomRow->Left", "LeftColumn->Up", "LeftColumn->Down", "RightColumn->Up", "RightColumn->Down", "TopTile->Right", "TopTile->Left", "BottomTile->Right", "BottomTile->Left"]
         for i in range(r):
@@ -63,6 +63,7 @@ class Rubiks(ServerPuzzle):
         # self.board = [[4, 5, 0, 0], [2, 2, 4, 'O'], [3, 3, 1, 2], [5, 4, 1, 4], [5, 0, 3, 2], [5, 1, 3, 1]]
         # self.board = [[5, 5, 'O', 0], [4, 5, 1, 1], [1, 1, 2, 0], [2, 0, 3, 3], [4, 2, 4, 2], [5, 4, 3, 3]]
         # self.board = [[4, 2, 4, 5], [3, 3, 5, 0], [2, 0, 3, 1], [3, 1, 4, 2], [2, 5, 'O', 0], [1, 1, 5, 4]]
+        # b = [['0','O','O','O'],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
 
 
     def __str__(self, **kwargs):
@@ -115,11 +116,11 @@ class Rubiks(ServerPuzzle):
     def primitive(self, **kwargs):
         for side in self.board:
             item = side[0]
-            if item == 'O':
-                item = 0
+            if item == '0':
+                item = 'O'
             for i in side:
-                if i == 'O':
-                    i = 0
+                if i == '0':
+                    i = 'O'
                 if i != item:
                     return PuzzleValue.UNDECIDED
         return PuzzleValue.SOLVABLE
@@ -348,7 +349,7 @@ class Rubiks(ServerPuzzle):
     ### ___ HASH ____ ###
     def center_cube(self, board):
         #Find which tile contains 'O'
-        ind = [('O' in x) for x in board].index(True)
+        ind = [('0' in x) for x in board].index(True)
         #Get this tile to the center
         if ind == 0:
             #rotate left->down & right->down
@@ -375,7 +376,7 @@ class Rubiks(ServerPuzzle):
             board = self.leftUp(board)
             board = self.rightUp(board)
         #Rotate tile s.t. 'O' in top left
-        ind = board[2].index('O')
+        ind = board[2].index('0')
         if ind == 0:
             # print("Nothing")
             new_board = board
@@ -406,7 +407,7 @@ class Rubiks(ServerPuzzle):
 
     def generateSolutions(self, **kwargs):
         newPuzzle1 = Rubiks()
-        newPuzzle1.board = [['O',0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
+        newPuzzle1.board = [['0','O','O','O'],['B','B','B','B'],['G','G','G','G'],['W','W','W','W'],['R','R','R','R'],['Y','Y','Y','Y']]
         # newPuzzle2 = Rubiks()
         # newPuzzle2.board = [[5,5,5,5],[1,1,1,1],['O',0,0,0],[3,3,3,3],[2,2,2,2],[4,4,4,4]]
         # newPuzzle3 = Rubiks()
@@ -482,7 +483,7 @@ class Rubiks(ServerPuzzle):
         """
         if not isinstance(variantid, str): raise TypeError("Invalid variantid")
         if variantid not in Rubiks.variants: raise IndexError("Out of bounds variantid")
-        b = [['O',0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5]]
+        b = [['0','O','O','O'],['B','B','B','B'],['G','G','G','G'],['W','W','W','W'],['R','R','R','R'],['Y','Y','Y','Y']]
         r = random.randint(15, 25)
         r = 15
         moves = ["TopRow->Right", "TopRow->Left", "BottomRow->Right", "BottomRow->Left", "LeftColumn->Up", "LeftColumn->Down", "RightColumn->Up", "RightColumn->Down", "TopTile->Right", "TopTile->Left", "BottomTile->Right", "BottomTile->Left"]

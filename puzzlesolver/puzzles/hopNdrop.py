@@ -59,6 +59,12 @@ class HopNDrop(ServerPuzzle):
         return "Hop N' Drop"
     # ________ End Print Funcs _________
 
+    def playPuzzle(self):
+        d = {'w':"Up", 'a':"Left", 's':"Down", 'd':"Right"}
+        print('| w -> Up | a -> Left | s -> Down | d -> Right |')
+        inp = str(input())
+        return d[inp]
+
     def primitive(self, **kwargs):
         end = False
         other = True
