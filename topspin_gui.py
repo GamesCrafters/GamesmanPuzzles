@@ -3,7 +3,7 @@ from puzzlesolver.puzzles import TopSpin
 from puzzlesolver.solvers import GeneralSolver,SqliteSolver
 from puzzlesolver.util import PuzzleValue
 from puzzleplayer import PuzzlePlayer
-from PIL import Image, ImageTk
+
 
 POS = [(175,125), (325,125), (450,275), (325,450), (175,450),(50,275)]
 IMGS = {'1': "one.png",
