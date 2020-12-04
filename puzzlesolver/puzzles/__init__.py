@@ -2,6 +2,7 @@ from ._models import *
 
 # Put your dependencies here
 from .hanoi import Hanoi
+from .klotski import Klotski
 from .lightsout import LightsOut
 from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
@@ -14,7 +15,8 @@ puzzleList = {
     Hanoi.puzzleid: Hanoi,
     LightsOut.puzzleid: LightsOut,
     Peg.puzzleid: Peg,
-    Chairs.puzzleid: Chairs
+    Chairs.puzzleid: Chairs,
+    Klotski.puzzleid: Klotski
 }
 
 for puzzle in puzzleList.values():
