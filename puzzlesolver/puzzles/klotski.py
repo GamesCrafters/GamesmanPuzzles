@@ -8,7 +8,7 @@ from ..solvers import SqliteSolver
 class Klotski(ServerPuzzle):
     puzzleid = 'klotski'
     variants = {
-        '1': GeneralSolver
+        '1': SqliteSolver
     }
     def __init__(self, v = 1, **kwargs):
         """
@@ -17,7 +17,7 @@ class Klotski(ServerPuzzle):
         position: numbered starting from 0 from top left
         :param kwargs:
         """
-        self.blocks = {}
+        self.blocks = {} # position to block
         if v == 1:
             self.blocks[0] = Block(1, 1)
             self.blocks[1] = Block(0, 0)
@@ -240,7 +240,7 @@ class Klotski(ServerPuzzle):
                 h[i] = id
                 h[i + 1] = id
         """
-        return int(''.join(str(i) for i in h))
+        return ''.join(str(i) for i in h)
 
     @classmethod
     def deserialize(cls, positionid, **kwargs):
@@ -250,7 +250,7 @@ class Klotski(ServerPuzzle):
         for i in range(len(positionid)):
             if positionid[i] != '9':
                 blocks[i] = Block(0, int(positionid[i]))
-        count = 0
+        count = 1
         for k in range(20):
             if k in blocks and blocks[k].type != 0:
                 blocks[k].id = count
