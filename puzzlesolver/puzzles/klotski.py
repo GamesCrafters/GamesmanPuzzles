@@ -8,7 +8,7 @@ from ..solvers import SqliteSolver
 class Klotski(ServerPuzzle):
     puzzleid = 'klotski'
     variants = {
-        '1': SqliteSolver
+        '1': GeneralSolver
     }
     def __init__(self, v = 1, **kwargs):
         """
@@ -196,7 +196,7 @@ class Klotski(ServerPuzzle):
         for i in list(range(13)) + [15, 16, 19]:
             blocks[i] = Block(1,1)
         blocks[13] = Block(0, 0)
-        newPuzzle = Klotski()
+
 
         poss_empties = [[9,10], [12,16], [15,19]]
         for pair in poss_empties:
@@ -208,6 +208,7 @@ class Klotski(ServerPuzzle):
                 if k in b and b[k].id != 0:
                     b[k].id = count
                     count += 1
+            newPuzzle = Klotski()
             newPuzzle.blocks = b
             solns.append(newPuzzle)
         return solns

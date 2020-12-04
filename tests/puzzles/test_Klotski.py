@@ -81,6 +81,8 @@ def testPositions():
     # end
     puzzles = puzzle0.generateSolutions()
     assert len(puzzles) == 3
+    print(puzzles)
+    assert puzzles[0].serialize() == '11111111199110911991'
 
 
 # def testValidation():
