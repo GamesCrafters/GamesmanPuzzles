@@ -4,14 +4,7 @@ from puzzlesolver.solvers import GeneralSolver,SqliteSolver
 from puzzlesolver.util import PuzzleValue
 from puzzleplayer import PuzzlePlayer
 
-
-POS = [(175,125), (325,125), (450,275), (325,450), (175,450),(50,275)]
-IMGS = {'1': "one.png",
-        '2': "two.png",
-        '3': "three.png",
-        '4': "four.png",
-        '5': "five.png",
-        '6': "six.png"}
+GAME_AREA = ((50,200),(500,500))
 
 class TsGUI(tk.Frame):
     def __init__(self, master = None, game = TopSpin(), width = 950, height = 600, title = 'TopSpin GUI', color = 'white'):
@@ -26,8 +19,10 @@ class TsGUI(tk.Frame):
 
         self.canvas = tk.Canvas(master, width = width, height = height, background = color)
         self.write_intro()
+        self.coords = self.def_coords()
         self.draw_spinner()
         self.draw_line()
+        self.draw_background()
         self.draw_track()
         self.restart_btn()
         self.quit_btn()
@@ -40,26 +35,50 @@ class TsGUI(tk.Frame):
         self.pack()
 
     def write_intro(self):
-        text = "To play {}, use the right arrow key to move the beads clockwise by 1 and the left arrow key to move the beads counterclockwise by 1. Here is the description of the puzzle: {}. This puzzle is created by {}.".format(self.game.puzzle_name, self.game.description, self.game.author)
+        text = "To play {}, use the right arrow key to move the beads clockwise by 1, the left arrow key to move the beads counterclockwise by 1, and hit 'return' to flip the beads. Here is the description of the puzzle: {} This puzzle is created by {}.".format(self.game.puzzle_name, self.game.description, self.game.author)
         self.canvas.create_text(75,20, text = text, width = 500, anchor = 'nw')
         info = "Primitive: " + self.game.primitive() + '\n' + "Remoteness: " + str(self.solver(self.game).getRemoteness(self.game))
         self.canvas.create_text(680,100, text = info , width = 500, anchor = 'nw', tag = 'info')
+    
+    def def_coords(self, r = 40):
+        top_num = self.game.spin + 1
+        bottom_num = self.game.size - top_num 
+        width = GAME_AREA[1][0] - GAME_AREA[0][0]
+        height = GAME_AREA[1][1] - GAME_AREA[0][1]
+        pos = []
+        for i in range(1, top_num):
+            pos.append((r + width//top_num*i, GAME_AREA[0][1]))
+        pos.append((GAME_AREA[1][0]- r, GAME_AREA[0][1] + height//2))
+        for j in range(1, bottom_num)[::-1]:
+            pos.append((r + width//bottom_num*j, GAME_AREA[1][1]))
+        pos.append((GAME_AREA[0][0]+r, GAME_AREA[0][1] + height//2))
+        return pos
+
+    def draw_background(self, r = 40):
+        for item in self.coords:
+            x0 = item[0] - r
+            y0 = item[1] - r
+            x1 = item[0] + r
+            y1 = item[1] + r
+            self.canvas.create_oval(x0, y0, x1,y1, fill = "black")
 
     def draw_track(self):
-        i = 0
-        self.master.imgs = {}
-        while i < self.game.size:
-            for item in self.game.loop:
-                img = tk.PhotoImage(file=IMGS[str(item)])
-                self.master.imgs[str(i)] = img
-                self.canvas.create_image(POS[i][0], POS[i][1], image = img, anchor = 'nw')
-                i += 1
+        for i in range(self.game.size):
+            self.canvas.create_text(self.coords[i][0], self.coords[i][1], 
+                                    text = self.game.loop[i], 
+                                    font= ('Arial',24), 
+                                    fill = "white", 
+                                    tag = "num")
 
     def draw_line(self):
         self.canvas.create_line(650,0,650,600, width = 2)
     
-    def draw_spinner(self):
-        self.canvas.create_rectangle(160,110,475,275, fill = 'orange')
+    def draw_spinner(self, r = 40):
+        x0 = self.coords[0][0] - r - r//2
+        y0 = GAME_AREA[0][1] - r - r//2
+        x1 = self.coords[self.game.spin-1][0] + r + r//2
+        y1 = self.coords[self.game.spin-1][1] + r + r//2
+        self.canvas.create_rectangle(x0,y0,x1,y1, fill = 'grey')
 
     def restart_btn(self):
         restart = tk.Button(self.master, text = 'Restart', command = self.restart_game,height=2, width = 10)
@@ -79,6 +98,7 @@ class TsGUI(tk.Frame):
 
 
     def restart_game(self):
+        self.canvas.delete("num")
         self.game = TopSpin()
         self.draw_track()
         self.run_solver()
@@ -90,6 +110,7 @@ class TsGUI(tk.Frame):
             self.game = self.game.doMove((5,'clockwise'))
         elif event.keysym == 'Return':
             self.game = self.game.doMove(('flip'))
+        self.canvas.delete('num')
         self.draw_track()
         self.run_solver()
 
