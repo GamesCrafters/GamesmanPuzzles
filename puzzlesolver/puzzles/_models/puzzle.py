@@ -83,15 +83,6 @@ class Puzzle(ABC):
         In that case, the hash of all those specific permutations are the same.
         """
         raise NotImplementedError
-    
-    @abstractmethod
-    def generateSolutions(self, **kwargs):
-        """Returns a Iterable of Puzzle objects that are solved states
-
-        Outputs:
-            Iterable of Puzzles
-        """
-        raise NotImplementedError
 
     @property
     def numPositions(self):
@@ -115,6 +106,15 @@ class Puzzle(ABC):
         Can be custom defined"""
 
         print(str(self))
+        
+    def generateSolutions(self, **kwargs):
+        """Returns a Iterable of Puzzle objects that are solved states.
+        Not required if noGenerateSolutions is true, and using a CSP-implemented solver.
+
+        Outputs:
+            Iterable of Puzzles
+        """
+        return []
 
     def generateMovePositions(self, movetype="legal", **kwargs):
         """Generate an iterable of puzzles with all moves fitting movetype

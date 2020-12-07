@@ -8,11 +8,13 @@ class GraphPuzzle(Puzzle):
 
     def __init__(self, name,
                 value=PuzzleValue.UNDECIDED,
+                csp=False,
                 **kwargs):
         if name == None: raise ValueError("Name cannot be None")
         if not PuzzleValue.contains(value): raise ValueError("Not a valid value")
         self.name = name
         self.value = value
+        self.csp = csp
 
         self.graph = nx.DiGraph()
         self.graph.add_node(self.name, value=value, obj=self)
@@ -60,7 +62,7 @@ class GraphPuzzle(Puzzle):
     def doMove(self, move, **kwargs):
         if move not in self.generateMoves(): raise ValueError("Not a valid move")
         if 'obj' in self.graph.nodes[move]: return self.graph.nodes[move]['obj']
-        newPuzzle = GraphPuzzle(move, self.graph.nodes[move]['value'])
+        newPuzzle = GraphPuzzle(move, self.graph.nodes[move]['value'], self.csp)
         newPuzzle.solutions = self.solutions
         newPuzzle.graph = self.graph
         self.graph.nodes[move]['obj'] = newPuzzle
@@ -78,7 +80,8 @@ class GraphPuzzle(Puzzle):
         raise ValueError("Invalid movetype {}".format(movetype))
 
     def generateSolutions(self, **kwargs):
-        return self.solutions
+        if self.csp: return []
+        else: return self.solutions
     
     def setMove(self, child, movetype="for"):
         child = self._addChild(child)
