@@ -1,8 +1,8 @@
 import tkinter as tk
-from puzzlesolver.puzzles import TopSpin
-from puzzlesolver.solvers import GeneralSolver,SqliteSolver
-from puzzlesolver.util import PuzzleValue
-from puzzleplayer import PuzzlePlayer
+from ..puzzles import TopSpin
+from ..solvers import SqliteSolver
+from ..util import *
+
 
 GAME_AREA = ((50,200),(500,500))
 
