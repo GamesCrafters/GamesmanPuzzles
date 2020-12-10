@@ -5,17 +5,17 @@ import progressbar
 
 class GeneralSolver(Solver):
 
-    def __init__(self, puzzle, *args, **kwarg):
+    def __init__(self, puzzle):
         self.remoteness = {}
         self.puzzle = puzzle
     
-    def getRemoteness(self, puzzle, **kwargs):
+    def getRemoteness(self, puzzle):
         """Returns remoteness of puzzle. Automatically solves if memory isn't set"""
         if not self.remoteness: print("Warning: No memory found. Please make sure that `solve` was called.")
         if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
         return PuzzleValue.UNSOLVABLE
 
-    def solve(self, *args, verbose=False, **kwargs):
+    def solve(self, verbose=False):
         """Traverse the entire puzzle tree and classifies all the 
         positions with values and remoteness
         """
