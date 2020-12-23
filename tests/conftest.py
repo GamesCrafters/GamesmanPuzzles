@@ -20,3 +20,24 @@ def client(tmpdir):
 
     with app.test_client() as client:
         yield client
+
+@pytest.fixture
+def simple():
+    def helper(solver_cls, csp=False):
+        forward = GraphPuzzle(0, csp=csp)
+        bidirectional = GraphPuzzle(1, csp=csp)
+        backward = GraphPuzzle(2, csp=csp)
+        sol = GraphPuzzle(3, value=PuzzleValue.SOLVABLE, csp=csp)
+
+        sol.setMove(forward, movetype="for")
+        sol.setMove(bidirectional, movetype="bi")
+        sol.setMove(backward, movetype="back")
+
+        solver = solver_cls(sol)
+        solver.solve()
+
+        assert solver.getRemoteness(backward) == 1
+        assert solver.getRemoteness(sol) == 0
+        assert solver.getRemoteness(bidirectional) == 1
+        assert solver.getRemoteness(forward) == PuzzleValue.UNSOLVABLE
+    return helper
