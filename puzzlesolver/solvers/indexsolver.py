@@ -12,9 +12,9 @@ class IndexSolver(GeneralSolver):
     the index of the chunk. Recommended for puzzles with tight hash functions.
     """
     def __init__(self, puzzle, *args, dir_path='databases', **kwargs):
+        GeneralSolver.__init__(self, puzzle, *args, **kwargs)
         if not os.path.exists(dir_path): os.makedirs(dir_path)
         self.path = '{}/{}.txt'.format(dir_path, puzzle.getName())
-        GeneralSolver.__init__(self, puzzle, *args, **kwargs)
 
     def getRemoteness(self, puzzle, *args, **kwargs):
         if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]

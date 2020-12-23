@@ -5,6 +5,10 @@ from puzzlesolver import server
 from puzzlesolver.util import PuzzleValue
 from puzzlesolver.puzzles import puzzleList, GraphPuzzle
 
+########################################################################
+# Server Fixtures
+########################################################################
+
 @pytest.fixture
 def client(tmpdir):
     app = server.app
