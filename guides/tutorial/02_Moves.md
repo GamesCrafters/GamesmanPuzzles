@@ -2,7 +2,7 @@
 Let's review how moves work in the puzzle tree. Below is a graph with the numbered nodes as Puzzles and the directed edges as Moves.
 
 <p align="center">
-<img src='Assets/graph.png' width=200>
+<img src='assets/graph.png' width=200>
 </p>
 
 ### Move types
