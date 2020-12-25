@@ -74,7 +74,7 @@ class PuzzlePlayer:
 
 if __name__ == "__main__":
     import argparse
-    from puzzlesolver.puzzles import puzzleList
+    from puzzlesolver.puzzles import PuzzleManager
 
     parser = argparse.ArgumentParser()
     parser.add_argument("puzzleid", help="PuzzleID of the puzzle you wish to view")
@@ -86,12 +86,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.puzzleid not in puzzleList:
+    if PuzzleManager.hasPuzzleId(args.puzzleid):
         print("Possible puzzles:")
-        print("\n".join(puzzleList.keys()))
+        print("\n".join(PuzzleManager.getPuzzleIds()))
         raise Exception("Puzzleid is not recorded in PuzzleList")
 
-    p_cls = puzzleList[args.puzzleid]
+    p_cls = PuzzleManager.getPuzzleClass(args.puzzleid)
 
     puzzle = None    
     if args.variant:

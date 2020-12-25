@@ -21,26 +21,41 @@ puzzleList = {
     TopSpin.puzzleid: TopSpin,
 }
 
-class PuzzleManager:
+class PuzzleManagerClass:
     """Controls what type of solver is applicable for a Puzzle and its variant"""
 
-    @staticmethod
-    def getPuzzleClass(puzzleid):
-        """Basic getter method to "get" a Puzzle class"""
-        return puzzleList[puzzleid]
+    def __init__(self, puzzleList):
+        self.puzzleList = puzzleList
+
+    def getPuzzleIds(self):
+        """Returns a list of all the Puzzle ids"""
+        return self.puzzleList.keys()
+
+    def getPuzzleClasses(self):
+        """Returns a list of all the Puzzle classes"""
+        return self.puzzleList.values()
+
+    def hasPuzzleId(self, puzzleid):
+        """Checks if the puzzleid is located within the puzzleList"""
+        return puzzleid in self.puzzleList
     
-    @staticmethod
-    def getSolverClass(puzzleid, variant, test=False):
+    def getPuzzleClass(self, puzzleid):
+        """Basic getter method to "get" a Puzzle class"""
+        return self.puzzleList[puzzleid]
+    
+    def getSolverClass(self, puzzleid, variant=None, test=False):
         # Check if variants or not
-        puzzlecls = PuzzleManager.getPuzzleClass(puzzleid)
+        puzzlecls = self.getPuzzleClass(puzzleid)
         if test and hasattr(puzzlecls, 'test_variants'):
-            return puzzlecls.test_variants[variant]
+            return puzzlecls.getSolverClass(variant=variant, test=False)
         if hasattr(puzzlecls, 'variants'):
             return puzzlecls.variants[variant]
         else:
             # TODO: Specific exception type
             raise Exception("Recommended solvers are not defined for the requested Puzzle")
-        
+
+PuzzleManager = PuzzleManagerClass(puzzleList)
+
 for puzzle in puzzleList.values():
     if not issubclass(puzzle, ServerPuzzle):
         raise TypeError("Non-ServerPuzzle class found in puzzleList")

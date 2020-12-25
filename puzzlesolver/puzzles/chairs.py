@@ -14,6 +14,7 @@ class Chairs(ServerPuzzle):
     date_created = "April 25, 2020"
 
     variants = {"10" : SqliteSolver}
+    test_variants = variants
 
     def __init__(self, **kwargs):
         self.board = ['x','x','x','x','x', '-', 'o','o','o','o','o']

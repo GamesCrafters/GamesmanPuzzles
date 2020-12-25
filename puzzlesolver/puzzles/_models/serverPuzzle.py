@@ -12,14 +12,22 @@ class ServerPuzzle(Puzzle):
     description = "N/A"
     date_created = "N/A"
         
-    """A dictionary with the following
+    """A Collections object that holds all the supported variants 
+    that a Puzzle can handle. 
+    
+    Typically a dictionary with the following
     - variantId as the string key
     - A Solver class object as the value
 
     This dictionary is meant to store Solvers for the web server to interact with.
     See Hanoi for a dict comprehension example
-    """
+    """ 
     variants = {}
+
+    """
+    Same as variants, except for testing purposes
+    """
+    test_variants = {}
 
     @abstractproperty
     def variant(self):
@@ -99,3 +107,17 @@ class ServerPuzzle(Puzzle):
             String name
         """
         return self.__class__.__name__ + self.variant
+
+    @classmethod
+    def getSolverClass(cls, variant=None, test=False):
+        """Returns the recommended solver type, which can be based on
+        variant. All recommended solvers must be persistent based.
+
+        Outputs:
+            Vary, can be Solver type or String representing solver
+        """
+        if test and isinstance(cls.test_variants, dict) and variant in cls.test_variants:
+            return cls.test_variants[variant]
+        elif not test and isinstance(cls.variants, dict) and variant in cls.variants:
+            return cls.variants[variant]
+        raise NotImplementedError
