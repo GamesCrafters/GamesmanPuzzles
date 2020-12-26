@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if PuzzleManager.hasPuzzleId(args.puzzleid):
+    if not PuzzleManager.hasPuzzleId(args.puzzleid):
         print("Possible puzzles:")
         print("\n".join(PuzzleManager.getPuzzleIds()))
         raise Exception("Puzzleid is not recorded in PuzzleList")
