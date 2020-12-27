@@ -1,6 +1,6 @@
 import flask
 from flask import request, jsonify, abort
-from .puzzles import puzzleList
+from .puzzles import puzzleList, Peg
 from .util import PuzzleException
 
 import os
@@ -24,10 +24,15 @@ def test_puzzle(puzzle):
 # TODO: Check if data already exists in disk before solving
 def init_data():
     for p_cls in puzzleList.values():
+        # TODO: Add test_variants for pegSolitaire
+        if app.config["TESTING"] and p_cls == Peg: 
+            continue
+
         if app.config["TESTING"] and hasattr(p_cls, 'test_variants'): 
-            variants = p_cls.test_variants
+            variants = p_cls.test_variants    
         else:
             variants = p_cls.variants
+            
         for variant in variants:
             s_cls = variants[variant]
             puzzle = p_cls.generateStartPosition(variant)
