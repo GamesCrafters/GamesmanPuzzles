@@ -15,7 +15,7 @@ def __hash__(self):
 ```
 
 #### ```generateSolutions(self, **kwargs):```
-The GeneralSolver is a bottom-top solver, meaning that it uses the endstates of the puzzle (when the puzzle has a "solvable" primitive) and solves from those positions. Because of that, the puzzle must compute the endstates of the puzzle itself. 
+The GeneralSolver is a bottom-top solver, meaning that it uses the endstates of the puzzle (when the puzzle has a "solvable" primitive) and solves from those positions. The GeneralSolver functions in cases where there exists no efficient method of enumerating all "solvable" positions, but performance can be improved by pre-calculating an iterable of solved states in the generateSolutions function. In this case, there exists a single solved position, so we can efficiently enumerate all solved positions. 
 
 ```python
 def generateSolutions(self, **kwargs):
