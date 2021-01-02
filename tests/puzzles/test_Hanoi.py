@@ -3,7 +3,7 @@ import json
 
 from puzzlesolver.puzzles import Hanoi
 from puzzlesolver.solvers import GeneralSolver
-from puzzlesolver.util import *
+from puzzlesolver.util import PuzzleValue, PuzzleException
 
 def move(move0, move1):
     return (move0, move1)
@@ -13,7 +13,7 @@ def testHash():
     """Tests the expected behavior of the hash function on the puzzle states. """
     puzzle0 = Hanoi.deserialize('3_2_1--')
     puzzle1 = Hanoi.deserialize('3_2_1--')
-    puzzle2 = Hanoi.deserialize('-3_2_1-')
+    #puzzle2 = Hanoi.deserialize('-3_2_1-')
     puzzle3 = Hanoi.deserialize('--3_2_1')
     
     # Checks if two of the exact same states have the same hash
