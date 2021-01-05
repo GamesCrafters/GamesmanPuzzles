@@ -44,20 +44,21 @@ class Peg(ServerPuzzle):
     ### _________ Print Funcs _______________
     def printInfo(self):
         #Print Puzzle
-        print("Puzzle: ")
-        space = "                    "
+        space = 20 * " "
+        output = ""
         for outer in range(5):
-            print(space, end="")
+            output += space
             for inner in range(outer + 1):
-                print(str(self.board[outer][inner]) + "       ", end="")
-            print("")
+                output += str(self.board[outer][inner]) + "       "
+            output += "\n"
             temp = list(space)
             temp = temp[:-4]
             space = "".join(temp)
-            print(" " + space + " ", end="")
+            output += " " + space + " "
             for inner2 in range(outer + 1):
-                print("[" + str(outer) + "," + str(inner2) + "]" + "   ", end="")
-            print("")
+                output += "[" + str(outer) + "," + str(inner2) + "]" + "   "
+            output += "\n"
+        return output
 
     def getName(self, **kwargs):
         return "Peg Solitaire " + self.variant

@@ -1,26 +1,65 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
-from abc import ABC, abstractmethod
+from ...util import classproperty
 import progressbar
 
-class Puzzle(ABC):
-    
+class Puzzle:
+
+    #################################################################
+    # Background data
+    #################################################################
+
+    puzzleid = "NA"
+    author = "NA"
+    name = "NA"
+    description = "NA"
+    date_created = "NA"
+
+    @property
+    def variant(self):
+        """Returns a string defining the variant of this puzzleself.
+
+        Example: '5x5', '3x4', 'reverse3x3'
+        """
+        return "NA"
+
+    #################################################################
     # Intializer
-    def __init__(self, **kwargs):
+    #################################################################
+
+    def __init__(self):
+        """Returns an instance of a Puzzle. Board state of the Puzzle
+        should a Puzzle returned from `generateStartPosition`
+        """
         pass
 
-    # Gameplay methods
-    @abstractmethod
-    def __str__(self):
-        """Returns the string representation of the puzzle.
+    #################################################################
+    # String representations
+    #################################################################
+
+    def toString(self, mode="minimal"):
+        """Returns the string representation of the Puzzle based on the type. 
+
+        If mode is "minimal", return the serialize() version
+        If mode is "complex", return the printInfo() version
+
+        Inputs:
+            mode -- "minimal", "complex"
         
         Outputs:
-            String representation -- String
-        """
-        return "No String representation available"
+            String representation -- String"""
 
-    @abstractmethod
-    def primitive(self, **kwargs):
+        if mode is "minimal" and hasattr(self, "serialize"):
+            return self.serialize()
+        if mode is "complex" and hasattr(self, "printInfo"):
+            return self.printInfo()
+        return str(self)
+
+    #################################################################
+    # Gameplay methods
+    #################################################################
+
+    def primitive(self):
         """If the Puzzle is at an endstate, return GameValue.WIN or GameValue.LOSS
         else return GameValue.UNDECIDED
 
@@ -32,14 +71,16 @@ class Puzzle(ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
-    def doMove(self, move, **kwargs):
+    def doMove(self, move):
         """Given a valid move, returns a new Puzzle object with that move executed.
         Does nothing to the original Puzzle object
         
         NOTE: Must be able to take any move, including `undo` moves
 
-        Inputs:
+        Raises a TypeError if move is not of the right type
+        Raises a ValueError if the move is not in generateMoves
+
+        Inputs
             move -- type defined by generateMoves
 
         Outputs:
@@ -47,8 +88,7 @@ class Puzzle(ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
-    def generateMoves(self, movetype="all", **kwargs):
+    def generateMoves(self, movetype="all"):
         """Generate moves from self (including undos)
 
         Inputs
@@ -65,8 +105,10 @@ class Puzzle(ABC):
         """
         raise NotImplementedError
 
+    #################################################################
     # Solver methods
-    @abstractmethod
+    #################################################################
+
     def __hash__(self):
         """Returns a hash of the puzzle.
         Requirements:
@@ -92,22 +134,7 @@ class Puzzle(ABC):
         """
         return progressbar.base.UnknownLength
 
-    # Built-in functions
-    def getName(self, **kwargs):
-        """Returns the name of the Puzzle.
-
-        Outputs:
-            String name
-        """
-        return self.__class__.__name__
-
-    def printInfo(self):
-        """Prints the string representation of the puzzle. 
-        Can be custom defined"""
-
-        print(str(self))
-        
-    def generateSolutions(self, **kwargs):
+    def generateSolutions(self):
         """Returns a Iterable of Puzzle objects that are solved states.
         Not required if noGenerateSolutions is true, and using a CSP-implemented solver.
 
@@ -116,17 +143,16 @@ class Puzzle(ABC):
         """
         return []
 
-    def generateMovePositions(self, movetype="legal", **kwargs):
-        """Generate an iterable of puzzles with all moves fitting movetype
-        executed.
+    def printInfo(self):
+        """Prints the string representation of the puzzle. 
+        Can be custom defined"""
 
-        Inputs:
-            - movetype: The type of move to generate the puzzles
-        
+        print(str(self))    
+    
+    def getName(self, **kwargs):
+        """Returns the name of the Puzzle.
+
         Outputs:
-            - Iterable of puzzles 
+            String name
         """
-        puzzles = []
-        for move in self.generateMoves(movetype=movetype, **kwargs):
-            puzzles.append((move, self.doMove(move)))
-        return puzzles
+        return self.__class__.__name__

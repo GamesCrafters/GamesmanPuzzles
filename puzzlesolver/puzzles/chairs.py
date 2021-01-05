@@ -32,22 +32,23 @@ class Chairs(ServerPuzzle):
     ### _________ Print Funcs _______________
     def printInfo(self):
         #Print Puzzle
-        print("Puzzle: ")
+        output = ""
         space = "   "
-        print(space, end="")
+        output += space
         for i in self.board:
             if i == "-":
                 i = "_"
-            print(i + "   ", end="")
-        print("")
+            output += i + "   "
+        output += "\n"
         space = "  ["
-        print(space, end="")
+        output += space
         for i in range(11):
             if i == 10:
-                print(str(i) + "]", end="")
+                output += str(i) + "]"
                 break
-            print(str(i) + "   ", end="")
-        print("")
+            output += str(i) + "   "
+        output += "\n"
+        return output
 
     def getName(self, **kwargs):
         return "Chairs"

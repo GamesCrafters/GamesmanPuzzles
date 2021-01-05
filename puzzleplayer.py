@@ -20,12 +20,12 @@ class PuzzlePlayer:
     def play(self):
         self.puzzle = self.base
         self.turn = 0
-        while self.puzzle.primitive() == PuzzleValue.UNDECIDED:
+        while True:
             self.printInfo()
-            self.puzzle.printInfo()
+            print("Puzzle: ")
+            print(self.puzzle.toString(mode="complex"))
             self.printTurn()
-        self.printInfo()
-        self.puzzle.printInfo()
+            if self.puzzle.primitive() != PuzzleValue.UNDECIDED: break
         print("Game Over")
 
     def printInfo(self):

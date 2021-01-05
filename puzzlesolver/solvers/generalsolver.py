@@ -36,7 +36,7 @@ class GeneralSolver(Solver):
                 
         # Progressbar
         if verbose: 
-            print('Solving: {}'.format(self.puzzle.getName()))
+            print('Solving: {}{}'.format(self.puzzle.name, self.puzzle.variant))
             bar = progressbar.ProgressBar()
             bar.max_value = self.puzzle.numPositions
 
@@ -61,7 +61,7 @@ class GeneralSolver(Solver):
         """
         # Progressbar
         if verbose:
-            print("Finding primitive positions: {}".format(self.puzzle.getName()))
+            print("Finding primitive positions: {}{}".format(self.puzzle.name, self.puzzle.variant))
             bar = progressbar.ProgressBar()
             bar.max_value = self.puzzle.numPositions
             

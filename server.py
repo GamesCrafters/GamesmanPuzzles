@@ -72,7 +72,7 @@ def puzzle(puzzle_id):
     puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
     response = {
         "puzzle_id": puzzle_id,
-        "puzzle_name": puzzlecls.puzzle_name,
+        "puzzle_name": puzzlecls.name,
         "author": puzzlecls.author,
         "description": puzzlecls.description,
         "date_created": puzzlecls.date_created,
@@ -89,13 +89,28 @@ def puzzle_variant(puzzle_id, variant_id):
     }
     return format_response(response)
 
+def generateMovePositions(puzzle, movetype="legal"):
+    """Generate an iterable of puzzles with all moves fitting movetype
+    executed.
+
+    Inputs:
+        - movetype: The type of move to generate the puzzles
+    
+    Outputs:
+        - Iterable of puzzles 
+    """
+    puzzles = []
+    for move in puzzle.generateMoves(movetype=movetype):
+        puzzles.append((move, puzzle.doMove(move)))
+    return puzzles
+    
 @app.route('/<puzzle_id>/<variant_id>/<position>/', methods=['GET'])
 def puzzle_position(puzzle_id, variant_id, position):
     validate(puzzle_id, variant_id, position)
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).deserialize(position)
     solver_cls = PuzzleManager.getSolverClass(puzzle_id, variant_id, app.config['TESTING'])
     s = solver_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
-    moves = puzzle.generateMovePositions()
+    moves = generateMovePositions(puzzle)
     response = {
         "position": puzzle.serialize(),
         "remoteness": s.getRemoteness(puzzle),
