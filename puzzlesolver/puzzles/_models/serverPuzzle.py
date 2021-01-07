@@ -62,17 +62,6 @@ class ServerPuzzle(Puzzle):
         raise NotImplementedError
     
     @classmethod
-    def isLegalPosition(cls, positionid, variantid=None):
-        """Checks if the positionid is valid given the rules of the Puzzle cls. 
-        This function is invariant and only checks if all the rules are satisified
-        For example, Hanoi cannot have a larger ring on top of a smaller one.
-
-        Outputs:
-            - True if Puzzle is valid, else False
-        """
-        raise NotImplementedError 
-
-    @classmethod
     def generateStartPosition(cls, variantid):
         """Returns a Puzzle object containing the start position.
         
@@ -110,3 +99,15 @@ class ServerPuzzle(Puzzle):
         """
 
         raise NotImplementedError
+
+    @classmethod
+    @depreciated("isLegalPosition is depreciated")
+    def isLegalPosition(cls, positionid, variantid=None):
+        """Checks if the positionid is valid given the rules of the Puzzle cls. 
+        This function is invariant and only checks if all the rules are satisified
+        For example, Hanoi cannot have a larger ring on top of a smaller one.
+
+        Outputs:
+            - True if Puzzle is valid, else False
+        """
+        raise NotImplementedError 
