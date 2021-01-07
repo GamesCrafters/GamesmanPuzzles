@@ -38,16 +38,18 @@ def init_data():
             solver.solve(verbose=True)
 
 # Helper functions
-def validate(puzzle_name=None, variant_id=None, position=None):
-    if puzzle_name == None:
+def validate(puzzleid=None, variantid=None, position=None):
+    if puzzleid == None:
         raise ValueError("Nothing to validate")            
-    if not PuzzleManager.hasPuzzleId(puzzle_name): abort(404, description="PuzzleId not found") 
-    if variant_id != None:
-        variants = PuzzleManager.getPuzzleClass(puzzle_name).variants
-        if variant_id not in variants: abort(404, description="VariantId not found")
+    if not PuzzleManager.hasPuzzleId(puzzleid): 
+        abort(404, description="PuzzleId not found") 
+    if variantid != None:
+        variants = PuzzleManager.getPuzzleClass(puzzleid).variants
+        if variantid not in variants: 
+            abort(404, description="VariantId not found")
     if position != None:
-        try:        
-            PuzzleManager.getPuzzleClass(puzzle_name).validate(position, variant_id)
+        try:
+            PuzzleManager.validate(puzzleid, variantid, position)        
         except PuzzleException as e:
             abort(404, description=str(e))
 
@@ -107,7 +109,7 @@ def generateMovePositions(puzzle, movetype="legal"):
 @app.route('/<puzzle_id>/<variant_id>/<position>/', methods=['GET'])
 def puzzle_position(puzzle_id, variant_id, position):
     validate(puzzle_id, variant_id, position)
-    puzzle = PuzzleManager.getPuzzleClass(puzzle_id).deserialize(position)
+    puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(position)
     solver_cls = PuzzleManager.getSolverClass(puzzle_id, variant_id, app.config['TESTING'])
     s = solver_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
     moves = generateMovePositions(puzzle)

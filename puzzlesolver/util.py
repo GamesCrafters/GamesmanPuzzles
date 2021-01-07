@@ -39,3 +39,14 @@ def classproperty(func):
     if not isinstance(func, (classmethod, staticmethod)):
         func = classmethod(func)
     return ClassPropertyDescriptor(func)
+
+import warnings
+
+def depreciated(msg):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            warnings.warn(msg, DeprecationWarning)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+    

@@ -1,7 +1,8 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
-from ...util import classproperty
+from ...util import classproperty, depreciated
 import progressbar
+import warnings
 
 class Puzzle:
 
@@ -60,14 +61,14 @@ class Puzzle:
     #################################################################
 
     def primitive(self):
-        """If the Puzzle is at an endstate, return GameValue.WIN or GameValue.LOSS
-        else return GameValue.UNDECIDED
+        """If the Puzzle is at an endstate, return PuzzleValue.SOLVABLE or PuzzleValue.UNSOLVABLE
+        else return PuzzleValue.UNDECIDED
 
-        GameValue located in the util class. If you're in the puzzles or solvers directory
+        PuzzleValue located in the util class. If you're in the puzzles or solvers directory
         you can write from ..util import * 
 
         Outputs:
-            Primitive of Puzzle type GameValue
+            Primitive of Puzzle type PuzzleValue
         """
         raise NotImplementedError
 
@@ -143,12 +144,18 @@ class Puzzle:
         """
         return []
 
+    #################################################################
+    # Depreciated methods
+    #################################################################
+
+    @depreciated("puzzle.printInfo is depreciated. See toString")
     def printInfo(self):
         """Prints the string representation of the puzzle. 
         Can be custom defined"""
-
-        print(str(self))    
+        
+        return str(self)
     
+    @depreciated("puzzle.getName is depreciated. See puzzle.name")
     def getName(self, **kwargs):
         """Returns the name of the Puzzle.
 

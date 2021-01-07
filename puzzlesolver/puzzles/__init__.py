@@ -1,4 +1,6 @@
 from ._models import *
+from ..solvers import IndexSolver, SqliteSolver
+from ..util import PuzzleException
 
 # Put your dependencies here
 from .hanoi import Hanoi
@@ -43,16 +45,45 @@ class PuzzleManagerClass:
         """Basic getter method to "get" a Puzzle class"""
         return self.puzzleList[puzzleid]
     
-    def getSolverClass(self, puzzleid, variant=None, test=False):
-        # Check if variants or not
-        puzzlecls = self.getPuzzleClass(puzzleid)
-        if test and hasattr(puzzlecls, 'test_variants'):
-            return puzzlecls.getSolverClass(variant=variant, test=False)
-        if hasattr(puzzlecls, 'variants'):
-            return puzzlecls.variants[variant]
-        else:
-            # TODO: Specific exception type
-            raise Exception("Recommended solvers are not defined for the requested Puzzle")
+    def getSolverClass(self, puzzleid, variantid=None, test=False):
+        """Get Solver Class given the puzzleid"""
+        if puzzle in [Hanoi.puzzleid, LightsOut.puzzleid, Bishop.puzzleid, Npuzzle.puzzleid]:
+            return IndexSolver
+        return SqliteSolver
+    
+    def validate(self, puzzleid, variantid=None, positionid=None):
+        """Checks if the positionid fits the rules set for the puzzle, as
+        well as if it's supported by the app.
+        
+        Raises a PuzzleException for the following:
+        - puzzleid is not implemented
+        - variantid is not the proper Type
+        - variantid is not part of the puzzle implementation
+        - fromString doesn't raise a Exception
+
+        Inputs:
+            - puzzleid
+            - positionid: 
+            - variantid: 
+        """
+        if puzzleid not in puzzleList:
+            raise PuzzleException("Invalid PuzzleID")
+
+        puzzlecls = puzzleList[puzzleid]
+        if variantid is not None:
+            if not isinstance(variantid, str): 
+                raise PuzzleException("Invalid VariantID")
+            if variantid not in puzzlecls.variants:
+                raise PuzzleException("Out of bounds VariantID")
+        
+        if positionid is not None:
+            try:
+                puzzle = puzzlecls.fromString(positionid)
+            except (ValueError, TypeError):
+                raise PuzzleException("Invalid PositionID")
+
+            if variantid is not None and puzzle.variant != variantid:
+                raise PuzzleException("VariantID doesn't match PuzzleID")
 
 PuzzleManager = PuzzleManagerClass(puzzleList)
 

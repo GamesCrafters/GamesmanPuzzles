@@ -1,4 +1,4 @@
-from ...util import PuzzleException, classproperty
+from ...util import PuzzleException, classproperty, depreciated
 from . import Puzzle
 
 class ServerPuzzle(Puzzle):
@@ -37,10 +37,14 @@ class ServerPuzzle(Puzzle):
         """Returns a Puzzle object based on "minimal"
         String representation of the Puzzle (i.e. `toString(mode="minimal")`)
 
-        Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
+        Example: positionid="6-1-0" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
 
-        Must raise a TypeError if the String cannot be translated into a Puzzle
+        Must raise a TypeError if the positionid is not a String
+        Must raise a ValueError if the String cannot be translated into a Puzzle
+        
+        NOTE: A String cannot be translated into a Puzzle if it leads to an illegal
+        position based on the rules of the Puzzle
 
         Inputs:
             positionid - String id from puzzle, serialize() must be able to generate it
@@ -48,12 +52,17 @@ class ServerPuzzle(Puzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        if (hasattr(cls, "deserialize")):
+        if hasattr(cls, "isLegalPosition"):
+            if not isinstance(positionid, str): 
+                raise TypeError("PositionID must be type str")
+            if not cls.isLegalPosition(positionid): 
+                raise ValueError("PositionID could not be translated into a puzzle")
+        if hasattr(cls, "deserialize"):
             return cls.deserialize(positionid)
         raise NotImplementedError
     
     @classmethod
-    def isLegalPosition(cls, positionid, variantid=None, **kwargs):
+    def isLegalPosition(cls, positionid, variantid=None):
         """Checks if the positionid is valid given the rules of the Puzzle cls. 
         This function is invariant and only checks if all the rules are satisified
         For example, Hanoi cannot have a larger ring on top of a smaller one.
@@ -64,7 +73,7 @@ class ServerPuzzle(Puzzle):
         raise NotImplementedError 
 
     @classmethod
-    def generateStartPosition(cls, variantid, **kwargs):
+    def generateStartPosition(cls, variantid):
         """Returns a Puzzle object containing the start position.
         
         Outputs:
@@ -72,40 +81,12 @@ class ServerPuzzle(Puzzle):
         """
         raise NotImplementedError
 
-    # Built-in functions
-    @classmethod
-    def validate(cls, positionid=None, variantid=None, **kwargs):
-        """Checks if the positionid fits the rules set for the puzzle, as
-        well as if it's supported by the app.
-        
-        Inputs:
-            - positionid: 
-            - variantid: 
-        """
-        if variantid is not None:
-            if not isinstance(variantid, str): raise PuzzleException("Invalid variantid")
-            if variantid not in cls.variants: raise PuzzleException("Out of bounds variantid")
-        if positionid is not None:
-            if not cls.isLegalPosition(positionid): raise PuzzleException("position is not a valid puzzle")
-            p = cls.deserialize(positionid)
-            if variantid is not None and p.variant != variantid: 
-                raise PuzzleException("variantid doesn't match puzzleid")            
+    #################################################################
+    # Depreciated Methods
+    #################################################################
 
-    @classmethod
-    def getSolverClass(cls, variant=None, test=False):
-        """Returns the recommended solver type, which can be based on
-        variant. All recommended solvers must be persistent based.
-
-        Outputs:
-            Vary, can be Solver type or String representing solver
-        """
-        if test and isinstance(cls.test_variants, dict) and variant in cls.test_variants:
-            return cls.test_variants[variant]
-        elif not test and isinstance(cls.variants, dict) and variant in cls.variants:
-            return cls.variants[variant]
-        raise NotImplementedError
-
-    def serialize(self, **kwargs):
+    @depreciated("serverPuzzle.serialize is depreciated. See serverPuzzle.fromString")
+    def serialize(self):
         """Returns a serialized based on self
 
         Outputs:
@@ -113,7 +94,9 @@ class ServerPuzzle(Puzzle):
         """
         return str(self)
     
-    def deserialize(cls, positionid, **kwargs):
+    @classmethod
+    @depreciated("serverPuzzle.deserialize is depreciated. See puzzle.toString")
+    def deserialize(cls, positionid):
         """Returns a Puzzle object based on positionid
 
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
@@ -125,4 +108,5 @@ class ServerPuzzle(Puzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
+
         raise NotImplementedError

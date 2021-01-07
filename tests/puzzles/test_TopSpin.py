@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from puzzlesolver.puzzles import TopSpin
+from puzzlesolver.puzzles import TopSpin, PuzzleManager
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import PuzzleValue, PuzzleException
 
@@ -59,20 +59,17 @@ def testPositions():
     assert puzzles[0].serialize() == '1_2-3-4-5-6'
 
 def testValidation():
-    blank_puzzle = ''
-    invalid_puzzle0 = '0_1-2-3-4-5'
-    invalid_puzzle1 = '2_3-1-4-5-20'
-    invalid_puzzle2 = '4_5-6-1-2-2'
-    weird_puzzle0 = '123456----'
-    valid_puzzle = '2_1-5-3-6-4'
+    tests = [
+        ("", "6_2"),
+        ("0_1-2-3-4-5", "6_2"),
+        ("2_3-1-4-5-20", "6_2"),
+        ("4_5-6-1-2-2", "6_2"),
+        ("123456----", "6_2")
+    ]
 
-
-    pytest.raises(PuzzleException, TopSpin.validate, blank_puzzle, "6_2")
-    pytest.raises(PuzzleException, TopSpin.validate, invalid_puzzle0, "6_2")
-    pytest.raises(PuzzleException, TopSpin.validate, invalid_puzzle1, "6_2")
-    pytest.raises(PuzzleException, TopSpin.validate, invalid_puzzle2, "6_2")
-    pytest.raises(PuzzleException, TopSpin.validate, weird_puzzle0, "6_2")
-    TopSpin.validate(valid_puzzle, "6_2")
+    for test in tests:
+        pytest.raises(PuzzleException, PuzzleManager.validate, TopSpin.puzzleid, test[0], test[1])
+    PuzzleManager.validate(TopSpin.puzzleid, "6_2", "2_1-5-3-6-4")
 
 def testServerPuzzle(client):
     pid = TopSpin.puzzleid

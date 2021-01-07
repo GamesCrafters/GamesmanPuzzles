@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from puzzlesolver.puzzles import Peg
+from puzzlesolver.puzzles import Peg, PuzzleManager
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import *
 
@@ -59,14 +59,18 @@ def testPositions():
     assert len(puzzles) == 15
 
 def testValidation():
-    invalid_puzzle = '1_11_111_1111_11111_'
-    valid_puzzle = '1_11_000_0111_11111_'
-    blank_puzzle = ""
-    weird_input = "111_0_11_22_22_11011"
-    pytest.raises(PuzzleException, Peg.validate, blank_puzzle, "Triangle")
-    pytest.raises(PuzzleException, Peg.validate, weird_input, "Triangle")
-    pytest.raises(PuzzleException, Peg.validate, invalid_puzzle, "Triangle")
-    Peg.validate(valid_puzzle, "Triangle")
+    tests = [
+        ("", "Triangle"),
+        ("111_0_11_22_22_11011", "Triangle"),
+        ("1_11_111_1111_11111_", "Triangle"),
+        ("1_11_000_0111_11111_", "Not Triangle")
+    ]
+    for test in tests:
+        pytest.raises(
+            PuzzleException, PuzzleManager.validate,
+            Peg.puzzleid, test[1], test[0]
+        )
+    PuzzleManager.validate(Peg.puzzleid, "Triangle", "1_11_000_0111_11111_")
 
 @pytest.mark.skip(reason="will fail due to removal of PegSolitaire from TestServer")
 def testPuzzleServer(client):

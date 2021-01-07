@@ -97,7 +97,6 @@ if __name__ == "__main__":
     if args.variant:
         puzzle = p_cls.generateStartPosition(args.variant)
     if args.position:
-        puzzle = p_cls.validate(args.position)
         puzzle = p_cls.deserialize(args.position)
     if not puzzle:
         puzzle = p_cls()
