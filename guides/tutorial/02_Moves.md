@@ -24,7 +24,7 @@ The GeneralSolver makes good use of Undo moves when solving position values and 
 This function allows the puzzle to generate possible moves and move the puzzle forward. It should return all possible moves based on the `movetype` variable. Hanoi only has bidirectional moves, so if we're inputted a `movetype` of `'for'` or `'back'`, we should return no moves. Possible values of `movetype` are `['for', 'back', 'bi', 'undo', 'legal', 'all']`.
 
 ```python
-def generateMoves(self, movetype="all", **kwargs):
+def generateMoves(self, movetype="all"):
     if movetype=='for' or movetype=='back': return []
     moves = []
     for i, stack1 in enumerate(self.stacks):
@@ -39,6 +39,11 @@ def generateMoves(self, movetype="all", **kwargs):
 Do move produces a puzzle after **ANY** move was executed onto the puzzle. This means that it accepts **backward** moves as well. In Hanoi, there are no backward moves, but in a Puzzle like Peg Solitare, `doMove` must also be able to **backward** moves like undoing captures. It's also important to generate an entirely new game with the move executed so that it works with the solver. 
 ```python
 def doMove(self, move, **kwargs):
+    if not isinstance(move, tuple) or \
+    len(move) != 2 or \ 
+    not isinstance(move[0], int) or \ 
+    not isinstance(move[1], int):
+        raise TypeError
     if move not in self.generateMoves(): raise ValueError
     newPuzzle = Hanoi()
     stacks = deepcopy(self.stacks)
@@ -46,7 +51,6 @@ def doMove(self, move, **kwargs):
     newPuzzle.stacks = stacks
     return newPuzzle        
 ```
-
 
 ### Execute
 Once you have implemented all the required functions, add a line on the end of the file outside the Hanoi class to execute the PuzzlePlayer. 
