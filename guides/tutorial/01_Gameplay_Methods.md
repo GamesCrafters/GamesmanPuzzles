@@ -21,10 +21,10 @@ We want to initialize our puzzle with its starting position. For Hanoi, our star
 def __init__(self, **kwargs):
     self.stacks = [[3, 2, 1], [], []]
 ```
-#### `__str__(self, **kwargs)`
+#### `toString(self, **kwargs)`
 The string representation of the puzzle will help visualize the state of our stacks on our PuzzlePlayer interface. For a quick visual, we'll be using the string representation of the lists we used.
 ```python
-def __str__(self, **kwargs):
+def toString(self, **kwargs):
     return str(self.stacks)
 ```
 #### `primitive(self, **kwargs)`
