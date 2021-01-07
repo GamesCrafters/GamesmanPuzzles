@@ -36,7 +36,10 @@ def generateMoves(self, movetype="all"):
 ```
 
 #### `doMove(self, move, **kwargs)`
-Do move produces a puzzle after **ANY** move was executed onto the puzzle. This means that it accepts **backward** moves as well. In Hanoi, there are no backward moves, but in a Puzzle like Peg Solitare, `doMove` must also be able to **backward** moves like undoing captures. It's also important to generate an entirely new game with the move executed so that it works with the solver. 
+`doMove` produces a puzzle after **ANY valid** move was executed onto the puzzle. This means that it accepts **backward** moves as well. In Hanoi, there are no backward moves, but in a Puzzle like Peg Solitare, `doMove` must also be able to **backward** moves like undoing captures. It's also important to generate an entirely new game with the move executed so that it works with the solver. 
+
+You may also notice that `doMove` also raises `ValueErrors` and `TypeErrors` for invalid moves. This is important as `doMove` is one of the functions that users would use to change a Puzzle state, thus error checking the moves is extremely important for user applications, such as server application (foreshadowing).
+
 ```python
 def doMove(self, move, **kwargs):
     if not isinstance(move, tuple) or \
