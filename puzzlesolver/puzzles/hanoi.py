@@ -166,7 +166,14 @@ class Hanoi(ServerPuzzle):
             raise TypeError("PositionID is not type str")
         
         rod_strings = positionid.split("-")
-        rods = [int(rod) for rod in rod_strings]
+        if not rod_strings:
+            raise ValueError("PositionID cannot be translated into Puzzle")
+        
+        try:
+            rods = [int(rod) for rod in rod_strings]
+        except ValueError:
+            raise ValueError("PositionID cannot be translated into Puzzle")
+
         sum_rods = sum(rods) + 1
         if sum_rods & -sum_rods != sum_rods:
             raise ValueError("PositionID cannot be translated into Puzzle")

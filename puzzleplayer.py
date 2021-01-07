@@ -5,7 +5,7 @@ from puzzlesolver.util import PuzzleValue
 
 class PuzzlePlayer:
 
-    def __init__(self, puzzle, solver=None, info=True, auto=False):
+    def __init__(self, puzzle, solver=None, info=False, auto=False):
         self.base = puzzle
         self.puzzle = puzzle
         self.solver = solver
@@ -24,8 +24,8 @@ class PuzzlePlayer:
             self.printInfo()
             print("Puzzle: ")
             print(self.puzzle.toString(mode="complex"))
-            self.printTurn()
             if self.puzzle.primitive() != PuzzleValue.UNDECIDED: break
+            self.printTurn()
         print("Game Over")
 
     def printInfo(self):
