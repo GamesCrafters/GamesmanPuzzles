@@ -52,7 +52,7 @@ def fromString(cls, positionid, **kwargs):
                 # Check that all disks are ints
                 stack = [int(x) for x in string.split("_")]
                 # Check for duplicate disks
-                if seen.intersect(stack): raise ValueError
+                if seen.intersection(stack): raise ValueError
                 seen = seen.union(stack)                
                 puzzle.stacks.append(stack)
             else: puzzle.stacks.append([])        
