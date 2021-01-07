@@ -42,17 +42,20 @@ You may also notice that `doMove` also raises `ValueErrors` and `TypeErrors` for
 
 ```python
 def doMove(self, move, **kwargs):
-    if not isinstance(move, tuple) or \
-    len(move) != 2 or \ 
-    not isinstance(move[0], int) or \ 
-    not isinstance(move[1], int):
+    if (
+        not isinstance(move, tuple)
+        or len(move) != 2
+        or not isinstance(move[0], int)
+        or not isinstance(move[1], int)
+    ):
         raise TypeError
     if move not in self.generateMoves(): raise ValueError
     newPuzzle = Hanoi()
     stacks = deepcopy(self.stacks)
     stacks[move[1]].append(stacks[move[0]].pop())
     newPuzzle.stacks = stacks
-    return newPuzzle        
+    return newPuzzle   
+      
 ```
 
 ### Execute
