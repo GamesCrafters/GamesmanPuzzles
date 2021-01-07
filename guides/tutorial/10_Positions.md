@@ -44,6 +44,7 @@ def fromString(cls, positionid, **kwargs):
         raise ValueError("PositionID cannot be translated into Puzzle")
     
     puzzle = Hanoi()
+    puzzle.stacks = []
     seen = set()
     
     try:        
