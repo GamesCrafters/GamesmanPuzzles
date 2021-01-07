@@ -5,7 +5,7 @@
 
 Hanoi is a commonly known and simple puzzle. It consists of three rods and a stack of differently sized rings on one rod. The goal is to take a stack of rings and move them one by one to form another stack of rings on the rightmost rod. The only restriction is that a bigger ring cannot be on top of a smaller ring.
 
-The goal of this step is to explain the functionality for the GamesmanPuzzles version of Hanoi as well as to implement the functions so that we'll be able to interact with it in our PuzzlePlayer. 
+This guide will implement a simple implementation of Hanoi to familiarize the developer about how the Puzzle framework works. Please note that this is an earlier implementation of Hanoi and will not be the same implementation as the official GamesmanPuzzles Hanoi.
 
 Create a new puzzle of Hanoi following the Puzzle interface:
 ```python
