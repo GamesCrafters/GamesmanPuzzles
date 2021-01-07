@@ -13,7 +13,7 @@ class Npuzzle(ServerPuzzle):
     
     puzzleid = 'npuzzle'
     author = "Arturo Olvera"
-    puzzle_name = "N x N '15'-puzzle"
+    name = "N x N '15'-puzzle"
     description = "Shift pieces to get puzzle in ascending order."
     date_created = "April 10, 2020"
     

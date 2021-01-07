@@ -9,7 +9,7 @@ class Chairs(ServerPuzzle):
 
     puzzleid = 'chairs'
     author = "Mark Presten"
-    puzzle_name = "Chair Hopping"
+    name = "Chair Hopping"
     description = """Move all pieces from one side of the board to the other by hopping over adjacent pieces. The end result should be a flipped version of the starting state."""
     date_created = "April 25, 2020"
 

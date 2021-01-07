@@ -24,13 +24,10 @@ class Hanoi(ServerPuzzle):
         Fill the rightmost stack."""
     date_created = "April 2, 2020"
 
-    _rod_variants = list(range(2, 5))
-    _disk_variants = list(range(1, 14))
-
-    variants = []
-    for rod in _rod_variants:
-        for disk in _disk_variants:
-            variants.append("{}_{}".format(rod, disk))
+    variants =  ["2_1"]
+    variants += ["3_1", "3_2", "3_3", "3_4", "3_5", "3_6", "3_7", "3_8"]
+    variants += ["4_1", "4_2", "4_3", "4_4", "4_5", "4_6"]
+    variants += ["5_1", "5_2", "5_3", "5_4"]
 
     test_variants = ["3_1", "3_2", "3_3"]
 
@@ -66,7 +63,7 @@ class Hanoi(ServerPuzzle):
             self.rod_variant = int(strlist[0])
             self.disk_variant = int(strlist[1])
 
-        if self.rod_variant not in Hanoi._rod_variants or self.disk_variant not in Hanoi._disk_variants:
+        if "{}_{}".format(self.rod_variant, self.disk_variant) not in self.variants:
             raise ValueError("Invalid variantID")
 
         self.rods = [2 ** self.disk_variant - 1] + [0] * (self.rod_variant - 1)

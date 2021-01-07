@@ -87,7 +87,7 @@ def puzzle_variant(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).generateStartPosition(variant_id)
     response = {
-        "starting_pos": puzzle.serialize()
+        "starting_pos": puzzle.toString()
     }
     return format_response(response)
 
@@ -114,11 +114,11 @@ def puzzle_position(puzzle_id, variant_id, position):
     s = solver_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
     moves = generateMovePositions(puzzle)
     response = {
-        "position": puzzle.serialize(),
+        "position": puzzle.toString(),
         "remoteness": s.getRemoteness(puzzle),
         "value": s.getValue(puzzle),
         "moves": {str(move[0]) : {
-            "position": move[1].serialize(),
+            "position": move[1].toString(),
             "remoteness": s.getRemoteness(move[1]),
             "value": s.getValue(move[1])
         } for move in moves}

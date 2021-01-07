@@ -69,7 +69,7 @@ class PuzzleManagerClass:
         if puzzleid not in puzzleList:
             raise PuzzleException("Invalid PuzzleID")
 
-        puzzlecls = puzzleList[puzzleid]
+        puzzlecls = self.puzzleList[puzzleid]
         if variantid is not None:
             if not isinstance(variantid, str): 
                 raise PuzzleException("Invalid VariantID")

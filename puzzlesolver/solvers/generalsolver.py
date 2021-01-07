@@ -28,9 +28,7 @@ class GeneralSolver(Solver):
             # Not a CSP - use generateSolutions()
             for solution in solutions: 
                 # Check if all the solutions are SOLVABLE
-                assert solution.primitive() == PuzzleValue.SOLVABLE, """
-                    `generateSolutions` contains an UNSOLVABLE position
-                """
+                assert solution.primitive() == PuzzleValue.SOLVABLE, "`generateSolutions` contains an UNSOLVABLE position"
                 self.remoteness[hash(solution)] = 0
                 queue.put(solution)
                 
