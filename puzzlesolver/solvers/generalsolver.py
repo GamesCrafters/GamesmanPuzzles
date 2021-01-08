@@ -35,8 +35,7 @@ class GeneralSolver(Solver):
         # Progressbar
         if verbose: 
             print('Solving: {}{}'.format(self.puzzle.name, self.puzzle.variant))
-            bar = progressbar.ProgressBar()
-            bar.max_value = self.puzzle.numPositions
+            bar = progressbar.ProgressBar(max_value=self.puzzle.numPositions)
 
         # BFS for remoteness classification                        
         while not queue.empty():
@@ -60,8 +59,7 @@ class GeneralSolver(Solver):
         # Progressbar
         if verbose:
             print("Finding primitive positions: {}{}".format(self.puzzle.name, self.puzzle.variant))
-            bar = progressbar.ProgressBar()
-            bar.max_value = self.puzzle.numPositions
+            bar = progressbar.ProgressBar(max_value=self.puzzle.numPositions)
             
         queue_2, found = q.Queue(), set()
         queue_2.put(self.puzzle)

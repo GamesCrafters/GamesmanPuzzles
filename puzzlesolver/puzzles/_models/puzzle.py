@@ -133,7 +133,7 @@ class Puzzle:
         Main use is for the progressbar module. 
         Default is unknown length, can be overwritten
         """
-        return progressbar.base.UnknownLength
+        return None
 
     def generateSolutions(self):
         """Returns a Iterable of Puzzle objects that are solved states.
