@@ -55,16 +55,11 @@ class Hanoi(ServerPuzzle):
         elif variantid:
             if not isinstance(variantid, str):
                 raise TypeError("VariantID is not of type str")
-            if variantid not in Hanoi.variants:
-                raise ValueError("Invalid variantID")
             strlist = variantid.split("_")
             if len(strlist) != 2:
                 raise ValueError("Invalid variantID")
             self.rod_variant = int(strlist[0])
             self.disk_variant = int(strlist[1])
-
-        if "{}_{}".format(self.rod_variant, self.disk_variant) not in self.variants:
-            raise ValueError("Invalid variantID")
 
         self.rods = [2 ** self.disk_variant - 1] + [0] * (self.rod_variant - 1)
     
