@@ -10,14 +10,7 @@ class ServerPuzzle(Puzzle):
     @classproperty
     def variants(cls):
         """A Collections object that holds all the supported variants 
-        that a Puzzle can handle. 
-        
-        Typically a dictionary with the following
-        - variantId as the string key
-        - A Solver class object as the value
-
-        This dictionary is meant to store Solvers for the web server to interact with.
-        See Hanoi for a dict comprehension example
+        that a Puzzle will support. 
         """ 
         return {}
 
