@@ -3,7 +3,8 @@ from ..solvers import IndexSolver, SqliteSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
-from .hanoi import Hanoi
+# from .hanoi import Hanoi
+from .._puzzlesolverc import Hanoi
 from .lightsout import LightsOut
 from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle

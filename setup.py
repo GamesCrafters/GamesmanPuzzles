@@ -11,6 +11,10 @@ setup(
                 "puzzlesolver/src/Puzzlesolverc.c",
 
                 "puzzlesolver/src/Puzzlec.c",
+                "puzzlesolver/src/ServerPuzzlec.c",
+                
+                "puzzlesolver/src/Hanoic.c",
+                "puzzlesolver/src/Hanoi.c"
             ]
         )
     ]

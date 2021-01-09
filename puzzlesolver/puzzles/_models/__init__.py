@@ -1,2 +1,2 @@
 from ..._puzzlesolverc import Puzzle
-from .serverPuzzle import *
+from ..._puzzlesolverc import ServerPuzzle
