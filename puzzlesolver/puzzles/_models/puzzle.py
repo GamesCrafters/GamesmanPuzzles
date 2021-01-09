@@ -16,6 +16,20 @@ class Puzzle:
     description = "NA"
     date_created = "NA"
 
+    #################################################################
+    # Intializer
+    #################################################################
+
+    def __init__(self):
+        """Returns an instance of a Puzzle. Board state of the Puzzle
+        should be a Puzzle returned from `generateStartPosition`
+        """
+        pass
+
+    #################################################################
+    # Variants
+    #################################################################
+
     @property
     def variant(self):
         """Returns a string defining the variant of this puzzleself.
@@ -24,15 +38,14 @@ class Puzzle:
         """
         return "NA"
 
-    #################################################################
-    # Intializer
-    #################################################################
-
-    def __init__(self):
-        """Returns an instance of a Puzzle. Board state of the Puzzle
-        should a Puzzle returned from `generateStartPosition`
+    @classmethod
+    def generateStartPosition(cls, variantid):
+        """Returns a Puzzle object containing the start position.
+        
+        Outputs:
+            - Puzzle object
         """
-        pass
+        raise NotImplementedError
 
     #################################################################
     # String representations
@@ -89,7 +102,7 @@ class Puzzle:
         """
         raise NotImplementedError
 
-    def generateMoves(self, movetype="all"):
+    def generateMoves(self, movetype="legal"):
         """Generate moves from self (including undos)
 
         Inputs
