@@ -102,7 +102,7 @@ if __name__ == "__main__":
         puzzle = p_cls()
     
     if args.info or args.auto:
-        s_cls = p_cls.variants[puzzle.variant]
+        s_cls = PuzzleManager.getSolverClass(args.puzzleid, args.variant)
         solver = s_cls(puzzle)
     else:
         solver = None

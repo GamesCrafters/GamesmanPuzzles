@@ -54,15 +54,6 @@ class ServerPuzzle(Puzzle):
             return cls.deserialize(positionid)
         raise NotImplementedError
     
-    @classmethod
-    def generateStartPosition(cls, variantid):
-        """Returns a Puzzle object containing the start position.
-        
-        Outputs:
-            - Puzzle object
-        """
-        raise NotImplementedError
-
     #################################################################
     # Depreciated Methods
     #################################################################
