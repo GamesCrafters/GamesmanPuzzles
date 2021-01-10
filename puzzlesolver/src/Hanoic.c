@@ -12,6 +12,82 @@
 
 PyTypeObject HanoicType;
 
+// Helper functions
+
+int variantid2variant(char* vid, int* rod_variant, int* disk_variant) {
+    char buffer[MAX_STR_LEN];
+    strcpy(buffer, vid);
+    char* token = strtok(buffer, "_");
+    if (token == NULL)
+        return -1;
+    *rod_variant = strtol(token, NULL, 10);
+
+    token = strtok(NULL, "_");
+    if (token == NULL)
+        return -1;
+    *disk_variant = strtol(token, NULL, 10);
+    
+    if (strtok(NULL, "_") != NULL)
+        return -1;
+    return 0;
+}
+
+int str2rods(char* str, int* rods, int* rod_variant, int* disk_variant) {
+    // Edge cases
+    if (str[0] == '-' || str[strlen(str) - 1] == '-') return -1;
+    
+    char buffer[MAX_STR_LEN];
+    
+    strcpy(buffer, str);
+    char* token = strtok(buffer, "-");
+
+    if (token == NULL) return -1;
+    int i = 0;
+
+    while (token && i < MAX_RODS) {    
+        char* endptr = NULL;
+        errno = 0;
+        int rod = strtol(token, &endptr, 10);
+
+        if (token == endptr)
+            return -1;
+        if (errno != 0)
+            return -2;
+
+        rods[i] = rod;
+        int disk = highest_bit(rod);
+        if (disk_variant != NULL && *disk_variant < disk) 
+            *disk_variant = disk;
+        token = strtok(NULL, "-");
+        i++;
+    }
+    if (rod_variant != NULL)
+        *rod_variant = i;
+    return 0;
+}
+
+int highest_bit(int num) {
+    int output = 0;
+    while (num != 0) {
+        num = num >> 1;
+        output++;
+    }
+    return output;
+}
+
+void printBoard(PyObject *self, char *str) {
+    uint32_t* rods = ((Hanoi *) self)->board->rods;
+    uint8_t rod_variant = ((Hanoi *) self)->board->rod_variant;
+    for (int i = 0; i < rod_variant; i++) {
+        char addend[9];
+        snprintf(addend, 9, "%d", rods[i]);
+        strncat(str, addend, 9);
+        if (i != rod_variant - 1) { strncat(str, "-", 1); }
+    }
+}
+
+// Main functionality
+
 void Hanoi_dealloc(Hanoi *self) {
     deallocateBoard(((Hanoi *) self)->board);
     Py_XDECREF(self->variant);
@@ -40,24 +116,6 @@ int Hanoi_init_start(PyObject *self, int rod_variant, int disk_variant) {
     if (Hanoi_init_empty(self, rod_variant, disk_variant) < 0) 
         return -1;
     ((Hanoi *)self)->board->rods[0] = (1 << disk_variant) - 1;
-    return 0;
-}
-
-int variantid2variant(char* vid, int* rod_variant, int* disk_variant) {
-    char buffer[MAX_STR_LEN];
-    strcpy(buffer, vid);
-    char* token = strtok(buffer, "_");
-    if (token == NULL)
-        return -1;
-    *rod_variant = strtol(token, NULL, 10);
-
-    token = strtok(NULL, "_");
-    if (token == NULL)
-        return -1;
-    *disk_variant = strtol(token, NULL, 10);
-    
-    if (strtok(NULL, "_") != NULL)
-        return -1;
     return 0;
 }
 
@@ -108,17 +166,6 @@ int Hanoi_init(PyObject *self, PyObject *args, PyObject *kwds) {
     return Hanoi_init_start(self, rod_variant, disk_variant);
 }
 
-void printBoard(PyObject *self, char *str) {
-    uint32_t* rods = ((Hanoi *) self)->board->rods;
-    uint8_t rod_variant = ((Hanoi *) self)->board->rod_variant;
-    for (int i = 0; i < rod_variant; i++) {
-        char addend[9];
-        snprintf(addend, 9, "%d", rods[i]);
-        strncat(str, addend, 9);
-        if (i != rod_variant - 1) { strncat(str, "-", 1); }
-    }
-}
-
 PyObject *Hanoi_repr(PyObject *self) {
     char result[100];
     sprintf(result, "<Puzzle=Hanoi, Board=(");
@@ -131,46 +178,6 @@ PyObject *Hanoi_str(PyObject *self) {
     char result[100] = "";
     printBoard(self, result);
     return PyUnicode_FromString(result);
-}
-
-int highest_bit(int num) {
-    int output = 0;
-    while (num != 0) {
-        num = num >> 1;
-        output++;
-    }
-    return output;
-}
-
-int str2rods(char* str, int* rods, int* rod_variant, int* disk_variant) {
-    char buffer[MAX_STR_LEN];
-    
-    strcpy(buffer, str);
-    char* token = strtok(buffer, "-");
-
-    if (token == NULL) return -1;
-    int i = 0;
-
-    while (token && i < MAX_RODS) {    
-        char* endptr = NULL;
-        errno = 0;
-        int rod = strtol(token, &endptr, 10);
-
-        if (token == endptr)
-            return -1;
-        if (errno != 0)
-            return -2;
-
-        rods[i] = rod;
-        int disk = highest_bit(rod);
-        if (disk_variant != NULL && *disk_variant < disk) 
-            *disk_variant = disk;
-        token = strtok(NULL, "-");
-        i++;
-    }
-    if (rod_variant != NULL)
-        *rod_variant = i;
-    return 0;
 }
 
 PyObject *Hanoi_deserialize(PyObject *cls, PyObject *args) {
@@ -309,7 +316,7 @@ PyObject *Hanoi_doMove(PyObject *self, PyObject *args) {
     return (PyObject*) newHanoi;
 }
 
-PyObject *Hanoi_generateMoves(PyObject *self, PyObject *args) {
+PyObject *Hanoi_generateMoves(PyObject *self, PyObject *args, PyObject *kwds) {
     uint8_t rod_variant = ((Hanoi *)self)->board->rod_variant;
     Move moves[((rod_variant + 1) * rod_variant) / 2];    
     int num_moves = generateMoves(moves, ((Hanoi *)self)->board, NULL);
@@ -355,7 +362,7 @@ PyMethodDef Hanoic_methods[] = {
     "Return a primitive"},
     {"doMove", (PyCFunction)Hanoi_doMove, METH_VARARGS,
     "Execute a move on the board"},
-    {"generateMoves", (PyCFunction)Hanoi_generateMoves, METH_VARARGS,
+    {"generateMoves", (PyCFunction)Hanoi_generateMoves, METH_VARARGS | METH_KEYWORDS,
     "Generate possible moves"},
     {"generateSolutions", (PyCFunction)Hanoi_generateSolutions, METH_NOARGS,
     "Generate solutions"},
@@ -397,13 +404,6 @@ PyTypeObject HanoicType = {
     .tp_new = Hanoi_new
 };
 
-static PyObject* name;
-static PyObject* puzzleid;
-static PyObject* puzzle_name;
-static PyObject* description;
-static PyObject* date_created;
-static PyObject* variants;
-
 int PyModule_AddHanoi(PyObject* module) {
     if (module == NULL) return -1;
     if (PyType_Ready(&HanoicType) < 0) return -1;
@@ -411,7 +411,6 @@ int PyModule_AddHanoi(PyObject* module) {
     Py_INCREF(&HanoicType);
     PyModule_AddObject(module, "Hanoi", (PyObject *)&HanoicType);
  
-    /*
     PyObject* dict = HanoicType.tp_dict;
 
     // Setting class members in tp_dict. Apparently not safe
@@ -432,27 +431,38 @@ int PyModule_AddHanoi(PyObject* module) {
     PyObject* variants = PyList_New(0);
     PyObject* test_variants = PyList_New(0);
 
-    PyList_Append(test_variants, PyUnicode_FromString("3_3"));
-
     PyDict_SetItemString(dict, "variants", variants);
     PyDict_SetItemString(dict, "test_variants", test_variants);
 
-    for (int j = 2; j < 5; j++) {
-        for (int i = 1; i <= 14; i++) {
-            char buffer[5];
-            snprintf(buffer, 5, "%d_%d", j, i);
-            PyList_Append(variants, PyUnicode_FromString(buffer));
-        }
+    char* variants_str[] = {
+        "2_1",
+        "3_1", "3_2", "3_3", "3_4", "3_5", "3_6", "3_7", "3_8",
+        "4_1", "4_2", "4_3", "4_4", "4_5", "4_6",
+        "5_1", "5_2", "5_3", "5_4", NULL
+    };
+    char* test_variants_str[] = {"3_1", "3_2", "3_3", NULL};
+
+    for (char** i = variants_str; *i != NULL; i++) {
+        PyObject* variant = PyUnicode_FromString(*i);
+        PyList_Append(variants, variant);
+        Py_XDECREF(variant);
     }
 
-    Py_XDECREF(name);
+    for (char** i = test_variants_str; *i != NULL; i++) {
+        PyObject* test_variant = PyUnicode_FromString(*i);
+        PyList_Append(test_variants, test_variant);
+        Py_XDECREF(test_variant);
+    }
+
+    Py_XDECREF(author);
     Py_XDECREF(puzzleid);
     Py_XDECREF(name);
     Py_XDECREF(description);
     Py_XDECREF(date_created);
+
     Py_XDECREF(variants);
     Py_XDECREF(test_variants);
-    */
+
     return 0;
 }
 
