@@ -3,12 +3,13 @@
 [![codecov](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles/branch/master/graph/badge.svg)](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles)
 
 A Python Package dedicated to Puzzle solving. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
-## Getting Started
+## Building from source
 Clone this repository and install the dependencies (it's recommended to use a virtualenv when installing dependencies of any project):
 ```
 git clone https://github.com/GamesCrafters/GamesmanPuzzles.git
 cd GamesmanPuzzles
 pip install -r requirements.txt
+pip install -e .
 ```
 
 Run from the base directory of the repositiory
