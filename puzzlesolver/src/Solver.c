@@ -49,6 +49,15 @@ int getRemotenessPyObject(PyObject* obj) {
     return getRemoteness(hash);
 }
 
+int clear() {
+    struct entry *entry, *tmp;
+    HASH_ITER(hh, entries, entry, tmp) {
+        HASH_DEL(entries, entry);
+        free(entry);
+    }
+    return 0;
+}
+
 int solve(PyObject* puzzle) {
     if (puzzle == NULL) return -1;
     Py_XINCREF(puzzle);
