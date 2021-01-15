@@ -278,9 +278,9 @@ PyObject *Hanoi_getName(PyObject *self) {
 PyObject *Hanoi_primitive(PyObject *self) {
     int result = primitive(((Hanoi *) self)->board);
     if (result == 1) {
-        return PyUnicode_FromString("SOLVABLE");
+        return PyUnicode_FromString(SOLVABLE);
     }
-    return PyUnicode_FromString("UNDECIDED");
+    return PyUnicode_FromString(UNDECIDED);
 }
 
 PyObject *Hanoi_doMove(PyObject *self, PyObject *args) {

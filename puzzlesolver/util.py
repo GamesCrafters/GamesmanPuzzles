@@ -1,7 +1,9 @@
+from puzzlesolver._puzzlesolverc import UNSOLVABLE, SOLVABLE, UNDECIDED
+
 class PuzzleValue:
-    SOLVABLE = "SOLVABLE"
-    UNSOLVABLE = "UNSOLVABLE"
-    UNDECIDED = "UNDECIDED"
+    SOLVABLE = SOLVABLE
+    UNSOLVABLE = UNSOLVABLE
+    UNDECIDED = UNDECIDED
 
     @staticmethod
     def contains(key):

@@ -1,4 +1,5 @@
 #include <Python.h>
+#include "util.h"
 
 typedef struct {
     PyObject_HEAD

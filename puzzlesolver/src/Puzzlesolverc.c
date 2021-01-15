@@ -19,6 +19,9 @@ PyMODINIT_FUNC PyInit__puzzlesolverc(void) {
         PyModule_RemoveHanoi();
         return NULL;
     }
+    PyModule_AddStringMacro(module, UNSOLVABLE);
+    PyModule_AddStringMacro(module, SOLVABLE);
+    PyModule_AddStringMacro(module, UNDECIDED);
 
     return module;
 }
