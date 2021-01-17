@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from puzzlesolver.puzzles import Hanoi
+from puzzlesolver.puzzles import Hanoi, PuzzleManager
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import PuzzleValue, PuzzleException
 
@@ -11,10 +11,9 @@ def move(move0, move1):
 # Unit testing
 def testHash():
     """Tests the expected behavior of the hash function on the puzzle states. """
-    puzzle0 = Hanoi.deserialize('3_2_1--')
-    puzzle1 = Hanoi.deserialize('3_2_1--')
-    #puzzle2 = Hanoi.deserialize('-3_2_1-')
-    puzzle3 = Hanoi.deserialize('--3_2_1')
+    puzzle0 = Hanoi.fromString('7-0-0')
+    puzzle1 = Hanoi.fromString('7-0-0')
+    puzzle3 = Hanoi.fromString('0-0-7')
     
     # Checks if two of the exact same states have the same hash
     assert hash(puzzle0) == hash(puzzle1)
@@ -27,74 +26,80 @@ def testHash():
 
 def testSerialization():
     """Tests if serialization and deserialization works both ways."""
-    codes = ['3_2_1--', '-3_2_1-', '--3_2_1', '-3_2-1', '1--']
+    codes = ['7-0-0', '0-7-0', '0-0-7', '6-1-0', '1-0-0']
     
     for code in codes:
-        puzzle = Hanoi.deserialize(code)
-        assert puzzle.serialize() == code
+        puzzle = Hanoi.fromString(code)
+        assert puzzle.toString() == code
 
 def testPrimitive():
     """Tests if the start state and end state outputted the right primitives."""
     
     # Expected primitive of start state should be UNDECIDED
-    puzzle = Hanoi.deserialize('3_2_1--')
+    puzzle = Hanoi.fromString('7-0-0')
     assert puzzle.primitive() == PuzzleValue.UNDECIDED
     
     # Expected primitive of end state should be SOLVABLE
-    puzzle = Hanoi.deserialize('--3_2_1')
+    puzzle = Hanoi.fromString('0-0-7')
     assert puzzle.primitive() == PuzzleValue.SOLVABLE
 
 def testMoves():
     """Tests a specific scenario and checks if the moves inputted resulted in the expected state, generated moves, and expected invalid moves."""
     
     # Tests if state after move matches serialization
-    puzzle0 = Hanoi.deserialize('3_2_1--')
-    puzzle1 = puzzle0.doMove(move(0, 1))
-    assert puzzle1.serialize() == '3_2-1-'
-    puzzle2 = puzzle1.doMove(move(0, 2))
-    assert puzzle2.serialize() == '3-1-2'
-    
-    puzzle3 = puzzle1.doMove(move(1, 0))
-    assert puzzle0.serialize() == puzzle3.serialize()
+    tests = [
+        ('7-0-0', {(0, 1), (0, 2)}),
+        ('0-7-0', {(1, 0), (1, 2)}),
+        ('0-2-5', {(1, 0), (2, 1), (2, 0)}),
+        ('1-2-4', {(0, 1), (0, 2), (1, 2)})
+    ]
 
-    # Invalid moves raises an Exception
-    with pytest.raises(Exception): puzzle1.doMove(move(0, 1))
-    with pytest.raises(Exception): puzzle0.doMove(move(1, 0))
-    with pytest.raises(Exception): puzzle0.doMove(move(0, 3))
-
-    # Length of generated moves should match expected.
-    assert len(puzzle0.generateMoves()) == 2
-    assert len(puzzle1.generateMoves()) == 3
-    assert len(puzzle2.generateMoves()) == 3
-    assert len(puzzle3.generateMoves()) == 2
+    for test in tests:
+        puzzle = Hanoi.fromString(test[0])
+        moves = set(puzzle.generateMoves())
+        assert moves == test[1]
+        for move in moves:
+            puzzle.doMove(move)
 
 def testPositions():
     """Tests the default start state and finish positions matches the expected serializations."""
     
     # Default start
-    puzzle0 = Hanoi.generateStartPosition('3')
-    assert puzzle0.serialize() == '3_2_1--'
+    puzzle0 = Hanoi.generateStartPosition('3_3')
+    assert puzzle0.toString() == '7-0-0'
     
     # Default end (only contains one end)
     puzzles = puzzle0.generateSolutions()
     assert len(puzzles) == 1
-    assert puzzles[0].serialize() == '--3_2_1'
+    assert puzzles[0].toString() == '0-0-7'
 
 def testValidation():
     """Tests four different serializations and checks if it matches the expected response."""
     
     # Four invalid serializations
-    invalid_puzzle = "1_2_3--"
-    valid_puzzle = "3_2_1--"
-    blank_puzzle = ""
-    weird_input = "123__"
+    tests = [
+        ("", "3_3"),
+        ("15-0-0", "4_3"),
+        ("7-0-0", "3_4"),
+        ("7-0-0-", "3_3")
+    ]
     
-    # Four exceptions raised
-    pytest.raises(PuzzleException, Hanoi.validate, blank_puzzle, "3")
-    pytest.raises(PuzzleException, Hanoi.validate, weird_input, "3")
-    pytest.raises(PuzzleException, Hanoi.validate, invalid_puzzle, "3")
-    pytest.raises(PuzzleException, Hanoi.validate, valid_puzzle, "4")
-    Hanoi.validate(valid_puzzle, "3")
+    for test in tests:
+        positionid = test[1]
+        variantid = test[0]
+        pytest.raises(
+            PuzzleException, PuzzleManager.validate, 
+            Hanoi.puzzleid, test[1], test[0])
+    PuzzleManager.validate(Hanoi.puzzleid, "3_3", "7-0-0")
+    
+def testSolver():
+    """Tests the solver functionality of the Puzzle"""
+
+    puzzle = Hanoi()
+    solver = GeneralSolver(puzzle)
+    solver.solve()
+
+    assert solver.getRemoteness(Hanoi.fromString('7-0-0')) == 7
 
 # Server methods
 def testServerPuzzle(client):
@@ -102,7 +107,7 @@ def testServerPuzzle(client):
     rv = client.get('/{}/'.format(Hanoi.puzzleid))
     d = json.loads(rv.data)
 
-    assert d['response']['variants'] == list(Hanoi.variants.keys())
+    assert d['response']['variants'] == list(Hanoi.variants)
 
     def helper(puzzleid, code, variantid, remoteness):
         rv = client.get('/{}/{}/{}/'.format(puzzleid, variantid, code))
@@ -110,8 +115,8 @@ def testServerPuzzle(client):
         assert d['response']['remoteness'] == remoteness
     
     pid = Hanoi.puzzleid
-    helper(pid, '1--', 1, 1)
-    helper(pid, '-1-', 1, 1)    
-    helper(pid, '--1', 1, 0)
+    helper(pid, '1-0-0', "3_1", 1)
+    helper(pid, '0-1-0', "3_1", 1)    
+    helper(pid, '0-0-1', "3_1", 0)
 
-    helper(pid, '2_1-3-', 3, 4)
+    helper(pid, '3-4-0', "3_3", 4)

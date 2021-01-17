@@ -34,7 +34,7 @@ def generateSolutions(self, **kwargs):
 Once you have implemented all the required functions, change the last line of the Python file outside of the class to:
 ```python
 puzzle = Hanoi()
-PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle)).play()
+PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle), info=True).play()
 ```
 On your CLI, execute
 ```bash

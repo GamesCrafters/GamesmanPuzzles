@@ -9,6 +9,7 @@ class TopSpin(ServerPuzzle):
 
 	puzzleid = 'top_spin'
 	variants = {'6_2' : SqliteSolver}
+	test_variants = variants
 
 	def __init__(self, size = 6, spin = 2, **kwargs):
 		self.size = size

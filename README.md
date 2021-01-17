@@ -19,7 +19,7 @@ to play a puzzle of Towers of Hanoi
 
 Run from the base directory of the respository
 ```
-python -m puzzlesolver.server
+python server.py
 ```
 to access the webserver. The server should be running at http://127.0.0.1:9001/.
 

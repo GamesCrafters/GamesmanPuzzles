@@ -1,11 +1,11 @@
 # Gameplay Methods
 <p align="center">
-<img src='Assets/Tower_of_hanoi.jpeg'>
+<img src='assets/Tower_of_hanoi.jpeg'>
 </p>
 
 Hanoi is a commonly known and simple puzzle. It consists of three rods and a stack of differently sized rings on one rod. The goal is to take a stack of rings and move them one by one to form another stack of rings on the rightmost rod. The only restriction is that a bigger ring cannot be on top of a smaller ring.
 
-The goal of this step is to explain the functionality for the GamesmanPuzzles version of Hanoi as well as to implement the functions so that we'll be able to interact with it in our PuzzlePlayer. 
+This guide will implement a simple implementation of Hanoi to familiarize the developer about how the Puzzle framework works. Please note that this is an earlier implementation of Hanoi and will not be the same implementation as the official GamesmanPuzzles Hanoi.
 
 Create a new puzzle of Hanoi following the Puzzle interface:
 ```python
@@ -21,10 +21,10 @@ We want to initialize our puzzle with its starting position. For Hanoi, our star
 def __init__(self, **kwargs):
     self.stacks = [[3, 2, 1], [], []]
 ```
-#### `__str__(self, **kwargs)`
+#### `toString(self, **kwargs)`
 The string representation of the puzzle will help visualize the state of our stacks on our PuzzlePlayer interface. For a quick visual, we'll be using the string representation of the lists we used.
 ```python
-def __str__(self, **kwargs):
+def toString(self, **kwargs):
     return str(self.stacks)
 ```
 #### `primitive(self, **kwargs)`

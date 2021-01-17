@@ -1,9 +1,9 @@
 import pytest
 import tempfile
 
-from puzzlesolver import server
+import server
 from puzzlesolver.util import PuzzleValue
-from puzzlesolver.puzzles import puzzleList, GraphPuzzle
+from puzzlesolver.puzzles import GraphPuzzle
 
 ########################################################################
 # Server Fixtures

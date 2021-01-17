@@ -28,17 +28,14 @@ class GeneralSolver(Solver):
             # Not a CSP - use generateSolutions()
             for solution in solutions: 
                 # Check if all the solutions are SOLVABLE
-                assert solution.primitive() == PuzzleValue.SOLVABLE, """
-                    `generateSolutions` contains an UNSOLVABLE position
-                """
+                assert solution.primitive() == PuzzleValue.SOLVABLE, "`generateSolutions` contains an UNSOLVABLE position"
                 self.remoteness[hash(solution)] = 0
                 queue.put(solution)
                 
         # Progressbar
         if verbose: 
-            print('Solving: {}'.format(self.puzzle.getName()))
-            bar = progressbar.ProgressBar()
-            bar.max_value = self.puzzle.numPositions
+            print('Solving: {}{}'.format(self.puzzle.name, self.puzzle.variant))
+            bar = progressbar.ProgressBar(max_value=self.puzzle.numPositions)
 
         # BFS for remoteness classification                        
         while not queue.empty():
@@ -61,9 +58,8 @@ class GeneralSolver(Solver):
         """
         # Progressbar
         if verbose:
-            print("Finding primitive positions: {}".format(self.puzzle.getName()))
-            bar = progressbar.ProgressBar()
-            bar.max_value = self.puzzle.numPositions
+            print("Finding primitive positions: {}{}".format(self.puzzle.name, self.puzzle.variant))
+            bar = progressbar.ProgressBar(max_value=self.puzzle.numPositions)
             
         queue_2, found = q.Queue(), set()
         queue_2.put(self.puzzle)

@@ -7,7 +7,7 @@ class LightsOut(ServerPuzzle):
 
     puzzleid = "lights"
     author = "Anthony Ling"
-    puzzle_name = "Lights Out"
+    name = "Lights Out"
     description = "Meh"
     date_created = "April 6, 2020"
 

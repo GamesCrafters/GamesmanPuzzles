@@ -1,36 +1,75 @@
-from ...util import PuzzleException
+from ...util import PuzzleException, classproperty, depreciated
 from . import Puzzle
-from abc import abstractproperty, abstractclassmethod, abstractmethod
 
 class ServerPuzzle(Puzzle):
     
-    # Methods and attributes for Server
-    # Descriptions
-    puzzleid = Exception("No puzzleid defined")
-    author = "N/A"
-    puzzle_name = "N/A"
-    description = "N/A"
-    date_created = "N/A"
-        
-    """A dictionary with the following
-    - variantId as the string key
-    - A Solver class object as the value
+    #################################################################
+    # Variants
+    #################################################################
 
-    This dictionary is meant to store Solvers for the web server to interact with.
-    See Hanoi for a dict comprehension example
-    """
-    variants = {}
+    @classproperty
+    def variants(cls):
+        """A Collections object that holds all the supported variants 
+        that a Puzzle will support. 
+        """ 
+        return {}
 
-    @abstractproperty
-    def variant(self):
-        """Returns a string defining the variant of this puzzleself.
-
-        Example: '5x5', '3x4', 'reverse3x3'
+    @classproperty
+    def test_variants(cls):
         """
+        Same as variants, except for testing purposes
+        """
+        return {}
+    
+    #################################################################
+    # Deserialization
+    #################################################################
+
+    @classmethod
+    def fromString(cls, positionid):
+        """Returns a Puzzle object based on "minimal"
+        String representation of the Puzzle (i.e. `toString(mode="minimal")`)
+
+        Example: positionid="6-1-0" for Hanoi creates a Hanoi puzzle
+        with two stacks of discs ((3,2) and (1))
+
+        Must raise a TypeError if the positionid is not a String
+        Must raise a ValueError if the String cannot be translated into a Puzzle
+        
+        NOTE: A String cannot be translated into a Puzzle if it leads to an illegal
+        position based on the rules of the Puzzle
+
+        Inputs:
+            positionid - String id from puzzle, serialize() must be able to generate it
+
+        Outputs:
+            Puzzle object based on puzzleid and variantid
+        """
+        if hasattr(cls, "isLegalPosition"):
+            if not isinstance(positionid, str): 
+                raise TypeError("PositionID must be type str")
+            if not cls.isLegalPosition(positionid): 
+                raise ValueError("PositionID could not be translated into a puzzle")
+        if hasattr(cls, "deserialize"):
+            return cls.deserialize(positionid)
         raise NotImplementedError
     
-    @abstractclassmethod
-    def deserialize(cls, positionid, **kwargs):
+    #################################################################
+    # Depreciated Methods
+    #################################################################
+
+    @depreciated("serverPuzzle.serialize is depreciated. See serverPuzzle.fromString")
+    def serialize(self):
+        """Returns a serialized based on self
+
+        Outputs:
+            String Puzzle
+        """
+        return str(self)
+    
+    @classmethod
+    @depreciated("serverPuzzle.deserialize is depreciated. See puzzle.toString")
+    def deserialize(cls, positionid):
         """Returns a Puzzle object based on positionid
 
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
@@ -42,19 +81,12 @@ class ServerPuzzle(Puzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
+
         raise NotImplementedError
 
-    @abstractmethod
-    def serialize(self, **kwargs):
-        """Returns a serialized based on self
-
-        Outputs:
-            String Puzzle
-        """
-        return str(self)
-    
-    @abstractclassmethod
-    def isLegalPosition(cls, positionid, variantid=None, **kwargs):
+    @classmethod
+    @depreciated("isLegalPosition is depreciated")
+    def isLegalPosition(cls, positionid, variantid=None):
         """Checks if the positionid is valid given the rules of the Puzzle cls. 
         This function is invariant and only checks if all the rules are satisified
         For example, Hanoi cannot have a larger ring on top of a smaller one.
@@ -63,39 +95,3 @@ class ServerPuzzle(Puzzle):
             - True if Puzzle is valid, else False
         """
         raise NotImplementedError 
-
-    @abstractclassmethod
-    def generateStartPosition(cls, variantid, **kwargs):
-        """Returns a Puzzle object containing the start position.
-        
-        Outputs:
-            - Puzzle object
-        """
-        raise NotImplementedError
-
-    # Built-in functions
-    @classmethod
-    def validate(cls, positionid=None, variantid=None, **kwargs):
-        """Checks if the positionid fits the rules set for the puzzle, as
-        well as if it's supported by the app.
-        
-        Inputs:
-            - positionid: 
-            - variantid: 
-        """
-        if variantid is not None:
-            if not isinstance(variantid, str): raise PuzzleException("Invalid variantid")
-            if variantid not in cls.variants: raise PuzzleException("Out of bounds variantid")
-        if positionid is not None:
-            if not cls.isLegalPosition(positionid): raise PuzzleException("position is not a valid puzzle")
-            p = cls.deserialize(positionid)
-            if variantid is not None and p.variant != variantid: 
-                raise PuzzleException("variantid doesn't match puzzleid")            
-
-    def getName(self, **kwargs):
-        """Returns the name of the Puzzle.
-
-        Outputs:
-            String name
-        """
-        return self.__class__.__name__ + self.variant
