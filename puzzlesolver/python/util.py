@@ -1,4 +1,4 @@
-from puzzlesolver._puzzlesolverc import UNSOLVABLE, SOLVABLE, UNDECIDED
+from ._puzzlesolverc import UNSOLVABLE, SOLVABLE, UNDECIDED
 
 class PuzzleValue:
     SOLVABLE = SOLVABLE
