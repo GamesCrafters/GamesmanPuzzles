@@ -118,9 +118,9 @@ class Hanoi(ServerPuzzle):
         Outputs:
             String representation -- String"""
         
-        if mode is "minimal":
+        if mode == "minimal":
             return str(self)
-        elif mode is "complex":
+        elif mode == "complex":
             output = ""
             for j in range(self.disk_variant):
                 for rod in self.rods:
