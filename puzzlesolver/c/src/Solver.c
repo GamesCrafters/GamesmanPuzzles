@@ -4,61 +4,66 @@
 #include <stdio.h>
 #include <Python.h>
 
-struct entry {
+typedef struct entry {
     int id;            /* we'll use this field as the key */
     int remoteness;
     UT_hash_handle hh; /* makes this structure hashable */
-};
+} Entry;
 
 typedef struct el {
     PyObject* data;
     struct el *next;
 } PyEntry;
 
-struct entry *entries = NULL;
-
-int getCount() {
-    return HASH_COUNT(entries);
+int getCount(Entry** entries) {
+    return HASH_COUNT(*entries);
 }
 
-int setRemoteness(int hash, int remoteness) {
+Entry** init() {
+    Entry** ptr = malloc(sizeof(Entry*));
+    *ptr = NULL;
+    return ptr;
+}
+
+int setRemoteness(Entry** entries, int hash, int remoteness) {
     struct entry *entry;
     entry = malloc(sizeof(struct entry));
     if (entry == NULL) return -1;
     entry->id = hash;
     entry->remoteness = remoteness;
-    HASH_ADD_INT( entries, id, entry );
+    HASH_ADD_INT( *entries, id, entry );
     return 0;
 }
 
-int setRemotenessPyObject(PyObject* obj, int remoteness) {
+int setRemotenessPyObject(Entry** entries, PyObject* obj, int remoteness) {
     int hash = PyObject_Hash(obj);
-    return setRemoteness(hash, remoteness);
+    return setRemoteness(entries, hash, remoteness);
 }
 
-int getRemoteness(int hash) {
+int getRemoteness(Entry** entries, int hash) {
     struct entry *s;
 
-    HASH_FIND_INT( entries, &hash, s );
+    HASH_FIND_INT( *entries, &hash, s );
     if (s == NULL) return -1;
     return s->remoteness;
 }
 
-int getRemotenessPyObject(PyObject* obj) {
+int getRemotenessPyObject(Entry** entries, PyObject* obj) {
     int hash = PyObject_Hash(obj);
-    return getRemoteness(hash);
+    return getRemoteness(entries, hash);
 }
 
-int clear() {
+int clear(Entry** entries) {
     struct entry *entry, *tmp;
-    HASH_ITER(hh, entries, entry, tmp) {
-        HASH_DEL(entries, entry);
+    HASH_ITER(hh, *entries, entry, tmp) {
+        HASH_DEL(*entries, entry);
         free(entry);
     }
+    free(*entries);
     return 0;
 }
 
-int solve(PyObject* puzzle) {
+int solve(Entry** entries, PyObject* puzzle) {
     if (puzzle == NULL) return -1;
     Py_XINCREF(puzzle);
 
@@ -78,7 +83,7 @@ int solve(PyObject* puzzle) {
         puzzle = PyList_GetItem(solutions, i);
         if (puzzle == NULL) goto err;
         Py_XINCREF(puzzle);
-        setRemotenessPyObject(puzzle, 0);
+        setRemotenessPyObject(entries, puzzle, 0);
 
         PyEntry* entry = malloc(sizeof(PyEntry));
         entry->data = puzzle;
@@ -93,7 +98,7 @@ int solve(PyObject* puzzle) {
         puzzle = entry->data;
         free(entry);
 
-        int remoteness = getRemotenessPyObject(puzzle);
+        int remoteness = getRemotenessPyObject(entries, puzzle);
         // TODO: This is probably wrong, "undo" is supposed to be in a tuple
         if ((moves = PyObject_CallMethod(puzzle, "generateMoves", "s", "undo")) == NULL)
             goto err;
@@ -108,8 +113,8 @@ int solve(PyObject* puzzle) {
             if ((newPuzzle = PyObject_CallMethod(puzzle, "doMove", "O", args)) == NULL)
                 goto err;
             Py_CLEAR(args);
-            if (getRemotenessPyObject(newPuzzle) == -1) {
-                setRemotenessPyObject(newPuzzle, remoteness + 1);
+            if (getRemotenessPyObject(entries, newPuzzle) == -1) {
+                setRemotenessPyObject(entries, newPuzzle, remoteness + 1);
                 
                 entry = malloc(sizeof(PyEntry));
                 entry->data = newPuzzle;
