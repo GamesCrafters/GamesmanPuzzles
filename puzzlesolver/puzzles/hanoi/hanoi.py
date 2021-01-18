@@ -3,9 +3,8 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
 from copy import deepcopy
-from . import ServerPuzzle
-from ..util import *
-from ..solvers import IndexSolver
+from .. import ServerPuzzle
+from ...util import *
 
 def ffs(num):
     """Helper function to return the index of the LSB. 

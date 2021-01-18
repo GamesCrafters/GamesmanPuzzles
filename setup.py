@@ -2,7 +2,7 @@ from setuptools import setup, Extension, find_packages
 
 setup(
     name="GamesmanPuzzles",
-    version="0.0.1",
+    version="0.0.2",
     packages=find_packages(),
     install_requires=[
         'Flask>=1.1.1',
@@ -14,14 +14,18 @@ setup(
     ext_modules=[
         Extension(
             "puzzlesolver._puzzlesolverc", 
+            include_dirs=[
+                "puzzlesolver/puzzles/hanoi/include",
+                "puzzlesolver/include"
+            ],
             sources=[
                 "puzzlesolver/src/Puzzlesolverc.c",
 
                 "puzzlesolver/src/Puzzlec.c",
                 "puzzlesolver/src/ServerPuzzlec.c",
                 
-                "puzzlesolver/src/Hanoic.c",
-                "puzzlesolver/src/Hanoi.c"
+                "puzzlesolver/puzzles/hanoi/src/Hanoic.c",
+                "puzzlesolver/puzzles/hanoi/src/Hanoi.c"
             ]
         )
     ],

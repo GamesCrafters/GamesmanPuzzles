@@ -4,7 +4,13 @@ from ..util import PuzzleException
 
 # Put your dependencies here
 # from .hanoi import Hanoi
-from .._puzzlesolverc import Hanoi
+try:
+    from .._puzzlesolverc import Hanoi
+    print("Using C implementation of Hanoi")
+except (ImportError, ModuleNotFoundError):
+    from .hanoi import Hanoi
+    print("Using Python implementation of Hanoi")
+
 from .lightsout import LightsOut
 from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
