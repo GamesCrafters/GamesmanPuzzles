@@ -2,7 +2,7 @@ from setuptools import setup, Extension, find_packages
 
 setup(
     name="GamesmanPuzzles",
-    version="0.0.2",
+    version="0.0.3",
     packages=find_packages(),
     install_requires=[
         'Flask>=1.1.1',
