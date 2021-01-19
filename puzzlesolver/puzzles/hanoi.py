@@ -74,7 +74,7 @@ class Hanoi(ServerPuzzle):
 
     @property
     def numPositions(self):
-        """Returns the number of possible positions
+        """Returns the upperbound number of possible hashes
 
         Outputs:
         - numPositions : int
