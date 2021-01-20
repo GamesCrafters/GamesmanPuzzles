@@ -21,7 +21,8 @@ pip install -e .
 
 Run from the base directory of the repositiory
 ```
-python puzzleplayer.py hanoi
+cd puzzlesolver/players
+python tui.py hanoi
 ```
 to play a puzzle of Towers of Hanoi
 

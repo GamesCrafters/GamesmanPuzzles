@@ -2,8 +2,9 @@
 This class provides a TUI for interaction with Solvers and Puzzles
 """
 from puzzlesolver.util import PuzzleValue
+from os import system, name
 
-class PuzzlePlayer:
+class TUI:
 
     def __init__(self, puzzle, solver=None, info=False, auto=False):
         self.base = puzzle
@@ -13,7 +14,7 @@ class PuzzlePlayer:
         if not solver and (auto or info):
             raise Exception("Cannot have auto or info arguments without a solver")
         self.auto = auto
-        if solver:
+        if solver and not solver.solved:
             self.solver.solve(verbose=True)
 
     # Starts the PuzzlePlayer
@@ -21,12 +22,20 @@ class PuzzlePlayer:
         self.puzzle = self.base
         self.turn = 0
         while True:
+            self.clear()
             self.printInfo()
             print("Puzzle: ")
             print(self.puzzle.toString(mode="complex"))
             if self.puzzle.primitive() != PuzzleValue.UNDECIDED: break
             self.printTurn()
         print("Game Over")
+
+    def clear(self):
+        # Small function to clear the terminal every time
+        if name == 'nt':
+            _ = system('cls')
+        else:
+            _ = system('clear')
 
     def printInfo(self):
         print("Turn:          ", self.turn), 
@@ -107,4 +116,4 @@ if __name__ == "__main__":
     else:
         solver = None
 
-    PuzzlePlayer(puzzle, solver=solver, info=args.info, auto=args.auto).play()
+    TUI(puzzle, solver=solver, info=args.info, auto=args.auto).play()
