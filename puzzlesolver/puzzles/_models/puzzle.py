@@ -116,6 +116,22 @@ class Puzzle(ABC):
 
         print(str(self))
 
+    def playPuzzle(self, moves):
+        """Default playPuzzle method uses indices to chose which
+        move to play."""
+
+        print("Possible Moves:")
+        for count, m in enumerate(moves):
+            print(str(count) + " -> " + str(m))
+        print("Enter Piece: ")
+        index = int(input())
+        if index == '':
+            return "BEST"
+        elif index >= len(moves):
+            return "OOPS"
+        else:
+            return moves[index]
+
     def generateMovePositions(self, movetype="legal", **kwargs):
         """Generate an iterable of puzzles with all moves fitting movetype
         executed.

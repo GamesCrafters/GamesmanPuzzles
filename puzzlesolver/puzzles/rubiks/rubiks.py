@@ -1,8 +1,8 @@
 from copy import deepcopy
 import random
-from . import ServerPuzzle
-from ..util import *
-from ..solvers import GeneralSolver, SqliteSolver
+from .. import ServerPuzzle
+from ...util import *
+from ...solvers import GeneralSolver, SqliteSolver
 # from ..puzzleplayer import PuzzlePlayer
 
 from hashlib import sha1
@@ -114,7 +114,8 @@ class Rubiks(ServerPuzzle):
     def getName(self, **kwargs):
         return "Rubik's Cube"
 
-    def playPuzzle(self):
+    def playPuzzle(self, moves):
+        print("Enter Piece: ")
         d = {"trr":"TopRow->Right", "trl":"TopRow->Left", "brr":"BottomRow->Right", "brl":"BottomRow->Left", "lcu":"LeftColumn->Up", "lcd":"LeftColumn->Down", "rcu":"RightColumn->Up", "rcd":"RightColumn->Down", "ttr":"TopTile->Right", "ttl":"TopTile->Left", "btr":"BottomTile->Right", "btl":"BottomTile->Left"}
         print("| trr -> TopRowRight  | trl -> TopRowLeft    | brr -> BottomRowRight | brl -> BottomRowLeft  |")
         print("| lcu -> LeftColumnUp | lcd -> LeftColumnDown| rcu -> RightColumnUp  | rcd -> RightColumnDown|")

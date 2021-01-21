@@ -1,7 +1,7 @@
 from copy import deepcopy
-from . import ServerPuzzle
-from ..util import *
-from ..solvers import GeneralSolver, SqliteSolver
+from .. import ServerPuzzle
+from ...util import *
+from ...solvers import GeneralSolver, SqliteSolver
 
 from hashlib import sha1
 
@@ -69,7 +69,8 @@ class HopNDrop(ServerPuzzle):
         return "HopNDrop_" + self.variant
     # ________ End Print Funcs _________
 
-    def playPuzzle(self):
+    def playPuzzle(self, moves):
+        print("Enter Piece: ")
         d = {'w':"Up", 'a':"Left", 's':"Down", 'd':"Right"}
         print('| w -> Up | a -> Left | s -> Down | d -> Right |')
         inp = str(input())

@@ -1,9 +1,15 @@
 from copy import deepcopy
-from . import ServerPuzzle
-from ..util import *
-from ..solvers import SqliteSolver
+from .. import ServerPuzzle
+from ...util import *
+from ...solvers import SqliteSolver
 
 from hashlib import sha1
+
+MAP_MOVES = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
+    str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
+
+UNMAP_MOVES = {'[A]':[0,0], '[B]':[1,0], '[C]':[1,1], '[D]':[2,0], '[E]':[2,1], '[F]':[2,2], '[G]':[3,0],
+    '[H]':[3,1], '[I]':[3,2], '[J]':[3,3], '[K]':[4,0], '[L]':[4,1], '[M]':[4,2], '[N]':[4,3], '[O]':[4,4]}
 
 class Peg(ServerPuzzle):
 
@@ -66,16 +72,25 @@ class Peg(ServerPuzzle):
 
     # ________ End Print Funcs _________
 
-    def playPuzzle(self):
-        d = {'a':[0,0], 'b':[1,0], 'c':[1,1], 'd':[2,0], 'e':[2,1], 'f':[2,2], 'g':[3,0],
+    def playPuzzle(self, moves):
+        d1 = {'a':[0,0], 'b':[1,0], 'c':[1,1], 'd':[2,0], 'e':[2,1], 'f':[2,2], 'g':[3,0],
             'h':[3,1], 'i':[3,2], 'j':[3,3], 'k':[4,0], 'l':[4,1], 'm':[4,2], 'n':[4,3], 'o':[4,4]}
-        print("| Type starting peg to ending peg in lower case, e.g. 'ca' |")
+        print("Possible Moves: ")
+        new_moves = []
+        for move in moves:
+            print(move)
+            from_peg = move[1].lower()
+            to_peg = move[-2].lower()
+            new_moves.append(from_peg + to_peg)
+        print("| Type starting peg to ending peg in lower case, e.g. for [D]->[A], type 'da' |")
         inp = str(input())
         if inp == '':
             return "BEST"
-        if len(inp) != 2:
+        from_peg = inp[0].upper()
+        to_peg = inp[1].upper()
+        if len(inp) != 2 or inp not in new_moves:
             return "OOPS"
-        command = [d[inp[0]],d[inp[1]]]
+        command = '[' + from_peg + ']->[' + to_peg + ']'
         return command
 
     def primitive(self, **kwargs):
@@ -129,7 +144,12 @@ class Peg(ServerPuzzle):
                         check3_len = len(check3)
                         for i in range(check3_len):
                             moves.append(check3[i])
-        return moves
+        new_moves = []
+        for i in moves:
+            from_peg = MAP_MOVES[str(i[0])]
+            to_peg = MAP_MOVES[str(i[1])]
+            new_moves.append(from_peg + '->' + to_peg)
+        return new_moves
 
     ### _____ generateMoves HELPERS _______ ###
     
@@ -262,8 +282,8 @@ class Peg(ServerPuzzle):
         if move not in self.generateMoves(): raise ValueError
 
         new_board = deepcopy(self.board)
-        from_peg = move[0]
-        to_peg = move[1]
+        from_peg = UNMAP_MOVES[move[:3]]
+        to_peg = UNMAP_MOVES[move[5:]]
         new_board[from_peg[0]][from_peg[1]] = 0
         new_board[to_peg[0]][to_peg[1]] = 1
         #find middle peg to set to ZERO OR ONE

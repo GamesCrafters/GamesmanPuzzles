@@ -3,14 +3,14 @@ from ._models import *
 # Put your dependencies here
 from .hanoi import Hanoi
 from .lightsout import LightsOut
-from .pegSolitaire import Peg
+from .pegSolitaire.pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
 from .npuzzle import Npuzzle
-from .chairs import Chairs
+from .chairs.chairs import Chairs
 from .bishop import Bishop
 from .topspin import TopSpin
-from .hopNdrop import HopNDrop
-from .rubiks import Rubiks
+from .hopNdrop.hopNdrop import HopNDrop
+from .rubiks.rubiks import Rubiks
 
 # Add your puzzle in the puzzleList
 puzzleList = {

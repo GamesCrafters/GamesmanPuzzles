@@ -42,7 +42,6 @@ class PuzzlePlayer:
                 pos = "WIN"
             print("Position:              ", pos)
             print("Remoteness:            ", self.solver.getRemoteness(self.puzzle))
-            # print("Best Move:     ", self.generateBestMove()[0])
             best_move, remotes, unsolve = self.generateBestMove()
             self.printBestMoves(remotes, unsolve)
         self.turn += 1
@@ -62,16 +61,7 @@ class PuzzlePlayer:
             if self.solver and self.info and move: 
                 moves.remove(move)
                 moves.insert(0, move)
-            # print("Possible Moves:")
-            # for count, m in enumerate(moves):
-            #     print(str(count) + " -> " + str(m))
-            print("Enter Piece: ")
-            # index = int(input())
-            # if index >= len(moves):
-            #     print("Not a valid move, try again")
-            # else:
-            #     self.puzzle = self.puzzle.doMove(moves[index])
-            play = self.puzzle.playPuzzle()
+            play = self.puzzle.playPuzzle(moves)
             if play == "BEST":
                 self.puzzle = self.puzzle.doMove(moves[0])
             elif play not in moves or play == "OOPS":
@@ -85,7 +75,7 @@ class PuzzlePlayer:
         # if self.solver.getValue(self.puzzle) == PuzzleValue.UNSOLVABLE: return None, None, None
         # if self.puzzle.primitive() == PuzzleValue.SOLVABLE: return None, None, None
         remotes = {
-            str(move) : self.solver.getRemoteness(self.puzzle.doMove(move)) 
+            move : self.solver.getRemoteness(self.puzzle.doMove(move)) 
             for move in self.puzzle.generateMoves(movetype="legal")
         }
         min_remote = 1000000
@@ -103,9 +93,23 @@ class PuzzlePlayer:
 
     def printBestMoves(self, remotes, unsolve):
         print("Winning Moves: ")
+        drawing = []
         if remotes: 
             sorted_remotes = {k: v for k, v in sorted(remotes.items(), key=lambda item: item[1])}
+            smallest = list(sorted_remotes.values())[0]
             for k, v in sorted_remotes.items():
+                if smallest != v:
+                    drawing.append((k,v))
+                else:
+                    space = 22 - len(k)
+                    printer = " " * space
+                    print("- " + str(k) + printer + str(v))
+        else:
+            print("- <None>")
+        print("Drawing Moves: ")
+        if drawing:
+            for i in drawing:
+                k,v = i[0], i[1]
                 space = 22 - len(k)
                 printer = " " * space
                 print("- " + str(k) + printer + str(v))
