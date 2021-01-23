@@ -1,5 +1,5 @@
 import tkinter as tk
-from ..puzzles import TopSpin
+from ..puzzles.topspin import TopSpin
 from ..solvers import SqliteSolver
 from ..util import *
 

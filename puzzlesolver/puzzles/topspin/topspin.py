@@ -1,7 +1,7 @@
 from copy import deepcopy
-from . import ServerPuzzle
-from ..util import *
-from ..solvers import SqliteSolver
+from .. import ServerPuzzle
+from ...util import *
+from ...solvers import SqliteSolver
 from hashlib import sha1
 import random
 
