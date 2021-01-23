@@ -17,7 +17,7 @@ class IndexSolver(GeneralSolver):
         self.path = '{}/{}{}.txt'.format(dir_path, puzzle.name, puzzle.variant)
 
     def getRemoteness(self, puzzle, *args, **kwargs):
-        if hash(puzzle) in self.remoteness: return self.remoteness[hash(puzzle)]
+        if hash(puzzle) in self._remoteness: return self._remoteness[hash(puzzle)]
         with open(self.path, 'r+b') as fo:
             fo.seek(hash(puzzle) * 2)
             chunk = fo.read(2)
@@ -37,13 +37,13 @@ class IndexSolver(GeneralSolver):
             cur_index = 0
             for chunk in iter(partial(fo.read, 2), b''):
                 if chunk: 
-                    self.remoteness[cur_index] = int.from_bytes(chunk, byteorder='little') - 1
+                    self._remoteness[cur_index] = int.from_bytes(chunk, byteorder='little') - 1
                 cur_index += 1
 
     def _write(self):
-        ba = bytearray(2 * (max(self.remoteness) + 1))
-        for i in self.remoteness:
-            chunk = (self.remoteness[i] + 1).to_bytes(2, byteorder='little')
+        ba = bytearray(2 * (max(self._remoteness) + 1))
+        for i in self._remoteness:
+            chunk = (self._remoteness[i] + 1).to_bytes(2, byteorder='little')
             ba[i * 2] = chunk[0]
             ba[i * 2 + 1] = chunk[1]
         with open(self.path, 'w+b') as fo:

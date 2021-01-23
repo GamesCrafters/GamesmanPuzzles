@@ -18,14 +18,14 @@ class SqliteSolver(GeneralSolver):
             self.database_path, self.puzzle.name, self.puzzle.variant)
         
     def getRemoteness(self, puzzle, **kwargs):
-        with SqliteDict(self.path) as self.remoteness:
-            if str(hash(puzzle)) in self.remoteness:
-                return self.remoteness[str(hash(puzzle))]
+        with SqliteDict(self.path) as self._remoteness:
+            if str(hash(puzzle)) in self._remoteness:
+                return self._remoteness[str(hash(puzzle))]
         return PuzzleValue.UNSOLVABLE
 
     def solve(self, *args, **kwargs):
-        with SqliteDict(self.path) as self.remoteness:
-            if str(self.puzzle.variant) not in self.remoteness:
+        with SqliteDict(self.path) as self._remoteness:
+            if str(self.puzzle.variant) not in self._remoteness:
                 GeneralSolver.solve(self, *args, **kwargs)
-                self.remoteness[str(self.puzzle.variant)] = 1
-                self.remoteness.commit()
+                self._remoteness[str(self.puzzle.variant)] = 1
+                self._remoteness.commit()

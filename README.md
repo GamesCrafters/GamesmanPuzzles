@@ -2,18 +2,27 @@
 [![Build Status](https://travis-ci.com/GamesCrafters/GamesmanPuzzles.svg?branch=master)](https://travis-ci.com/GamesCrafters/GamesmanPuzzles)
 [![codecov](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles/branch/master/graph/badge.svg)](https://codecov.io/gh/GamesCrafters/GamesmanPuzzles)
 
-A Python Package dedicated to Puzzle solving. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
-## Getting Started
+A collection of Puzzles bundled together in a simple yet powerful Python interface. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
+
+## Installation
+Install via pip (tested on MacOS and Linux):
+```
+pip install GamesmanPuzzles
+```
+For more info about the package, check out this little [guide](guides/build.md).
+## Building from source
 Clone this repository and install the dependencies (it's recommended to use a virtualenv when installing dependencies of any project):
 ```
 git clone https://github.com/GamesCrafters/GamesmanPuzzles.git
 cd GamesmanPuzzles
 pip install -r requirements.txt
+pip install -e .
 ```
 
 Run from the base directory of the repositiory
 ```
-python puzzleplayer.py hanoi
+cd puzzlesolver/players
+python tui.py hanoi
 ```
 to play a puzzle of Towers of Hanoi
 
