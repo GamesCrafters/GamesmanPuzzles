@@ -5,7 +5,7 @@
 A collection of Puzzles bundled together in a simple yet powerful Python interface. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
 
 ## Installation
-Install via pip:
+Install via pip (tested on MacOS and Linux):
 ```
 pip install GamesmanPuzzles
 ```
