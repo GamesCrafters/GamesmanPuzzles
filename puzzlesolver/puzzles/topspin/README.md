@@ -6,7 +6,7 @@ Puzzle ID: “top_spin”
 
 Puzzle Visualization:
 <p align="center">
-    <img src=TopSpin.PNG>
+    <img src=TopSpin.png>
 </p>
 
 Short Description of Puzzle:
