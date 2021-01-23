@@ -6,7 +6,7 @@ Puzzle ID: “top_spin”
 
 Puzzle Visualization:
 <p align="center">
-    <img src=Bishops.PNG>
+    <img src=TopSpin.PNG>
 </p>
 
 Short Description of Puzzle:
