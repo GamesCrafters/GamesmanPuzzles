@@ -1,7 +1,12 @@
 import pytest
 import tempfile
 
+# Import server
+import sys
+sys.path.append("..")
+
 import server
+
 from puzzlesolver.util import PuzzleValue
 from puzzlesolver.puzzles import GraphPuzzle
 

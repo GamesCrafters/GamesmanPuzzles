@@ -63,9 +63,9 @@ class Puzzle:
         Outputs:
             String representation -- String"""
 
-        if mode is "minimal" and hasattr(self, "serialize"):
+        if mode == "minimal" and hasattr(self, "serialize"):
             return self.serialize()
-        if mode is "complex" and hasattr(self, "printInfo"):
+        if mode == "complex" and hasattr(self, "printInfo"):
             return self.printInfo()
         return str(self)
 

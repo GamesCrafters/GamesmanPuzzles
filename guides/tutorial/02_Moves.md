@@ -61,7 +61,7 @@ def doMove(self, move, **kwargs):
 ### Execute
 Once you have implemented all the required functions, add a line on the end of the file outside the Hanoi class to execute the PuzzlePlayer. 
 ```python
-PuzzlePlayer(Hanoi()).play()
+TUI(Hanoi()).play()
 ```
 On your CLI, execute
 ```bash
