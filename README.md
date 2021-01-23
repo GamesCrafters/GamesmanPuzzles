@@ -44,3 +44,12 @@ Guidelines for contributing puzzles or solvers
 2. Every solved Puzzle must have their respective test. The bare minimum for a test is to check the remoteness of an arbitrary position that is not a SOLVABLE position.
 
 Every change must be done using a pull request. Here are the directions [to fork a repository and make a change.](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) 
+
+## Contributors:
+Fall 2020:
+
+[Anthony Ling](https://github.com/Ant1ng2), [Mark Presten](https://github.com/mpresten), [Arturo Olvera](https://github.com/olveraarturo)
+
+Spring 2021:
+
+Anthony Ling, Mark Presten, [Brian Delaney](https://github.com/briancdelaney), [Yishu Chao](https://github.com/yishuchao), [Sophia Xiao](https://github.com/sofa-x)
