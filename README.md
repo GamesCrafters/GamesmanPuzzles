@@ -9,7 +9,7 @@ Install via pip (tested on MacOS and Linux):
 ```
 pip install GamesmanPuzzles
 ```
-
+For more info about the package, check out this little [guide](guides/build.md).
 ## Building from source
 Clone this repository and install the dependencies (it's recommended to use a virtualenv when installing dependencies of any project):
 ```
