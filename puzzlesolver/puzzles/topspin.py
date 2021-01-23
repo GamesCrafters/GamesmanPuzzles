@@ -8,6 +8,10 @@ import random
 class TopSpin(ServerPuzzle):
 
 	puzzleid = 'top_spin'
+	author = "Yishu Chao"
+	puzzle_name = "Top Spin"
+	description = "Move the beads along the track and spin the ones in the spinner until the beads are in order clock-wise, with 1 in the first spot in the spinner." 
+	date_created = "Nov. 23, 2020"
 	variants = {'6_2' : SqliteSolver}
 	test_variants = variants
 
@@ -30,7 +34,6 @@ class TopSpin(ServerPuzzle):
 		return str(self.track)
 
 	def printInfo(self):
-		
 		print("Puzzle: ")
 		print('                           ')
 		print ("     "+str(self.track[0]) + '\n')
