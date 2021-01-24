@@ -158,6 +158,40 @@ class Puzzle:
         return []
 
     #################################################################
+    # Number representation
+    #################################################################
+
+    def __add__(self, other):
+        """Equivalent to doMove, can only add moves together
+
+        Parameters
+        ----------
+        other : "Move"
+            Custom defined Puzzle move
+
+        Returns
+        -------
+        Puzzle
+            Puzzle instance with move executed
+        """
+        return self.doMove(other)
+
+    def __radd__(self, other):
+        """Reverse add (same as __add__)
+
+        Parameters
+        ----------
+        other : "Move"
+            Custom defined Puzzle move
+
+        Returns
+        -------
+        Puzzle
+            Puzzle instance with move exectuted        
+        """
+        return self.doMove(other)
+
+    #################################################################
     # Depreciated methods
     #################################################################
 
