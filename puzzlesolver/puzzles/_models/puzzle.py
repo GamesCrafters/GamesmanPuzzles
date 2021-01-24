@@ -67,7 +67,17 @@ class Puzzle:
             return self.serialize()
         if mode == "complex" and hasattr(self, "printInfo"):
             return self.printInfo()
-        return str(self)
+        return "No string representation available"
+
+    def __str__(self):
+        """Returns the toString representation in "complex" mode
+
+        Returns
+        -------
+        str
+            self.toString(mode="complex")
+        """
+        return self.toString(mode="complex")
 
     #################################################################
     # Gameplay methods
