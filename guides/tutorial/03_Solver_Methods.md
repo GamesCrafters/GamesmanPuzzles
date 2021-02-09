@@ -47,4 +47,4 @@ Ponder on these questions in how we can optimize this puzzle
 - If we change our endstate to be a stack on either the middle or right rod, how can we optimize this?
 - If you can compute a hash that directly encodes the remoteness, is there a need for a solver?
 
-[Next Part: Implementing a Solver](04_Solver_Prerequisites.md)
+[Next Part: Advanced Hashing Techniques](03.1_Advance_Hashing.md)
