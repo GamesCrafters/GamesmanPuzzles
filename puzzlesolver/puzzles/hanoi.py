@@ -119,7 +119,7 @@ class Hanoi(ServerPuzzle):
             String representation -- String"""
         
         if mode == "minimal":
-            return str(self)
+            return "-".join([str(rod) for rod in self.rods])
         elif mode == "complex":
             output = ""
             for j in range(self.disk_variant):
@@ -176,20 +176,11 @@ class Hanoi(ServerPuzzle):
         newPuzzle.rods = rods
         return newPuzzle
 
-    def __str__(self):
-        """Returns the "minimal" string representation of the Puzzle
-        Not required.
-
-        Outputs:
-        - str
-        """
-        return "-".join([str(rod) for rod in self.rods])
-
     def __repr__(self):
         """Returns the string representation of the Puzzle as a 
         Python object
         """
-        return "Hanoi(board={})".format(str(self))
+        return "Hanoi(board={})".format(self.toString())
 
     def primitive(self):
         """If the Puzzle is at an endstate, return PuzzleValue.SOLVABLE or PuzzleValue.UNSOLVABLE

@@ -34,9 +34,6 @@ class Peg(ServerPuzzle):
                     if self.board[outer][inner] == 1:
                         self.pins += 1  
 
-    def __str__(self, **kwargs):
-        return str(self.board)
-
     @property
     def variant(self):
         return "Triangle"
