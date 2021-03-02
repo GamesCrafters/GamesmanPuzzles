@@ -1,7 +1,7 @@
 import flask
 from flask import request, jsonify, abort
-from .puzzles import puzzleList
-from .util import PuzzleException
+from puzzlesolver.puzzles import PuzzleManager
+from puzzlesolver.util import PuzzleException
 
 import os
 
@@ -15,36 +15,41 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 # Test your server puzzle
 def test_puzzle(puzzle):
-    global puzzleList
+    """Helper function to test any puzzle. Sets the PuzzleManager to only hold one Puzzle for testing"""
+    from puzzlesolver.puzzles import PuzzleManagerClass
+    global PuzzleManager
     puzzleList = {puzzle.puzzleid: puzzle}
+    PuzzleManager = PuzzleManagerClass(puzzleList)
     init_data()
     app.run()
 
 # Initalizes the data
 # TODO: Check if data already exists in disk before solving
 def init_data():
-    for p_cls in puzzleList.values():
-        if app.config["TESTING"] and hasattr(p_cls, 'test_variants'): 
+    for p_cls in PuzzleManager.getPuzzleClasses():
+        if app.config["TESTING"]:
             variants = p_cls.test_variants
         else:
             variants = p_cls.variants
         for variant in variants:
-            s_cls = variants[variant]
+            s_cls = PuzzleManager.getSolverClass(p_cls.puzzleid, variant)
             puzzle = p_cls.generateStartPosition(variant)
             solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
             solver.solve(verbose=True)
 
 # Helper functions
-def validate(puzzle_name=None, variant_id=None, position=None):
-    if puzzle_name == None:
+def validate(puzzleid=None, variantid=None, position=None):
+    if puzzleid == None:
         raise ValueError("Nothing to validate")            
-    if puzzle_name not in puzzleList: abort(404, description="PuzzleId not found") 
-    if variant_id != None:
-        variants = puzzleList[puzzle_name].variants
-        if variant_id not in variants: abort(404, description="VariantId not found")
+    if not PuzzleManager.hasPuzzleId(puzzleid): 
+        abort(404, description="PuzzleId not found") 
+    if variantid != None:
+        variants = PuzzleManager.getPuzzleClass(puzzleid).variants
+        if variantid not in variants: 
+            abort(404, description="VariantId not found")
     if position != None:
-        try:        
-            puzzleList[puzzle_name].validate(position, variant_id)
+        try:
+            PuzzleManager.validate(puzzleid, variantid, position)        
         except PuzzleException as e:
             abort(404, description=str(e))
 
@@ -59,46 +64,61 @@ def format_response(response, status="available"):
 @app.route('/', methods=['GET'])
 def puzzles():
     response = {
-        "puzzles": list(puzzleList.keys())
+        "puzzles": list(PuzzleManager.getPuzzleIds())
     }
     return format_response(response)
 
 @app.route('/<puzzle_id>/', methods=['GET'])
 def puzzle(puzzle_id):
     validate(puzzle_id)
-    puzzle = puzzleList[puzzle_id]
+    puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
     response = {
         "puzzle_id": puzzle_id,
-        "puzzle_name": puzzle.puzzle_name,
-        "author": puzzle.author,
-        "description": puzzle.description,
-        "date_created": puzzle.date_created,
-        "variants": list(puzzle.variants.keys())
+        "puzzle_name": puzzlecls.name,
+        "author": puzzlecls.author,
+        "description": puzzlecls.description,
+        "date_created": puzzlecls.date_created,
+        "variants": list(puzzlecls.variants)
     }
     return format_response(response)
 
 @app.route('/<puzzle_id>/<variant_id>/', methods=['GET'])
 def puzzle_variant(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)
-    p = puzzleList[puzzle_id].generateStartPosition(variant_id)
+    puzzle = PuzzleManager.getPuzzleClass(puzzle_id).generateStartPosition(variant_id)
     response = {
-        "starting_pos": p.serialize()
+        "starting_pos": puzzle.toString()
     }
     return format_response(response)
 
+def generateMovePositions(puzzle, movetype="legal"):
+    """Generate an iterable of puzzles with all moves fitting movetype
+    executed.
+
+    Inputs:
+        - movetype: The type of move to generate the puzzles
+    
+    Outputs:
+        - Iterable of puzzles 
+    """
+    puzzles = []
+    for move in puzzle.generateMoves(movetype=movetype):
+        puzzles.append((move, puzzle.doMove(move)))
+    return puzzles
+    
 @app.route('/<puzzle_id>/<variant_id>/<position>/', methods=['GET'])
 def puzzle_position(puzzle_id, variant_id, position):
     validate(puzzle_id, variant_id, position)
-    p = puzzleList[puzzle_id].deserialize(position)
-    solver_cls = puzzleList[puzzle_id].variants[variant_id]
-    s = solver_cls(p, dir_path=app.config['DATABASE_DIR'])
-    moves = p.generateMovePositions()
+    puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(position)
+    solver_cls = PuzzleManager.getSolverClass(puzzle_id, variant_id, app.config['TESTING'])
+    s = solver_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
+    moves = generateMovePositions(puzzle)
     response = {
-        "position": p.serialize(),
-        "remoteness": s.getRemoteness(p),
-        "value": s.getValue(p),
+        "position": puzzle.toString(),
+        "remoteness": s.getRemoteness(puzzle),
+        "value": s.getValue(puzzle),
         "moves": {str(move[0]) : {
-            "position": move[1].serialize(),
+            "position": move[1].toString(),
             "remoteness": s.getRemoteness(move[1]),
             "value": s.getValue(move[1])
         } for move in moves}

@@ -2,10 +2,11 @@
 This class provides a TUI for interaction with Solvers and Puzzles
 """
 from puzzlesolver.util import PuzzleValue
+from os import system, name
 
-class PuzzlePlayer:
+class TUI:
 
-    def __init__(self, puzzle, solver=None, info=True, auto=False):
+    def __init__(self, puzzle, solver=None, info=False, auto=False):
         self.base = puzzle
         self.puzzle = puzzle
         self.solver = solver
@@ -13,20 +14,28 @@ class PuzzlePlayer:
         if not solver and (auto or info):
             raise Exception("Cannot have auto or info arguments without a solver")
         self.auto = auto
-        if solver:
+        if solver and not solver.solved:
             self.solver.solve(verbose=True)
 
     # Starts the PuzzlePlayer
     def play(self):
         self.puzzle = self.base
         self.turn = 0
-        while self.puzzle.primitive() == PuzzleValue.UNDECIDED:
+        while True:
+            self.clear()
             self.printInfo()
-            self.puzzle.printInfo()
+            print("Puzzle: ")
+            print(self.puzzle.toString(mode="complex"))
+            if self.puzzle.primitive() != PuzzleValue.UNDECIDED: break
             self.printTurn()
-        self.printInfo()
-        self.puzzle.printInfo()
         print("Game Over")
+
+    def clear(self):
+        # Small function to clear the terminal every time
+        if name == 'nt':
+            _ = system('cls')
+        else:
+            _ = system('clear')
 
     def printInfo(self):
         print("Turn:                  ", self.turn), 
@@ -124,7 +133,7 @@ class PuzzlePlayer:
 
 if __name__ == "__main__":
     import argparse
-    from puzzlesolver.puzzles import puzzleList
+    from puzzlesolver.puzzles import PuzzleManager
 
     parser = argparse.ArgumentParser()
     parser.add_argument("puzzleid", help="PuzzleID of the puzzle you wish to view")
@@ -136,26 +145,25 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.puzzleid not in puzzleList:
+    if not PuzzleManager.hasPuzzleId(args.puzzleid):
         print("Possible puzzles:")
-        print("\n".join(puzzleList.keys()))
+        print("\n".join(PuzzleManager.getPuzzleIds()))
         raise Exception("Puzzleid is not recorded in PuzzleList")
 
-    p_cls = puzzleList[args.puzzleid]
+    p_cls = PuzzleManager.getPuzzleClass(args.puzzleid)
 
     puzzle = None    
     if args.variant:
         puzzle = p_cls.generateStartPosition(args.variant)
     if args.position:
-        puzzle = p_cls.validate(args.position)
         puzzle = p_cls.deserialize(args.position)
     if not puzzle:
         puzzle = p_cls()
     
     if args.info or args.auto:
-        s_cls = p_cls.variants[puzzle.variant]
+        s_cls = PuzzleManager.getSolverClass(args.puzzleid, args.variant)
         solver = s_cls(puzzle)
     else:
         solver = None
 
-    PuzzlePlayer(puzzle, solver=solver, info=args.info, auto=args.auto).play()
+    TUI(puzzle, solver=solver, info=args.info, auto=args.auto).play()

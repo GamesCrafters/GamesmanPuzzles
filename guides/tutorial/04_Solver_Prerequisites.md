@@ -7,7 +7,7 @@ Create a **NEW** Python file and import the following:
 from puzzlesolver.util import *
 from puzzlesolver.solvers import Solver
 from puzzlesolver.puzzles import Hanoi
-from puzzleplayer import PuzzlePlayer
+from puzzlesolver.players import TUI
 import queue as q
 ```
 

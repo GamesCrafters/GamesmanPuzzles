@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from puzzlesolver.puzzles import Bishop
+from puzzlesolver.puzzles import Bishop, PuzzleManager
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import *
 
@@ -17,12 +17,12 @@ def testHash():
     assert hash(puzzle0) == hash(puzzle1)
     
     # The start state should not have the same hash as the end state.
-    assert hash(puzzle0) != hash(puzzle2)
+    assert hash(puzzle0) != hash(puzzle2)    
 
 def testSerialization():
     """Tests if serialization and deserialization works both ways."""
     codes = ['2_5_a1-c1_a5-c5', '2_5_a1-b2_b4-a5', '2_5_a3-c5_a1-c3', '3_7_a1-c1-e1_a7-c7-e7', '3_7_a1-c1-b2_b4-a5-a7']
-    
+
     for code in codes:
         puzzle = Bishop.deserialize(code)
         assert puzzle.serialize() == code
@@ -79,17 +79,17 @@ def testValidation():
     """Tests four different serializations and checks if it matches the expected response."""
     
     # Four invalid serializations
-    invalid_puzzle = '2_5_a5_a1-c1'
-    valid_puzzle = '2_5_a5-c5_a1-c1'
-    blank_puzzle = ""
-    weird_input = "2-5-a1_c1-a5_c5"
+    tests = [
+        ("", "2x5"),
+        ("2-5-a1_c1-a5_c5", "2x5"),
+        ("2_5_a5_a1-c1", "2x5"),
+        ("2_5_a5-c5_a1-c1", "3x7")
+    ]
     
     # Four exceptions raised
-    pytest.raises(PuzzleException, Bishop.validate, blank_puzzle, "2x5")
-    pytest.raises(PuzzleException, Bishop.validate, weird_input, "2x5")
-    pytest.raises(PuzzleException, Bishop.validate, invalid_puzzle, "2x5")
-    pytest.raises(PuzzleException, Bishop.validate, valid_puzzle, "3x7")
-    Bishop.validate(valid_puzzle, "2x5")
+    for test in tests:
+        pytest.raises(PuzzleException, PuzzleManager.validate, Bishop.puzzleid, test[1], test[0])
+    PuzzleManager.validate(Bishop.puzzleid, "2x5", "2_5_a5-c5_a1-c1")
 
 # Server methods
 def testServerPuzzle(client):

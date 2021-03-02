@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from puzzlesolver.puzzles import Chairs
+from puzzlesolver.puzzles import Chairs, PuzzleManager
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import *
 
@@ -55,14 +55,17 @@ def testPositions():
     assert len(puzzles) == 1
 
 def testValidation():
-    invalid_puzzle = 'xxxoo-ooooo'
-    valid_puzzle = 'oooxx-ooxxx'
-    blank_puzzle = ""
-    weird_input = 'xxxyx_ooo--oo'
-    pytest.raises(PuzzleException, Chairs.validate, blank_puzzle, "10")
-    pytest.raises(PuzzleException, Chairs.validate, weird_input, "10")
-    pytest.raises(PuzzleException, Chairs.validate, invalid_puzzle, "10")
-    Chairs.validate(valid_puzzle, "10")
+
+    tests = [
+        ("", "10"),
+        ("xxxyx_ooo--oo", "10"),
+        ("xxxoo-ooooo", "10"),
+        ("xxxoo-ooooo", "10")
+    ]
+
+    for test in tests:
+        pytest.raises(PuzzleException, PuzzleManager.validate, Chairs.puzzleid, test[1], test[0])
+    PuzzleManager.validate(Chairs.puzzleid, "10", "oooxx-ooxxx")
 
 def testPuzzleServer(client):
     pid = Chairs.puzzleid

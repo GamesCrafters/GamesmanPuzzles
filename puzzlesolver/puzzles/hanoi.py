@@ -7,133 +7,277 @@ from . import ServerPuzzle
 from ..util import *
 from ..solvers import IndexSolver, GeneralSolver
 
-from hashlib import sha1
+def ffs(num):
+    """Helper function to return the index of the LSB. 
+    For the 0 case, return `float('inf')`
+    """
+    output = (num & -num).bit_length() - 1
+    output = output if output != -1 else float('inf')
+    return output
 
 class Hanoi(ServerPuzzle):
 
     puzzleid = 'hanoi'
     author = "Anthony Ling"
-    puzzle_name = "Tower of Hanoi"
+    name = "Tower of Hanoi"
     description = """Move smaller discs ontop of bigger discs. 
         Fill the rightmost stack."""
     date_created = "April 2, 2020"
 
-    variants = {str(i) : IndexSolver for i in range(14, 0, -1)}
-    test_variants = {str(i) : IndexSolver for i in range(3, 0, -1)}
+    variants =  ["2_1"]
+    variants += ["3_1", "3_2", "3_3", "3_4", "3_5", "3_6", "3_7", "3_8"]
+    variants += ["4_1", "4_2", "4_3", "4_4", "4_5", "4_6"]
+    variants += ["5_1", "5_2", "5_3", "5_4"]
 
-    def __init__(self, size=3, **kwargs):
-        if not isinstance(size, int): raise ValueError 
-        self.stacks = [
-            list(range(size, 0, -1)),
-            [],
-            []
-        ]   
+    test_variants = ["3_1", "3_2", "3_3"]
+
+    def __init__(self,  variantid=None, variant=None):
+        """Returns the starting position of Hanoi based on variant first, then 
+        variantID. By default it follows "3_3"
+
+        Inputs 
+            - (Optional) variantid: string
+            - (Optional) variant: dict
+
+        Outputs
+            - A Puzzle of Hanoi
+        """
+        self.rod_variant = 3
+        self.disk_variant = 3
+        if variant:
+            if not isinstance(variant, dict):
+                raise TypeError("Variant keyword argument is not of type dict")
+            if "rod_variant" not in variant:
+                raise ValueError("Variant keyword argument does not contain rod_variant")
+            if "disk_variant" not in variant:
+                raise ValueError("Variant keyword argument does not contain disk_variant")
+            self.rod_variant, self.disk_variant = variant["rod_variant"], variant["disk_variant"]
+        elif variantid:
+            if not isinstance(variantid, str):
+                raise TypeError("VariantID is not of type str")
+            strlist = variantid.split("_")
+            if len(strlist) != 2:
+                raise ValueError("Invalid variantID")
+            self.rod_variant = int(strlist[0])
+            self.disk_variant = int(strlist[1])
+
+        self.rods = [2 ** self.disk_variant - 1] + [0] * (self.rod_variant - 1)
     
     @property
     def variant(self):
-        size = 0
-        for stack in self.stacks:
-            size += len(stack)
-        return str(size)
+        """Returns the variant of the Puzzle
+        
+        Outputs:
+        - Variant : str
+        """
+        return "{}_{}".format(self.rod_variant, self.disk_variant)
 
     @property
     def numPositions(self):
-        return 3 ** int(self.variant)
+        """Returns the upperbound number of possible hashes
+
+        Outputs:
+        - numPositions : int
+        """
+        return self.rod_variant ** self.disk_variant
 
     def __hash__(self):
-        # Assign discs to stack num
-        num_to_stack = {}
-        for entry in self.stacks[2]:
-            num_to_stack[entry] = 0
-
-        bigger_stack = 1 if max(self.stacks[0] + [0]) < max(self.stacks[1] + [0]) else 0
-        for entry in self.stacks[bigger_stack]:
-            num_to_stack[entry] = 1
+        """Returns the reduced hash of the Puzzle
         
-        smaller_stack = 0 if bigger_stack == 1 else 1
-        for entry in self.stacks[smaller_stack]:
-            num_to_stack[entry] = 2
+        Outputs:
+        - hash : int
+        """
+
+        # Except for the last rod, sort all the rods in descending order by size
+        rodscopy = self.rods[:-1]
+        rodscopy.sort(reverse=True)
+
+        # Hash calculation is the sum of the:
+        #   rod index of a disk * rod_variant ** disk size
+        # over all disks  
+        output = 0
+        for i in range(len(rodscopy)):
+            rod = rodscopy[i]
+            j = 0
+            while rod != 0:
+                mod = rod % 2
+                output += mod * (i + 1) * self.rod_variant ** j
+                j += 1
+                rod = rod >> 1
+        return output
+
+    def toString(self, mode="minimal"):
+        """Returns the string representation of the Puzzle based on the type. 
+
+        If mode is "minimal", return the serialize() version
+        If mode is "complex", return the printInfo() version
+
+        Inputs:
+            mode -- "minimal", "complex"
         
-        # Compute hash
-        result = 0
-        multiply = 1
-        for i in range(1, int(self.variant) + 1):
-            result += num_to_stack[i] * multiply
-            multiply *= 3
-        return result
+        Outputs:
+            String representation -- String"""
+        
+        if mode == "minimal":
+            return "-".join([str(rod) for rod in self.rods])
+        elif mode == "complex":
+            output = ""
+            for j in range(self.disk_variant):
+                for rod in self.rods:
+                    output += " " * 3
+                    if (rod >> j) % 2 == 1: output += chr(j + 65)
+                    else: output += "|"
+                output += "\n"
+            output += "----" * (self.rod_variant) + "---\n"
+            output += "   " + "   ".join(str(i) for i in range(0, self.rod_variant))
+            return output
+        else:
+            raise ValueError("Invalid keyword argument 'mode'")
+    
+    @classmethod
+    def fromString(cls, positionid : str):
+        """Returns a Puzzle object based on "minimal"
+        String representation of the Puzzle (i.e. `toString(mode="minimal")`)
 
-    def __str__(self):
-        return str(self.stacks)
+        Example: positionid="6-1-0" for Hanoi creates a Hanoi puzzle
+        with two stacks of discs ((3,2) and (1))
 
-    def getName(self):
-        return 'Hanoi'
+        Must raise a TypeError if the positionid is not a String
+        Must raise a ValueError if the String cannot be translated into a Puzzle
+        
+        NOTE: A String cannot be translated into a Puzzle if it leads to an illegal
+        position based on the rules of the Puzzle
 
-    def primitive(self, **kwargs):
-        if self.stacks[2] == list(range(int(self.variant), 0, -1)):
-            return PuzzleValue.SOLVABLE 
-        return PuzzleValue.UNDECIDED
+        Inputs:
+            positionid - String id from puzzle, serialize() must be able to generate it
 
-    def doMove(self, move, **kwargs):
-        if move not in self.generateMoves(): raise ValueError
-        newPuzzle = Hanoi(size=int(self.variant))
-        stacks = deepcopy(self.stacks)
-        stacks[move[1]].append(stacks[move[0]].pop())
-        newPuzzle.stacks = stacks
+        Outputs:
+            Puzzle object based on puzzleid and variantid
+        """
+        if not isinstance(positionid, str):
+            raise TypeError("PositionID is not type str")
+        
+        rod_strings = positionid.split("-")
+        if not rod_strings:
+            raise ValueError("PositionID cannot be translated into Puzzle")
+        
+        try:
+            rods = [int(rod) for rod in rod_strings]
+        except ValueError:
+            raise ValueError("PositionID cannot be translated into Puzzle")
+
+        sum_rods = sum(rods) + 1
+        if sum_rods & -sum_rods != sum_rods:
+            raise ValueError("PositionID cannot be translated into Puzzle")
+
+        newPuzzle = Hanoi(variant={
+            "rod_variant" : len(rods), 
+            "disk_variant" : sum_rods.bit_length() - 1})
+        newPuzzle.rods = rods
+        return newPuzzle
+
+    def __repr__(self):
+        """Returns the string representation of the Puzzle as a 
+        Python object
+        """
+        return "Hanoi(board={})".format(self.toString())
+
+    def primitive(self):
+        """If the Puzzle is at an endstate, return PuzzleValue.SOLVABLE or PuzzleValue.UNSOLVABLE
+        else return PuzzleValue.UNDECIDED
+
+        PuzzleValue located in the util class. If you're in the puzzles or solvers directory
+        you can write from ..util import * 
+
+        Outputs:
+            Primitive of Puzzle type PuzzleValue
+        """
+        if self.rods[-1] != 2 ** self.disk_variant - 1:
+            return PuzzleValue.UNDECIDED
+        return PuzzleValue.SOLVABLE
+
+    def doMove(self, move):
+        """Given a valid move, returns a new Puzzle object with that move executed.
+        Does nothing to the original Puzzle object
+        
+        NOTE: Must be able to take any move, including `undo` moves
+
+        Raises a TypeError if move is not of the right type
+        Raises a ValueError if the move is not in generateMoves
+
+        Inputs
+            move -- type defined by generateMoves
+
+        Outputs:
+            Puzzle with move executed
+        """
+
+        if not isinstance(move, tuple) and \
+            len(move) != 2 and \
+            isinstance(move[0], int) and \
+            isinstance(move[1], int):
+            raise TypeError("Invalid type for move")
+
+        if move not in self.generateMoves(): 
+            raise ValueError("Move not possible")
+
+        newPuzzle = Hanoi(variantid=self.variant)
+        rods = self.rods.copy()
+
+        lsb_index = ffs(rods[move[0]])
+        assert lsb_index != float('inf')
+        rods[move[0]] = rods[move[0]] - (1 << lsb_index)
+        rods[move[1]] = rods[move[1]] + (1 << lsb_index)
+        assert sum(rods) == 2 ** self.disk_variant - 1
+        newPuzzle.rods = rods
         return newPuzzle        
 
-    def generateMoves(self, movetype="all", **kwargs):
-        if movetype=='for' or movetype=='back': return []
-        moves = []
-        for i, stack1 in enumerate(self.stacks):
-            if not stack1: continue
-            for j, stack2 in enumerate(self.stacks):
-                if i == j: continue
-                if not stack2 or stack2[-1] > stack1[-1]: moves.append((i, j))
+    def generateMoves(self, movetype="all"):
+        """Generate moves from self (including undos). 
+        NOTE: For Hanoi, all moves are bidirectional, so movetype doens't matter
+
+        Inputs
+            movetype -- str, can be the following
+            - 'for': forward moves
+            - 'bi': bidirectional moves
+            - 'back': back moves
+            - 'legal': legal moves (for + bi)
+            - 'undo': undo moves (back + bi)
+            - 'all': any defined move (for + bi + back)
+
+        Outputs:
+            Iterable of moves, move must be hashable
+        """
+        moves = set()
+        rods = list(map(ffs, self.rods))
+        for i in range(len(rods)):
+            for j in range(len(rods)):
+                if rods[i] < rods[j]:
+                    moves.add((i, j))
         return moves
 
-    def generateSolutions(self, **kwargs):
-        newPuzzle = Hanoi(size=int(self.variant))
-        newPuzzle.stacks = [
-            [],
-            [],
-            list(range(int(self.variant), 0, -1))
-        ]
-        return [newPuzzle]
+    def generateSolutions(self):
+        """Returns a Iterable of Puzzle objects that are solved states.
+        Not required if noGenerateSolutions is true, and using a CSP-implemented solver.
+
+        Outputs:
+            Iterable of Puzzles
+        """
+        puzzle_string = "0-" * (self.rod_variant - 1)
+        puzzle_string += str(2 ** self.disk_variant - 1)
+
+        return [self.fromString(puzzle_string)]
 
     @classmethod
-    def generateStartPosition(cls, variantid, **kwargs):
-        if not isinstance(variantid, str): raise TypeError("Invalid variantid")
-        if variantid not in Hanoi.variants: raise IndexError("Out of bounds variantid")
-        return Hanoi(size=int(variantid))
-                  
-    @classmethod
-    def deserialize(cls, positionid, **kwargs):
-        puzzle = Hanoi()
-        puzzle.stacks = []
-        stacks = positionid.split("-")
-        for string in stacks:
-            if string != "":
-                stack = [int(x) for x in string.split("_")]
-                puzzle.stacks.append(stack)
-            else: puzzle.stacks.append([])
-        return puzzle
-    
-    def serialize(self, **kwargs):
-        result = []
-        for stack in self.stacks:
-            result.append("_".join(str(x) for x in stack))
-        return "-".join(result)
-                
-    @classmethod
-    def isLegalPosition(cls, positionid, variantid=None, **kwargs):
-        try: puzzle = cls.deserialize(positionid)
-        except: return False
-        unique = set()
-        if len(puzzle.stacks) != 3: return False
-        for stack in puzzle.stacks:
-            if stack != sorted(stack, reverse=True):
-                return False
-            unique.update(stack)
-        if len(unique) != int(puzzle.variant) or min(unique) != 1 or max(unique) != int(puzzle.variant):
-            return False
-        return True
+    def generateStartPosition(cls, variantid, variant=None):
+        """Returns the starting position of Hanoi based on variant first, then 
+        variantID. Follows the same functionality as __init__
+
+        Inputs 
+            - (Optional) variantid: string
+            - (Optional) variant: dict
+
+        Outputs
+            - A Puzzle of Hanoi
+        """
+        return Hanoi(variantid, variant)

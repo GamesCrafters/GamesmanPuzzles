@@ -1,6 +1,6 @@
 import pytest
 
-from puzzlesolver.puzzles import Npuzzle
+from puzzlesolver.puzzles import Npuzzle, PuzzleManager
 from puzzlesolver.solvers import GeneralSolver, sqlitesolver
 
 from puzzlesolver.util import PuzzleValue, PuzzleException
@@ -22,14 +22,14 @@ def testSerialization():
         assert hash(puzzle) == hash(new_puzzle)
 
 def testValidation():
-    invalid_puzzle = "1-2-3-3"
-    valid_puzzle = "1-2-3-0"
-    blank_puzzle = ""
-    weird_input = "123---"
-    pytest.raises(PuzzleException, Npuzzle.validate, blank_puzzle, "2")
-    pytest.raises(PuzzleException, Npuzzle.validate, weird_input, "2")
-    pytest.raises(PuzzleException, Npuzzle.validate, invalid_puzzle, "2")
-    pytest.raises(PuzzleException, Npuzzle.validate, valid_puzzle, "3")
-    Npuzzle.validate(valid_puzzle, "2")
 
-    
+    tests = [
+        ("", "2"),
+        ("123---", "2"),
+        ("1-2-3-3", "2"),
+        ("1-2-3-0", "3")
+    ]
+    for test in tests:
+        pytest.raises(PuzzleException, PuzzleManager.validate, Npuzzle.puzzleid, test[1], test[0])
+
+    PuzzleManager.validate(Npuzzle.puzzleid, "2", "1-2-3-0")

@@ -15,7 +15,9 @@ def __hash__(self):
 ```
 
 #### ```generateSolutions(self, **kwargs):```
-The GeneralSolver is a bottom-top solver, meaning that it uses the endstates of the puzzle (when the puzzle has a "solvable" primitive) and solves from those positions. Because of that, the puzzle must compute the endstates of the puzzle itself. 
+The GeneralSolver is a bottom-top solver, meaning that it uses the endstates of the puzzle (when the puzzle has a "solvable" primitive) and solves from those positions. 
+
+**Note: The GeneralSolver does not need this function defined.** Situations like this can occur in cases where there exists no efficient method of enumerating all "solvable" positions, but performance can be improved by pre-calculating an iterable of solved states in the generateSolutions function. In this case, there exists a single solved position, so we can efficiently enumerate all solved positions. 
 
 ```python
 def generateSolutions(self, **kwargs):
@@ -32,7 +34,7 @@ def generateSolutions(self, **kwargs):
 Once you have implemented all the required functions, change the last line of the Python file outside of the class to:
 ```python
 puzzle = Hanoi()
-PuzzlePlayer(puzzle, solver=GeneralSolver(puzzle)).play()
+TUI(puzzle, solver=GeneralSolver(puzzle), info=True).play()
 ```
 On your CLI, execute
 ```bash
@@ -45,4 +47,4 @@ Ponder on these questions in how we can optimize this puzzle
 - If we change our endstate to be a stack on either the middle or right rod, how can we optimize this?
 - If you can compute a hash that directly encodes the remoteness, is there a need for a solver?
 
-[Next Part: Implementing a Solver](04_Solver_Prerequisites.md)
+[Next Part: Advanced Hashing Techniques](03.1_Advance_Hashing.md)
