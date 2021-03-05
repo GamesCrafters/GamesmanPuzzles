@@ -75,7 +75,7 @@ class PuzzlePlayer:
         # if self.solver.getValue(self.puzzle) == PuzzleValue.UNSOLVABLE: return None, None, None
         # if self.puzzle.primitive() == PuzzleValue.SOLVABLE: return None, None, None
         remotes = {
-            move : self.solver.getRemoteness(self.puzzle.doMove(move)) 
+            str(move) : self.solver.getRemoteness(self.puzzle.doMove(move)) 
             for move in self.puzzle.generateMoves(movetype="legal")
         }
         min_remote = 1000000
