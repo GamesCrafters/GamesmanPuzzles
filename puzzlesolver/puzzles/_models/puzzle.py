@@ -194,6 +194,11 @@ class Puzzle:
     def __add__(self, other):
         """Equivalent to doMove, can only add moves together
 
+        Parameters
+        ----------
+        other : "Move"
+            Custom defined Puzzle move
+
         Returns
         -------
         Puzzle
