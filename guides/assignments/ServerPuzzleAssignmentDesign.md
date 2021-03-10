@@ -1,4 +1,4 @@
-# Server Puzzle Assignment (Design part) (Due 10/21)
+# Server Puzzle Assignment (Design part)
 Alright, now it's time to take the training wheels off and develop your own ServerPuzzle. Your assignment is to design and develop a ServerPuzzle based on the tutorials and format set up in GamesmanPuzzles.
 
 Before developing the ServerPuzzle, you must visualize how your Puzzle would work. What should be the default variant? How many positions must be hashed? How will the puzzle progress? 
@@ -33,7 +33,7 @@ This design process will be represented with a writeup. You must submit the writ
 - (Optional) Optimization
     - Example topic: Reduced number of positions with Hash tricks
 
-Submit your writeup in the shared Google Drive folder by the listed time (10/21/20). The Google Drive link will be posted on Slack. 
+[//]: # "Submit your writeup in the shared Google Drive folder by the listed time (10/21/20). The Google Drive link will be posted on Slack." 
 
 ## Examples
 ### Example-A:
