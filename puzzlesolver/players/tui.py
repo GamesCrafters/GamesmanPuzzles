@@ -6,11 +6,12 @@ from os import system, name
 
 class TUI:
 
-    def __init__(self, puzzle, solver=None, info=False, auto=False):
+    def __init__(self, puzzle, solver=None, info=False, auto=False, debug=False):
         self.base = puzzle
         self.puzzle = puzzle
         self.solver = solver
         self.info = info
+        self.debug = debug
         if not solver and (auto or info):
             raise Exception("Cannot have auto or info arguments without a solver")
         self.auto = auto
@@ -22,7 +23,7 @@ class TUI:
         self.puzzle = self.base
         self.turn = 0
         while True:
-            self.clear()
+            if not self.debug: self.clear()
             self.printInfo()
             print("Puzzle: ")
             print(self.puzzle.toString(mode="complex"))

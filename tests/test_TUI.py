@@ -6,6 +6,7 @@ from puzzlesolver.puzzles.graphpuzzle import GraphPuzzle
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import *
 
+@pytest.mark.skip(reason="Wait until a future implementation")
 def testBestMove():
     p1 = GraphPuzzle("0", value=PuzzleValue.UNDECIDED)
     p2 = GraphPuzzle("1", value=PuzzleValue.UNDECIDED)
@@ -17,7 +18,7 @@ def testBestMove():
     p3.setMove(p4, movetype="for")
 
     solver = GeneralSolver(p1)
-    player = TUI(p1, solver)
+    player = TUI(p1, solver, debug=True)
 
     input_mock = mock.Mock(return_value=0)
 
