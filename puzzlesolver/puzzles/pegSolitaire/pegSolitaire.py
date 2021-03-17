@@ -15,7 +15,7 @@ class Peg(ServerPuzzle):
 
     puzzleid = 'pegSolitaire'
     author = "Mark Presten"
-    puzzle_name = "Peg Solitaire"
+    name = "Peg Solitaire"
     description = """Jump over a peg with an adjacent peg, removing it from the board. Have one peg remaining by end of the game."""
     date_created = "April 15, 2020"
 
@@ -40,9 +40,6 @@ class Peg(ServerPuzzle):
                     if self.board[outer][inner] == 1:
                         self.pins += 1  
 
-    def __str__(self, **kwargs):
-        return str(self.board)
-
     @property
     def variant(self):
         return "Triangle"
@@ -50,20 +47,23 @@ class Peg(ServerPuzzle):
     ### _________ Print Funcs _______________
     def printInfo(self):
         #Print Puzzle
-        print("Puzzle: ")
-        space = "                    "
+        d = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
+            str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
+        space = 20 * " "
+        output = ""
         for outer in range(5):
-            print(space, end="")
+            output += space
             for inner in range(outer + 1):
-                print(str(self.board[outer][inner]) + "       ", end="")
-            print("")
+                output += str(self.board[outer][inner]) + "       "
+            output += "\n"
             temp = list(space)
             temp = temp[:-4]
             space = "".join(temp)
-            print(" " + space + " ", end="")
+            output += " " + space + " "
             for inner2 in range(outer + 1):
-                print(" " + MAP_MOVES[str([outer, inner2])] + "    ", end="")
-            print("")
+                output += " " +d[str([outer, inner2])] + "    "
+            output += "\n"
+        return output
 
     def getName(self, **kwargs):
         return "Peg_Solitaire_" + self.variant
