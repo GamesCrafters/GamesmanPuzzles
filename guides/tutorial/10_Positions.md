@@ -78,7 +78,7 @@ def generateStartPosition(cls, variantid, **kwargs):
 ## Conclusion:
 To test if the ServerPuzzle has been implemented, add the following on the end of your file:
 ```python
-from puzzlesolver.server import test_puzzle
+from server import test_puzzle
 test_puzzle(Hanoi)
 ```
 Then run:
