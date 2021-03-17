@@ -87,7 +87,7 @@ class TUI:
             move : self.solver.getRemoteness(self.puzzle.doMove(move)) 
             for move in self.puzzle.generateMoves(movetype="legal")
         }
-        min_remote = 1000000
+        min_remote = float('inf')
         best_move = None
         unsolve = {}
         for key, value in remotes.items():
