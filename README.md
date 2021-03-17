@@ -32,6 +32,12 @@ python server.py
 ```
 to access the webserver. The server should be running at http://127.0.0.1:9001/.
 
+## Testing
+To run all the tests, run the following command:
+```
+pytest --cov puzzlesolver
+```
+
 ## Exploring GamesmanPuzzles
 Tips for exploring this repository:
 1. [Follow the guides and learn how to create a puzzle and a solver!](guides)
