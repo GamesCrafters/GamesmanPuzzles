@@ -58,16 +58,21 @@ class Npuzzle(ServerPuzzle):
     def doMove(self, move):
         newPuzzle = Npuzzle(size=self.size)
         position = deepcopy(self.position)
-        zeroindex = position.index(0)
-        moveindex = position.index(move)
+        parts = move.split("_")
+        zeroindex = int(parts[2])
+        moveindex = int(parts[1])
+        # zeroindex = position.index(0)
+        # moveindex = position.index(move)
         newPuzzle.position = Npuzzle.swap(position, moveindex, zeroindex)
         return newPuzzle        
 
     def generateMoves(self, movetype='bi'):
         if movetype == 'for':
             return []
-        adjacent = self.getAdjacent(self.position.index(0))
-        return [self.position[a] for a in adjacent]
+        index_0 = self.position.index(0)
+        adjacent = self.getAdjacent(index_0)
+
+        return ["M_{}_{}".format(a, index_0) for a in adjacent]
 
     def generateSolutions(self):
         newPuzzle = Npuzzle(size=self.size)
@@ -88,15 +93,20 @@ class Npuzzle(ServerPuzzle):
     @classmethod
     def deserialize(cls, puzzleid, **kwargs):
         try:
+            parts = puzzleid.split("_")
+            puzzleid = parts[4]
+
             puzzle = Npuzzle()
-            puzzle.position = [int(i) for i in puzzleid.split('-')]
+            puzzle.position = [int(i) for i in puzzleid]
             puzzle.size = int(math.sqrt(len(puzzle.position)))
             return puzzle
         except:
             raise PuzzleException("Invalid puzzleid")
 
     def serialize(self, **kwargs):
-        return '-'.join([str(x) for x in self.position])
+        output = "R_{}_{}_{}_".format("A", self.size, self.size)
+        board = "".join([str(x) for x in self.position]) 
+        return output + board
 
     def getAdjacent(self, index):
         adj = []

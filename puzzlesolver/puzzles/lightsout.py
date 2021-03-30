@@ -54,6 +54,7 @@ class LightsOut(ServerPuzzle):
             for j in range(len(self.grid)):
                 move_str = "A_{}_{}".format("1", str(i + j * len(self.grid)))
                 moves.append(move_str)
+        return []
         return moves
 
     def __hash__(self):
@@ -74,7 +75,7 @@ class LightsOut(ServerPuzzle):
     def generateStartPosition(cls, variantid, **kwargs):
         variant = int(variantid)
         position = "R_{}_{}_{}_".format("A", variant, variant)
-        position += '-' * (variant ** 2)
+        position += '*' * (variant ** 2)
         return cls.deserialize(position)
 
     @classmethod
