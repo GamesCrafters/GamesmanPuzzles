@@ -74,7 +74,7 @@ class LightsOut(ServerPuzzle):
     def generateStartPosition(cls, variantid, **kwargs):
         variant = int(variantid)
         position = "R_{}_{}_{}_".format("A", variant, variant)
-        position += '1' * (variant ** 2)
+        position += '-' * (variant ** 2)
         return cls.deserialize(position)
 
     @classmethod
@@ -87,7 +87,7 @@ class LightsOut(ServerPuzzle):
         puzzle.grid = []
         for i in range(variant):
             row = position[i*variant:(i+1)*variant]
-            row = [bool(int(i)) for i in row]
+            row = [True if i == '-' else False for i in row]
             puzzle.grid.append(row)
         return puzzle
 
@@ -97,7 +97,7 @@ class LightsOut(ServerPuzzle):
 
         result = ""
         for row in self.grid:
-            str_row = [str(int(entry)) for entry in row]
+            str_row = ["-" if entry else "*" for entry in row]
             result += "".join(str_row)
         output += result
         return output
