@@ -73,14 +73,14 @@ class LightsOut(ServerPuzzle):
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
         variant = int(variantid)
-        position = "R_{}_{}-{}_".format("A", variant, variant)
+        position = "R_{}_{}_{}_".format("A", variant, variant)
         position += '1' * (variant ** 2)
         return cls.deserialize(position)
 
     @classmethod
     def deserialize(cls, position: str, **kwargs):
         parts = position.split("_")
-        position = parts[3]
+        position = parts[4]
 
         variant = int(len(position) ** (1/2))
         puzzle = cls(variant=variant)
@@ -93,7 +93,7 @@ class LightsOut(ServerPuzzle):
 
     def serialize(self, **kwargs):
         output = "R"
-        output += "_{}_{}-{}_".format("A", len(self.grid), len(self.grid[0]))
+        output += "_{}_{}_{}_".format("A", len(self.grid), len(self.grid[0]))
 
         result = ""
         for row in self.grid:
