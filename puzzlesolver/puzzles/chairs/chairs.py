@@ -1,7 +1,7 @@
 from copy import deepcopy
-from . import ServerPuzzle
-from ..util import *
-from ..solvers import SqliteSolver
+from .. import ServerPuzzle
+from ...util import *
+from ...solvers import SqliteSolver
 
 from hashlib import sha1
 
@@ -9,11 +9,12 @@ class Chairs(ServerPuzzle):
 
     puzzleid = 'chairs'
     author = "Mark Presten"
-    puzzle_name = "Chair Hopping"
+    name = "Chair Hopping"
     description = """Move all pieces from one side of the board to the other by hopping over adjacent pieces. The end result should be a flipped version of the starting state."""
     date_created = "April 25, 2020"
 
     variants = {"10" : SqliteSolver}
+    test_variants = variants
 
     def __init__(self, **kwargs):
         self.board = ['x','x','x','x','x', '-', 'o','o','o','o','o']
@@ -31,22 +32,23 @@ class Chairs(ServerPuzzle):
     ### _________ Print Funcs _______________
     def printInfo(self):
         #Print Puzzle
-        print("Puzzle: ")
+        output = ""
         space = "   "
-        print(space, end="")
+        output += space
         for i in self.board:
             if i == "-":
                 i = "_"
-            print(i + "   ", end="")
-        print("")
+            output += i + "   "
+        output += "\n"
         space = "  ["
-        print(space, end="")
+        output += space
         for i in range(11):
             if i == 10:
-                print(str(i) + "]", end="")
+                output += str(i) + "]"
                 break
-            print(str(i) + "   ", end="")
-        print("")
+            output += str(i) + "   "
+        output += "\n"
+        return output
 
     def getName(self, **kwargs):
         return "Chairs"

@@ -1,15 +1,21 @@
 from copy import deepcopy
-from . import ServerPuzzle
-from ..util import *
-from ..solvers import SqliteSolver
+from .. import ServerPuzzle
+from ...util import *
+from ...solvers import SqliteSolver, GeneralSolver
 
 from hashlib import sha1
+
+MAP_MOVES = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
+    str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
+
+UNMAP_MOVES = {'[A]':[0,0], '[B]':[1,0], '[C]':[1,1], '[D]':[2,0], '[E]':[2,1], '[F]':[2,2], '[G]':[3,0],
+    '[H]':[3,1], '[I]':[3,2], '[J]':[3,3], '[K]':[4,0], '[L]':[4,1], '[M]':[4,2], '[N]':[4,3], '[O]':[4,4]}
 
 class Peg(ServerPuzzle):
 
     puzzleid = 'pegSolitaire'
     author = "Mark Presten"
-    puzzle_name = "Peg Solitaire"
+    name = "Peg Solitaire"
     description = """Jump over a peg with an adjacent peg, removing it from the board. Have one peg remaining by end of the game."""
     date_created = "April 15, 2020"
 
@@ -34,9 +40,6 @@ class Peg(ServerPuzzle):
                     if self.board[outer][inner] == 1:
                         self.pins += 1  
 
-    def __str__(self, **kwargs):
-        return str(self.board)
-
     @property
     def variant(self):
         return "Triangle"
@@ -44,25 +47,49 @@ class Peg(ServerPuzzle):
     ### _________ Print Funcs _______________
     def printInfo(self):
         #Print Puzzle
-        print("Puzzle: ")
-        space = "                    "
+        d = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
+            str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
+        space = 20 * " "
+        output = ""
         for outer in range(5):
-            print(space, end="")
+            output += space
             for inner in range(outer + 1):
-                print(str(self.board[outer][inner]) + "       ", end="")
-            print("")
+                output += str(self.board[outer][inner]) + "       "
+            output += "\n"
             temp = list(space)
             temp = temp[:-4]
             space = "".join(temp)
-            print(" " + space + " ", end="")
+            output += " " + space + " "
             for inner2 in range(outer + 1):
-                print("[" + str(outer) + "," + str(inner2) + "]" + "   ", end="")
-            print("")
+                output += " " +d[str([outer, inner2])] + "    "
+            output += "\n"
+        return output
 
     def getName(self, **kwargs):
-        return "Peg Solitaire " + self.variant
+        return "Peg_Solitaire_" + self.variant
 
     # ________ End Print Funcs _________
+
+    def playPuzzle(self, moves):
+        d1 = {'a':[0,0], 'b':[1,0], 'c':[1,1], 'd':[2,0], 'e':[2,1], 'f':[2,2], 'g':[3,0],
+            'h':[3,1], 'i':[3,2], 'j':[3,3], 'k':[4,0], 'l':[4,1], 'm':[4,2], 'n':[4,3], 'o':[4,4]}
+        print("Possible Moves: ")
+        new_moves = []
+        for move in moves:
+            print(move)
+            from_peg = move[1].lower()
+            to_peg = move[-2].lower()
+            new_moves.append(from_peg + to_peg)
+        print("| Type starting peg to ending peg in lower case, e.g. for [D]->[A], type 'da' |")
+        inp = str(input())
+        if inp == '':
+            return "BEST"
+        from_peg = inp[0].upper()
+        to_peg = inp[1].upper()
+        if len(inp) != 2 or inp not in new_moves:
+            return "OOPS"
+        command = '[' + from_peg + ']->[' + to_peg + ']'
+        return command
 
     def primitive(self, **kwargs):
         if self.pins == 1:
@@ -115,7 +142,17 @@ class Peg(ServerPuzzle):
                         check3_len = len(check3)
                         for i in range(check3_len):
                             moves.append(check3[i])
-        return moves
+        new_moves = []
+        for i in moves:
+            from_peg = MAP_MOVES[str(i[0])]
+            to_peg = MAP_MOVES[str(i[1])]
+            if len(i) == 3:
+                item = from_peg + '->' + to_peg + 'U'
+            else:
+                item = from_peg + '->' + to_peg
+            new_moves.append(item)
+
+        return new_moves
 
     ### _____ generateMoves HELPERS _______ ###
     
@@ -248,12 +285,12 @@ class Peg(ServerPuzzle):
         if move not in self.generateMoves(): raise ValueError
 
         new_board = deepcopy(self.board)
-        from_peg = move[0]
-        to_peg = move[1]
+        from_peg = UNMAP_MOVES[move[:3]] 
+        to_peg = UNMAP_MOVES[move[5:8]] 
         new_board[from_peg[0]][from_peg[1]] = 0
         new_board[to_peg[0]][to_peg[1]] = 1
         #find middle peg to set to ZERO OR ONE
-        if len(move) == 3:
+        if len(move) == 9:
             set_num = 1
         else:
             set_num = 0
@@ -295,13 +332,10 @@ class Peg(ServerPuzzle):
     @classmethod
     def deserialize(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid
-
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
-
         Inputs:
             positionid - String id from puzzle, serialize() must be able to generate it
-
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
@@ -324,7 +358,6 @@ class Peg(ServerPuzzle):
 
     def serialize(self, **kwargs):
         """Returns a serialized based on self
-
         Outputs:
             String Puzzle
         """
@@ -340,7 +373,6 @@ class Peg(ServerPuzzle):
     def isLegalPosition(cls, positionid, variantid=None, **kwargs):
         """Checks if the Puzzle is valid given the rules.
         For example, Hanoi cannot have a larger ring on top of a smaller one.
-
         Outputs:
             - True if Puzzle is valid, else False
         """

@@ -7,7 +7,7 @@ class LightsOut(ServerPuzzle):
 
     puzzleid = "lights"
     author = "Anthony Ling"
-    puzzle_name = "Lights Out"
+    name = "Lights Out"
     description = "Meh"
     date_created = "April 6, 2020"
 
@@ -54,7 +54,6 @@ class LightsOut(ServerPuzzle):
             for j in range(len(self.grid)):
                 move_str = "A_{}_{}".format("1", str(i + j * len(self.grid)))
                 moves.append(move_str)
-        return []
         return moves
 
     def __hash__(self):

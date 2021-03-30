@@ -4,7 +4,7 @@ Description=GamesCrafters Universal Web API
 [Service]
 User=ant1ng
 WorkingDirectory=/home/ant1ng/GamesmanPuzzles/
-ExecStart=/usr/bin/python3 -m puzzlesolver.server
+ExecStart=/usr/bin/python3 server.py
 Restart=on-failure
 RestartSec=5
 Environment=API_PORT=9001

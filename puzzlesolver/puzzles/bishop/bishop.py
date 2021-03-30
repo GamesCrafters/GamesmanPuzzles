@@ -1,14 +1,14 @@
 from copy import deepcopy
-from . import ServerPuzzle
-from ..util import *
-from ..solvers import IndexSolver
+from .. import ServerPuzzle
+from ...util import *
+from ...solvers import IndexSolver
 import math
 
 class Bishop(ServerPuzzle):
 	# For simplicity, only one color of square is considered.
 	puzzleid = 'bishop'
 	author = 'Brian Delaney'
-	puzzle_name = 'Bishop Puzzle'
+	name = 'Bishop Puzzle'
 	description = """Swap the locations of two sets of bishops on opposite ends of a chessboard, without moving them into threatened positions."""
 	date_created = "October 30, 2020"
 	# Chessboard has y rows, 2x columns

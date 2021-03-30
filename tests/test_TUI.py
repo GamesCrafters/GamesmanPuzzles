@@ -1,12 +1,13 @@
 import pytest
 from unittest import mock
 
-from puzzleplayer import PuzzlePlayer
+from puzzlesolver.players.tui import TUI
 from puzzlesolver.puzzles.graphpuzzle import GraphPuzzle
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import *
 
-def testGeneral():
+@pytest.mark.skip(reason="Wait until a future implementation")
+def testBestMove():
     p1 = GraphPuzzle("0", value=PuzzleValue.UNDECIDED)
     p2 = GraphPuzzle("1", value=PuzzleValue.UNDECIDED)
     p3 = GraphPuzzle("2", value=PuzzleValue.UNDECIDED)
@@ -16,11 +17,11 @@ def testGeneral():
     p2.setMove(p3, movetype="for")
     p3.setMove(p4, movetype="for")
 
-    s = GeneralSolver(p1)
-    pp = PuzzlePlayer(p1, s)
+    solver = GeneralSolver(p1)
+    player = TUI(p1, solver, debug=True)
 
     input_mock = mock.Mock(return_value=0)
 
-    with mock.patch('puzzleplayer.input', input_mock):
-        pp.play()
+    with mock.patch('puzzlesolver.players.tui.input', input_mock):
+        player.play()
     assert input_mock.call_count == 3

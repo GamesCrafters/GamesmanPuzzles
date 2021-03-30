@@ -1,9 +1,18 @@
 import pytest
 import tempfile
 
-from puzzlesolver import server
+# Import server
+import sys
+sys.path.append("..")
+
+import server
+
 from puzzlesolver.util import PuzzleValue
-from puzzlesolver.puzzles import puzzleList, GraphPuzzle
+from puzzlesolver.puzzles import GraphPuzzle
+
+########################################################################
+# Server Fixtures
+########################################################################
 
 @pytest.fixture
 def client(tmpdir):
@@ -19,11 +28,11 @@ def client(tmpdir):
 
 @pytest.fixture
 def simple():
-    def helper(solver_cls):
-        forward = GraphPuzzle(0)
-        bidirectional = GraphPuzzle(1)
-        backward = GraphPuzzle(2)
-        sol = GraphPuzzle(3, value=PuzzleValue.SOLVABLE)
+    def helper(solver_cls, csp=False):
+        forward = GraphPuzzle(0, csp=csp)
+        bidirectional = GraphPuzzle(1, csp=csp)
+        backward = GraphPuzzle(2, csp=csp)
+        sol = GraphPuzzle(3, value=PuzzleValue.SOLVABLE, csp=csp)
 
         sol.setMove(forward, movetype="for")
         sol.setMove(bidirectional, movetype="bi")

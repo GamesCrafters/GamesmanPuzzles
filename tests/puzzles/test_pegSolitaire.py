@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from puzzlesolver.puzzles import Peg
+from puzzlesolver.puzzles import Peg, PuzzleManager
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import *
 
@@ -36,16 +36,16 @@ def testPrimitive():
 
 def testMoves():
     puzzle0 = Peg.deserialize('0_11_111_1111_11111_')
-    puzzle1 = puzzle0.doMove(move([2,0],[0,0]))
+    puzzle1 = puzzle0.doMove('[D]->[A]')
     assert puzzle1.serialize() == '1_01_011_1111_11111_'
-    puzzle2 = puzzle1.doMove(move([2,2],[2,0]))
+    puzzle2 = puzzle1.doMove('[F]->[D]')
     assert puzzle2.serialize() == '1_01_100_1111_11111_'
-    puzzle3 = puzzle2.doMove(move([3,0],[1,0]))
+    puzzle3 = puzzle2.doMove('[G]->[B]')
     assert puzzle3.serialize() == '1_11_000_0111_11111_'
 
-    with pytest.raises(Exception): puzzle1.doMove(move([1,0], [1,1]))
-    with pytest.raises(Exception): puzzle0.doMove(move([0,0], [1,0]))
-    with pytest.raises(Exception): puzzle0.doMove(move([3,0], [0,0]))
+    with pytest.raises(Exception): puzzle1.doMove('[B]->[C]')
+    with pytest.raises(Exception): puzzle0.doMove('[A]->[B]')
+    with pytest.raises(Exception): puzzle0.doMove('[G]->[A]')
 
     assert len(puzzle0.generateMoves(movetype='for')) == 2
     assert len(puzzle1.generateMoves(movetype='for')) == 4
@@ -59,14 +59,18 @@ def testPositions():
     assert len(puzzles) == 15
 
 def testValidation():
-    invalid_puzzle = '1_11_111_1111_11111_'
-    valid_puzzle = '1_11_000_0111_11111_'
-    blank_puzzle = ""
-    weird_input = "111_0_11_22_22_11011"
-    pytest.raises(PuzzleException, Peg.validate, blank_puzzle, "Triangle")
-    pytest.raises(PuzzleException, Peg.validate, weird_input, "Triangle")
-    pytest.raises(PuzzleException, Peg.validate, invalid_puzzle, "Triangle")
-    Peg.validate(valid_puzzle, "Triangle")
+    tests = [
+        ("", "Triangle"),
+        ("111_0_11_22_22_11011", "Triangle"),
+        ("1_11_111_1111_11111_", "Triangle"),
+        ("1_11_000_0111_11111_", "Not Triangle")
+    ]
+    for test in tests:
+        pytest.raises(
+            PuzzleException, PuzzleManager.validate,
+            Peg.puzzleid, test[1], test[0]
+        )
+    PuzzleManager.validate(Peg.puzzleid, "Triangle", "1_11_000_0111_11111_")
 
 @pytest.mark.skip(reason="will fail due to removal of PegSolitaire from TestServer")
 def testPuzzleServer(client):
