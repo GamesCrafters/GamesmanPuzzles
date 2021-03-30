@@ -32,6 +32,10 @@ class LightsOut(ServerPuzzle):
         return PuzzleValue.SOLVABLE
     
     def doMove(self, move, **kwargs):
+        parts = move.split("_")
+        index = int(parts[2])
+        move = (index % len(self.grid), index // len(self.grid))
+
         from copy import deepcopy
         x, y = move[0], move[1]
         puzzle = LightsOut(variant=str(self.size))
@@ -48,11 +52,17 @@ class LightsOut(ServerPuzzle):
         moves = []
         for i in range(len(self.grid)):
             for j in range(len(self.grid)):
-                moves.append((i, j))
+                move_str = "A_{}_{}".format("1", str(i + j * len(self.grid)))
+                moves.append(move_str)
         return moves
 
     def __hash__(self):
-        result = int(self.serialize(), 2)
+        result = ""
+        for row in self.grid:
+            str_row = [str(int(entry)) for entry in row]
+            result += "".join(str_row)
+
+        result = int(result, 2)
         return result
 
     def generateSolutions(self, **kwargs):
@@ -63,11 +73,15 @@ class LightsOut(ServerPuzzle):
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
         variant = int(variantid)
-        position = '1' * (variant ** 2)
+        position = "R_{}_{}-{}_".format("A", variant, variant)
+        position += '1' * (variant ** 2)
         return cls.deserialize(position)
 
     @classmethod
-    def deserialize(cls, position, **kwargs):
+    def deserialize(cls, position: str, **kwargs):
+        parts = position.split("_")
+        position = parts[3]
+
         variant = int(len(position) ** (1/2))
         puzzle = cls(variant=variant)
         puzzle.grid = []
@@ -78,11 +92,15 @@ class LightsOut(ServerPuzzle):
         return puzzle
 
     def serialize(self, **kwargs):
+        output = "R"
+        output += "_{}_{}-{}_".format("A", len(self.grid), len(self.grid[0]))
+
         result = ""
         for row in self.grid:
             str_row = [str(int(entry)) for entry in row]
             result += "".join(str_row)
-        return result
+        output += result
+        return output
 
     def isLegalPosition(self):
         return True
