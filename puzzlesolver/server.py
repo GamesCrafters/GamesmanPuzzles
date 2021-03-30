@@ -1,7 +1,7 @@
 import flask
 from flask import request, jsonify, abort
 from .puzzles import puzzleList
-from .util import PuzzleException
+from .util import PuzzleException, PuzzleValue
 
 import os
 
@@ -48,7 +48,7 @@ def validate(puzzle_name=None, variant_id=None, position=None):
         except PuzzleException as e:
             abort(404, description=str(e))
 
-def format_response(response, status="available"):
+def format_response(response, status="ok"):
     response = {
         "response": response,
         "status": status
@@ -74,8 +74,8 @@ def puzzle(puzzle_id):
     validate(puzzle_id)
     puzzle = puzzleList[puzzle_id]
     response = {
-        "puzzle_id": puzzle_id,
-        "puzzle_name": puzzle.puzzle_name,
+        "gameId": puzzle_id,
+        "name": puzzle.puzzle_name,
         "author": puzzle.author,
         "description": puzzle.description,
         "date_created": puzzle.date_created,
@@ -113,12 +113,14 @@ def puzzle_position(puzzle_id, variant_id, position):
     response = {
         "position": p.serialize(),
         "remoteness": s.getRemoteness(p),
-        "value": s.getValue(p),
+        "positionValue": s.getValue(p),
         "moves": [{
             "position": move[1].serialize(),
+            "positionValue": s.getValue(move[1]),
             "move": str(move[0]),
+            "moveValue": PuzzleValue.SOLVABLE if s.getRemoteness(p) > s.getRemoteness(move[1]) else PuzzleValue.UNDECIDED if s.getRemoteness(p) == s.getRemoteness(move[1]) else PuzzleValue.UNSOLVABLE,
+            "deltaRemoteness": s.getRemoteness(p) - s.getRemoteness(move[1]),
             "remoteness": s.getRemoteness(move[1]),
-            "value": s.getValue(move[1])
         } for move in moves]
     }
     return format_response(response)
