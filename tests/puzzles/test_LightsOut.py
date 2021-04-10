@@ -1,7 +1,8 @@
 import pytest
 import json
 
-from puzzlesolver.puzzles import Hanoi, PuzzleManager
+from puzzlesolver.puzzles import LightsOut as p_cls
+from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.solvers import GeneralSolver
 from puzzlesolver.util import PuzzleValue, PuzzleException
 
@@ -9,38 +10,23 @@ def move(move0, move1):
     return (move0, move1)
 
 # Unit testing
-def testHash():
-    """Tests the expected behavior of the hash function on the puzzle states. """
-    puzzle0 = Hanoi.fromString('7-0-0')
-    puzzle1 = Hanoi.fromString('7-0-0')
-    puzzle3 = Hanoi.fromString('0-0-7')
-    
-    # Checks if two of the exact same states have the same hash
-    assert hash(puzzle0) == hash(puzzle1)
-    
-    # Special case: It doesn't matter if the disks are on the left or middle rod. It's the same remoteness, so they should have the same hash
-    #assert hash(puzzle0) == hash(puzzle2)
-    
-    # The start state should not have the same hash as the end state.
-    assert hash(puzzle0) != hash(puzzle3)
-
 def testSerialization():
     """Tests if serialization and deserialization works both ways."""
-    codes = ['7-0-0', '0-7-0', '0-0-7', '6-1-0', '1-0-0']
+    codes = ['1000', '0001', '0100', '0010']
     
     for code in codes:
-        puzzle = Hanoi.fromString(code)
+        puzzle = p_cls.fromString(code)
         assert puzzle.toString() == code
 
 def testPrimitive():
     """Tests if the start state and end state outputted the right primitives."""
     
     # Expected primitive of start state should be UNDECIDED
-    puzzle = Hanoi.fromString('7-0-0')
+    puzzle = p_cls.fromString('1111')
     assert puzzle.primitive() == PuzzleValue.UNDECIDED
     
     # Expected primitive of end state should be SOLVABLE
-    puzzle = Hanoi.fromString('0-0-7')
+    puzzle = Hanoi.fromString('0000')
     assert puzzle.primitive() == PuzzleValue.SOLVABLE
 
 def testMoves():
