@@ -5,13 +5,14 @@ from ..solvers import IndexSolver
 
 class LightsOut(ServerPuzzle):
 
-    puzzleid = "lights"
-    author = "Anthony Ling"
-    name = "Lights Out"
-    description = "Meh"
-    date_created = "April 6, 2020"
+    id      = "lights"
+    auth    = "Anthony Ling"
+    name    = "Lights Out"
+    desc    = "Click on the squares on the grid to turn it and adjacent squares off. Try to turn off all the squares!"
+    date    = "April 6, 2020"
 
     variants = { str(i) : IndexSolver for i in range(2, 5)}
+    test_variants = variants
 
     def __init__(self, variant='3', **kwargs):
         variant = int(variant)

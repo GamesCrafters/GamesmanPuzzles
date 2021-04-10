@@ -7,13 +7,18 @@ from hashlib import sha1
 
 class HopNDrop(ServerPuzzle):
 
-    puzzleid = 'hopNdrop'
-    author = "Mark Presten"
-    puzzle_name = "Hop N' Drop"
-    description = """Clear all platforms before reaching the goal tile. Don't get stuck or fall!"""
-    date_created = "Oct 10, 2020"
+    id      = 'hopNdrop'
+    auth    = "Mark Presten"
+    name    = "Hop N' Drop"
+    desc    = """Clear all platforms before reaching the goal tile. Don't get stuck or fall!"""
+    date    = "Oct 10, 2020"
 
-    variants = {"map1" : SqliteSolver, "map2" : SqliteSolver, "map3" : SqliteSolver, "map4" : SqliteSolver}
+    variants = {
+        "map1" : SqliteSolver, 
+        "map2" : SqliteSolver, 
+        "map3" : SqliteSolver, 
+        # "map4" : SqliteSolver
+    }
 
     def __init__(self, key="map1", **kwargs):
         if key=="map1":
@@ -296,7 +301,7 @@ class HopNDrop(ServerPuzzle):
             else:
                 b[row][ind] = i
                 ind += 1
-        newPuzzle = HopNDrop(key=self.variant)
+        newPuzzle = HopNDrop(key=cls.variant)
         newPuzzle.board = b
         return newPuzzle
 

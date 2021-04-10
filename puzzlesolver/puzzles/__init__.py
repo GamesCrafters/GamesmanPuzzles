@@ -16,15 +16,15 @@ from .rubiks.rubiks import Rubiks
 
 # Add your puzzle in the puzzleList
 puzzleList = {
-    Npuzzle.puzzleid: Npuzzle,
-    Hanoi.puzzleid: Hanoi,
-    LightsOut.puzzleid: LightsOut,
-    Peg.puzzleid: Peg,
-    Chairs.puzzleid: Chairs,
-    Bishop.puzzleid: Bishop,
-    TopSpin.puzzleid: TopSpin,
-    HopNDrop.puzzleid: HopNDrop,
-    Rubiks.puzzleid: Rubiks
+    Npuzzle.id:     Npuzzle,
+    Hanoi.id:       Hanoi,
+    LightsOut.id:   LightsOut,
+    Peg.id:         Peg,
+    Chairs.id:      Chairs,
+    Bishop.id:      Bishop,
+    TopSpin.id:     TopSpin,
+    HopNDrop.id:    HopNDrop,
+    # Rubiks.id:    Rubiks
 }
 
 class PuzzleManagerClass:
@@ -51,7 +51,7 @@ class PuzzleManagerClass:
     
     def getSolverClass(self, puzzleid, variantid=None, test=False):
         """Get Solver Class given the puzzleid"""
-        if puzzle in [Hanoi.puzzleid, LightsOut.puzzleid, Bishop.puzzleid, Npuzzle.puzzleid]:
+        if puzzleid in [Hanoi.id, LightsOut.id, Bishop.id, Npuzzle.id]:
             return IndexSolver
         return SqliteSolver
     

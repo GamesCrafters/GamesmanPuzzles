@@ -7,11 +7,11 @@ from hashlib import sha1
 
 class Chairs(ServerPuzzle):
 
-    puzzleid = 'chairs'
-    author = "Mark Presten"
-    name = "Chair Hopping"
-    description = """Move all pieces from one side of the board to the other by hopping over adjacent pieces. The end result should be a flipped version of the starting state."""
-    date_created = "April 25, 2020"
+    id      = 'chairs'
+    auth    = "Mark Presten"
+    name    = "Chair Hopping"
+    desc    = """Move all pieces from one side of the board to the other by hopping over adjacent pieces. The end result should be a flipped version of the starting state."""
+    date    = "April 25, 2020"
 
     variants = {"10" : SqliteSolver}
     test_variants = variants

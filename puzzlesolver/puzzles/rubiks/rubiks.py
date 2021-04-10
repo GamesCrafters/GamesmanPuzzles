@@ -16,11 +16,11 @@ rot_cube_2 = [4,3,2,1,0,5]
 
 class Rubiks(ServerPuzzle):
 
-    puzzleid = 'rubiks'
-    author = "Mark Presten"
-    puzzle_name = "Rubik's Cube"
-    description = """Solve the Rubiks cube by getting one color/number on each face using rotations.."""
-    date_created = "September 14th, 2020"
+    id      = 'rubiks'
+    auth    = "Mark Presten"
+    name    = "Rubik's Cube"
+    desc    = """Solve the Rubiks cube by getting one color/number on each face using rotations.."""
+    date    = "September 14th, 2020"
 
     variants = {"2x2" : SqliteSolver}
 
@@ -506,29 +506,29 @@ class Rubiks(ServerPuzzle):
             index = random.randint(0,7)
             move = moves[index]
             if move == "TopRow->Right":
-                b = self.topR(b)
+                b = cls.topR(cls, b)
             elif move == "TopRow->Left":
-                b = self.topL(b)
+                b = cls.topL(cls, b)
             elif move == "BottomRow->Right":
-                b = self.bottomR(b)
+                b = cls.bottomR(cls, b)
             elif move == "BottomRow->Left":
-                b = self.bottomL(b)
+                b = cls.bottomL(cls, b)
             elif move == "LeftColumn->Up":
-                b = self.leftUp(b)       
+                b = cls.leftUp(cls, b)       
             elif move == "LeftColumn->Down":
-                b = self.leftDown(b)  
+                b = cls.leftDown(cls, b)  
             elif move == "RightColumn->Up":
-                b = self.rightUp(b)  
+                b = cls.rightUp(cls, b)  
             elif move == "RightColumn->Down":
-                b = self.rightDown(b)
+                b = cls.rightDown(cls, b)
             elif move == "TopTile->Right":
-                b = self.topTileRight(b)
+                b = cls.topTileRight(cls, b)
             elif move == "TopTile->Left":
-                b = self.topTileLeft(b)
+                b = cls.topTileLeft(cls, b)
             elif move == "BottomTile->Left":
-                b = self.bottomTileLeft(b)
+                b = cls.bottomTileLeft(cls, b)
             elif move == "BottomTile->Right":
-                b = self.bottomTileRight(b)
+                b = cls.bottomTileRight(cls, b)
         puzzle = Rubiks()
         puzzle.board = b
         return puzzle    
