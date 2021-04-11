@@ -10,11 +10,11 @@ class Puzzle:
     # Background data
     #################################################################
 
-    puzzleid = "NA"
-    author = "NA"
-    name = "NA"
-    description = "NA"
-    date_created = "NA"
+    id   = None
+    auth = None
+    name = None
+    desc = None
+    date = None
 
     #################################################################
     # Intializer
@@ -221,11 +221,13 @@ class Puzzle:
         """
         return self.doMove(other)
 
+    def __repr__(self):
+        return "<{} object with {}>".format(self.__class__.__name__, self.toString(mode="minimal"))
+
     #################################################################
     # Depreciated methods
     #################################################################
 
-    @depreciated("puzzle.printInfo is depreciated. See toString")
     def printInfo(self):
         """Prints the string representation of the puzzle. 
         Can be custom defined"""

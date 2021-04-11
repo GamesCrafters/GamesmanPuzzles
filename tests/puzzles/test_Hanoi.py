@@ -89,8 +89,8 @@ def testValidation():
         variantid = test[0]
         pytest.raises(
             PuzzleException, PuzzleManager.validate, 
-            Hanoi.puzzleid, test[1], test[0])
-    PuzzleManager.validate(Hanoi.puzzleid, "3_3", "7-0-0")
+            Hanoi.id, test[1], test[0])
+    PuzzleManager.validate(Hanoi.id, "3_3", "7-0-0")
     
 def testSolver():
     """Tests the solver functionality of the Puzzle"""
@@ -104,7 +104,7 @@ def testSolver():
 # Server methods
 def testServerPuzzle(client):
     """Tests server functionality by trying out a series of inputs."""
-    rv = client.get('/{}/'.format(Hanoi.puzzleid))
+    rv = client.get('/{}/'.format(Hanoi.id))
     d = json.loads(rv.data)
 
     assert d['response']['variants'] == list(Hanoi.variants)
@@ -114,7 +114,7 @@ def testServerPuzzle(client):
         d = json.loads(rv.data)
         assert d['response']['remoteness'] == remoteness
     
-    pid = Hanoi.puzzleid
+    pid = Hanoi.id
     helper(pid, '1-0-0', "3_1", 1)
     helper(pid, '0-1-0', "3_1", 1)    
     helper(pid, '0-0-1', "3_1", 0)

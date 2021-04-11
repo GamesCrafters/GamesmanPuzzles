@@ -88,13 +88,13 @@ def testValidation():
     
     # Four exceptions raised
     for test in tests:
-        pytest.raises(PuzzleException, PuzzleManager.validate, Bishop.puzzleid, test[1], test[0])
-    PuzzleManager.validate(Bishop.puzzleid, "2x5", "2_5_a5-c5_a1-c1")
+        pytest.raises(PuzzleException, PuzzleManager.validate, Bishop.id, test[1], test[0])
+    PuzzleManager.validate(Bishop.id, "2x5", "2_5_a5-c5_a1-c1")
 
 # Server methods
 def testServerPuzzle(client):
     """Tests server functionality by trying out a series of inputs."""
-    rv = client.get('/{}/'.format(Bishop.puzzleid))
+    rv = client.get('/{}/'.format(Bishop.id))
     d = json.loads(rv.data)
 
     assert d['response']['variants'] == list(Bishop.variants.keys())
@@ -104,7 +104,7 @@ def testServerPuzzle(client):
         d = json.loads(rv.data)
         assert d['response']['remoteness'] == remoteness
     
-    pid = Bishop.puzzleid
+    pid = Bishop.id
     helper(pid, '2_5_a1-c1_a5-c5', '2x5', 18)
     helper(pid, '2_5_a1-b2_a5-c5', '2x5', 17)    
     helper(pid, '2_5_a5-c5_a1-c1', '2x5', 0)

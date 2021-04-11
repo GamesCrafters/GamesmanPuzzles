@@ -13,11 +13,11 @@ UNMAP_MOVES = {'[A]':[0,0], '[B]':[1,0], '[C]':[1,1], '[D]':[2,0], '[E]':[2,1], 
 
 class Peg(ServerPuzzle):
 
-    puzzleid = 'pegSolitaire'
-    author = "Mark Presten"
-    name = "Peg Solitaire"
-    description = """Jump over a peg with an adjacent peg, removing it from the board. Have one peg remaining by end of the game."""
-    date_created = "April 15, 2020"
+    id      = 'pegSolitaire'
+    auth    = "Mark Presten"
+    name    = "Peg Solitaire"
+    desc    = """Jump over a peg with an adjacent peg, removing it from the board. Have one peg remaining by end of the game."""
+    date    = "April 15, 2020"
 
     variants = {"Triangle": SqliteSolver}
     test_variants = {}

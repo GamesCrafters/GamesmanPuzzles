@@ -11,11 +11,11 @@ import math
 
 class Npuzzle(ServerPuzzle):
     
-    puzzleid = 'npuzzle'
-    author = "Arturo Olvera"
-    name = "N x N '15'-puzzle"
-    description = "Shift pieces to get puzzle in ascending order."
-    date_created = "April 10, 2020"
+    id      = 'npuzzle'
+    auth    = "Arturo Olvera"
+    name    = "N x N '15'-puzzle"
+    desc    = "Shift pieces to get puzzle in ascending order."
+    date    = "April 10, 2020"
     
     variants = {str(i) : IndexSolver for i in range(2, 4)}
     test_variants = {"2" : IndexSolver}

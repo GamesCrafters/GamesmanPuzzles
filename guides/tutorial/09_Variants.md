@@ -42,8 +42,8 @@ def variant(self):
         size += len(stack)
     return str(size)
 ```
-Our server requires that we define a list with variant id. Just for these purposes, lets consider only variants up to 3 as well as using the GeneralSolver as the main solver.
+Our server requires that we define a list with variant ids as a class variable.
 ```python
-variants = [str(i) for i in range(1, 4)]
+variants = ["1", "2", "3"]
 ```
 [Next Step: Positions](10_Positions.md)

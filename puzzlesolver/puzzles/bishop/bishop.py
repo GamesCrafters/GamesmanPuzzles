@@ -6,11 +6,11 @@ import math
 
 class Bishop(ServerPuzzle):
 	# For simplicity, only one color of square is considered.
-	puzzleid = 'bishop'
-	author = 'Brian Delaney'
-	name = 'Bishop Puzzle'
-	description = """Swap the locations of two sets of bishops on opposite ends of a chessboard, without moving them into threatened positions."""
-	date_created = "October 30, 2020"
+	id 		= 'bishop'
+	auth 	= 'Brian Delaney'
+	name 	= 'Bishop Puzzle'
+	desc 	= """Swap the locations of two sets of bishops on opposite ends of a chessboard, without moving them into threatened positions."""
+	date 	= "October 30, 2020"
 	# Chessboard has y rows, 2x columns
 	variants = {str(i[0]) + "x" + str(i[1]): IndexSolver for i in ((2,5), (2,7), (3,7))}
 	test_variants = {str(i[0]) + "x" + str(i[1]): IndexSolver for i in ((2,5), (2,7))}
