@@ -20,6 +20,8 @@ class HopNDrop(ServerPuzzle):
         # "map4" : SqliteSolver
     }
 
+    test_variants = variants
+
     def __init__(self, key="map1", **kwargs):
         if key=="map1":
             #Map1

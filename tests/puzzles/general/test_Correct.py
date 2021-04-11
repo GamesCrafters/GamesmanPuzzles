@@ -5,6 +5,7 @@ import sys
 sys.path.append("../..")
 
 import server
+import pytest
 
 # Helper function from server
 def generateMovePositions(puzzle, movetype="legal"):

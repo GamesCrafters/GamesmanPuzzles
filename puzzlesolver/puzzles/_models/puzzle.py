@@ -228,7 +228,6 @@ class Puzzle:
     # Depreciated methods
     #################################################################
 
-    @depreciated("puzzle.printInfo is depreciated. See toString")
     def printInfo(self):
         """Prints the string representation of the puzzle. 
         Can be custom defined"""

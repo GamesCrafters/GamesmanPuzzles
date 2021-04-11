@@ -1,25 +1,25 @@
 # Contributing
-## About
-This repository has <s>two</s> one main branches.
-- `master`, which is the main branch used to regulate releases and contains the most up to date release.
-- <s>`dev`, which is the main branch for development, experimental, and testing purposes. It will usually contain the next release.</s>
 
-<s>Contributors to this repository should clone and be up to date with the `dev` branch, while using `master` as reference. </s>
 ## Setting up your workflow
 Start by cloning this repository and switching to the dev branch.
 ```bash
 git clone https://github.com/GamesCrafters/GamesmanPuzzles
 cd GamesmanPuzzles
-git checkout dev
 ```
-Load the dependencies. It's recommended to use a [virtualenv](https://docs.python.org/3/library/venv.html) for this step. Make sure to be using Python3 instead of Python2.
+Load the dependencies and set up the environment. It's recommended to use a [virtualenv](https://docs.python.org/3/library/venv.html) for this step. Make sure to be using Python3 instead of Python2.
 ```bash
 pip install -r requirements.txt
+pip install -e
 ```
-## Contributing a Change
-Refer to [Where to Put My Stuff](wheretoputmystuff.md) for guidance when contributing.
+## Contributing a Change (Adding a Puzzle or Solver)
+Guidelines for contributing puzzles or solvers
+1. To contribute a Puzzle, follow the guidelines provided in the [tutorials](/guides/tutorial). Add your dependencies to the `puzzlelist` located in the [`__init__.py`](/puzzlesolver/puzzles/__init__.py) file. 
+2. To contribute a Solver, inherit from the base Solver class and place your solver source file in the [solvers directory](/puzzlesolver/solvers).
+3. Every solved Puzzle must have their respective test. The bare minimum for a test is to check the remoteness of an arbitrary position that is not a SOLVABLE position.
 
-Whenever you want to make a change to any of the main branches, you must use pull requests. Push access to these branches is restricted to only administrators. 
+## Pull Requests
+
+Every change must be done using a pull request. Here are the directions [to fork a repository and make a change.](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) 
 
 The best way to start a pull request is to create a new branch. 
 ```bash
@@ -33,4 +33,11 @@ After you make your changes, commit and push. As a nonspoken rule, **COMMIT WELL
 git commit -m "Your commit message here"
 git push
 ```
-When you feel like the branch is ready to be pushed into a main branch, make a pull request. [Here are directions in doing so](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+
+## Testing
+You can run the local tests simply by the command. All tests must pass before submission.
+```
+pytest
+```
+
+Continuous integration has also been set up for every change you push. You can view the latest build [here.](https://travis-ci.com/github/GamesCrafters/GamesmanPuzzles/branches)
