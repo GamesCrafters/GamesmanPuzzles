@@ -454,6 +454,8 @@ class Rubiks(ServerPuzzle):
             if i == "-":
                 out.append(new_panel)
                 new_panel = []
+            elif i == "O":
+                new_panel.append(i)
             else:
                 new_panel.append(int(i))
         out.append(new_panel)
@@ -482,10 +484,9 @@ class Rubiks(ServerPuzzle):
         Outputs:
             - True if Puzzle is valid, else False
         """
-        try: puzzle = cls.deserialize(positionid)
-        except: raise PuzzleException("Position is invalid")
+        puzzle = cls.deserialize(positionid)
         for i in range(6):
-            if len(self.board[i]) != 4:
+            if len(puzzle.board[i]) != 4:
                 return False
         return True
 

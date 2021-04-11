@@ -24,7 +24,7 @@ puzzleList = {
     Bishop.id:      Bishop,
     TopSpin.id:     TopSpin,
     HopNDrop.id:    HopNDrop,
-    # Rubiks.id:    Rubiks
+    Rubiks.id:      Rubiks
 }
 
 class PuzzleManagerClass:
