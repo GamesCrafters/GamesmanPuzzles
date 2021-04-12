@@ -97,7 +97,7 @@ class Npuzzle(ServerPuzzle):
             puzzleid = parts[4]
 
             puzzle = Npuzzle()
-            puzzle.position = [int(i) for i in puzzleid]
+            puzzle.position = [int(i) if i != "-" else 0 for i in puzzleid]
             puzzle.size = int(math.sqrt(len(puzzle.position)))
             return puzzle
         except:
@@ -105,7 +105,7 @@ class Npuzzle(ServerPuzzle):
 
     def serialize(self, **kwargs):
         output = "R_{}_{}_{}_".format("A", self.size, self.size)
-        board = "".join([str(x) for x in self.position]) 
+        board = "".join([str(x) if int(x) != 0 else "-" for x in self.position]) 
         return output + board
 
     def getAdjacent(self, index):
