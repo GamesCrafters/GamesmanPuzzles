@@ -81,4 +81,4 @@ def testPuzzleServer(client):
     
     helper(pid, 'ooooo-xxxxx', '10', 0)
     helper(pid, 'xxxxx-ooooo', '10', 35)
-    helper(pid, 'xxxxxooooo-', '10', PuzzleValue.UNSOLVABLE)
+    helper(pid, 'xxxxxooooo-', '10', float("inf"))
