@@ -79,8 +79,8 @@ def puzzle(puzzle_id):
     validate(puzzle_id)
     puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
     response = {
-        "puzzle_id":        puzzle_id,
-        "puzzle_name":      puzzlecls.name,
+        "gameId":           puzzle_id,
+        "name":             puzzlecls.name,
         "author":           puzzlecls.auth,
         "description":      puzzlecls.desc,
         "date_created":     puzzlecls.date,
