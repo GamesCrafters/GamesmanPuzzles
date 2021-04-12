@@ -107,7 +107,8 @@ def testServerPuzzle(client):
     rv = client.get('/{}/'.format(Hanoi.id))
     d = json.loads(rv.data)
 
-    assert d['response']['variants'] == list(Hanoi.variants)
+    for variant in d['response']["variants"]:
+        assert variant['variantId'] in Hanoi.variants
 
     def helper(puzzleid, code, variantid, remoteness):
         rv = client.get('/{}/{}/{}/'.format(puzzleid, variantid, code))

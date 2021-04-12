@@ -76,7 +76,8 @@ def testServerPuzzle(client):
     rv = client.get('/{}/'.format(pid))
     d = json.loads(rv.data)
 
-    assert d['response']['variants'] == list(TopSpin.variants.keys())
+    for variant in d['response']["variants"]:
+        assert variant['variantId'] in TopSpin.variants
 
     def helper(puzzleid, code, variantid, remoteness):
         rv = client.get('/{}/{}/{}/'.format(puzzleid, variantid, code))

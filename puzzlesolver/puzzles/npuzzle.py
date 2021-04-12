@@ -100,7 +100,7 @@ class Npuzzle(ServerPuzzle):
             puzzle.position = [int(i) if i != "-" else 0 for i in puzzleid]
             puzzle.size = int(math.sqrt(len(puzzle.position)))
             return puzzle
-        except:
+        except Exception as _:
             raise PuzzleException("Invalid puzzleid")
 
     def serialize(self, **kwargs):

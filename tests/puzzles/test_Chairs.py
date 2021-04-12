@@ -72,7 +72,8 @@ def testPuzzleServer(client):
     rv = client.get('/{}/'.format(pid))
     d = json.loads(rv.data)
 
-    assert d['response']['variants'] == list(Chairs.variants.keys())
+    for variant in d['response']["variants"]:
+        assert variant['variantId'] in Chairs.variants
 
     def helper(puzzleid, code, variantid, remoteness):
         rv = client.get('/{}/{}/{}/'.format(puzzleid, variantid, code))
