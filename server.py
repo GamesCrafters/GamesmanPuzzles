@@ -18,7 +18,7 @@ def test_puzzle(puzzle):
     """Helper function to test any puzzle. Sets the PuzzleManager to only hold one Puzzle for testing"""
     from puzzlesolver.puzzles import PuzzleManagerClass
     global PuzzleManager
-    puzzleList = {puzzle.puzzleid: puzzle}
+    puzzleList = {puzzle.id: puzzle}
     PuzzleManager = PuzzleManagerClass(puzzleList)
     init_data()
     app.run()
@@ -32,7 +32,7 @@ def init_data():
         else:
             variants = p_cls.variants
         for variant in variants:
-            s_cls = PuzzleManager.getSolverClass(p_cls.puzzleid, variant)
+            s_cls = PuzzleManager.getSolverClass(p_cls.id, variant)
             puzzle = p_cls.generateStartPosition(variant)
             solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
             solver.solve(verbose=True)
@@ -79,18 +79,17 @@ def puzzle(puzzle_id):
     validate(puzzle_id)
     puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
     response = {
-        "gameId": puzzle_id,
-        "name": puzzlecls.name,
-        "author": puzzlecls.author,
-        "description": puzzlecls.description,
-        "date_created": puzzlecls.date_created,
-        "variants": [{
+        "puzzle_id":        puzzle_id,
+        "puzzle_name":      puzzlecls.name,
+        "author":           puzzlecls.auth,
+        "description":      puzzlecls.desc,
+        "date_created":     puzzlecls.date,
+        "variants":         [{
             "description": variant_id,
             "startPosition": puzzlecls.generateStartPosition(variant_id).toString(),
             "status": "stable",
             "variantId": variant_id
-        }
-        for variant_id in puzzlecls.variants]
+        } for variant_id in puzzlecls.variants]
     }
     return format_response(response)
 

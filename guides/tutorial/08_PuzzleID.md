@@ -7,7 +7,7 @@ The first part of our url is the identification of our puzzle. This is a class v
 Define it inside your class:
 ```python
 class Hanoi(ServerPuzzle):
-    puzzleid = 'hanoi'
+    id = 'hanoi'
 ```
 
 [Next Step: Variants](09_Variants.md)

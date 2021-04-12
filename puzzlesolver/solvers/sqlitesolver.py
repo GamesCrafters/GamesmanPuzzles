@@ -15,7 +15,7 @@ class SqliteSolver(GeneralSolver):
     @property
     def path(self): 
         return '{}/{}{}.sqlite'.format(
-            self.database_path, self.puzzle.name, self.puzzle.variant)
+            self.database_path, self.puzzle.id, self.puzzle.variant)
         
     def getRemoteness(self, puzzle, **kwargs):
         with SqliteDict(self.path) as self._remoteness:

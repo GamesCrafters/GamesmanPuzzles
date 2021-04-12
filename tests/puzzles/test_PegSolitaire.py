@@ -68,13 +68,13 @@ def testValidation():
     for test in tests:
         pytest.raises(
             PuzzleException, PuzzleManager.validate,
-            Peg.puzzleid, test[1], test[0]
+            Peg.id, test[1], test[0]
         )
-    PuzzleManager.validate(Peg.puzzleid, "Triangle", "1_11_000_0111_11111_")
+    PuzzleManager.validate(Peg.id, "Triangle", "1_11_000_0111_11111_")
 
 @pytest.mark.skip(reason="will fail due to removal of PegSolitaire from TestServer")
 def testPuzzleServer(client):
-    pid = Peg.puzzleid
+    pid = Peg.id
     rv = client.get('/{}/'.format(pid))
     d = json.loads(rv.data)
 

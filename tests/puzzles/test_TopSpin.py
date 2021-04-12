@@ -68,11 +68,11 @@ def testValidation():
     ]
 
     for test in tests:
-        pytest.raises(PuzzleException, PuzzleManager.validate, TopSpin.puzzleid, test[0], test[1])
-    PuzzleManager.validate(TopSpin.puzzleid, "6_2", "2_1-5-3-6-4")
+        pytest.raises(PuzzleException, PuzzleManager.validate, TopSpin.id, test[0], test[1])
+    PuzzleManager.validate(TopSpin.id, "6_2", "2_1-5-3-6-4")
 
 def testServerPuzzle(client):
-    pid = TopSpin.puzzleid
+    pid = TopSpin.id
     rv = client.get('/{}/'.format(pid))
     d = json.loads(rv.data)
 

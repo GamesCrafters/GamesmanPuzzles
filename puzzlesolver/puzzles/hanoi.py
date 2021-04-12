@@ -17,12 +17,12 @@ def ffs(num):
 
 class Hanoi(ServerPuzzle):
 
-    puzzleid = 'hanoi'
-    author = "Anthony Ling"
-    name = "Tower of Hanoi"
-    description = """Move smaller discs ontop of bigger discs. 
+    id      = 'hanoi'
+    auth    = "Anthony Ling"
+    name    = "Towers of Hanoi"
+    desc    = """Move smaller discs ontop of bigger discs. 
         Fill the rightmost stack."""
-    date_created = "April 2, 2020"
+    date    = "April 2, 2020"
 
     variants =  ["2_1"]
     variants += ["3_1", "3_2", "3_3", "3_4", "3_5", "3_6", "3_7", "3_8"]

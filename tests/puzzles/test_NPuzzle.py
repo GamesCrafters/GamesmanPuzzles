@@ -30,6 +30,6 @@ def testValidation():
         ("1-2-3-0", "3")
     ]
     for test in tests:
-        pytest.raises(PuzzleException, PuzzleManager.validate, Npuzzle.puzzleid, test[1], test[0])
+        pytest.raises(PuzzleException, PuzzleManager.validate, Npuzzle.id, test[1], test[0])
 
-    PuzzleManager.validate(Npuzzle.puzzleid, "2", "1-2-3-0")
+    PuzzleManager.validate(Npuzzle.id, "2", "1-2-3-0")

@@ -14,7 +14,7 @@ class IndexSolver(GeneralSolver):
     def __init__(self, puzzle, *args, dir_path='databases', **kwargs):
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
         if not os.path.exists(dir_path): os.makedirs(dir_path)
-        self.path = '{}/{}{}.txt'.format(dir_path, puzzle.name, puzzle.variant)
+        self.path = '{}/{}{}.txt'.format(dir_path, puzzle.id, puzzle.variant)
 
     def getRemoteness(self, puzzle, *args, **kwargs):
         if hash(puzzle) in self._remoteness: return self._remoteness[hash(puzzle)]
@@ -32,7 +32,7 @@ class IndexSolver(GeneralSolver):
             self._write()
 
     def _read(self):
-        if not os.path.exists(self.path): open(self.path, 'w+')
+        if not os.path.exists(self.path): open(self.path, 'w+').close()
         with open(self.path, 'r+b') as fo:
             cur_index = 0
             for chunk in iter(partial(fo.read, 2), b''):

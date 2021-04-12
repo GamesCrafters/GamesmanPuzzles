@@ -64,11 +64,11 @@ def testValidation():
     ]
 
     for test in tests:
-        pytest.raises(PuzzleException, PuzzleManager.validate, Chairs.puzzleid, test[1], test[0])
-    PuzzleManager.validate(Chairs.puzzleid, "10", "oooxx-ooxxx")
+        pytest.raises(PuzzleException, PuzzleManager.validate, Chairs.id, test[1], test[0])
+    PuzzleManager.validate(Chairs.id, "10", "oooxx-ooxxx")
 
 def testPuzzleServer(client):
-    pid = Chairs.puzzleid
+    pid = Chairs.id
     rv = client.get('/{}/'.format(pid))
     d = json.loads(rv.data)
 
