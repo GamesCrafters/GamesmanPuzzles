@@ -1,18 +1,18 @@
 from ._models import *
-from ..solvers import IndexSolver, SqliteSolver
+from ..solvers import IndexSolver, PickleSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
 from .hanoi import Hanoi
 from .lightsout import LightsOut
-from .pegSolitaire.pegSolitaire import Peg
+from .pegSolitaire import Peg
 from .graphpuzzle import GraphPuzzle
 from .npuzzle import Npuzzle
-from .chairs.chairs import Chairs
-from .bishop.bishop import Bishop
-from .topspin.topspin import TopSpin
-from .hopNdrop.hopNdrop import HopNDrop
-from .rubiks.rubiks import Rubiks
+from .chairs import Chairs
+from .bishop import Bishop
+from .topspin import TopSpin
+from .hopNdrop import HopNDrop
+from .rubiks import Rubiks
 
 # Add your puzzle in the puzzleList
 puzzleList = {
@@ -51,9 +51,9 @@ class PuzzleManagerClass:
     
     def getSolverClass(self, puzzleid, variantid=None, test=False):
         """Get Solver Class given the puzzleid"""
-        if puzzleid in [Hanoi.id, LightsOut.id, Bishop.id, Npuzzle.id]:
-            return IndexSolver
-        return SqliteSolver
+        # if puzzleid in [Hanoi.id, LightsOut.id, Bishop.id, Npuzzle.id]:
+        #     return IndexSolver
+        return PickleSolver
     
     def validate(self, puzzleid, variantid=None, positionid=None):
         """Checks if the positionid fits the rules set for the puzzle, as

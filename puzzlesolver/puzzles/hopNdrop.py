@@ -1,7 +1,7 @@
 from copy import deepcopy
-from .. import ServerPuzzle
-from ...util import *
-from ...solvers import GeneralSolver, SqliteSolver
+from . import ServerPuzzle
+from ..util import *
+from ..solvers import GeneralSolver, SqliteSolver
 
 from hashlib import sha1
 

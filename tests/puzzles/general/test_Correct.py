@@ -29,8 +29,8 @@ def test_correct_path(database_dir):
         for variant in p_cls.test_variants:
             s_cls = PuzzleManager.getSolverClass(pid, test=True)
             solver = s_cls(p_cls.generateStartPosition(variant), dir_path=database_dir)
-            
             puzzle = p_cls.generateStartPosition(variant)
+
             while puzzle.primitive() != PuzzleValue.SOLVABLE:
                 assert solver.getValue(puzzle) == PuzzleValue.SOLVABLE, "{} not SOLVABLE".format(puzzle.toString(mode="minimal"))
                 positions = generateMovePositions(puzzle)

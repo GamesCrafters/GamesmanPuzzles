@@ -45,7 +45,7 @@ Tips for exploring this repository:
 3. Understand what a [puzzle tree](https://nyc.cs.berkeley.edu/wiki/Puzzle_tree) is. 
 
 ## Contributing to GamesmanPuzzles
-See [contributing](/guides/Contributing.md.)
+See [contributing](/guides/Contributing.md)
 ### Contributors:
 Fall 2020:
 
