@@ -21,7 +21,7 @@ class SqliteSolver(GeneralSolver):
         with SqliteDict(self.path) as self._remoteness:
             if str(hash(puzzle)) in self._remoteness:
                 return self._remoteness[str(hash(puzzle))]
-        return PuzzleValue.UNSOLVABLE
+        return float("inf")
 
     def solve(self, *args, **kwargs):
         with SqliteDict(self.path) as self._remoteness:

@@ -25,7 +25,7 @@ class PickleSolver(GeneralSolver):
         if hash(puzzle) in self._remoteness: 
             return self._remoteness[hash(puzzle)]
 
-        return -1
+        return float("inf")
 
     def solve(self, *args, overwrite=False, **kwargs):
         if overwrite or not os.path.exists(self.path):

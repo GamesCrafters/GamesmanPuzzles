@@ -38,5 +38,5 @@ class Solver:
         value of puzzle
         """
         remoteness = self.getRemoteness(puzzle, **kwargs)
-        if remoteness == PuzzleValue.UNSOLVABLE: return PuzzleValue.UNSOLVABLE
+        if remoteness == float("inf"): return PuzzleValue.UNSOLVABLE
         return PuzzleValue.SOLVABLE

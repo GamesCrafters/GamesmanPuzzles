@@ -62,5 +62,5 @@ def simple():
         assert solver.getRemoteness(backward) == 1
         assert solver.getRemoteness(sol) == 0
         assert solver.getRemoteness(bidirectional) == 1
-        assert solver.getRemoteness(forward) == PuzzleValue.UNSOLVABLE
+        assert solver.getRemoteness(forward) == float("inf")
     return helper

@@ -23,7 +23,7 @@ class IndexSolver(GeneralSolver):
             chunk = fo.read(2)
             remote = int.from_bytes(chunk, byteorder='little') - 1
             return remote
-        return PuzzleValue.UNSOLVABLE
+        return float("inf")
 
     def solve(self, *args, overwrite=False, **kwargs):
         if overwrite or not os.path.exists(self.path):
