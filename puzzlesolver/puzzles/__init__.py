@@ -13,6 +13,7 @@ from .bishop import Bishop
 from .topspin import TopSpin
 from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
+from .nqueens import NQueens
 
 # Add your puzzle in the puzzleList
 puzzleList = {
@@ -24,7 +25,8 @@ puzzleList = {
     Bishop.id:      Bishop,
     TopSpin.id:     TopSpin,
     HopNDrop.id:    HopNDrop,
-    Rubiks.id:      Rubiks
+    Rubiks.id:      Rubiks,
+    NQueens.id:     NQueens
 }
 
 class PuzzleManagerClass:
