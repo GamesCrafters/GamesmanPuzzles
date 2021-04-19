@@ -18,7 +18,8 @@ class NQueens(ServerPuzzle):
     desc = 'Place the N queens in a way such that they do not attack each other'
     date = 'March 17, 2021'
 
-    variants = ['5', '6', '7', '8']
+    variants = ['4', '5', '6', '7', '8']
+    test_variants = ["4"]
 
     def __init__(self, variantid=None):
         """Returns the starting position of nqueens based on the variant
