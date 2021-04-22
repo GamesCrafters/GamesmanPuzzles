@@ -1,15 +1,17 @@
 DATABASE_DIR = 'databases'
 
+from .solver import Solver as _Solver
 from .generalsolver import GeneralSolver
+from .picklesolver import PickleSolver
+from .indexsolver import IndexSolver
+from .sqlitesolver import SqliteSolver
+from .mpisolver import MPISolver
+
+
 GSolver = GeneralSolver
 
-from .sqlitesolver import SqliteSolver
 SQLSolver = SqliteSolver
 
-from .indexsolver import IndexSolver
 ISolver = IndexSolver
 
-from .picklesolver import PickleSolver
 PSolver = PickleSolver
-
-from .solver import Solver as _Solver
