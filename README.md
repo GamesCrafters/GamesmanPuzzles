@@ -47,10 +47,14 @@ Tips for exploring this repository:
 ## Contributing to GamesmanPuzzles
 See [contributing](/guides/Contributing.md)
 ### Contributors:
-Fall 2020:
+Spring 2020:
 
 [Anthony Ling](https://github.com/Ant1ng2), [Mark Presten](https://github.com/mpresten), [Arturo Olvera](https://github.com/olveraarturo)
 
-Spring 2021:
+Fall 2020:
 
 Anthony Ling, Mark Presten, [Brian Delaney](https://github.com/briancdelaney), [Yishu Chao](https://github.com/yishuchao), [Sophia Xiao](https://github.com/sofa-x)
+
+Spring 2021:
+
+Anthony Ling, Mark Presten, [Mia Campdera-Pulido](https://github.com/miacampdera)
