@@ -17,6 +17,7 @@ jobs:
             pip3 install -e .
             echo "Starting the server ---------------------------------------------------"
             sudo systemctl restart gamesman-puzzles.service
+            systemctl status gamesman-puzzles.service
           host: nyc.cs.berkeley.edu
           user: github
           key: ${{ secrets.KEY }}
