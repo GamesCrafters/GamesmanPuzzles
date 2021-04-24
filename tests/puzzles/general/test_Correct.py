@@ -2,6 +2,7 @@ from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleValue
 
 import sys
+
 sys.path.append("../..")
 
 import server
@@ -14,14 +15,15 @@ def generateMovePositions(puzzle, movetype="legal"):
 
     Inputs:
         - movetype: The type of move to generate the puzzles
-    
+
     Outputs:
-        - Iterable of puzzles 
+        - Iterable of puzzles
     """
     puzzles = []
     for move in puzzle.generateMoves(movetype=movetype):
         puzzles.append((move, puzzle.doMove(move)))
     return puzzles
+
 
 def test_correct_path(database_dir):
     for pid in PuzzleManager.getPuzzleIds():
@@ -31,14 +33,33 @@ def test_correct_path(database_dir):
             solver = s_cls(p_cls.generateStartPosition(variant), dir_path=database_dir)
             puzzle = p_cls.generateStartPosition(variant)
 
+            solver.solve()
+
+            if puzzle.numPositions:
+                assert puzzle.numPositions >= len(
+                    solver
+                ), "{} defined numPositions to be {} but solver calculated {}".format(
+                    puzzle.name, puzzle.numPositions, len(solver)
+                )
+
             while puzzle.primitive() != PuzzleValue.SOLVABLE:
-                assert solver.getValue(puzzle) == PuzzleValue.SOLVABLE, "{} not SOLVABLE".format(puzzle.toString(mode="minimal"))
+                assert (
+                    solver.getValue(puzzle) == PuzzleValue.SOLVABLE
+                ), "{} not SOLVABLE".format(puzzle.toString(mode="minimal"))
                 positions = generateMovePositions(puzzle)
                 prev_remote = solver.getRemoteness(puzzle)
                 b = False
                 for pos in positions:
                     next_remote = solver.getRemoteness(pos[1])
-                    if next_remote != PuzzleValue.UNSOLVABLE and next_remote < prev_remote:
+                    if (
+                        next_remote != PuzzleValue.UNSOLVABLE
+                        and next_remote < prev_remote
+                    ):
                         puzzle = pos[1]
                         b = True
-                if not b: raise AssertionError("Puzzle {} has {} has no moves to reach solution".format(puzzle.__class__.name, puzzle.toString(mode="minimal")))
+                if not b:
+                    raise AssertionError(
+                        "Puzzle {} has {} has no moves to reach solution".format(
+                            puzzle.__class__.name, puzzle.toString(mode="minimal")
+                        )
+                    )
