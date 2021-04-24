@@ -26,7 +26,7 @@ def check_available(puzzle_id, variant=None):
     global puzzle_solved_variants
 
     if puzzle_id not in puzzle_solved_variants:
-        puzzle_solved_variants[puzzle_id] = set()
+        puzzle_solved_variants[puzzle_id] = {}
 
     if variant is None:
         return "available"
@@ -41,7 +41,7 @@ def check_available(puzzle_id, variant=None):
 
     import os
     if os.path.exists(solver.path): 
-        puzzle_solved_variants[puzzle_id].add(variant)
+        puzzle_solved_variants[puzzle_id][variant] = solver
         return "available"
     return "not available"
 
@@ -78,6 +78,8 @@ def validate(puzzleid=None, variantid=None, position=None):
         variants = PuzzleManager.getPuzzleClass(puzzleid).variants
         if variantid not in variants: 
             abort(404, description="VariantId not found")
+        if check_available(puzzleid, variantid) != "available":
+            abort(404, description="Puzzle is unavailable")
     if position != None:
         try:
             PuzzleManager.validate(puzzleid, variantid, position)        
@@ -157,8 +159,7 @@ def generateMovePositions(puzzle, movetype="legal"):
 def puzzle_position(puzzle_id, variant_id, position):
     validate(puzzle_id, variant_id, position)
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(position)
-    solver_cls = PuzzleManager.getSolverClass(puzzle_id, variant_id, app.config['TESTING'])
-    s = solver_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
+    s = puzzle_solved_variants[puzzle_id][variant_id]
     moves = generateMovePositions(puzzle)
 
     response = {
