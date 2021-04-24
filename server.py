@@ -5,6 +5,7 @@ from puzzlesolver.util import PuzzleException, PuzzleValue
 
 import os
 
+from threading import Thread
 from werkzeug.exceptions import InternalServerError
 
 app = flask.Flask(__name__)
@@ -12,6 +13,37 @@ app.config["DEBUG"] = False
 app.config["TESTING"] = False
 app.config['DATABASE_DIR'] = 'databases'
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+
+# Start server
+def server_start(host=None, part=None):
+    t = Thread(target=app.run, kwargs={"host" : host, "port" : port})
+    t.start()
+    init_data()
+
+puzzle_solved_variants = {}
+
+def check_available(puzzle_id, variant=None):
+    global puzzle_solved_variants
+
+    if puzzle_id not in puzzle_solved_variants:
+        puzzle_solved_variants[puzzle_id] = set()
+
+    if variant is None:
+        return "available"
+    elif variant in puzzle_solved_variants[puzzle_id]:
+        return "available"
+
+    p_cls = PuzzleManager.getPuzzleClass(puzzle_id)
+    s_cls = PuzzleManager.getSolverClass(p_cls.id, variant)
+
+    puzzle = p_cls.generateStartPosition(variant)
+    solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
+
+    import os
+    if os.path.exists(solver.path): 
+        puzzle_solved_variants[puzzle_id].add(variant)
+        return "available"
+    return "not available"
 
 # Test your server puzzle
 def test_puzzle(puzzle):
@@ -24,9 +56,8 @@ def test_puzzle(puzzle):
     app.run()
 
 # Initalizes the data
-# TODO: Check if data already exists in disk before solving
 def init_data():
-    for p_cls in PuzzleManager.getPuzzleClasses():
+    for p_cls in PuzzleManager.getPuzzleClasses():        
         if app.config["TESTING"]:
             variants = p_cls.test_variants
         else:
@@ -67,7 +98,7 @@ def puzzles():
         {
             "gameId": puzzle_id,
             "name"  : PuzzleManager.getPuzzleClass(puzzle_id).name,
-            "status": "available"
+            "status": check_available(puzzle_id)
         }
         for puzzle_id in PuzzleManager.getPuzzleIds() 
     ]
@@ -87,7 +118,7 @@ def puzzle(puzzle_id):
         "variants":         [{
             "description": variant_id,
             "startPosition": puzzlecls.generateStartPosition(variant_id).toString(),
-            "status": "stable",
+            "status": check_available(puzzle_id, variant_id),
             "variantId": variant_id
         } for variant_id in puzzlecls.variants]
     }
@@ -101,7 +132,7 @@ def puzzle_variant(puzzle_id, variant_id):
     response = {
         "description": variant_id,
         "startPosition": puzzle.toString(mode="minimal"),
-        "status": "stable",
+        "status": check_available(puzzle_id, variant_id),
         "variantId": variant_id
     }
     return format_response(response)
@@ -155,10 +186,9 @@ def handle_404(e):
     return format_response(str(e), "error")
 
 if __name__ == "__main__":
-    init_data()
     host, port = '127.0.0.1', 9001
     if 'GMP_HOST' in os.environ:
         host = os.environ['GMP_HOST']
     if 'GMP_PORT' in os.environ:
         port = os.environ['GMP_PORT']
-    app.run(host=host, port=port)
+    server_start(host, port)
