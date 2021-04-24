@@ -85,8 +85,6 @@ def testValidation():
     ]
     
     for test in tests:
-        positionid = test[1]
-        variantid = test[0]
         pytest.raises(
             PuzzleException, PuzzleManager.validate, 
             Hanoi.id, test[1], test[0])
