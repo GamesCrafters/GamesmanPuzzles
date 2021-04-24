@@ -49,7 +49,9 @@ class NQueens(ServerPuzzle):
         """Returns the upperbound number of possible hashes
         Output: numPositions - int
         """
-        return math.comb(self.size * self.size, self.size)
+        n = self.size * self.size
+        k = self.size
+        return int(math.factorial(n) / (math.factorial(n-k) * math.factorial(k)))
 
     def __hash__(self):
         h = ""
