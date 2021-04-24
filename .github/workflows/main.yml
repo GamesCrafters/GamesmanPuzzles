@@ -1,0 +1,22 @@
+name: test
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Puzzles Server
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd /home/puzzles/GamesmanPuzzles
+            echo "Pulling from GitHub ---------------------------------------------------"
+            git pull
+            echo "Checking and installing new dependencies ------------------------------"
+            pip install -r requirements.txt
+            pip install -e .
+            echo "Starting the server ---------------------------------------------------"
+            sudo systemctl restart gamesman-puzzles.service
+          host: nyc.cs.berkeley.edu
+          user: github
+          key: ${{ secrets.KEY }}
