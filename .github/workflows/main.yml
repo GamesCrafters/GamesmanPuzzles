@@ -13,8 +13,8 @@ jobs:
             echo "Pulling from GitHub ---------------------------------------------------"
             git pull
             echo "Checking and installing new dependencies ------------------------------"
-            pip install -r requirements.txt
-            pip install -e .
+            pip3 install -r requirements.txt
+            pip3 install -e .
             echo "Starting the server ---------------------------------------------------"
             sudo systemctl restart gamesman-puzzles.service
           host: nyc.cs.berkeley.edu
