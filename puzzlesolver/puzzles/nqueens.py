@@ -59,7 +59,6 @@ class NQueens(ServerPuzzle):
             h += str(ele)
         return int(h)
 
-
     def toString(self, mode='minimal'):
         """Returns the string representation of the Puzzle based on the type.
         Inputs:
@@ -75,7 +74,7 @@ class NQueens(ServerPuzzle):
         for ele in list_board:
             lst_str += ele
         if mode == 'minimal':
-            return lst_str
+            return "R_{}_{}_{}_".format("A", self.size, self.size) + lst_str
         elif mode == 'complex':
             col = 0
             str2 = ''
@@ -87,16 +86,18 @@ class NQueens(ServerPuzzle):
 
     @classmethod
     def fromString(cls, positionid):
+        board = positionid[8:]
         if not isinstance(positionid, str):
             raise TypeError("PositionID is not type str")
-        a = math.sqrt(len(positionid))
+        a = math.sqrt(len(board))
 
         if a > int(a):
             raise ValueError("PositionID cannot be translated into Puzzle")
 
         board_list = []
-        for i in range(len(positionid)):
-            board_list += [positionid[i:i + 1]]
+        board = positionid[8:]
+        for i in range(len(board)):
+            board_list += [board[i:i + 1]]
         board = [1 if ele == 'q' else 0 for ele in board_list]
         variantid = str(int(math.sqrt(len(positionid))))
         new_board = NQueens(variantid)
@@ -128,16 +129,20 @@ class NQueens(ServerPuzzle):
         Input: Move - 'all'
         Output: Puzzle with move executed
         """
-        if not isinstance(move, tuple) or len(move) != 2 or not isinstance(move[0], str) or not isinstance(move[1], str):
+        if not isinstance(move, str):
             raise TypeError("Invalid type for move")
         if move not in self.generateMoves():
             raise ValueError("Move not possible")
 
         new_board = NQueens(str(self.size))
         board = self.board[:]
-        temp = board[self.coordinates_to_index(move[0])]
-        board[self.coordinates_to_index(move[0])] = board[self.coordinates_to_index(move[1])]
-        board[self.coordinates_to_index(move[1])] = temp
+        parts = move.split("_")
+        print(parts)
+        i_from = int(parts[1])
+        i_to = int(parts[2])
+        temp = board[i_from]
+        board[i_from] = board[i_to]
+        board[i_to] = temp
         new_board.board = board
         return new_board
 
@@ -178,7 +183,8 @@ class NQueens(ServerPuzzle):
         moves = set()
         for q in queens_pos:
             for e in empty_pos:
-                moves.add((self.index_to_coordinates(q), self.index_to_coordinates(e)))
+                moves.add("M_{}_{}".format(q, e))
+                # moves.add((self.index_to_coordinates(q), self.index_to_coordinates(e)))
         return moves
 
     def index_to_coordinates(self, i):
