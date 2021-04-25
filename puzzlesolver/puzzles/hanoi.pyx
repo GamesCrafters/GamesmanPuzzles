@@ -3,19 +3,24 @@ https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
 from copy import deepcopy
+from cpython cimport array
+import array
+
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import IndexSolver
 
-def ffs(num):
+cdef inline float ffs(int num):
     """Helper function to return the index of the LSB. 
     For the 0 case, return `float('inf')`
     """
+    cdef int output
     output = (num & -num).bit_length() - 1
-    output = output if output != -1 else float('inf')
+    if output == -1:
+        return float('inf')
     return output
 
-class Hanoi(ServerPuzzle):
+cdef class Hanoi(object):
 
     id      = 'hanoi'
     auth    = "Anthony Ling"
@@ -31,7 +36,11 @@ class Hanoi(ServerPuzzle):
 
     test_variants = ["3_1", "3_2", "3_3"]
 
-    def __init__(self,  variantid=None, variant=None):
+    cdef int rod_variant
+    cdef int disk_variant
+    cdef list rods
+
+    def __init__(self, variantid=None, variant=None):
         """Returns the starting position of Hanoi based on variant first, then 
         variantID. By default it follows "3_3"
 
@@ -226,8 +235,8 @@ class Hanoi(ServerPuzzle):
 
         lsb_index = ffs(rods[move[0]])
         assert lsb_index != float('inf')
-        rods[move[0]] = rods[move[0]] - (1 << lsb_index)
-        rods[move[1]] = rods[move[1]] + (1 << lsb_index)
+        rods[move[0]] = rods[move[0]] - (1 << int(lsb_index))
+        rods[move[1]] = rods[move[1]] + (1 << int(lsb_index))
         assert sum(rods) == 2 ** self.disk_variant - 1
         newPuzzle.rods = rods
         return newPuzzle        
@@ -248,7 +257,7 @@ class Hanoi(ServerPuzzle):
         Outputs:
             Iterable of moves, move must be hashable
         """
-        moves = set()
+        cdef set moves = set()
         rods = list(map(ffs, self.rods))
         for i in range(len(rods)):
             for j in range(len(rods)):
