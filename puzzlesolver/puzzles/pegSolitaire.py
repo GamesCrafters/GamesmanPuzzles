@@ -288,7 +288,7 @@ class Peg(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        positionid = positionid[8:]
+        positionid = positionid[9:]
         new_board = []
         temp = []
         count = 1
