@@ -97,7 +97,8 @@ def testServerPuzzle(client):
     rv = client.get('/{}/'.format(Bishop.id))
     d = json.loads(rv.data)
 
-    assert d['response']['variants'] == list(Bishop.variants.keys())
+    for variant in d['response']["variants"]:
+        assert variant['variantId'] in Bishop.variants
 
     def helper(puzzleid, code, variantid, remoteness):
         rv = client.get('/{}/{}/{}/'.format(puzzleid, variantid, code))

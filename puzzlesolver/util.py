@@ -1,7 +1,7 @@
 class PuzzleValue:
-    SOLVABLE = "SOLVABLE"
-    UNSOLVABLE = "UNSOLVABLE"
-    UNDECIDED = "UNDECIDED"
+    SOLVABLE = "win"
+    UNSOLVABLE = "lose"
+    UNDECIDED = "tie"
 
     @staticmethod
     def contains(key):
