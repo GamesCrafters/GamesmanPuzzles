@@ -34,7 +34,7 @@ class Chairs(ServerPuzzle):
     # ________ End Print Funcs _________
 
     def primitive(self, **kwargs):
-        if self.board == ['o','o','o','o','o','-','x','x','x','x','x']:
+        if str(self.board) == str(['o','o','o','o','o','-','x','x','x','x','x']):
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
 
@@ -79,7 +79,7 @@ class Chairs(ServerPuzzle):
                 if count < 9:
                     if self.board[count + 2] == 'x' and self.board[count + 1] == 'o':
                         moves.append(count + 2)
-        new_moves = ["M_{}_{}".format(to_index, i) for i in moves]
+        new_moves = ["M_{}_{}".format(i, to_index) for i in moves]
         return new_moves            
 
     def oForward(self):
@@ -105,7 +105,7 @@ class Chairs(ServerPuzzle):
                 if count > 1:
                     if self.board[count - 2] == 'o' and self.board[count - 1] == 'x':
                         moves.append(count - 2)
-        new_moves = ["M_{}_{}".format(to_index, i) for i in moves]        
+        new_moves = ["M_{}_{}".format(i, to_index) for i in moves]        
         return new_moves
 
     ### _________ end HELPERS _________________ ###
@@ -144,11 +144,11 @@ class Chairs(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        puzzle = Chairs()
-        positionid = positionid[8:]
+        positionid = positionid[9:]
         out = []
         for i in positionid:
             out.append(i)
+        puzzle = Chairs()
         puzzle.board = out
         return puzzle
 
