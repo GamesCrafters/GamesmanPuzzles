@@ -59,7 +59,7 @@ class GeneralSolver(Solver):
             raise SystemError("Solver has not been solved yet")
         if hash(puzzle) in self._remoteness: 
             return self._remoteness[hash(puzzle)]
-        return float("inf")
+        return PuzzleValue.MAX_REMOTENESS
 
     def solve(self, verbose=False):
         """Solves the puzzle inputted into the solver during initialization.
