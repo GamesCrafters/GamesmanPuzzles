@@ -5,11 +5,11 @@ from ..solvers import SqliteSolver, GeneralSolver
 
 from hashlib import sha1
 
-MAP_MOVES = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
-    str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
+UNMAP_MOVES = {0:[0,0], 5:[1,0], 6:[1,1], 10:[2,0], 11:[2,1], 12:[2,2], 15:[3,0],
+    16:[3,1], 17:[3,2], 18:[3,3], 20:[4,0], 21:[4,1], 22:[4,2], 23:[4,3], 24:[4,4]}
 
-UNMAP_MOVES = {'[A]':[0,0], '[B]':[1,0], '[C]':[1,1], '[D]':[2,0], '[E]':[2,1], '[F]':[2,2], '[G]':[3,0],
-    '[H]':[3,1], '[I]':[3,2], '[J]':[3,3], '[K]':[4,0], '[L]':[4,1], '[M]':[4,2], '[N]':[4,3], '[O]':[4,4]}
+UWAPI_MOVES = {str([0,0]):0, str([1,0]):5, str([1,1]):6, str([2,0]):10, str([2,1]):11, str([2,2]):12, str([3,0]):15,
+    str([3,1]):16, str([3,2]):17, str([3,3]):18, str([4,0]):20, str([4,1]):21, str([4,2]):22, str([4,3]):23, str([4,4]):24}
 
 class Peg(ServerPuzzle):
 
@@ -45,51 +45,11 @@ class Peg(ServerPuzzle):
         return "Triangle"
 
     ### _________ Print Funcs _______________
-    def printInfo(self):
-        #Print Puzzle
-        d = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
-            str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
-        space = 20 * " "
-        output = ""
-        for outer in range(5):
-            output += space
-            for inner in range(outer + 1):
-                output += str(self.board[outer][inner]) + "       "
-            output += "\n"
-            temp = list(space)
-            temp = temp[:-4]
-            space = "".join(temp)
-            output += " " + space + " "
-            for inner2 in range(outer + 1):
-                output += " " +d[str([outer, inner2])] + "    "
-            output += "\n"
-        return output
 
     def getName(self, **kwargs):
         return "Peg_Solitaire_" + self.variant
 
     # ________ End Print Funcs _________
-
-    def playPuzzle(self, moves):
-        d1 = {'a':[0,0], 'b':[1,0], 'c':[1,1], 'd':[2,0], 'e':[2,1], 'f':[2,2], 'g':[3,0],
-            'h':[3,1], 'i':[3,2], 'j':[3,3], 'k':[4,0], 'l':[4,1], 'm':[4,2], 'n':[4,3], 'o':[4,4]}
-        print("Possible Moves: ")
-        new_moves = []
-        for move in moves:
-            print(move)
-            from_peg = move[1].lower()
-            to_peg = move[-2].lower()
-            new_moves.append(from_peg + to_peg)
-        print("| Type starting peg to ending peg in lower case, e.g. for [D]->[A], type 'da' |")
-        inp = str(input())
-        if inp == '':
-            return "BEST"
-        from_peg = inp[0].upper()
-        to_peg = inp[1].upper()
-        if len(inp) != 2 or inp not in new_moves:
-            return "OOPS"
-        command = '[' + from_peg + ']->[' + to_peg + ']'
-        return command
 
     def primitive(self, **kwargs):
         if self.pins == 1:
@@ -142,16 +102,8 @@ class Peg(ServerPuzzle):
                         check3_len = len(check3)
                         for i in range(check3_len):
                             moves.append(check3[i])
-        new_moves = []
-        for i in moves:
-            from_peg = MAP_MOVES[str(i[0])]
-            to_peg = MAP_MOVES[str(i[1])]
-            if len(i) == 3:
-                item = from_peg + '->' + to_peg + 'U'
-            else:
-                item = from_peg + '->' + to_peg
-            new_moves.append(item)
-
+        
+        new_moves = ["M_{}_{}".format(UWAPI_MOVES[str(i[0])], UWAPI_MOVES[str(i[1])]) for i in moves]
         return new_moves
 
     ### _____ generateMoves HELPERS _______ ###
@@ -285,33 +237,30 @@ class Peg(ServerPuzzle):
         if move not in self.generateMoves(): raise ValueError
 
         new_board = deepcopy(self.board)
-        from_peg = UNMAP_MOVES[move[:3]] 
-        to_peg = UNMAP_MOVES[move[5:8]] 
+        parts = move.split("_")
+        from_peg = UNMAP_MOVES[int(parts[1])] 
+        to_peg = UNMAP_MOVES[int(parts[2])] 
         new_board[from_peg[0]][from_peg[1]] = 0
         new_board[to_peg[0]][to_peg[1]] = 1
         #find middle peg to set to ZERO OR ONE
-        if len(move) == 9:
-            set_num = 1
-        else:
-            set_num = 0
         #h
         if from_peg[0] == to_peg[0]:
             if from_peg[1] > to_peg[1]:
-                new_board[from_peg[0]][from_peg[1] - 1] = set_num
+                new_board[from_peg[0]][from_peg[1] - 1] ^= 1
             else:
-                new_board[from_peg[0]][from_peg[1] + 1] = set_num
+                new_board[from_peg[0]][from_peg[1] + 1] ^= 1
         #lv
         elif from_peg[1] == to_peg[1]:
             if from_peg[0] > to_peg[0]:
-                new_board[from_peg[0] - 1][from_peg[1]] = set_num
-            else: 
-                new_board[from_peg[0] + 1][from_peg[1]] = set_num
+                new_board[from_peg[0] - 1][from_peg[1]] ^= 1
+            else:
+                new_board[from_peg[0] + 1][from_peg[1]] ^= 1
         #rv
         else:
             if from_peg[0] > to_peg[0]:
-                new_board[from_peg[0] - 1][from_peg[1] - 1] = set_num
+                new_board[from_peg[0] - 1][from_peg[1] - 1] ^= 1
             else: 
-                new_board[from_peg[0] + 1][from_peg[1] + 1] = set_num
+                new_board[from_peg[0] + 1][from_peg[1] + 1] ^= 1
 
         newPuzzle = Peg(board=new_board)
         return newPuzzle
@@ -330,7 +279,7 @@ class Peg(ServerPuzzle):
         return Peg(board=[[0],[1,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]])
 
     @classmethod
-    def deserialize(cls, positionid, **kwargs):
+    def fromString(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
@@ -339,36 +288,55 @@ class Peg(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        val = 0
-        new_val = 0
-        out = []
+        positionid = positionid[8:]
+        new_board = []
         temp = []
-        for i in positionid:
-            if i == '_':
-                new_val = len(temp)
-                if new_val - 1 != val:
-                    raise ValueError
-                val = new_val
-                out.append(temp)
-                temp = []
+        count = 1
+        for item in positionid:
+            if item == "X":
                 continue
-            temp.append(int(i))
-        puzzle = Peg(board=out)
-        return puzzle
+            if item == "1":
+                temp.append(1)
+            if item == "-":
+                temp.append(0)
+            count -= 1
+            if count == 0:
+                new_board.append(temp)
+                count = len(temp) + 1
+                temp = []
+        return Peg(board=new_board)
 
-    def serialize(self, **kwargs):
-        """Returns a serialized based on self
-        Outputs:
-            String Puzzle
-        """
-        s = ""
-        check = True
-        for outer in range(5):
-            for inner in range(outer + 1):
-                s += str(self.board[outer][inner])
-            s += "_"
-        return s
-    
+    def toString(self, mode="minimal"):
+        if mode == "minimal":   
+            output = "R_{}_{}_{}_".format("A", len(self.board), len(self.board))
+            to_join = []
+            for row in self.board:
+                padding = "X"*(5 - len(row))
+                nxt = [str(x) if x == 1 else '-' for x in row]
+                nxt.append(padding)
+                to_join.append("".join(nxt))
+            return output + "".join(to_join)
+        elif mode == "complex":
+            d = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
+                str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
+            space = 20 * " "
+            output = ""
+            for outer in range(5):
+                output += space
+                for inner in range(outer + 1):
+                    output += str(self.board[outer][inner]) + "       "
+                output += "\n"
+                temp = list(space)
+                temp = temp[:-4]
+                space = "".join(temp)
+                output += " " + space + " "
+                for inner2 in range(outer + 1):
+                    output += " " +d[str([outer, inner2])] + "    "
+                output += "\n"
+            return output
+        else:
+            raise ValueError("Invalid keyword argument 'mode'")
+
     @classmethod
     def isLegalPosition(cls, positionid, variantid=None, **kwargs):
         """Checks if the Puzzle is valid given the rules.
@@ -376,7 +344,7 @@ class Peg(ServerPuzzle):
         Outputs:
             - True if Puzzle is valid, else False
         """
-        try: puzzle = cls.deserialize(positionid)
+        try: puzzle = cls.fromString(positionid)
         except: return False
         if puzzle.pins == 15 or puzzle.pins == 0:
             return False
@@ -391,3 +359,28 @@ class Peg(ServerPuzzle):
                 newPuzzle = Peg(board=temp_board)
                 solutions.append(newPuzzle)
         return solutions
+
+    # _____________ TUI __________________
+
+    def playPuzzle(self, moves):
+        MAP_MOVES_TUI = {0:'[A]', 5:'[B]', 6:'[C]', 10:'[D]', 11:'[E]', 12:'[F]', 15:'[G]',
+            16:'[H]', 17:'[I]', 18:'[J]', 20:'[K]', 21:'[L]', 22:'[M]', 23:'[N]', 24:'[O]'}
+
+        print("Possible Moves: ")
+        new_moves = {}
+        for move in moves:
+            parts = move.split('_')
+            print(MAP_MOVES_TUI[int(parts[1])] + '->' + MAP_MOVES_TUI[int(parts[2])])
+            from_peg = MAP_MOVES_TUI[int(parts[1])][1].lower()
+            to_peg = MAP_MOVES_TUI[int(parts[2])][1].lower()
+            new_moves[from_peg + to_peg] = move
+        print("| Type starting peg to ending peg in lower case, e.g. for [D]->[A], type 'da' |")
+        inp = str(input())
+        if inp == '':
+            return "BEST"
+        from_peg = inp[0].upper()
+        to_peg = inp[1].upper()
+        if len(inp) != 2 or inp not in new_moves:
+            return "OOPS"
+        return new_moves[inp]
+

@@ -179,13 +179,13 @@ class Puzzle:
         for count, m in enumerate(moves):
             print(str(count) + " -> " + str(m))
         print("Enter Piece: ")
-        index = int(input())
+        index = input()
         if index == '':
             return "BEST"
-        elif index >= len(moves):
+        elif int(index) >= len(moves):
             return "OOPS"
         else:
-            return moves[index]
+            return moves[int(index)]
 
     #################################################################
     # Number representation

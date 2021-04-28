@@ -122,15 +122,6 @@ class GeneralSolver(Solver):
         """
         return self._remoteness and self._queue.empty()
 
-    def __len__(self):
-        """Returns the number of positions recorded in the remoteness table
-
-        Returns
-        -------
-        Number of positions
-        """
-        return len(self._remoteness)
-
     def _cspGenerateSolutions(self, queue, verbose=False):
         """
         Traverse the puzzle tree, starting from the position returned from __init__,
