@@ -161,15 +161,18 @@ def puzzle_position(puzzle_id, variant_id, position):
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(position)
     s = puzzle_solved_variants[puzzle_id][variant_id]
     moves = generateMovePositions(puzzle)
+    
+    this_remoteness = s.getRemoteness(puzzle)
 
     response = {
         "position": puzzle.toString(mode="minimal"),
-        "remoteness": s.getRemoteness(puzzle),
+        "remoteness": this_remoteness 
+        if this_remoteness != PuzzleValue.MAX_REMOTENESS
+        else -1,
         "positionValue": s.getValue(puzzle),
     }
     move_attr = []
     for move in moves:
-        this_remoteness = s.getRemoteness(puzzle)
         next_remoteness = s.getRemoteness(move[1])
         move_attr.append(
             {
