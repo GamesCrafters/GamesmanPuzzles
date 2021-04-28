@@ -208,7 +208,7 @@ class HopNDrop(ServerPuzzle):
         back = False
         if move[-1] == "u":
             back = True
-            move = move[:5]
+            move = move[:-1]
         #Old
         element = new_board[save_row][ind][2]
         if element == 'G':
@@ -374,15 +374,38 @@ class HopNDrop(ServerPuzzle):
 
     ### _________ Print Funcs _______________
 
-    # def playPuzzle(self, moves):
-    #     print("Enter Piece: ")
-    #     d = {'w':"Up", 'a':"Left", 's':"Down", 'd':"Right"}
-    #     print('| w -> Up | a -> Left | s -> Down | d -> Right |')
-    #     inp = str(input())
-    #     if inp == '':
-    #         return "BEST"
-    #     elif inp not in d.keys():
-    #         return "OOPS"
-    #     else:
-    #         return d[inp]
+    def playPuzzle(self, moves):
+        print("Enter Piece: ")
+        d = ['w', 'a', 's', 'd']
+        print('| w -> Up | a -> Left | s -> Down | d -> Right |')
+        row_count = 0
+        ind = 0
+        for row in self.board:
+            for i in row:
+                if 'X' in i and (i[2] == '-' or i[2] =='G'): 
+                    return []
+                elif 'X' in i:
+                    ind = row.index(i)
+                    save_row = row_count
+                    break
+            row_count += 1
+        from_ = (len(self.board) * save_row) + ind
+        inp = str(input())
+        if inp == '':
+            return "BEST"
+        elif inp not in d:
+            return "OOPS"
+        else:
+            if inp == 'w':
+                to_ = (len(self.board) * (save_row - 1)) + ind                
+                return "M_{}_{}".format(from_, to_)
+            if inp == 'a':
+                to_ = (len(self.board) * save_row) + ind - 1
+                return "M_{}_{}".format(from_, to_)
+            if inp == 's':
+                to_ = (len(self.board) * (save_row + 1)) + ind                
+                return "M_{}_{}".format(from_, to_)
+            if inp == 'd':
+                to_ = (len(self.board) * save_row) + ind + 1
+                return "M_{}_{}".format(from_, to_)
 
