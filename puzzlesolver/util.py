@@ -2,6 +2,7 @@ class PuzzleValue:
     SOLVABLE = "win"
     UNSOLVABLE = "lose"
     UNDECIDED = "tie"
+    MAX_REMOTENESS = 127
 
     @staticmethod
     def contains(key):

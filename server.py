@@ -166,15 +166,29 @@ def puzzle_position(puzzle_id, variant_id, position):
         "position": puzzle.toString(mode="minimal"),
         "remoteness": s.getRemoteness(puzzle),
         "positionValue": s.getValue(puzzle),
-        "moves": [{
-            "position": move[1].toString(mode="minimal"),
-            "positionValue": s.getValue(move[1]),
-            "move": str(move[0]),
-            "moveValue": PuzzleValue.SOLVABLE if s.getRemoteness(puzzle) > s.getRemoteness(move[1]) else PuzzleValue.UNDECIDED if s.getRemoteness(puzzle) == s.getRemoteness(move[1]) else PuzzleValue.UNSOLVABLE,
-            "deltaRemoteness": s.getRemoteness(puzzle) - s.getRemoteness(move[1]),
-            "remoteness": s.getRemoteness(move[1]),
-        } for move in moves]
     }
+    move_attr = []
+    for move in moves:
+        this_remoteness = s.getRemoteness(puzzle)
+        next_remoteness = s.getRemoteness(move[1])
+        move_attr.append(
+            {
+                "position": move[1].toString(mode="minimal"),
+                "positionValue": s.getValue(move[1]),
+                "move": str(move[0]),
+                "moveValue": PuzzleValue.SOLVABLE
+                if this_remoteness > next_remoteness
+                else PuzzleValue.UNDECIDED
+                if this_remoteness == next_remoteness
+                else PuzzleValue.UNSOLVABLE,
+                "deltaRemoteness": this_remoteness - next_remoteness,
+                "remoteness": next_remoteness
+                if next_remoteness != PuzzleValue.MAX_REMOTENESS
+                else -1,
+            }
+        )
+        response["moves"] = move_attr
+
     return format_response(response)
 
 # Handling Exceptions
