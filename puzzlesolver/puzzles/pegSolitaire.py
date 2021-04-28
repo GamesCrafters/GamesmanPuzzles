@@ -293,7 +293,7 @@ class Peg(ServerPuzzle):
         temp = []
         count = 1
         for item in positionid:
-            if item == "X":
+            if item == "*":
                 continue
             if item == "1":
                 temp.append(1)
@@ -311,7 +311,7 @@ class Peg(ServerPuzzle):
             output = "R_{}_{}_{}_".format("A", len(self.board), len(self.board))
             to_join = []
             for row in self.board:
-                padding = "X"*(5 - len(row))
+                padding = "*" * (5 - len(row))
                 nxt = [str(x) if x == 1 else '-' for x in row]
                 nxt.append(padding)
                 to_join.append("".join(nxt))
