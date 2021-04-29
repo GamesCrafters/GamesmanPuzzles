@@ -13,7 +13,6 @@ jobs:
             cd /home/github/GamesmanPuzzles
             echo "Pulling from GitHub ---------------------------------------------------"
             git pull
-	    git checkout ants/UWAPI
             echo "Checking and installing new dependencies ------------------------------"
             pip3 install -r requirements.txt
             pip3 install -e .
@@ -34,7 +33,6 @@ jobs:
             cd /home/github/prod/GamesmanPuzzles
             echo "Pulling from GitHub ---------------------------------------------------"
             git pull
-	    git checkout master
             echo "Checking and installing new dependencies ------------------------------"
             pip3 install -r requirements.txt
             pip3 install -e .
