@@ -38,6 +38,12 @@ class HopNDrop(ServerPuzzle):
         elif key=="map4":
             self.board = [['-', '-', '-', '1', '1', '1'], ['1', '1', '-', '2', 'G', '1'], ['X(1)', '2', '1', '3', '3', '2'], ['2', '5', '1', '3', '2', '-'], ['-', '2', '1', '1', '-', '-'], ['-', '-', '-', '-', '-', '-']]
             self.start = [['-', '-', '-', '1', '1', '1'], ['1', '1', '-', '2', 'G', '1'], ['X(1)', '2', '1', '3', '3', '2'], ['2', '5', '1', '3', '2', '-'], ['-', '2', '1', '1', '-', '-'], ['-', '-', '-', '-', '-', '-']]
+        #UnderX
+        for row in self.board:
+            for i in row:
+                if 'X' in i: 
+                    self.underX = i[2]
+                    break
 
     def __str__(self, **kwargs):
         return str(self.board)
@@ -56,37 +62,8 @@ class HopNDrop(ServerPuzzle):
         elif self.serialize2(self.start) == '---111|11-2G1|X(1)21332|25132-|-211--|------|':
             return "map4"
 
-    ### _________ Print Funcs _______________
-    def printInfo(self):
-        print("Puzzle: ")
-        space = "  "
-        print(" _______________________________")
-        for row in self.board:
-            print("| ",end="")
-            for i in row:
-                if len(i) > 1:
-                    print(str(i),end="")
-                    print(" ", end="")
-                else:
-                    print(str(i) + "    ", end="")
-            print("|")
-        print(" _______________________________")
-
     def getName(self, **kwargs):
         return "HopNDrop_" + self.variant
-    # ________ End Print Funcs _________
-
-    def playPuzzle(self, moves):
-        print("Enter Piece: ")
-        d = {'w':"Up", 'a':"Left", 's':"Down", 'd':"Right"}
-        print('| w -> Up | a -> Left | s -> Down | d -> Right |')
-        inp = str(input())
-        if inp == '':
-            return "BEST"
-        elif inp not in d.keys():
-            return "OOPS"
-        else:
-            return d[inp]
 
     def primitive(self, **kwargs):
         end = False
@@ -138,34 +115,51 @@ class HopNDrop(ServerPuzzle):
             return []
         #Check positions around X
         moves = []
+        from_ = (len(self.board) * save_row) + ind
         if save_row > 0:
             above = save_row - 1
             if self.start[above][ind] != '-' and self.start[above][ind] != 'G':
                 if self.board[above][ind] == '-':
-                    moves.append("Up_")
+                    to_ = (len(self.board) * (save_row - 1)) + ind
+                    moves.append("C_{}_{}".format(from_, to_))
+                    # moves.append("Up_")
                 elif int(self.start[above][ind]) > int(self.board[above][ind]):
-                    moves.append("Up_")
+                    to_ = (len(self.board)  * (save_row - 1)) + ind
+                    moves.append("C_{}_{}".format(from_, to_))                 
+                    # moves.append("Up_")
         if save_row < len(self.board)-1:
             below = save_row + 1 
             if self.start[below][ind] != '-' and self.start[below][ind] != 'G':
                 if self.board[below][ind] == '-':
-                    moves.append("Down_")
+                    to_ = (len(self.board) * (save_row + 1)) + ind
+                    moves.append("C_{}_{}".format(from_, to_))
+                    # moves.append("Down_")
                 elif int(self.start[below][ind]) > int(self.board[below][ind]):
-                    moves.append("Down_")
+                    to_ = (len(self.board) * (save_row + 1)) + ind
+                    moves.append("C_{}_{}".format(from_, to_))
+                    # moves.append("Down_")
         if ind > 0: 
             left = ind - 1
             if self.start[save_row][left] != '-' and self.start[save_row][left] != 'G':
                 if self.board[save_row][left] == '-':
-                    moves.append("Left_")
+                    to_ = (len(self.board) * save_row) + ind - 1
+                    moves.append("C_{}_{}".format(from_, to_))
+                    # moves.append("Left_")
                 elif int(self.start[save_row][left]) > int(self.board[save_row][left]):
-                    moves.append("Left_")
+                    to_ = (len(self.board) * save_row) + ind - 1
+                    moves.append("C_{}_{}".format(from_, to_))                    
+                    # moves.append("Left_")
         if ind < len(self.board[0])-1: #ABOVE
             right = ind + 1
             if self.start[save_row][right] != '-' and self.start[save_row][right] != 'G':
                 if self.board[save_row][right] == '-':
-                    moves.append("Right_")
+                    to_ = (len(self.board) * save_row) + ind + 1
+                    moves.append("C_{}_{}".format(from_, to_))
+                    # moves.append("Right_")
                 elif int(self.start[save_row][right]) > int(self.board[save_row][right]):
-                    moves.append("Right_")
+                    to_ = (len(self.board) * save_row) + ind + 1
+                    moves.append("C_{}_{}".format(from_, to_))                    
+                    # moves.append("Right_")
         return moves
 
     def findForward(self):
@@ -182,14 +176,23 @@ class HopNDrop(ServerPuzzle):
                     break
             row_count += 1
         moves = []
+        from_ = (len(self.board) * save_row) + ind
         if save_row > 0:
-            moves.append("Up")
+            # moves.append("Up")
+            to_ = (len(self.board) * (save_row - 1)) + ind
+            moves.append("M_{}_{}".format(from_, to_))
         if save_row < len(self.board)-1:
-            moves.append("Down")
+            # moves.append("Down")
+            to_ = (len(self.board) * (save_row + 1)) + ind
+            moves.append("M_{}_{}".format(from_, to_))
         if ind > 0:
-            moves.append("Left")
+            # moves.append("Left")
+            to_ = (len(self.board) * save_row) + ind - 1
+            moves.append("M_{}_{}".format(from_, to_))
         if ind < len(self.board[0])-1:
-            moves.append("Right")
+            # moves.append("Right")
+            to_ = (len(self.board) * save_row ) + ind + 1
+            moves.append("M_{}_{}".format(from_, to_))
         return moves
 
     ### _________ end HELPERS _________________ ###
@@ -208,7 +211,7 @@ class HopNDrop(ServerPuzzle):
             row_count += 1
         #Check if for/back
         back = False
-        if move[-1] == "_":
+        if move[0] == "C":
             back = True
         #Old
         element = new_board[save_row][ind][2]
@@ -224,13 +227,16 @@ class HopNDrop(ServerPuzzle):
             # element += 1
         new_board[save_row][ind] = str(element)
         #New
-        if move == "Left" or move == "Left_":
+        parts = move.split('_')
+        from_ = int(parts[1])
+        to_ = int(parts[2])
+        if from_ - to_ == 1: #Left
             ind -= 1
-        if move == "Right" or move == "Right_":
+        if from_ - to_ == -1: #Right
             ind += 1
-        if move == "Down" or move == "Down_":
+        if from_ - to_ == -len(self.board): #Down
             save_row += 1
-        if move == "Up" or move == "Up_":
+        if from_ - to_ == len(self.board): #Up
             save_row -= 1
 
         if not back:
@@ -273,7 +279,7 @@ class HopNDrop(ServerPuzzle):
 
     ### ________ Server _________
     @classmethod
-    def deserialize(cls, positionid, **kwargs):
+    def fromString(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
@@ -283,41 +289,55 @@ class HopNDrop(ServerPuzzle):
             Puzzle object based on puzzleid and variantid
         """
         b = [['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-']]
-        count = 0
+        positionid = positionid[8:]
         row = 0
         ind = 0
         for i in positionid:
-            if i == "|":
-                row +=1
-                ind = 0
-                continue
-            elif i == 'X':
-                count = 3
-                b[row][ind] = i
-                continue
-            elif count > 0:
-                b[row][ind] += i
-                count -= 1
-                if count == 0:
-                    ind +=1
+            if ind % len(b) == 0 and ind != 0:
+                row += 1
+            curr_ind = ind % len(b)
+            if i == 'X':
+                b[row][curr_ind] = 'X(' + str(self.underX) + ')'
             else:
-                b[row][ind] = i
-                ind += 1
+                b[row][curr_ind] = i
+            ind += 1 
         newPuzzle = HopNDrop(key=cls.variant)
         newPuzzle.board = b
         return newPuzzle
 
-    def serialize(self, **kwargs):
+    def toString(self, mode="minimal"):
         """Returns a serialized based on self
         Outputs:
             String Puzzle
         """
-        out = ""
-        for row in self.board:
-            for i in row:
-                out += i
-            out += "|"
-        return out
+        if mode == "minimal":
+            out = ""
+            avoid = 0
+            for row in self.board:
+                for i in row:
+                    if i[0] == 'X':
+                        self.underX = i[2]
+                        out += i[0]
+                    else:
+                        out += i
+            output = "R_{}_{}_{}_".format("A", len(self.board), len(self.board)) + out
+            return output
+        elif mode == "complex":
+            print("Puzzle: ")
+            space = "  "
+            print(" _______________________________")
+            for row in self.board:
+                print("| ",end="")
+                for i in row:
+                    if len(i) > 1:
+                        print(str(i),end="")
+                        print(" ", end="")
+                    else:
+                        print(str(i) + "    ", end="")
+                print("|")
+            print(" _______________________________")
+        else:
+            raise ValueError("Invalid keyword argument 'mode'")
 
     ### Helper for variant function###
     def serialize2(self, s):
@@ -354,3 +374,41 @@ class HopNDrop(ServerPuzzle):
         if not isinstance(variantid, str): raise TypeError("Invalid variantid")
         if variantid not in HopNDrop.variants: raise IndexError("Out of bounds variantid")
         return HopNDrop(key = variantid)
+
+    ### _________ Print Funcs _______________
+
+    def playPuzzle(self, moves):
+        print("Enter Piece: ")
+        d = ['w', 'a', 's', 'd']
+        print('| w -> Up | a -> Left | s -> Down | d -> Right |')
+        row_count = 0
+        ind = 0
+        for row in self.board:
+            for i in row:
+                if 'X' in i and (i[2] == '-' or i[2] =='G'): 
+                    return []
+                elif 'X' in i:
+                    ind = row.index(i)
+                    save_row = row_count
+                    break
+            row_count += 1
+        from_ = (len(self.board) * save_row) + ind
+        inp = str(input())
+        if inp == '':
+            return "BEST"
+        elif inp not in d:
+            return "OOPS"
+        else:
+            if inp == 'w':
+                to_ = (len(self.board) * (save_row - 1)) + ind                
+                return "M_{}_{}".format(from_, to_)
+            if inp == 'a':
+                to_ = (len(self.board) * save_row) + ind - 1
+                return "M_{}_{}".format(from_, to_)
+            if inp == 's':
+                to_ = (len(self.board) * (save_row + 1)) + ind                
+                return "M_{}_{}".format(from_, to_)
+            if inp == 'd':
+                to_ = (len(self.board) * save_row) + ind + 1
+                return "M_{}_{}".format(from_, to_)
+
