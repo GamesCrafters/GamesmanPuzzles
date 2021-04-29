@@ -131,3 +131,6 @@ database*
 
 # Temp
 temp*
+
+# Services
+*.service
