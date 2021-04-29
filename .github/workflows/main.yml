@@ -2,14 +2,36 @@ name: test
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  build:
+  dev:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/ants/UWAPI'
     steps:
       - name: Puzzles Server
         uses: fifsky/ssh-action@master
         with:
           command: |
-            cd GamesmanPuzzles
+            cd /home/github/GamesmanPuzzles
+            echo "Pulling from GitHub ---------------------------------------------------"
+            git pull
+            echo "Checking and installing new dependencies ------------------------------"
+            pip3 install -r requirements.txt
+            pip3 install -e .
+            echo "Starting the server ---------------------------------------------------"
+            sudo systemctl restart gamesman-puzzles-dev.service
+            sleep 5
+            systemctl status gamesman-puzzles-dev.service
+          host: nyc.cs.berkeley.edu
+          user: github
+          key: ${{ secrets.KEY }}
+  prod:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Puzzles Server
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd /home/github/prod/GamesmanPuzzles
             echo "Pulling from GitHub ---------------------------------------------------"
             git pull
             echo "Checking and installing new dependencies ------------------------------"
@@ -17,6 +39,7 @@ jobs:
             pip3 install -e .
             echo "Starting the server ---------------------------------------------------"
             sudo systemctl restart gamesman-puzzles.service
+            sleep 5
             systemctl status gamesman-puzzles.service
           host: nyc.cs.berkeley.edu
           user: github
