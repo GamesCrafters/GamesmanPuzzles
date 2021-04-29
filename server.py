@@ -15,10 +15,11 @@ app.config['DATABASE_DIR'] = 'databases'
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 # Start server
-def server_start(host=None, part=None):
+def server_start(host=None, part=None, solve=True):
     t = Thread(target=app.run, kwargs={"host" : host, "port" : port})
     t.start()
-    init_data()
+    if solve:
+        init_data()
 
 puzzle_solved_variants = {}
 
@@ -209,4 +210,4 @@ if __name__ == "__main__":
         host = os.environ['GMP_HOST']
     if 'GMP_PORT' in os.environ:
         port = os.environ['GMP_PORT']
-    server_start(host, port)
+    server_start(host, port, False)
