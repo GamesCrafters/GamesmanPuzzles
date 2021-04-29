@@ -18,6 +18,7 @@ jobs:
             pip3 install -e .
             echo "Starting the server ---------------------------------------------------"
             sudo systemctl restart gamesman-puzzles-dev.service
+            sleep 5
             systemctl status gamesman-puzzles.service
           host: nyc.cs.berkeley.edu
           user: github
@@ -38,6 +39,7 @@ jobs:
             pip3 install -e .
             echo "Starting the server ---------------------------------------------------"
             sudo systemctl restart gamesman-puzzles.service
+            sleep 5
             systemctl status gamesman-puzzles.service
           host: nyc.cs.berkeley.edu
           user: github
