@@ -38,12 +38,6 @@ class HopNDrop(ServerPuzzle):
         elif key=="map4":
             self.board = [['-', '-', '-', '1', '1', '1'], ['1', '1', '-', '2', 'G', '1'], ['X(1)', '2', '1', '3', '3', '2'], ['2', '5', '1', '3', '2', '-'], ['-', '2', '1', '1', '-', '-'], ['-', '-', '-', '-', '-', '-']]
             self.start = [['-', '-', '-', '1', '1', '1'], ['1', '1', '-', '2', 'G', '1'], ['X(1)', '2', '1', '3', '3', '2'], ['2', '5', '1', '3', '2', '-'], ['-', '2', '1', '1', '-', '-'], ['-', '-', '-', '-', '-', '-']]
-        #UnderX
-        for row in self.board:
-            for i in row:
-                if 'X' in i: 
-                    self.underX = i[2]
-                    break
 
     def __str__(self, **kwargs):
         return str(self.board)
@@ -288,6 +282,7 @@ class HopNDrop(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
+        dic = {'a':'1','b':'2', 'c':'3', 'd':'4', 'e':'5', '-':'-', 'X':'G'}
         b = [['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-']]
         positionid = positionid[8:]
         row = 0
@@ -296,10 +291,10 @@ class HopNDrop(ServerPuzzle):
             if ind % len(b) == 0 and ind != 0:
                 row += 1
             curr_ind = ind % len(b)
-            if i == 'X':
-                b[row][curr_ind] = 'X(' + str(self.underX) + ')'
+            if i.isupper() and i != 'X':
+                b[row][curr_ind] = 'X(' + dic[i.lower()] + ')'
             else:
-                b[row][curr_ind] = i
+                b[row][curr_ind] = dic[i]
             ind += 1 
         newPuzzle = HopNDrop(key=cls.variant)
         newPuzzle.board = b
@@ -310,16 +305,17 @@ class HopNDrop(ServerPuzzle):
         Outputs:
             String Puzzle
         """
+        dic = {'1':'a', '2':'b', '3':'c', '4':'d', '5':'e', '-':'-', 'G':'X'}
         if mode == "minimal":
             out = ""
             avoid = 0
             for row in self.board:
                 for i in row:
                     if i[0] == 'X':
-                        self.underX = i[2]
-                        out += i[0]
+                        under = dic[i[2]]
+                        out += under.upper()
                     else:
-                        out += i
+                        out += dic[i]
             output = "R_{}_{}_{}_".format("A", len(self.board), len(self.board)) + out
             return output
         elif mode == "complex":
