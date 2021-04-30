@@ -302,7 +302,7 @@ class HopNDrop(ServerPuzzle):
             last_col += 1
             if last_col % (len(b)+1) == 0:
                 if row == 0:
-                    var = "map" + i 
+                    var = i 
                     continue
                 else:
                     continue
