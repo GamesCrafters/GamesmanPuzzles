@@ -14,28 +14,29 @@ class HopNDrop(ServerPuzzle):
     date    = "Oct 10, 2020"
 
     variants = {
-        "map1" : SqliteSolver, 
-        "map2" : SqliteSolver, 
-        "map3" : SqliteSolver, 
+        "map1" : GeneralSolver, 
+        "map2" : GeneralSolver, 
+        "map3" : GeneralSolver, 
         # "map4" : SqliteSolver
     }
 
     test_variants = variants
 
     def __init__(self, key="map1", **kwargs):
-        if key=="map1":
+        self.var = key[-1]
+        if self.var == '1':
             #Map1
             self.board = [['-', '-', '1', '1', '1','1'],['-', '1', '1', '-', 'G','1'],['-', '1', '-', '-', '-','-'],['-', '1', '1', '1', '-','-'],['-', 'X(1)', '1', '1', '-','-'],['-', '-', '-', '-', '-','-']]
             self.start = [['-', '-', '1', '1', '1','1'],['-', '1', '1', '-', 'G','1'],['-', '1', '-', '-', '-','-'],['-', '1', '1', '1', '-','-'],['-', 'X(1)', '1', '1', '-','-'],['-', '-', '-', '-', '-','-']]
-        elif key=="map2":
+        elif self.var == '2':
             #Map2
             self.board = [['-','-','-','1','G','-'],['-','-','1','1','-','-'],['-','-','2','1','-','-'],['1','2','2','1','-','-'],['-','X(1)','1','2','1','-'],['-','-','-','-','-','-']]
             self.start = [['-','-','-','1','G','-'],['-','-','1','1','-','-'],['-','-','2','1','-','-'],['1','2','2','1','-','-'],['-','X(1)','1','2','1','-'],['-','-','-','-','-','-']]
-        elif key=="map3":
+        elif self.var == '3':
             #  Map3
             self.board = [['-','-','1','2','G','-'],['-','-','-','1','-','-'],['-','1','2','3','2','1'],['-','1','1','1','1','-'],['-','X(1)','1','-','-','-'],['-','1','1','-','-','-']]
             self.start = [['-','-','1','2','G','-'],['-','-','-','1','-','-'],['-','1','2','3','2','1'],['-','1','1','2','1','-'],['-','X(1)','1','-','-','-'],['-','1','1','-','-','-']]
-        elif key=="map4":
+        elif self.var == '4':
             self.board = [['-', '-', '-', '1', '1', '1'], ['1', '1', '-', '2', 'G', '1'], ['X(1)', '2', '1', '3', '3', '2'], ['2', '5', '1', '3', '2', '-'], ['-', '2', '1', '1', '-', '-'], ['-', '-', '-', '-', '-', '-']]
             self.start = [['-', '-', '-', '1', '1', '1'], ['1', '1', '-', '2', 'G', '1'], ['X(1)', '2', '1', '3', '3', '2'], ['2', '5', '1', '3', '2', '-'], ['-', '2', '1', '1', '-', '-'], ['-', '-', '-', '-', '-', '-']]
 
@@ -47,14 +48,7 @@ class HopNDrop(ServerPuzzle):
         """Returns a string defining the variant of this puzzleself.
         Example: '5x5', '3x4', 'reverse3x3'
         """
-        if self.serialize2(self.start) == '--1111|-11-G1|-1----|-111--|-X(1)11--|------|':
-            return "map1"
-        elif self.serialize2(self.start) == '---1G-|--11--|--21--|1221--|-X(1)121-|------|':
-            return "map2"
-        elif self.serialize2(self.start) == '--12G-|---1--|-12321|-1121-|-X(1)1---|-11---|':
-            return "map3" 
-        elif self.serialize2(self.start) == '---111|11-2G1|X(1)21332|25132-|-211--|------|':
-            return "map4"
+        return self.var
 
     def getName(self, **kwargs):
         return "HopNDrop_" + self.variant
@@ -282,16 +276,24 @@ class HopNDrop(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        dic = {'a':'1','b':'2', 'c':'3', 'd':'4', 'e':'5', '-':'-', 'X':'G'}
+        dic = {'a':'1','b':'2', 'c':'3', 'd':'4', 'e':'5', '-':'-', 'x':'G'}
         b = [['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-']]
         positionid = positionid[8:]
         row = 0
         ind = 0
+        last_col = 0
         for i in positionid:
+            last_col += 1
+            if last_col % (len(b)+1) == 0:
+                if row == 0:
+                    self.var = i 
+                    continue
+                else:
+                    continue
             if ind % len(b) == 0 and ind != 0:
                 row += 1
             curr_ind = ind % len(b)
-            if i.isupper() and i != 'X':
+            if i.isupper():
                 b[row][curr_ind] = 'X(' + dic[i.lower()] + ')'
             else:
                 b[row][curr_ind] = dic[i]
@@ -305,21 +307,28 @@ class HopNDrop(ServerPuzzle):
         Outputs:
             String Puzzle
         """
-        dic = {'1':'a', '2':'b', '3':'c', '4':'d', '5':'e', '-':'-', 'G':'X'}
+        dic = {'1':'a', '2':'b', '3':'c', '4':'d', '5':'e', '-':'-', 'G':'x'}
         if mode == "minimal":
             out = ""
             avoid = 0
+            first_row = True
             for row in self.board:
-                for i in row:
-                    if i[0] == 'X':
-                        under = dic[i[2]]
-                        out += under.upper()
+                for item in range(len(row)+1):
+                    if item == len(row): 
+                        if first_row:
+                            out += self.variant()[-1] #modify to be variant
+                            first_row = False
+                        else:
+                            out += '*'
                     else:
-                        out += dic[i]
-            output = "R_{}_{}_{}_".format("A", len(self.board), len(self.board)) + out
-            return output
+                        i = row[item]
+                        if i[0] == 'X':
+                            under = dic[i[2]]
+                            out += under.upper()
+                        else:
+                            out += dic[i]
+            output = "R_{}_{}_{}_".format("A", len(self.board)+1, len(self.board)+1) + out
         elif mode == "complex":
-            print("Puzzle: ")
             space = "  "
             print(" _______________________________")
             for row in self.board:
@@ -334,19 +343,6 @@ class HopNDrop(ServerPuzzle):
             print(" _______________________________")
         else:
             raise ValueError("Invalid keyword argument 'mode'")
-
-    ### Helper for variant function###
-    def serialize2(self, s):
-        """Returns a serialized based on self
-        Outputs:
-            String Puzzle
-        """
-        out = ""
-        for row in s:
-            for i in row:
-                out += i
-            out += "|"
-        return out
 
     @classmethod
     def isLegalPosition(cls, positionid, variantid=None, **kwargs):
