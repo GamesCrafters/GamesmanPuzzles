@@ -231,8 +231,8 @@ class HopNDrop(ServerPuzzle):
         new_board[save_row][ind] = str(element)
         #New
         parts = move.split('_')
-        from_ = int(parts[1])
-        to_ = int(parts[2])
+        from_ = self.convert_ind(int(parts[1]))
+        to_ = self.convert_ind(int(parts[2]))
         if from_ - to_ == 1: #Left
             ind -= 1
         if from_ - to_ == -1: #Right
@@ -256,6 +256,19 @@ class HopNDrop(ServerPuzzle):
         newPuzzle.board = new_board
         return newPuzzle
 
+    def convert_ind(self, num):
+        if num <= 5:
+            return num
+        elif num => 7 and num <= 12:
+            return num - 1
+        elif num => 14 and num <= 19:
+            return num - 2
+        elif num => 21 and num <= 26:
+            return num - 3
+        elif num => 28 and num <= 33:
+            return num - 4
+        elif num => 35 and num <= 40:
+            return num - 5
     ### ____________ Solver Funcs ________________
 
     def __hash__(self):
