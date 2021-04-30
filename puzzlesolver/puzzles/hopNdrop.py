@@ -259,15 +259,15 @@ class HopNDrop(ServerPuzzle):
     def convert_ind(self, num):
         if num <= 5:
             return num
-        elif num => 7 and num <= 12:
+        elif num >= 7 and num <= 12:
             return num - 1
-        elif num => 14 and num <= 19:
+        elif num >= 14 and num <= 19:
             return num - 2
-        elif num => 21 and num <= 26:
+        elif num >= 21 and num <= 26:
             return num - 3
-        elif num => 28 and num <= 33:
+        elif num >= 28 and num <= 33:
             return num - 4
-        elif num => 35 and num <= 40:
+        elif num >= 35 and num <= 40:
             return num - 5
     ### ____________ Solver Funcs ________________
 
