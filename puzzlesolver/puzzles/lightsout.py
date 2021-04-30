@@ -53,7 +53,7 @@ class LightsOut(ServerPuzzle):
         moves = []
         for i in range(len(self.grid)):
             for j in range(len(self.grid)):
-                move_str = "A_{}_{}".format("1", str(i + j * len(self.grid)))
+                move_str = "A_{}_{}".format("1" if self.grid[i][j] else "0", str(i + j * len(self.grid)))
                 moves.append(move_str)
         return moves
 
