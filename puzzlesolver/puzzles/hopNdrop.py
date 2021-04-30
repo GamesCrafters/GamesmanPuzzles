@@ -304,7 +304,7 @@ class HopNDrop(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        dic = {'a':'1','b':'2', 'c':'3', 'd':'4', 'e':'5', '-':'-', 'x':'G'}
+        dic = {'a':'1','b':'2', 'c':'3', 'd':'4', 'e':'5', '-':'-', 'x':'G', 'o':'-'}
         b = [['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-'],['-','-','-','-','-','-']]
         positionid = positionid[8:]
         row = 0
@@ -354,7 +354,10 @@ class HopNDrop(ServerPuzzle):
                         i = row[item]
                         if i[0] == 'X':
                             under = dic[i[2]]
-                            out += under.upper()
+                            if under == '-':
+                                out += 'O'
+                            else:
+                                out += under.upper()
                         else:
                             out += dic[i]
             output = "R_{}_{}_{}_".format("A", len(self.board)+1, len(self.board)+1) + out
