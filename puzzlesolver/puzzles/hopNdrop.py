@@ -347,7 +347,6 @@ class HopNDrop(ServerPuzzle):
             output = "R_{}_{}_{}_".format("A", len(self.board)+1, len(self.board)+1) + out
             return output
         elif mode == "complex":
-            print(self.toString())
             space = "  "
             print(" _______________________________")
             for row in self.board:
