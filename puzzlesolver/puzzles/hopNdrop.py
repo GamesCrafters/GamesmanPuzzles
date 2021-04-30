@@ -123,44 +123,44 @@ class HopNDrop(ServerPuzzle):
             above = save_row - 1
             if self.start[above][ind] != '-' and self.start[above][ind] != 'G':
                 if self.board[above][ind] == '-':
-                    to_ = (len(self.board) * (save_row - 1)) + ind
+                    to_ = (len(self.board) * (save_row - 1)) + ind + (save_row - 1)
                     moves.append("C_{}_{}".format(from_, to_))
                     # moves.append("Up_")
                 elif int(self.start[above][ind]) > int(self.board[above][ind]):
-                    to_ = (len(self.board)  * (save_row - 1)) + ind
+                    to_ = (len(self.board)  * (save_row - 1)) + ind + (save_row - 1)
                     moves.append("C_{}_{}".format(from_, to_))                 
                     # moves.append("Up_")
         if save_row < len(self.board)-1:
             below = save_row + 1 
             if self.start[below][ind] != '-' and self.start[below][ind] != 'G':
                 if self.board[below][ind] == '-':
-                    to_ = (len(self.board) * (save_row + 1)) + ind
+                    to_ = (len(self.board) * (save_row + 1)) + ind + (save_row + 1)
                     moves.append("C_{}_{}".format(from_, to_))
                     # moves.append("Down_")
                 elif int(self.start[below][ind]) > int(self.board[below][ind]):
-                    to_ = (len(self.board) * (save_row + 1)) + ind
+                    to_ = (len(self.board) * (save_row + 1)) + ind + (save_row + 1)
                     moves.append("C_{}_{}".format(from_, to_))
                     # moves.append("Down_")
         if ind > 0: 
             left = ind - 1
             if self.start[save_row][left] != '-' and self.start[save_row][left] != 'G':
                 if self.board[save_row][left] == '-':
-                    to_ = (len(self.board) * save_row) + ind - 1
+                    to_ = (len(self.board) * save_row) + ind - 1 + save_row
                     moves.append("C_{}_{}".format(from_, to_))
                     # moves.append("Left_")
                 elif int(self.start[save_row][left]) > int(self.board[save_row][left]):
-                    to_ = (len(self.board) * save_row) + ind - 1
+                    to_ = (len(self.board) * save_row) + ind - 1 + save_row
                     moves.append("C_{}_{}".format(from_, to_))                    
                     # moves.append("Left_")
         if ind < len(self.board[0])-1: #ABOVE
             right = ind + 1
             if self.start[save_row][right] != '-' and self.start[save_row][right] != 'G':
                 if self.board[save_row][right] == '-':
-                    to_ = (len(self.board) * save_row) + ind + 1
+                    to_ = (len(self.board) * save_row) + ind + 1 + save_row
                     moves.append("C_{}_{}".format(from_, to_))
                     # moves.append("Right_")
                 elif int(self.start[save_row][right]) > int(self.board[save_row][right]):
-                    to_ = (len(self.board) * save_row) + ind + 1
+                    to_ = (len(self.board) * save_row) + ind + 1 + save_row
                     moves.append("C_{}_{}".format(from_, to_))                    
                     # moves.append("Right_")
         return moves
@@ -179,22 +179,22 @@ class HopNDrop(ServerPuzzle):
                     break
             row_count += 1
         moves = []
-        from_ = (len(self.board) * save_row) + ind
+        from_ = (len(self.board) * save_row) + ind + save_row
         if save_row > 0:
             # moves.append("Up")
-            to_ = (len(self.board) * (save_row - 1)) + ind
+            to_ = (len(self.board) * (save_row - 1)) + ind + (save_row - 1)
             moves.append("M_{}_{}".format(from_, to_))
         if save_row < len(self.board)-1:
             # moves.append("Down")
-            to_ = (len(self.board) * (save_row + 1)) + ind
+            to_ = (len(self.board) * (save_row + 1)) + ind + (save_row + 1)
             moves.append("M_{}_{}".format(from_, to_))
         if ind > 0:
             # moves.append("Left")
-            to_ = (len(self.board) * save_row) + ind - 1
+            to_ = (len(self.board) * save_row) + ind - 1 + save_row
             moves.append("M_{}_{}".format(from_, to_))
         if ind < len(self.board[0])-1:
             # moves.append("Right")
-            to_ = (len(self.board) * save_row ) + ind + 1
+            to_ = (len(self.board) * save_row ) + ind + 1 + save_row
             moves.append("M_{}_{}".format(from_, to_))
         return moves
 
