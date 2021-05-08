@@ -53,7 +53,7 @@ class LightsOut(ServerPuzzle):
         moves = []
         for i in range(len(self.grid)):
             for j in range(len(self.grid)):
-                move_str = "A_{}_{}".format("1", str(i + j * len(self.grid)))
+                move_str = "A_{}_{}".format("1" if self.grid[j][i] else "0", str(i + j * len(self.grid)))
                 moves.append(move_str)
         return moves
 
@@ -75,15 +75,23 @@ class LightsOut(ServerPuzzle):
     def generateStartPosition(cls, variantid, **kwargs):
         variant = int(variantid)
         position = "R_{}_{}_{}_".format("A", variant, variant)
-        position += '*' * (variant ** 2)
+        position += '-' * (variant ** 2)
         return cls.deserialize(position)
 
     @classmethod
     def deserialize(cls, position: str, **kwargs):
         parts = position.split("_")
+        if (len(parts) <= 4): 
+            raise ValueError("Invalid position")
+        l = int(parts[2])
+        w = int(parts[3])
+        if (l != w):
+            raise TypeError("Unsupported variant")
         position = parts[4]
 
         variant = int(len(position) ** (1/2))
+        if (l != variant):
+            raise TypeError("Unsupported variant")
         puzzle = cls(variant=variant)
         puzzle.grid = []
         for i in range(variant):
@@ -93,8 +101,7 @@ class LightsOut(ServerPuzzle):
         return puzzle
 
     def serialize(self, **kwargs):
-        output = "R"
-        output += "_{}_{}_{}_".format("A", len(self.grid), len(self.grid[0]))
+        output = "R_{}_{}_{}_".format("A", len(self.grid), len(self.grid[0]))
 
         result = ""
         for row in self.grid:

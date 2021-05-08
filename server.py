@@ -15,10 +15,11 @@ app.config['DATABASE_DIR'] = 'databases'
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 # Start server
-def server_start(host=None, part=None):
+def server_start(host=None, part=None, solve=True):
     t = Thread(target=app.run, kwargs={"host" : host, "port" : port})
     t.start()
-    init_data()
+    if solve:
+        init_data()
 
 puzzle_solved_variants = {}
 
@@ -161,20 +162,37 @@ def puzzle_position(puzzle_id, variant_id, position):
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(position)
     s = puzzle_solved_variants[puzzle_id][variant_id]
     moves = generateMovePositions(puzzle)
+    
+    this_remoteness = s.getRemoteness(puzzle)
 
     response = {
         "position": puzzle.toString(mode="minimal"),
-        "remoteness": s.getRemoteness(puzzle),
+        "remoteness": this_remoteness 
+        if this_remoteness != PuzzleValue.MAX_REMOTENESS
+        else -1,
         "positionValue": s.getValue(puzzle),
-        "moves": [{
-            "position": move[1].toString(mode="minimal"),
-            "positionValue": s.getValue(move[1]),
-            "move": str(move[0]),
-            "moveValue": PuzzleValue.SOLVABLE if s.getRemoteness(puzzle) > s.getRemoteness(move[1]) else PuzzleValue.UNDECIDED if s.getRemoteness(puzzle) == s.getRemoteness(move[1]) else PuzzleValue.UNSOLVABLE,
-            "deltaRemoteness": s.getRemoteness(puzzle) - s.getRemoteness(move[1]),
-            "remoteness": s.getRemoteness(move[1]),
-        } for move in moves]
     }
+    move_attr = []
+    for move in moves:
+        next_remoteness = s.getRemoteness(move[1])
+        move_attr.append(
+            {
+                "position": move[1].toString(mode="minimal"),
+                "positionValue": s.getValue(move[1]),
+                "move": str(move[0]),
+                "moveValue": PuzzleValue.SOLVABLE
+                if this_remoteness > next_remoteness
+                else PuzzleValue.UNDECIDED
+                if this_remoteness == next_remoteness
+                else PuzzleValue.UNSOLVABLE,
+                "deltaRemoteness": this_remoteness - next_remoteness,
+                "remoteness": next_remoteness
+                if next_remoteness != PuzzleValue.MAX_REMOTENESS
+                else -1,
+            }
+        )
+        response["moves"] = move_attr
+
     return format_response(response)
 
 # Handling Exceptions
@@ -192,4 +210,4 @@ if __name__ == "__main__":
         host = os.environ['GMP_HOST']
     if 'GMP_PORT' in os.environ:
         port = os.environ['GMP_PORT']
-    server_start(host, port)
+    server_start(host, port, False)

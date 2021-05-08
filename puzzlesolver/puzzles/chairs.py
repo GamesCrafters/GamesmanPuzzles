@@ -1,7 +1,7 @@
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import SqliteSolver
+from ..solvers import GeneralSolver, SqliteSolver
 
 from hashlib import sha1
 
@@ -13,14 +13,14 @@ class Chairs(ServerPuzzle):
     desc    = """Move all pieces from one side of the board to the other by hopping over adjacent pieces. The end result should be a flipped version of the starting state."""
     date    = "April 25, 2020"
 
-    variants = {"10" : SqliteSolver}
+    variants = {"10" : GeneralSolver}
     test_variants = variants
 
     def __init__(self, **kwargs):
         self.board = ['x','x','x','x','x', '-', 'o','o','o','o','o']
 
-    def __str__(self, **kwargs):
-        return str(self.board)
+    # def __str__(self, **kwargs):
+    #     return str(self.board)
 
     @property
     def variant(self):
@@ -29,33 +29,12 @@ class Chairs(ServerPuzzle):
         """
         return "10"
 
-    ### _________ Print Funcs _______________
-    def printInfo(self):
-        #Print Puzzle
-        output = ""
-        space = "   "
-        output += space
-        for i in self.board:
-            if i == "-":
-                i = "_"
-            output += i + "   "
-        output += "\n"
-        space = "  ["
-        output += space
-        for i in range(11):
-            if i == 10:
-                output += str(i) + "]"
-                break
-            output += str(i) + "   "
-        output += "\n"
-        return output
-
     def getName(self, **kwargs):
         return "Chairs"
     # ________ End Print Funcs _________
 
     def primitive(self, **kwargs):
-        if self.board == ['o','o','o','o','o','-','x','x','x','x','x']:
+        if str(self.board) == str(['o','o','o','o','o','-','x','x','x','x','x']):
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
 
@@ -79,47 +58,55 @@ class Chairs(ServerPuzzle):
 
     def xForward(self):
         moves = []
+        to_index = self.board.index('-')
         for count, ele in enumerate(self.board):
             if ele == '-' and count > 0:
                 if self.board[count - 1] == 'x':
                     moves.append(count - 1)
                 if count > 1:
-                    if self.board[count - 2] == 'x':
+                    if self.board[count - 2] == 'x' and self.board[count - 1] == 'o':
                         moves.append(count - 2)
-        return moves
+        new_moves = ["M_{}_{}".format(i, to_index) for i in moves]
+        return new_moves
 
     def xBack(self):
         moves = []
+        to_index = self.board.index('-')
         for count, ele in enumerate(self.board):
             if ele == '-' and count < 10:
                 if self.board[count + 1] == 'x':
                     moves.append(count + 1)
                 if count < 9:
-                    if self.board[count + 2] == 'x':
+                    if self.board[count + 2] == 'x' and self.board[count + 1] == 'o':
                         moves.append(count + 2)
-        return moves            
+        new_moves = ["M_{}_{}".format(i, to_index) for i in moves]
+        return new_moves            
 
     def oForward(self):
         moves = []
+        to_index = self.board.index('-')
         for count, ele in enumerate(self.board):
             if ele == '-' and count < 10:
                 if self.board[count + 1] == 'o':
                     moves.append(count + 1)
                 if count < 9:
-                    if self.board[count + 2] == 'o':
+                    if self.board[count + 2] == 'o' and self.board[count + 1] == 'x':
                         moves.append(count + 2)
-        return moves
+        new_moves = ["M_{}_{}".format(i, to_index) for i in moves]
+        return new_moves
 
     def oBack(self):
         moves = []
+        to_index = self.board.index('-')
         for count, ele in enumerate(self.board):
             if ele == '-' and count > 0:
                 if self.board[count - 1] == 'o':
                     moves.append(count - 1)
                 if count > 1:
-                    if self.board[count - 2] == 'o':
+                    if self.board[count - 2] == 'o' and self.board[count - 1] == 'x':
                         moves.append(count - 2)
-        return moves
+        new_moves = ["M_{}_{}".format(i, to_index) for i in moves]        
+        return new_moves
 
     ### _________ end HELPERS _________________ ###
 
@@ -127,10 +114,10 @@ class Chairs(ServerPuzzle):
         if move not in self.generateMoves(): raise ValueError
         newPuzzle = Chairs()
         new_board = deepcopy(self.board)
-        ind = new_board.index('-')
-        ele = new_board[move]
-        new_board[move] = '-'
-        new_board[ind] = ele
+        parts = move.split('_')
+        ele = new_board[int(parts[1])]
+        new_board[int(parts[1])] = '-'
+        new_board[int(parts[2])] = ele
         newPuzzle.board = new_board
         return newPuzzle   
 
@@ -148,7 +135,7 @@ class Chairs(ServerPuzzle):
 
     ### ________ Server _________
     @classmethod
-    def deserialize(cls, positionid, **kwargs):
+    def fromString(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
@@ -157,22 +144,45 @@ class Chairs(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        puzzle = Chairs()
+        positionid = positionid[9:]
         out = []
         for i in positionid:
             out.append(i)
+        puzzle = Chairs()
         puzzle.board = out
         return puzzle
 
-    def serialize(self, **kwargs):
+    def toString(self, mode="minimal"):
         """Returns a serialized based on self
         Outputs:
             String Puzzle
         """
-        out = ""
-        for i in self.board:
-            out += i
-        return out
+        if mode == "minimal":
+            out = ""
+            for i in self.board:
+                out += i
+            output = "R_{}_{}_{}_".format("A", 1, len(self.board)) + out
+            return output
+        elif mode == "complex":
+            output = ""
+            space = "   "
+            output += space
+            for i in self.board:
+                if i == "-":
+                    i = "_"
+                output += i + "   "
+            output += "\n"
+            space = "  ["
+            output += space
+            for i in range(11):
+                if i == 10:
+                    output += str(i) + "]"
+                    break
+                output += str(i) + "   "
+            output += "\n"
+            return output
+        else:
+            raise ValueError("Invalid keyword argument 'mode'")
 
     @classmethod
     def isLegalPosition(cls, positionid, variantid=None, **kwargs):
@@ -182,7 +192,7 @@ class Chairs(ServerPuzzle):
         Outputs:
             - True if Puzzle is valid, else False
         """
-        try: puzzle = cls.deserialize(positionid)
+        try: puzzle = cls.fromString(positionid)
         except: raise PuzzleException("Position is invalid")
         xcount = 0
         ocount = 0
