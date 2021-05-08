@@ -38,7 +38,7 @@ class NQueens(ServerPuzzle):
 
             self.size = int_variant_id
 
-        self.board = [1 for x in range(self.size)] + [0 for y in range(self.size * self.size - self.size)]
+        self.board = [0 for x in range(self.size * self.size)]
 
     @property
     def variant(self):
@@ -104,7 +104,6 @@ class NQueens(ServerPuzzle):
         new_board.board = board
         return new_board
 
-
     def __repr__(self):
         """"Returns the string representation of the Puzzle as a
         Python object
@@ -137,12 +136,8 @@ class NQueens(ServerPuzzle):
         new_board = NQueens(str(self.size))
         board = self.board[:]
         parts = move.split("_")
-        print(parts)
-        i_from = int(parts[1])
-        i_to = int(parts[2])
-        temp = board[i_from]
-        board[i_from] = board[i_to]
-        board[i_to] = temp
+        i = int(parts[2])
+        board[i] = 1
         new_board.board = board
         return new_board
 
@@ -171,20 +166,12 @@ class NQueens(ServerPuzzle):
             - 'all': any defined move (for + bi + back)
         Output: Iterable of moves, move must be hashable
         """
-        empty_pos = []
-        queens_pos = []
         i = 0
+        moves = set()
         for p in self.board:
             if p == 0:
-                empty_pos += [i]
-            if p == 1:
-                queens_pos += [i]
+                moves.add("A_{}_{}".format('q', i))
             i += 1
-        moves = set()
-        for q in queens_pos:
-            for e in empty_pos:
-                moves.add("M_{}_{}".format(q, e))
-                # moves.add((self.index_to_coordinates(q), self.index_to_coordinates(e)))
         return moves
 
     def index_to_coordinates(self, i):

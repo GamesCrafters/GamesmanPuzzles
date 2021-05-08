@@ -34,7 +34,7 @@ def testPrimitive():
     """Tests if the start state and end state outputted the right primitives."""
 
     # Expected primitive of start state should be UNDECIDED
-    puzzle = NQueens.fromString('R_A_4_4_qqqq------------')
+    puzzle = NQueens.fromString('R_A_4_4_----------------')
     assert puzzle.primitive() == PuzzleValue.UNDECIDED
 
     # Expected primitive of end state should be SOLVABLE
@@ -47,9 +47,9 @@ def testMoves():
 
     # Tests if state after move matches serialization
     tests = [
-        ('R_A_4_4_qqqq------------', {'M_0_12', 'M_1_11', 'M_3_13', 'M_3_14', 'M_3_8', 'M_2_5', 'M_2_7', 'M_2_12', 'M_0_4', 'M_0_13', 'M_1_12', 'M_0_7', 'M_1_7', 'M_0_14', 'M_3_15', 'M_1_13', 'M_3_9', 'M_1_8', 'M_3_5', 'M_0_11', 'M_1_14', 'M_2_15', 'M_3_6', 'M_1_6', 'M_0_8', 'M_0_5', 'M_2_11', 'M_1_10', 'M_0_6', 'M_2_13', 'M_0_9', 'M_3_10', 'M_1_4', 'M_3_7', 'M_3_11', 'M_3_12', 'M_0_15', 'M_2_14', 'M_0_10', 'M_2_6', 'M_1_5', 'M_1_15', 'M_1_9', 'M_2_4', 'M_2_8', 'M_3_4', 'M_2_10', 'M_2_9'}),
-        ('R_A_4_4_----qqqq--------', {'M_4_12', 'M_6_1', 'M_4_11', 'M_7_1', 'M_7_11', 'M_6_2', 'M_4_3', 'M_6_12', 'M_4_0', 'M_5_1', 'M_4_10', 'M_6_9', 'M_6_11', 'M_5_15', 'M_7_14', 'M_6_15', 'M_5_2', 'M_4_1', 'M_6_10', 'M_5_10', 'M_6_13', 'M_7_13', 'M_6_8', 'M_4_8', 'M_5_3', 'M_7_3', 'M_7_2', 'M_7_8', 'M_4_9', 'M_6_0', 'M_7_9', 'M_7_12', 'M_7_15', 'M_5_9', 'M_5_13', 'M_4_2', 'M_7_10', 'M_6_14', 'M_5_12', 'M_5_0', 'M_5_14', 'M_4_14', 'M_7_0', 'M_5_8', 'M_4_15', 'M_4_13', 'M_6_3', 'M_5_11'}),
-        ('R_A_4_4_-----q------qqq-', {'M_14_3', 'M_14_4', 'M_13_4', 'M_13_10', 'M_14_1', 'M_14_2', 'M_13_7', 'M_5_1', 'M_14_15', 'M_13_2', 'M_13_9', 'M_12_7', 'M_5_6', 'M_12_2', 'M_14_7', 'M_14_9', 'M_14_8', 'M_12_3', 'M_13_8', 'M_12_1', 'M_13_0', 'M_12_8', 'M_12_6', 'M_14_6', 'M_5_8', 'M_5_11', 'M_13_15', 'M_12_0', 'M_5_10', 'M_12_4', 'M_5_3', 'M_5_2', 'M_13_6', 'M_14_10', 'M_12_9', 'M_5_7', 'M_14_0', 'M_5_4', 'M_12_10', 'M_13_1', 'M_13_11', 'M_12_11', 'M_5_0', 'M_14_11', 'M_5_9', 'M_5_15', 'M_12_15', 'M_13_3'})
+        ('R_A_4_4_----------------', {'A_q_0', 'A_q_3', 'A_q_4', 'A_q_2', 'A_q_15', 'A_q_12', 'A_q_8', 'A_q_13', 'A_q_14', 'A_q_5', 'A_q_10', 'A_q_7', 'A_q_6', 'A_q_11', 'A_q_9', 'A_q_1'}),
+        ('R_A_4_4_-----q----------', {'A_q_8', 'A_q_7', 'A_q_13', 'A_q_15', 'A_q_3', 'A_q_6', 'A_q_2', 'A_q_10', 'A_q_4', 'A_q_0', 'A_q_1', 'A_q_11', 'A_q_12', 'A_q_14', 'A_q_9'}),
+        ('R_A_4_4_-----q------q---', {'A_q_8', 'A_q_7', 'A_q_9', 'A_q_11', 'A_q_14', 'A_q_15', 'A_q_13', 'A_q_4', 'A_q_1', 'A_q_0', 'A_q_6', 'A_q_2', 'A_q_3', 'A_q_10'})
     ]
 
     for test in tests:
@@ -66,7 +66,7 @@ def testPositions():
     """Tests the default start state matches the expected serializations."""
 
     puzzle0 = NQueens.generateStartPosition('4')
-    assert puzzle0.toString() == 'R_A_4_4_qqqq------------'
+    assert puzzle0.toString() == 'R_A_4_4_----------------'
 
 
 def testValidation():
@@ -84,7 +84,6 @@ def testValidation():
 
 def testSolver():
     """Tests the solver functionality of the Puzzle"""
-
     puzzle = NQueens()
     solver = GeneralSolver(puzzle)
     solver.solve()
@@ -109,4 +108,4 @@ def testServerPuzzle(client):
     helper(pid, 'R_A_4_4_--q-q------q-q--', "4", 0)
     helper(pid, 'R_A_4_4_--q-q-----q--q--', "4", 1)
     helper(pid, 'R_A_4_4_--q--q----q--q--', "4", 2)
-    helper(pid, 'R_A_4_4_qq-qq-----------', "4", 3)
+    helper(pid, 'R_A_4_4_q---q---q---q---', "4", 3)
