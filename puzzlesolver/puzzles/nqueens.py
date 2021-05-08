@@ -166,8 +166,9 @@ class NQueens(ServerPuzzle):
             - 'all': any defined move (for + bi + back)
         Output: Iterable of moves, move must be hashable
         """
-        i = 0
+
         moves = set()
+        i = 0
         for p in self.board:
             if p == 0:
                 moves.add("A_{}_{}".format('q', i))

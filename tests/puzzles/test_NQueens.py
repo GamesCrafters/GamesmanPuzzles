@@ -9,6 +9,7 @@ from puzzlesolver.util import PuzzleValue, PuzzleException
 
 # Unit testing
 def testHash():
+
     """Tests the expected behavior of the hash function on the puzzle states. """
     puzzle0 = NQueens.fromString('R_A_4_4_qqqq------------')
     puzzle1 = NQueens.fromString('R_A_4_4_qqqq------------')
