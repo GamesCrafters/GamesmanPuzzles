@@ -10,7 +10,7 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: |
-            cd /home/github/GamesmanPuzzles
+            cd /home/github/dev/GamesmanPuzzles
             echo "Pulling from GitHub ---------------------------------------------------"
             git pull
             echo "Checking and installing new dependencies ------------------------------"
