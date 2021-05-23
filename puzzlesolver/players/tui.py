@@ -116,7 +116,7 @@ class TUI:
                     print("- " + str(k) + printer + str(v))
         else:
             print("- <None>")
-        print("Drawing Moves: ")
+        print("Tieing Moves: ")
         if drawing:
             for i in drawing:
                 k,v = i[0], i[1]

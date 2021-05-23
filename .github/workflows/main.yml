@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   dev:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/ants/UWAPI'
+    if: github.ref == 'refs/heads/dev'
     steps:
       - name: Puzzles Server
         uses: fifsky/ssh-action@master

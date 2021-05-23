@@ -1,7 +1,7 @@
 class PuzzleValue:
     SOLVABLE = "win"
     UNSOLVABLE = "lose"
-    UNDECIDED = "tie"
+    UNDECIDED = "undecided"
     MAX_REMOTENESS = 127
 
     @staticmethod
