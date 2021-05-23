@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   dev:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/ants/UWAPI'
+    if: github.ref == 'refs/heads/dev'
     steps:
       - name: Puzzles Server
         uses: fifsky/ssh-action@master
@@ -19,7 +19,7 @@ jobs:
             echo "Starting the server ---------------------------------------------------"
             sudo systemctl restart gamesman-puzzles-dev.service
             sleep 5
-            systemctl status gamesman-puzzles.service
+            systemctl status gamesman-puzzles-dev.service
           host: nyc.cs.berkeley.edu
           user: github
           key: ${{ secrets.KEY }}
