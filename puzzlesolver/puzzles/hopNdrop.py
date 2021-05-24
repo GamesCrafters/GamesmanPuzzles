@@ -248,7 +248,7 @@ class HopNDrop(ServerPuzzle):
             element = new_board[save_row][ind]
             if element == '-':
                 element = '1'
-            else:
+            elif element != 'G':
                 element = int(element)
                 element += 1
         new_board[save_row][ind] = 'X(' + str(element) + ')'

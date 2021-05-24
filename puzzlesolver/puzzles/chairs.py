@@ -27,7 +27,7 @@ class Chairs(ServerPuzzle):
         """Returns a string defining the variant of this puzzleself.
         Example: '5x5', '3x4', 'reverse3x3'
         """
-        return "10"
+        return str(len(self.board) - 1)
 
     def getName(self, **kwargs):
         return "Chairs"

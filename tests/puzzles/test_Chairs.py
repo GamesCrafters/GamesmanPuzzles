@@ -7,50 +7,50 @@ from puzzlesolver.util import *
 
 # Unit testing
 def testHash():
-    puzzle0 = Chairs.deserialize('xxxxx-ooooo')
-    puzzle1 = Chairs.deserialize('xxxxx-ooooo')
-    puzzle2 = Chairs.deserialize('ooxxx-oxxoo')
-    puzzle3 = Chairs.deserialize('oo-xxxoxxoo')
+    puzzle0 = Chairs.fromString('R_A_1_11_xxxxx-ooooo')
+    puzzle1 = Chairs.fromString('R_A_1_11_xxxxx-ooooo')
+    puzzle2 = Chairs.fromString('R_A_1_11_ooxxx-oxxoo')
+    puzzle3 = Chairs.fromString('R_A_1_11_oo-xxxoxxoo')
     assert hash(puzzle0) == hash(puzzle1)
     #assert hash(puzzle0) == hash(puzzle2)
     assert hash(puzzle0) != hash(puzzle3)
 
 def testSerialization():
-    codes = ['ooxxx-oxxoo', '-ooxxxoxxoo', 'ooooo-xxxxx', 'xxxxxooo-oo', 'xxx-xxoxoooo']
+    codes = ['R_A_1_11_ooxxx-oxxoo', 'R_A_1_11_-ooxxxoxxoo', 'R_A_1_11_ooooo-xxxxx', 'R_A_1_11_xxxxxooo-oo', 'R_A_1_12_xxx-xxoxoooo']
     for code in codes:
-        puzzle = Chairs.deserialize(code)
-        assert puzzle.serialize() == code
+        puzzle = Chairs.fromString(code)
+        assert puzzle.toString() == code
 
 def testPrimitive():
-    puzzle = Chairs.deserialize('ooooo-xxxxx')
+    puzzle = Chairs.fromString('R_A_1_11_ooooo-xxxxx')
     assert puzzle.primitive() == PuzzleValue.SOLVABLE
-    puzzle = Chairs.deserialize('xxxxx-ooooo')
+    puzzle = Chairs.fromString('R_A_1_11_xxxxx-ooooo')
     assert puzzle.primitive() == PuzzleValue.UNDECIDED
-    puzzle = Chairs.deserialize('ooooox-xxxx')
+    puzzle = Chairs.fromString('R_A_1_11_ooooox-xxxx')
     assert puzzle.primitive() == PuzzleValue.UNDECIDED
 
 def testMoves():
-    puzzle0 = Chairs.deserialize('xxxxx-ooooo')
-    puzzle1 = puzzle0.doMove(4)
-    assert puzzle1.serialize() == 'xxxx-xooooo'
-    puzzle2 = puzzle1.doMove(6)
-    assert puzzle2.serialize() == 'xxxxox-oooo'
-    puzzle3 = puzzle2.doMove(5)
-    assert puzzle3.serialize() == 'xxxxo-xoooo'
+    puzzle0 = Chairs.fromString('R_A_1_11_xxxxx-ooooo')
+    puzzle1 = puzzle0.doMove("M_4_5")
+    assert puzzle1.toString() == 'R_A_1_11_xxxx-xooooo'
+    puzzle2 = puzzle1.doMove("M_6_4")
+    assert puzzle2.toString() == 'R_A_1_11_xxxxox-oooo'
+    puzzle3 = puzzle2.doMove("M_5_6")
+    assert puzzle3.toString() == 'R_A_1_11_xxxxo-xoooo'
 
-    with pytest.raises(Exception): puzzle1.doMove(11)
-    with pytest.raises(Exception): puzzle0.doMove(2)
-    with pytest.raises(Exception): puzzle0.doMove(8)
-    with pytest.raises(Exception): puzzle0.doMove(-1)
+    with pytest.raises(Exception): puzzle1.doMove("M_11_12")
+    with pytest.raises(Exception): puzzle0.doMove("M_2_3")
+    with pytest.raises(Exception): puzzle0.doMove("M_8_7")
+    with pytest.raises(Exception): puzzle0.doMove("")
 
-    assert len(puzzle0.generateMoves(movetype='for')) == 4
-    assert len(puzzle1.generateMoves(movetype='for')) == 3
-    assert len(puzzle2.generateMoves(movetype='for')) == 3
+    assert len(puzzle0.generateMoves(movetype='for')) == 2
+    assert len(puzzle1.generateMoves(movetype='for')) == 2
+    assert len(puzzle2.generateMoves(movetype='for')) == 2
     assert len(puzzle3.generateMoves(movetype='for')) == 2
 
 def testPositions():
     puzzle0 = Chairs.generateStartPosition('10')
-    assert puzzle0.serialize() == 'xxxxx-ooooo'
+    assert puzzle0.toString() == 'R_A_1_11_xxxxx-ooooo'
     puzzles = puzzle0.generateSolutions()
     assert len(puzzles) == 1
 
@@ -58,14 +58,18 @@ def testValidation():
 
     tests = [
         ("", "10"),
-        ("xxxyx_ooo--oo", "10"),
-        ("xxxoo-ooooo", "10"),
-        ("xxxoo-ooooo", "10")
+        ("R_A_1_11_xxxyx_ooo--oo", "10"),
+        ("R_A_1_11_xxxoo-ooooo", "10"),
+        ("R_A_1_11_xxxoo-ooooo", "10")
     ]
 
     for test in tests:
-        pytest.raises(PuzzleException, PuzzleManager.validate, Chairs.id, test[1], test[0])
-    PuzzleManager.validate(Chairs.id, "10", "oooxx-ooxxx")
+        try:
+            PuzzleManager.validate(Chairs.id, test[1], test[0])
+        except PuzzleException:
+            continue
+        raise AssertionError("Str: %s and Variant: %s didn't return PuzzleException" % test)
+    PuzzleManager.validate(Chairs.id, "10", "R_A_1_11_oooxx-ooxxx")
 
 def testPuzzleServer(client):
     pid = Chairs.id
@@ -80,6 +84,6 @@ def testPuzzleServer(client):
         d = json.loads(rv.data)
         assert d['response']['remoteness'] == remoteness
     
-    helper(pid, 'ooooo-xxxxx', '10', 0)
-    helper(pid, 'xxxxx-ooooo', '10', 35)
-    helper(pid, 'xxxxxooooo-', '10', -1)
+    helper(pid, 'R_A_1_11_ooooo-xxxxx', '10', 0)
+    helper(pid, 'R_A_1_11_xxxxx-ooooo', '10', 35)
+    helper(pid, 'R_A_1_11_xxxxxooooo-', '10', -1)

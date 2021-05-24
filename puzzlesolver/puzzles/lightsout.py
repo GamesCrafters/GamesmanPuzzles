@@ -110,5 +110,5 @@ class LightsOut(ServerPuzzle):
         output += result
         return output
 
-    def isLegalPosition(self):
+    def isLegalPosition(self, *args, **kwargs):
         return True

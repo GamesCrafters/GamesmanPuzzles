@@ -90,6 +90,12 @@ class PuzzleManagerClass:
 
             if variantid is not None and puzzle.variant != variantid:
                 raise PuzzleException("VariantID doesn't match PuzzleID")
+        try:
+            if not puzzlecls.isLegalPosition(positionid, variantid):
+                raise PuzzleException("Not Legal Position")
+        except NotImplementedError:
+            pass
+        
 
 PuzzleManager = PuzzleManagerClass(puzzleList)
 
