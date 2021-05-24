@@ -17,9 +17,9 @@ jobs:
             pip3 install -r requirements.txt
             pip3 install -e .
             echo "Starting the server ---------------------------------------------------"
-            sudo systemctl restart gamesman-puzzles-dev.service
+            sudo systemctl restart gmp-dev.service
             sleep 5
-            systemctl status gamesman-puzzles-dev.service
+            systemctl status gmp-dev.service
           host: nyc.cs.berkeley.edu
           user: github
           key: ${{ secrets.KEY }}
@@ -38,9 +38,9 @@ jobs:
             pip3 install -r requirements.txt
             pip3 install -e .
             echo "Starting the server ---------------------------------------------------"
-            sudo systemctl restart gamesman-puzzles.service
+            sudo systemctl restart gmp.service
             sleep 5
-            systemctl status gamesman-puzzles.service
+            systemctl status gmp.service
           host: nyc.cs.berkeley.edu
           user: github
           key: ${{ secrets.KEY }}
