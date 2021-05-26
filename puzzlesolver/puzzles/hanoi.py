@@ -121,13 +121,25 @@ class Hanoi(ServerPuzzle):
         if mode == "minimal":
             return "-".join([str(rod) for rod in self.rods])
         elif mode == "complex":
+            # Easier to convert to a list of lists and use
+            # [6, 1, 0] -> [["C", "B"], ["A"], []]
+            letters = []
+            for rod in self.rods:
+                stack = []
+                for j in range(self.disk_variant):
+                    if (rod >> j) % 2 == 1:
+                        stack = [chr(j + 65)] + stack
+                letters.append(stack)
+
+            # Convert the list of lists into string representation
             output = ""
-            for j in range(self.disk_variant):
-                for rod in self.rods:
-                    output += " " * 3
-                    if (rod >> j) % 2 == 1: output += chr(j + 65)
-                    else: output += "|"
-                output += "\n"
+            for j in range(self.disk_variant): 
+                row = ""
+                for stack in letters:
+                    row += " " * 3
+                    if len(stack) > j: row += stack[j]
+                    else: row += "|"
+                output = row + "\n" + output
             output += "----" * (self.rod_variant) + "---\n"
             output += "   " + "   ".join(str(i) for i in range(0, self.rod_variant))
             return output
