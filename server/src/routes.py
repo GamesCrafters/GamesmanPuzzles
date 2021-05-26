@@ -10,7 +10,7 @@ from werkzeug.exceptions import InternalServerError
 
 from . import puzzle_solved_variants
 
-app = flask.Flask(__name__)
+app = flask.Flask("PuzzleServer")
 app.config["DEBUG"] = False
 app.config["TESTING"] = False
 app.config['DATABASE_DIR'] = 'databases'
@@ -21,10 +21,9 @@ def check_available(puzzle_id, variant=None):
     if puzzle_id not in puzzle_solved_variants:
         puzzle_solved_variants[puzzle_id] = {}
         if variant is None: return "unknown"
-    elif variant is None:
-        return "available"
-
-    if variant in puzzle_solved_variants[puzzle_id]:
+    elif len(puzzle_solved_variants[puzzle_id]) == 0:
+        return "unavailable"
+    elif variant is None or variant in puzzle_solved_variants[puzzle_id]:
         return "available"
 
     p_cls = PuzzleManager.getPuzzleClass(puzzle_id)
