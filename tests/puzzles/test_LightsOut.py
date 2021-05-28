@@ -40,8 +40,8 @@ def testMoves():
     # Tests if state after move matches serialization
     tests = [
         ("R_A_2_2_----", {"A_1_0", "A_1_1", "A_1_2", "A_1_3"}),
-        ("R_A_2_2_--*-", {"A_1_0", "A_1_1", "A_1_2", "A_1_3"}),
-        ("R_A_2_2_****", {"A_1_0", "A_1_1", "A_1_2", "A_1_3"}),
+        ("R_A_2_2_--*-", {"A_1_0", "A_1_1", "A_0_2", "A_1_3"}),
+        ("R_A_2_2_****", {"A_0_0", "A_0_1", "A_0_2", "A_0_3"}),
         (
             "R_A_3_3_---------",
             {
@@ -112,7 +112,6 @@ def testServerPuzzle(client):
     d = json.loads(rv.data)
 
     for variant in d["response"]["variants"]:
-        print(d)
         assert variant["variantId"] in p_cls.variants
 
     def helper(puzzleid, code, variantid, remoteness):
