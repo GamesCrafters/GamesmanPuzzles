@@ -8,30 +8,22 @@ import os
 from threading import Thread
 from werkzeug.exceptions import InternalServerError
 
-app = flask.Flask(__name__)
+from . import puzzle_solved_variants
+
+app = flask.Flask("PuzzleServer")
 app.config["DEBUG"] = False
 app.config["TESTING"] = False
 app.config['DATABASE_DIR'] = 'databases'
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
-# Start server
-def server_start(host=None, part=None, solve=True):
-    t = Thread(target=app.run, kwargs={"host" : host, "port" : port})
-    t.start()
-    if solve:
-        init_data()
-
-puzzle_solved_variants = {}
-
 def check_available(puzzle_id, variant=None):
-    global puzzle_solved_variants
 
     if puzzle_id not in puzzle_solved_variants:
         puzzle_solved_variants[puzzle_id] = {}
-
-    if variant is None:
-        return "available"
-    elif variant in puzzle_solved_variants[puzzle_id]:
+        if variant is None: return "unknown"
+    elif len(puzzle_solved_variants[puzzle_id]) == 0:
+        return "unavailable"
+    elif variant is None or variant in puzzle_solved_variants[puzzle_id]:
         return "available"
 
     p_cls = PuzzleManager.getPuzzleClass(puzzle_id)
@@ -45,29 +37,6 @@ def check_available(puzzle_id, variant=None):
         puzzle_solved_variants[puzzle_id][variant] = solver
         return "available"
     return "not available"
-
-# Test your server puzzle
-def test_puzzle(puzzle):
-    """Helper function to test any puzzle. Sets the PuzzleManager to only hold one Puzzle for testing"""
-    from puzzlesolver.puzzles import PuzzleManagerClass
-    global PuzzleManager
-    puzzleList = {puzzle.id: puzzle}
-    PuzzleManager = PuzzleManagerClass(puzzleList)
-    init_data()
-    app.run()
-
-# Initalizes the data
-def init_data():
-    for p_cls in PuzzleManager.getPuzzleClasses():        
-        if app.config["TESTING"]:
-            variants = p_cls.test_variants
-        else:
-            variants = p_cls.variants
-        for variant in variants:
-            s_cls = PuzzleManager.getSolverClass(p_cls.id, variant)
-            puzzle = p_cls.generateStartPosition(variant)
-            solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
-            solver.solve(verbose=True)
 
 # Helper functions
 def validate(puzzleid=None, variantid=None, position=None):
@@ -203,11 +172,3 @@ def handle_500(e):
 @app.errorhandler(404)
 def handle_404(e):
     return format_response(str(e), "error")
-
-if __name__ == "__main__":
-    host, port = '127.0.0.1', 9001
-    if 'GMP_HOST' in os.environ:
-        host = os.environ['GMP_HOST']
-    if 'GMP_PORT' in os.environ:
-        port = os.environ['GMP_PORT']
-    server_start(host, port, False)
