@@ -7,8 +7,6 @@ import tempfile
 import sys
 sys.path.append("..")
 
-import server
-
 from puzzlesolver.util import PuzzleValue
 from puzzlesolver.puzzles import GraphPuzzle, PuzzleManager
 
@@ -36,6 +34,7 @@ def database_dir(tmpdir):
 
 @pytest.fixture
 def client(database_dir):
+    import server
     app = server.app
     if app.config['TESTING'] != True:
         app.config['TESTING'] = True
