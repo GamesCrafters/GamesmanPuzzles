@@ -22,9 +22,9 @@ to play a puzzle of Towers of Hanoi
 
 Run from the base directory of the respository
 ```
-python server.py
+python server
 ```
-to access the webserver. The server should be running at http://127.0.0.1:9001/.
+to access the webserver locally. The server should be running at http://127.0.0.1:9001/.
 
 ## Installation _(discontinued)_
 Install via pip (tested on MacOS and Linux):

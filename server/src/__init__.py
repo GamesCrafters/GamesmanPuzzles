@@ -12,7 +12,6 @@ def test_puzzle(puzzle):
     global PuzzleManager
     puzzleList = {puzzle.id: puzzle}
     PuzzleManager = PuzzleManagerClass(puzzleList)
-    init_data()
     app.run()
 
 @app.before_first_request
@@ -32,4 +31,4 @@ def server_start():
             solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
 
             if os.path.exists(solver.path): 
-                puzzle_solved_variants[puzzle_id][variant] = solver
+                puzzle_solved_variants[p_cls.id][variant] = solver
