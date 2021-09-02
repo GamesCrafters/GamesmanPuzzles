@@ -1,5 +1,5 @@
 # Documentation
-[**New Here? Start with the basics!**](tutorial)
+### [**NEW HERE? START WITH THE BASICS!**](tutorial)
 
 [**Assignment link**](assignments)
 
