@@ -4,7 +4,8 @@
 
 A collection of Puzzles bundled together in a simple yet powerful Python interface. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
 
-## Building from source
+## Installation
+### Building from source
 Clone this repository and install the dependencies (it's recommended to use a virtualenv when installing dependencies of any project):
 ```
 git clone https://github.com/GamesCrafters/GamesmanPuzzles.git
@@ -26,7 +27,7 @@ python server
 ```
 to access the webserver locally. The server should be running at http://127.0.0.1:9001/.
 
-## Installation _(discontinued)_
+### Building from pip _(discontinued)_
 Install via pip (tested on MacOS and Linux):
 ```
 pip install GamesmanPuzzles
