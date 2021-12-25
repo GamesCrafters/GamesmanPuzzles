@@ -21,9 +21,22 @@ python tui.py hanoi
 ```
 to play a puzzle of Towers of Hanoi
 
+### Web app
+The Web application requires two things:
+1. Desired Puzzles to be solved
+2. Server to be running
+
+#### Solving Puzzles
+You can solve all the puzzles by running the following in the base project directory:
+```
+python -m scripts.solve
+```
+
+#### Serving Puzzles
+
 Run from the base directory of the respository
 ```
-python server
+python -m scripts.server
 ```
 to access the webserver locally. The server should be running at http://127.0.0.1:9001/.
 
