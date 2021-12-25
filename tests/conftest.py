@@ -34,7 +34,7 @@ def database_dir(tmpdir):
 
 @pytest.fixture
 def client(database_dir):
-    import server
+    from scripts import server
     app = server.app
     if app.config['TESTING'] != True:
         app.config['TESTING'] = True

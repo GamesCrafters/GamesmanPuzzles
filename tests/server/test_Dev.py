@@ -3,7 +3,7 @@ import json
 import pytest
 import tempfile
 
-from server import app
+from scripts.server import app
 from puzzlesolver.puzzles import PuzzleManager
 
 def test_default_path(client):
