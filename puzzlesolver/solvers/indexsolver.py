@@ -16,17 +16,12 @@ class IndexSolver(GeneralSolver):
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
         if not os.path.exists(dir_path): os.makedirs(dir_path)
         self.path = '{}/{}{}.bin.gz'.format(dir_path, puzzle.id, puzzle.variant)
+        self.ba = bytearray()
 
     def getRemoteness(self, puzzle, *args, **kwargs):
-        h = hash(puzzle)
-        if h in self._remoteness:
-            return self._remoteness[h]
-        with gzip.open(self.path, 'rb') as fo:
-            fo.seek(h)
-            chunk = fo.read(1)
-            remote = int.from_bytes(chunk, byteorder='little')
-            return remote
-        return float("inf")
+        if not self._remoteness and not self.ba:
+            self._read()
+        return self.ba[hash(puzzle)]
 
     def solve(self, *args, overwrite=False, **kwargs):
         if overwrite or not os.path.exists(self.path):
@@ -37,11 +32,7 @@ class IndexSolver(GeneralSolver):
     def _read(self):
         if not os.path.exists(self.path): open(self.path, 'wb').close()
         with gzip.open(self.path, 'rb') as fo:
-            cur_index = 0
-            for chunk in iter(partial(fo.read, 1), b''):
-                if chunk: 
-                    self._remoteness[cur_index] = int.from_bytes(chunk, byteorder='little')
-                cur_index += 1
+            self.ba = fo.read()
 
     def _write(self):
         ba = bytearray(max(self._remoteness) + 1)
