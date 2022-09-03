@@ -11,8 +11,8 @@ class LightsOut(ServerPuzzle):
     desc    = "Click on the squares on the grid to turn it and adjacent squares off. Try to turn off all the squares!"
     date    = "April 6, 2020"
 
-    variants = { str(i) : IndexSolver for i in range(2, 5)}
-    test_variants = variants
+    variants = {str(i) : IndexSolver for i in range(2, 6)}
+    test_variants = {str(i) : IndexSolver for i in range(2, 5)}
 
     def __init__(self, variant='3', **kwargs):
         variant = int(variant)

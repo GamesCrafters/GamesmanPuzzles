@@ -1,3 +1,4 @@
+from puzzlesolver.solvers import indexsolver
 from ._models import *
 from ..solvers import IndexSolver, PickleSolver
 from ..util import PuzzleException
@@ -55,6 +56,8 @@ class PuzzleManagerClass:
         """Get Solver Class given the puzzleid"""
         # if puzzleid in [Hanoi.id, LightsOut.id, Bishop.id, Npuzzle.id]:
         #     return IndexSolver
+        if puzzleid == LightsOut.id:
+            return IndexSolver
         return PickleSolver
     
     def validate(self, puzzleid, variantid=None, positionid=None):
