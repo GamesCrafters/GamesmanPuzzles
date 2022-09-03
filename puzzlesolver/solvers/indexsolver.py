@@ -1,7 +1,8 @@
-from collections.abc import MutableMapping
+# from collections.abc import MutableMapping
 from .generalsolver import GeneralSolver
 from functools import partial
 import os
+import gzip
 
 from ..util import *
 
@@ -14,14 +15,16 @@ class IndexSolver(GeneralSolver):
     def __init__(self, puzzle, *args, dir_path='databases', **kwargs):
         GeneralSolver.__init__(self, puzzle, *args, **kwargs)
         if not os.path.exists(dir_path): os.makedirs(dir_path)
-        self.path = '{}/{}{}.txt'.format(dir_path, puzzle.id, puzzle.variant)
+        self.path = '{}/{}{}.bin.gz'.format(dir_path, puzzle.id, puzzle.variant)
 
     def getRemoteness(self, puzzle, *args, **kwargs):
-        if hash(puzzle) in self._remoteness: return self._remoteness[hash(puzzle)]
-        with open(self.path, 'r+b') as fo:
-            fo.seek(hash(puzzle) * 2)
-            chunk = fo.read(2)
-            remote = int.from_bytes(chunk, byteorder='little') - 1
+        h = hash(puzzle)
+        if h in self._remoteness:
+            return self._remoteness[h]
+        with gzip.open(self.path, 'rb') as fo:
+            fo.seek(h)
+            chunk = fo.read(1)
+            remote = int.from_bytes(chunk, byteorder='little')
             return remote
         return float("inf")
 
@@ -32,19 +35,18 @@ class IndexSolver(GeneralSolver):
             self._write()
 
     def _read(self):
-        if not os.path.exists(self.path): open(self.path, 'w+').close()
-        with open(self.path, 'r+b') as fo:
+        if not os.path.exists(self.path): open(self.path, 'wb').close()
+        with gzip.open(self.path, 'rb') as fo:
             cur_index = 0
-            for chunk in iter(partial(fo.read, 2), b''):
+            for chunk in iter(partial(fo.read, 1), b''):
                 if chunk: 
-                    self._remoteness[cur_index] = int.from_bytes(chunk, byteorder='little') - 1
+                    self._remoteness[cur_index] = int.from_bytes(chunk, byteorder='little')
                 cur_index += 1
 
     def _write(self):
-        ba = bytearray(2 * (max(self._remoteness) + 1))
+        ba = bytearray(max(self._remoteness) + 1)
         for i in self._remoteness:
-            chunk = (self._remoteness[i] + 1).to_bytes(2, byteorder='little')
-            ba[i * 2] = chunk[0]
-            ba[i * 2 + 1] = chunk[1]
-        with open(self.path, 'w+b') as fo:
+            chunk = self._remoteness[i].to_bytes(1, byteorder='little')
+            ba[i] = chunk[0]
+        with gzip.open(self.path, 'wb') as fo:
             fo.write(ba)
