@@ -2,6 +2,7 @@ import flask
 from flask import request, jsonify, abort
 from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue
+from puzzlesolver.puzzles.AutoGUI_v2_Puzzles import *
 
 import os
 
@@ -91,7 +92,8 @@ def puzzle(puzzle_id):
             "description": variant_id,
             "startPosition": puzzlecls.generateStartPosition(variant_id).toString(),
             "status": check_available(puzzle_id, variant_id),
-            "variantId": variant_id
+            "variantId": variant_id,
+            'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id)
         } for variant_id in puzzlecls.variants]
     }
     return format_response(response)
@@ -105,7 +107,8 @@ def puzzle_variant(puzzle_id, variant_id):
         "description": variant_id,
         "startPosition": puzzle.toString(mode="minimal"),
         "status": check_available(puzzle_id, variant_id),
-        "variantId": variant_id
+        "variantId": variant_id,
+        'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id)
     }
     return format_response(response)
 
