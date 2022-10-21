@@ -17,7 +17,6 @@ def test_puzzle(puzzle):
 @app.before_first_request
 def server_start():
     # Check which Puzzles have been solved or not solved
-    f = open("./demofile3.txt", "w")
     for p_cls in PuzzleManager.getPuzzleClasses():
         if p_cls.id not in puzzle_solved_variants:
             puzzle_solved_variants[p_cls.id] = {}
@@ -30,8 +29,5 @@ def server_start():
 
             puzzle = p_cls.generateStartPosition(variant)
             solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
-            f.write(variant + ' ' + solver.path + '\n')
             if os.path.exists(solver.path): 
                 puzzle_solved_variants[p_cls.id][variant] = solver
-                f.write("{} {} {}\n".format(p_cls, s_cls, variant))
-    f.close()
