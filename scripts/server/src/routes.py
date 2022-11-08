@@ -1,5 +1,6 @@
 import flask
 from flask import request, jsonify, abort
+from flask_cors import CORS
 from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue
 from puzzlesolver.puzzles.AutoGUI_v2_Puzzles import *
@@ -16,6 +17,8 @@ app.config["DEBUG"] = False
 app.config["TESTING"] = False
 app.config['DATABASE_DIR'] = 'databases'
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+
+CORS(app)
 
 def check_available(puzzle_id, variant=None):
 

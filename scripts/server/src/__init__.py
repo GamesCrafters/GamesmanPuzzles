@@ -29,6 +29,5 @@ def server_start():
 
             puzzle = p_cls.generateStartPosition(variant)
             solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
-
             if os.path.exists(solver.path): 
                 puzzle_solved_variants[p_cls.id][variant] = solver
