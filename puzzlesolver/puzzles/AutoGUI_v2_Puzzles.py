@@ -1,6 +1,6 @@
 def getNQueens(variant_id):
-    if variant_id not in (4,):
-        return None
+    #if variant_id not in (4,):
+    #    return None
     return {
             "defaultTheme": "regular",
             "themes": {
