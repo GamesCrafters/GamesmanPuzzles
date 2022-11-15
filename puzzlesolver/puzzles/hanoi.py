@@ -180,7 +180,7 @@ class Hanoi(ServerPuzzle):
             matrix += [row]
 
         letters = []
-        for i in range(disk_variant):
+        for i in range(rod_variant):
             row = []
             for col in matrix:
                 if col[i] != '-':
