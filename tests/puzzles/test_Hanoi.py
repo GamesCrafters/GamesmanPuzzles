@@ -13,15 +13,12 @@ def move(move0, move1):
 # Unit testing
 def testHash():
     """Tests the expected behavior of the hash function on the puzzle states. """
-    puzzle0 = Hanoi.fromString("7-0-0")
-    puzzle1 = Hanoi.fromString("7-0-0")
-    puzzle3 = Hanoi.fromString("0-0-7")
+    puzzle0 = Hanoi.fromString("R_A_3_3_A--B--C--")
+    puzzle1 = Hanoi.fromString("R_A_3_3_A--B--C--")
+    puzzle3 = Hanoi.fromString("R_A_3_3_--A--B--C")
 
     # Checks if two of the exact same states have the same hash
     assert hash(puzzle0) == hash(puzzle1)
-
-    # Special case: It doesn't matter if the disks are on the left or middle rod. It's the same remoteness, so they should have the same hash
-    # assert hash(puzzle0) == hash(puzzle2)
 
     # The start state should not have the same hash as the end state.
     assert hash(puzzle0) != hash(puzzle3)
@@ -29,7 +26,7 @@ def testHash():
 
 def testSerialization():
     """Tests if serialization and deserialization works both ways."""
-    codes = ["7-0-0", "0-7-0", "0-0-7", "6-1-0", "1-0-0"]
+    codes = ["R_A_3_3_A--B--C--", "R_A_3_3_-A--B--C-", "R_A_3_3_--A--B--C", "R_A_3_3_---B--CA-"] 
 
     for code in codes:
         puzzle = Hanoi.fromString(code)
@@ -40,11 +37,11 @@ def testPrimitive():
     """Tests if the start state and end state outputted the right primitives."""
 
     # Expected primitive of start state should be UNDECIDED
-    puzzle = Hanoi.fromString("7-0-0")
+    puzzle = Hanoi.fromString("R_A_3_3_A--B--C--")
     assert puzzle.primitive() == PuzzleValue.UNDECIDED
 
     # Expected primitive of end state should be SOLVABLE
-    puzzle = Hanoi.fromString("0-0-7")
+    puzzle = Hanoi.fromString("R_A_3_3_--A--B--C")
     assert puzzle.primitive() == PuzzleValue.SOLVABLE
 
 
@@ -53,10 +50,10 @@ def testMoves():
 
     # Tests if state after move matches serialization
     tests = [
-        ("7-0-0", {(0, 1), (0, 2)}),
-        ("0-7-0", {(1, 0), (1, 2)}),
-        ("0-2-5", {(1, 0), (2, 1), (2, 0)}),
-        ("1-2-4", {(0, 1), (0, 2), (1, 2)}),
+        ("R_A_3_3_A--B--C--", {"M_0_7", "M_0_8"}),
+        ("R_A_3_3_-A--B--C-", {"M_1_6", "M_1_8"}),
+        ("R_A_3_3_-----A-BC", {"M_7_6", "M_5_4", "M_5_6"}),
+        ("R_A_3_3_------ABC", {"M_6_4", "M_6_5", "M_7_5"}),
     ]
 
     for test in tests:
@@ -72,12 +69,12 @@ def testPositions():
 
     # Default start
     puzzle0 = Hanoi.generateStartPosition("3_3")
-    assert puzzle0.toString() == "7-0-0"
+    assert puzzle0.toString() == "R_A_3_3_A--B--C--"
 
     # Default end (only contains one end)
     puzzles = puzzle0.generateSolutions()
     assert len(puzzles) == 1
-    assert puzzles[0].toString() == "0-0-7"
+    assert puzzles[0].toString() == "R_A_3_3_--A--B--C"
 
 
 def testValidation():
@@ -100,7 +97,7 @@ def testSolver():
     solver = GeneralSolver(puzzle)
     solver.solve()
 
-    assert solver.getRemoteness(Hanoi.fromString("7-0-0")) == 7
+    assert solver.getRemoteness(Hanoi.fromString("R_A_3_3_A--B--C--")) == 7
 
 
 # Server methods
