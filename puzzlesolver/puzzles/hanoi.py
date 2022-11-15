@@ -167,9 +167,16 @@ class Hanoi(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
+        if not isinstance(positionid, str):
+            raise TypeError("PositionID is not type str")
+
         disk_variant = int(positionid[4])
         rod_variant = int(positionid[6])
         string = positionid[8:]
+
+        if len(string) != (disk_variant * rod_variant):
+            raise ValueError("PositionID cannot be translated into Puzzle")
+
         matrix = []
         # revisit the use of disk vs rod for rows and cols
         for i in range(0, disk_variant * rod_variant, rod_variant):

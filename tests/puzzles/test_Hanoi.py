@@ -81,13 +81,13 @@ def testValidation():
     """Tests four different serializations and checks if it matches the expected response."""
 
     # Four invalid serializations
-    tests = [("", "3_3"), ("15-0-0", "4_3"), ("7-0-0", "3_4"), ("7-0-0-", "3_3")]
+    tests = [("R_A_3_3_", "3_3"), ("R_A_4_3_A--B--C--D--", "4_3"), ("R_A_3_4_A--B--C--", "3_4"), ("R_A_3_3_A--B--C---", "3_3")]
 
     for test in tests:
         pytest.raises(
             PuzzleException, PuzzleManager.validate, Hanoi.id, test[1], test[0]
         )
-    PuzzleManager.validate(Hanoi.id, "3_3", "7-0-0")
+    PuzzleManager.validate(Hanoi.id, "3_3", "R_A_3_3_A--B--C--")
 
 
 def testSolver():
@@ -115,8 +115,8 @@ def testServerPuzzle(client):
         assert d["response"]["remoteness"] == remoteness
 
     pid = Hanoi.id
-    helper(pid, "1-0-0", "3_1", 1)
-    helper(pid, "0-1-0", "3_1", 1)
-    helper(pid, "0-0-1", "3_1", 0)
+    helper(pid, "R_A_3_1_------A--", "3_1", 1)
+    helper(pid, "R_A_3_1_-------A-", "3_1", 1)
+    helper(pid, "R_A_3_1_--------A", "3_1", 0)
 
-    helper(pid, "3-4-0", "3_3", 4)
+    helper(pid, "R_A_3_3_---A--BC-", "3_3", 4)
