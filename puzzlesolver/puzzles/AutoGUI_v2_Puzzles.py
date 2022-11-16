@@ -26,7 +26,7 @@ def getHanoi(variant_id):
                     "regular": {
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/3x3grid.svg",
-                        "centers": [[0.5 + (i % 3), 0.5 + (i // 3)] for i in range(9)],
+                        "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 1.8] for i in range(9)],
                         "pieces": {
                             "A": {
                                 "image": "hanoi/A.svg",
