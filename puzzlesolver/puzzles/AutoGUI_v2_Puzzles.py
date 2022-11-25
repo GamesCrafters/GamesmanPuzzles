@@ -25,7 +25,7 @@ def getHanoi(variant_id):
                     "regular": {
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/3x3grid.svg",
-                        "centers": [[0.5 + (i % 3), 0.3 * (i // 3) + 1.5] for i in range(9)],
+                        "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 1.8] for i in range(9)],
                         "pieces": {
                             "A": {
                                 "image": "hanoi/A.svg",
@@ -50,7 +50,7 @@ def getHanoi(variant_id):
                     "regular": {
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/3x3grid.svg",
-                        "centers": [[0.5 + (i % 3), 0.3 * (i // 3) + 1.8] for i in range(9)],
+                        "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 2.0] for i in range(9)],
                         "pieces": {
                             "A": {
                                 "image": "hanoi/B.svg",
@@ -71,7 +71,41 @@ def getHanoi(variant_id):
                     "regular": {
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/3x3grid.svg",
-                        "centers": [[0.5 + (i % 3), 0.3 * (i // 3) + 2.1] for i in range(9)],
+                        "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 2.2] for i in range(9)],
+                        "pieces": {
+                            "A": {
+                                "image": "hanoi/C.svg",
+                                "scale": 1
+                            }
+                        }
+                    }
+                }
+            }
+    if variant_id == '2_1':
+        return {
+                "defaultTheme": "regular",
+                "themes": {
+                    "regular": {
+                        "backgroundGeometry": [3, 3],
+                        "backgroundImage": "hanoi/2x2grid.svg",
+                        "centers": [[1 + (i % 2), 0.2 * (i // 2) + 2.25] for i in range(9)],
+                        "pieces": {
+                            "A": {
+                                "image": "hanoi/C.svg",
+                                "scale": 1
+                            }
+                        }
+                    }
+                }
+            }
+    if variant_id == '4_1':
+        return {
+                "defaultTheme": "regular",
+                "themes": {
+                    "regular": {
+                        "backgroundGeometry": [4, 4],
+                        "backgroundImage": "hanoi/4x4grid.svg",
+                        "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 3.0] for i in range(16)],
                         "pieces": {
                             "A": {
                                 "image": "hanoi/C.svg",
