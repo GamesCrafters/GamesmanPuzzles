@@ -24,7 +24,7 @@ def getHanoi(variant_id):
                 "themes": {
                     "regular": {
                         "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/3x3grid.svg",
+                        "backgroundImage": "hanoi/3_3_variant_grid.svg",
                         "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 1.8] for i in range(9)],
                         "pieces": {
                             "A": {
@@ -49,7 +49,7 @@ def getHanoi(variant_id):
                 "themes": {
                     "regular": {
                         "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/3x3grid.svg",
+                        "backgroundImage": "hanoi/3_2_variant_grid.svg",
                         "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 2.0] for i in range(9)],
                         "pieces": {
                             "A": {
@@ -70,7 +70,7 @@ def getHanoi(variant_id):
                 "themes": {
                     "regular": {
                         "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/3x3grid.svg",
+                        "backgroundImage": "hanoi/3_1_variant_grid.svg",
                         "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 2.2] for i in range(9)],
                         "pieces": {
                             "A": {
@@ -87,7 +87,7 @@ def getHanoi(variant_id):
                 "themes": {
                     "regular": {
                         "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/2x2grid.svg",
+                        "backgroundImage": "hanoi/2_1_variant_grid.svg",
                         "centers": [[1 + (i % 2), 0.2 * (i // 2) + 2.25] for i in range(9)],
                         "pieces": {
                             "A": {
@@ -104,7 +104,7 @@ def getHanoi(variant_id):
                 "themes": {
                     "regular": {
                         "backgroundGeometry": [4, 4],
-                        "backgroundImage": "hanoi/4x4grid.svg",
+                        "backgroundImage": "hanoi/4_1_variant_grid.svg",
                         "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 3.0] for i in range(16)],
                         "pieces": {
                             "A": {
