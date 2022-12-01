@@ -115,6 +115,81 @@ def getHanoi(variant_id):
                     }
                 }
             }
+    if variant_id == '4_2':
+        return {
+                "defaultTheme": "regular",
+                "themes": {
+                    "regular": {
+                        "backgroundGeometry": [4, 4],
+                        "backgroundImage": "hanoi/4_2_variant_grid.svg",
+                        "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.8] for i in range(16)],
+                        "pieces": {
+                            "A": {
+                                "image": "hanoi/B.svg",
+                                "scale": 1
+                            },
+                            "B": {
+                                "image": "hanoi/C.svg",
+                                "scale": 1
+                            }
+                        }
+                    }
+                }
+            }
+    if variant_id == '4_3':
+        return {
+                "defaultTheme": "regular",
+                "themes": {
+                    "regular": {
+                        "backgroundGeometry": [4, 4],
+                        "backgroundImage": "hanoi/4_3_variant_grid.svg",
+                        "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.6] for i in range(16)],
+                        "pieces": {
+                            "A": {
+                                "image": "hanoi/A.svg",
+                                "scale": 1
+                            },
+                            "B": {
+                                "image": "hanoi/B.svg",
+                                "scale": 1
+                            },
+                            "C": {
+                                "image": "hanoi/C.svg",
+                                "scale": 1
+                            }
+                        }
+                    }
+                }
+            }
+    if variant_id == '4_4':
+        return {
+                "defaultTheme": "regular",
+                "themes": {
+                    "regular": {
+                        "backgroundGeometry": [4, 4],
+                        "backgroundImage": "hanoi/4_4_variant_grid.svg",
+                        "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.4] for i in range(16)],
+                        "pieces": {
+                            "A": {
+                                "image": "hanoi/A.svg",
+                                "scale": 1
+                            },
+                            "B": {
+                                "image": "hanoi/B.svg",
+                                "scale": 1
+                            },
+                            "C": {
+                                "image": "hanoi/C.svg",
+                                "scale": 1
+                            },
+                            "D": {
+                                "image": "hanoi/D.svg",
+                                "scale": 1
+                            }
+                        }
+                    }
+                }
+            }
 
 autoGUIv2DataFuncs = {
     "nqueens": getNQueens,
