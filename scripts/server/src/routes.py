@@ -3,6 +3,7 @@ from flask import request, jsonify, abort
 from flask_cors import CORS
 from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue
+from puzzlesolver.puzzles.AutoGUI_Status import get_gui_status
 
 import os
 
@@ -73,7 +74,8 @@ def puzzles():
         {
             "gameId": puzzle_id,
             "name"  : PuzzleManager.getPuzzleClass(puzzle_id).name,
-            "status": check_available(puzzle_id)
+            "status": check_available(puzzle_id),
+            "gui_status": get_gui_status(puzzle_id)
         }
         for puzzle_id in PuzzleManager.getPuzzleIds() 
     ]
@@ -108,6 +110,7 @@ def puzzle_variant(puzzle_id, variant_id):
         "description": variant_id,
         "startPosition": puzzle.toString(mode="minimal"),
         "status": check_available(puzzle_id, variant_id),
+        "gui_status": get_gui_status(puzzle_id, variant_id),
         "variantId": variant_id
     }
     return format_response(response)
