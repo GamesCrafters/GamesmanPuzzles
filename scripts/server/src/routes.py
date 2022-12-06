@@ -96,6 +96,7 @@ def puzzle(puzzle_id):
             "description": variant_id,
             "startPosition": puzzlecls.generateStartPosition(variant_id).toString(),
             "status": check_available(puzzle_id, variant_id),
+            "gui_status": get_gui_status(puzzle_id, variant_id),
             "variantId": variant_id
         } for variant_id in puzzlecls.variants]
     }
