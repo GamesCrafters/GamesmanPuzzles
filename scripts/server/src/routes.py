@@ -77,8 +77,9 @@ def puzzles():
             "status": check_available(puzzle_id),
             "gui_status": get_gui_status(puzzle_id)
         }
-        for puzzle_id in PuzzleManager.getPuzzleIds() 
+        for puzzle_id in PuzzleManager.getPuzzleIds()
     ]
+    response.sort(key=lambda p: p["name"])
     return format_response(response)
 
 @app.route('/<puzzle_id>/', methods=['GET'])
