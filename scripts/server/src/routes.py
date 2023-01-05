@@ -77,10 +77,12 @@ def puzzles():
     return format_response(response)
 
 def getPuzzle(puzzle_id, variant_id, randomize):
-    validate(puzzle_id, variant_id)
     puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
     if randomize:
-        s = puzzle_solved_variants[puzzle_id][variant_id]
+        solved_variants = puzzle_solved_variants[puzzle_id]
+        if variant_id not in solved_variants:
+            return puzzlecls.generateStartPosition(variant_id)
+        s = solved_variants[variant_id]
         hash_val = s.getRandomSolvableHash()
         return puzzlecls.fromHash(variant_id, hash_val)
     else:
@@ -110,7 +112,7 @@ def puzzle(puzzle_id):
 @app.route('/<puzzle_id>/<variant_id>/', methods=['GET'])
 @app.route('/<puzzle_id>/variants/<variant_id>/', methods=['GET'])
 def puzzle_variant(puzzle_id, variant_id):
-    validate(puzzle_id)
+    validate(puzzle_id, variant_id)
     puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
     puzzle = getPuzzle(puzzle_id, variant_id, puzzlecls.startRandomized)
     response = {
@@ -125,6 +127,7 @@ def puzzle_variant(puzzle_id, variant_id):
 @app.route('/<puzzle_id>/<variant_id>/randpos/', methods=['GET'])
 @app.route('/<puzzle_id>/variants/<variant_id>/randpos/', methods=['GET'])
 def puzzle_randpos(puzzle_id, variant_id):
+    validate(puzzle_id, variant_id)
     puzzle = getPuzzle(puzzle_id, variant_id, True)
     response = {
         "position": puzzle.toString(mode="minimal")
