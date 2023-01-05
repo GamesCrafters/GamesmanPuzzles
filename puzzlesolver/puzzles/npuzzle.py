@@ -19,6 +19,7 @@ class Npuzzle(ServerPuzzle):
     
     variants = {str(i) : IndexSolver for i in range(2, 4)}
     test_variants = {"2" : IndexSolver}
+    startRandomized = True
 
     def __init__(self, size=3):
         if not isinstance(size,int): raise ValueError
@@ -83,6 +84,15 @@ class Npuzzle(ServerPuzzle):
     def swap(arr, i1, i2):
         arr[i1], arr[i2] = arr[i2], arr[i1]
         return arr
+
+    @classmethod
+    def fromHash(cls, variantid, hash_val):
+        puzzle = cls(int(variantid))
+        board_size = puzzle.size**2
+        for i in range(board_size):
+            hash_val //= board_size
+            puzzle.position[board_size - i - 1] = hash_val % board_size
+        return puzzle
 
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):

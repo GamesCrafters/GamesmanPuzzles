@@ -1,9 +1,7 @@
-from collections.abc import MutableMapping
 from .generalsolver import GeneralSolver
-from functools import partial
 import os
 import pickle
-
+import random
 from ..util import *
 
 
@@ -19,16 +17,22 @@ class PickleSolver(GeneralSolver):
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
         self.path = "{}/{}{}.pickle".format(dir_path, puzzle.id, puzzle.variant)
+        self.solvableHashes = []
+
+    def getRandomSolvableHash(self):
+        if not self._remoteness:
+            self._read()
+        return random.choice(self.solvableHashes)
 
     def getRemoteness(self, puzzle, *args, **kwargs):
         if not self._remoteness:
             self._read()
-
         return GeneralSolver.getRemoteness(self, puzzle, *args, **kwargs)
 
     def solve(self, *args, overwrite=False, **kwargs):
         if overwrite or not os.path.exists(self.path):
             GeneralSolver.solve(self, *args, **kwargs)
+            self._generateSolvableHashes()
             self._write()
         else:
             self._read()
@@ -37,7 +41,13 @@ class PickleSolver(GeneralSolver):
         if not self._remoteness and os.path.exists(self.path):
             with open(self.path, "r+b") as fo:
                 self._remoteness = pickle.load(fo)
+            self._generateSolvableHashes()
 
     def _write(self):
         with open(self.path, "w+b") as fo:
             pickle.dump(self._remoteness, fo)
+
+    def _generateSolvableHashes(self):
+        assert(self._remoteness)
+        self.solvableHashes = [key for key in self._remoteness.keys()
+            if self._remoteness[key] >= 0 and self._remoteness[key] < PuzzleValue.MAX_REMOTENESS]

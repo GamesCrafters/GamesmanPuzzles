@@ -6,15 +6,16 @@ from ..solvers import IndexSolver
 class LightsOut(ServerPuzzle):
 
     id      = "lights"
-    auth    = "Anthony Ling"
+    auth    = "Anthony Ling, Robert Shi"
     name    = "Lights Out"
     desc    = "Click on the squares on the grid to turn it and adjacent squares off. Try to turn off all the squares!"
-    date    = "April 6, 2020"
+    date    = "December 31, 2022"
 
     variants = {str(i) : IndexSolver for i in range(2, 6)}
     test_variants = {str(i) : IndexSolver for i in range(2, 5)}
+    startRandomized = True
 
-    def __init__(self, variant='3', **kwargs):
+    def __init__(self, variant='3'):
         variant = int(variant)
         self.grid = [[True for _ in range(variant)] for _ in range(variant)]
         self.size = variant
@@ -26,18 +27,16 @@ class LightsOut(ServerPuzzle):
     def __str__(self):
         return "\n".join([str([int(i) for i in row]) for row in self.grid])
     
-    def primitive(self, **kwargs):
+    def primitive(self):
         for row in self.grid:
             for entry in row:
                 if entry == 1: return PuzzleValue.UNDECIDED
         return PuzzleValue.SOLVABLE
     
-    def doMove(self, move, **kwargs):
+    def doMove(self, move):
         parts = move.split("_")
         index = int(parts[2])
         move = (index % len(self.grid), index // len(self.grid))
-
-        from copy import deepcopy
         x, y = move[0], move[1]
         puzzle = LightsOut(variant=str(self.size))
         puzzle.grid = deepcopy(self.grid)
@@ -48,7 +47,7 @@ class LightsOut(ServerPuzzle):
         puzzle.grid[y][x] = not puzzle.grid[y][x]
         return puzzle
 
-    def generateMoves(self, movetype="all", **kwargs):
+    def generateMoves(self, movetype="all"):
         if movetype == 'for' and movetype == 'back': return []
         moves = []
         for i in range(len(self.grid)):
@@ -62,24 +61,32 @@ class LightsOut(ServerPuzzle):
         for row in self.grid:
             str_row = [str(int(entry)) for entry in row]
             result += "".join(str_row)
+        return int(result, base=2)
 
-        result = int(result, 2)
-        return result
-
-    def generateSolutions(self, **kwargs):
+    def generateSolutions(self):
         puzzle = LightsOut(variant=self.size)
         puzzle.grid = [[False for _ in range(self.size)] for _ in range(self.size)]
         return [puzzle]
 
     @classmethod
-    def generateStartPosition(cls, variantid, **kwargs):
+    def fromHash(cls, variantid, hash_val):
+        puzzle = cls(variant=variantid)
+        grid_size = puzzle.size * puzzle.size
+        hash_str = format(hash_val, "{}b".format(grid_size))
+        for i in range(puzzle.size):
+            for j in range(puzzle.size):
+                puzzle.grid[i][j] = (hash_str[i * puzzle.size + j] == '1')
+        return puzzle
+
+    @classmethod
+    def generateStartPosition(cls, variantid):
         variant = int(variantid)
         position = "R_{}_{}_{}_".format("A", variant, variant)
         position += '-' * (variant ** 2)
         return cls.deserialize(position)
 
     @classmethod
-    def deserialize(cls, position: str, **kwargs):
+    def deserialize(cls, position: str):
         parts = position.split("_")
         if (len(parts) <= 4): 
             raise ValueError("Invalid position")
@@ -100,7 +107,7 @@ class LightsOut(ServerPuzzle):
             puzzle.grid.append(row)
         return puzzle
 
-    def serialize(self, **kwargs):
+    def serialize(self):
         output = "R_{}_{}_{}_".format("A", len(self.grid), len(self.grid[0]))
 
         result = ""
