@@ -1,4 +1,3 @@
-from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import IndexSolver
@@ -11,7 +10,7 @@ class LightsOut(ServerPuzzle):
     desc    = "Click on the squares on the grid to turn it and adjacent squares off. Try to turn off all the squares!"
     date    = "April 6, 2020"
 
-    variants = {str(i) : IndexSolver for i in range(2, 6)}
+    variants = {str(i) : IndexSolver for i in range(2, 9)}
     test_variants = {str(i) : IndexSolver for i in range(2, 5)}
 
     def __init__(self, variant='3', **kwargs):

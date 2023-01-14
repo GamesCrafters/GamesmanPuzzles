@@ -1,6 +1,5 @@
-from puzzlesolver.solvers import indexsolver
 from ._models import *
-from ..solvers import IndexSolver, PickleSolver
+from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
@@ -57,6 +56,8 @@ class PuzzleManagerClass:
         # if puzzleid in [Hanoi.id, LightsOut.id, Bishop.id, Npuzzle.id]:
         #     return IndexSolver
         if puzzleid == LightsOut.id:
+            if int(variantid) > 5:
+                return LightsOutClosedFormSolver
             return IndexSolver
         return PickleSolver
     
