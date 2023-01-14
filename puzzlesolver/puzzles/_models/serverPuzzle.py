@@ -1,4 +1,4 @@
-from ...util import PuzzleException, classproperty, depreciated
+from ...util import classproperty, depreciated
 from . import Puzzle
 
 class ServerPuzzle(Puzzle):
@@ -66,6 +66,12 @@ class ServerPuzzle(Puzzle):
             String Puzzle
         """
         return str(self)
+
+    @classmethod
+    def fromHash(cls, variantid, hash_val):
+        """Returns a Puzzle object based on variantid and the given hash_val
+        """
+        raise NotImplementedError
     
     @classmethod
     @depreciated("serverPuzzle.deserialize is depreciated. See puzzle.toString")
@@ -94,4 +100,4 @@ class ServerPuzzle(Puzzle):
         Outputs:
             - True if Puzzle is valid, else False
         """
-        raise NotImplementedError 
+        raise NotImplementedError

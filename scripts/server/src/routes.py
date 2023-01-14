@@ -1,15 +1,10 @@
 import flask
-from flask import request, jsonify, abort
+from flask import jsonify, abort
 from flask_cors import CORS
 from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue
 from puzzlesolver.puzzles.AutoGUI_Status import get_gui_status
-
-import os
-
-from threading import Thread
 from werkzeug.exceptions import InternalServerError
-
 from . import puzzle_solved_variants
 
 app = flask.Flask("PuzzleServer")
@@ -21,7 +16,6 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 CORS(app)
 
 def check_available(puzzle_id, variant=None):
-
     if puzzle_id not in puzzle_solved_variants:
         puzzle_solved_variants[puzzle_id] = {}
         if variant is None: return "unknown"
@@ -82,6 +76,18 @@ def puzzles():
     response.sort(key=lambda p: p["name"])
     return format_response(response)
 
+def getPuzzle(puzzle_id, variant_id, randomize):
+    puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
+    if randomize:
+        solved_variants = puzzle_solved_variants[puzzle_id]
+        if variant_id not in solved_variants:
+            return puzzlecls.generateStartPosition(variant_id)
+        s = solved_variants[variant_id]
+        hash_val = s.getRandomSolvableHash()
+        return puzzlecls.fromHash(variant_id, hash_val)
+    else:
+        return puzzlecls.generateStartPosition(variant_id)
+
 @app.route('/<puzzle_id>/', methods=['GET'])
 @app.route('/<puzzle_id>/variants/', methods=['GET'])
 def puzzle(puzzle_id):
@@ -95,7 +101,7 @@ def puzzle(puzzle_id):
         "date_created":     puzzlecls.date,
         "variants":         [{
             "description": variant_id,
-            "startPosition": puzzlecls.generateStartPosition(variant_id).toString(),
+            "startPosition": getPuzzle(puzzle_id, variant_id, puzzlecls.startRandomized).toString(),
             "status": check_available(puzzle_id, variant_id),
             "gui_status": get_gui_status(puzzle_id, variant_id),
             "variantId": variant_id
@@ -107,13 +113,24 @@ def puzzle(puzzle_id):
 @app.route('/<puzzle_id>/variants/<variant_id>/', methods=['GET'])
 def puzzle_variant(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)
-    puzzle = PuzzleManager.getPuzzleClass(puzzle_id).generateStartPosition(variant_id)
+    puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
+    puzzle = getPuzzle(puzzle_id, variant_id, puzzlecls.startRandomized)
     response = {
         "description": variant_id,
         "startPosition": puzzle.toString(mode="minimal"),
         "status": check_available(puzzle_id, variant_id),
         "gui_status": get_gui_status(puzzle_id, variant_id),
         "variantId": variant_id
+    }
+    return format_response(response)
+
+@app.route('/<puzzle_id>/<variant_id>/randpos/', methods=['GET'])
+@app.route('/<puzzle_id>/variants/<variant_id>/randpos/', methods=['GET'])
+def puzzle_randpos(puzzle_id, variant_id):
+    validate(puzzle_id, variant_id)
+    puzzle = getPuzzle(puzzle_id, variant_id, True)
+    response = {
+        "position": puzzle.toString(mode="minimal")
     }
     return format_response(response)
 
@@ -131,7 +148,7 @@ def generateMovePositions(puzzle, movetype="legal"):
     for move in puzzle.generateMoves(movetype=movetype):
         puzzles.append((move, puzzle.doMove(move)))
     return puzzles
-    
+
 @app.route('/<puzzle_id>/<variant_id>/<position>/', methods=['GET'])
 @app.route('/<puzzle_id>/variants/<variant_id>/positions/<position>/', methods=['GET'])
 def puzzle_position(puzzle_id, variant_id, position):
@@ -145,8 +162,8 @@ def puzzle_position(puzzle_id, variant_id, position):
     response = {
         "position": puzzle.toString(mode="minimal"),
         "remoteness": this_remoteness 
-        if this_remoteness != PuzzleValue.MAX_REMOTENESS
-        else -1,
+            if this_remoteness != PuzzleValue.MAX_REMOTENESS
+            else -1,
         "positionValue": s.getValue(puzzle),
     }
     move_attr = []
@@ -158,14 +175,14 @@ def puzzle_position(puzzle_id, variant_id, position):
                 "positionValue": s.getValue(move[1]),
                 "move": str(move[0]),
                 "moveValue": PuzzleValue.SOLVABLE
-                if this_remoteness > next_remoteness
-                else PuzzleValue.UNDECIDED
-                if this_remoteness == next_remoteness
-                else PuzzleValue.UNSOLVABLE,
+                    if this_remoteness > next_remoteness
+                    else PuzzleValue.UNDECIDED
+                    if this_remoteness == next_remoteness
+                    else PuzzleValue.UNSOLVABLE,
                 "deltaRemoteness": this_remoteness - next_remoteness,
                 "remoteness": next_remoteness
-                if next_remoteness != PuzzleValue.MAX_REMOTENESS
-                else -1,
+                    if next_remoteness != PuzzleValue.MAX_REMOTENESS
+                    else -1,
             }
         )
         response["moves"] = move_attr

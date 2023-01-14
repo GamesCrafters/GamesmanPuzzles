@@ -23,6 +23,7 @@ class Rubiks(ServerPuzzle):
     date    = "September 14th, 2020"
 
     variants = {"2x2" : SqliteSolver}
+    startRandomized = True
 
     def __init__(self, **kwargs):
         #    [0]
@@ -437,6 +438,17 @@ class Rubiks(ServerPuzzle):
         return [newPuzzle1]
 
     ### ________ Server _________
+    @classmethod
+    def fromHash(cls, variantid, hash_val):
+        """ 
+        Note that this function does not actually unhash the given hash value
+        because the hash method we used here is irreversible. Since this
+        method is only used to generate random positions of a puzzle, we
+        instead return a position that is already randomized by the constructor
+        of a Rubiks instance.
+        """
+        return cls()
+
     @classmethod
     def deserialize(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid
