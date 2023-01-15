@@ -3,6 +3,7 @@ from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
+from .graphpuzzle import GraphPuzzle
 from .hanoi import Hanoi
 from .lightsout import LightsOut
 from .pegSolitaire import Peg
