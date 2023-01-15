@@ -1,7 +1,5 @@
-try:
-    from sage.all import *
-except ImportError:
-    raise ValueError("Sage does not seem to be installed in this system. Please visit www.sagemath.org to fix this!")
+from sage.all import *
+import random
 from .solver import Solver
 from ..util import *
 
@@ -9,6 +7,10 @@ class LightsOutClosedFormSolver(Solver):
     def __init__(self, puzzle, **kwargs):
         self.puzzle = puzzle
         self.path = "closed_form"
+    
+    def getRandomSolvableHash(self):
+        # All hashes are solvable if this closed-form solver can be used.
+        return random.getrandbits(self.puzzle.size**2)
         
     def getRemoteness(self, puzzle, *args, **kwargs):
         m = int(puzzle.variant)
