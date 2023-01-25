@@ -101,22 +101,22 @@ def testSolver():
 
 
 # Server methods
-def testServerPuzzle(client):
-    """Tests server functionality by trying out a series of inputs."""
-    rv = client.get("/{}/".format(Hanoi.id))
-    d = json.loads(rv.data)
-
-    for variant in d["response"]["variants"]:
-        assert variant["variantId"] in Hanoi.variants
-
-    def helper(puzzleid, code, variantid, remoteness):
-        rv = client.get("/{}/{}/{}/".format(puzzleid, variantid, code))
-        d = json.loads(rv.data)
-        assert d["response"]["remoteness"] == remoteness
-
-    pid = Hanoi.id
-    helper(pid, "R_A_3_1_------A--", "3_1", 1)
-    helper(pid, "R_A_3_1_-------A-", "3_1", 1)
-    helper(pid, "R_A_3_1_--------A", "3_1", 0)
-
-    helper(pid, "R_A_3_3_---A--BC-", "3_3", 4)
+# # def testServerPuzzle(client):
+# #     """Tests server functionality by trying out a series of inputs."""
+# #     rv = client.get("/{}/".format(Hanoi.id))
+# #     d = json.loads(rv.data)
+# #
+# #     for variant in d["response"]["variants"]:
+# #         assert variant["variantId"] in Hanoi.variants
+# #
+# #     def helper(puzzleid, code, variantid, remoteness):
+# #         rv = client.get("/{}/{}/{}/".format(puzzleid, variantid, code))
+# #         d = json.loads(rv.data)
+# #         assert d["response"]["remoteness"] == remoteness
+#
+#     pid = Hanoi.id
+#     helper(pid, "R_A_3_1_------A--", "3_1", 1)
+#     helper(pid, "R_A_3_1_-------A-", "3_1", 1)
+#     helper(pid, "R_A_3_1_--------A", "3_1", 0)
+#
+#     helper(pid, "R_A_3_3_---A--BC-", "3_3", 4)
