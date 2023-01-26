@@ -1,11 +1,9 @@
 # from collections.abc import MutableMapping
 from .generalsolver import GeneralSolver
-from functools import partial
 import os
 import gzip
-
-from ..util import *
-
+import random
+from ..util import PuzzleValue
 class IndexSolver(GeneralSolver):
     """
     A persistence solver that places remoteness values into two-byte chunks, then
@@ -17,9 +15,15 @@ class IndexSolver(GeneralSolver):
         if not os.path.exists(dir_path): os.makedirs(dir_path)
         self.path = '{}/{}{}.bin.gz'.format(dir_path, puzzle.id, puzzle.variant)
         self.ba = bytearray()
+        self.solvableHashes = []
+    
+    def getRandomSolvableHash(self):
+        if not self.solvableHashes:
+            self._read()
+        return random.choice(self.solvableHashes)
 
     def getRemoteness(self, puzzle, *args, **kwargs):
-        if not self._remoteness and not self.ba:
+        if not self.ba:
             self._read()
         return self.ba[hash(puzzle)]
 
@@ -33,9 +37,13 @@ class IndexSolver(GeneralSolver):
         if not os.path.exists(self.path): open(self.path, 'wb').close()
         with gzip.open(self.path, 'rb') as fo:
             self.ba = fo.read()
+            self.solvableHashes = [i for i in range(len(self.ba)) \
+                if self.ba[i] < PuzzleValue.MAX_REMOTENESS and self.ba[i] >= 0]
 
     def _write(self):
         ba = bytearray(max(self._remoteness) + 1)
+        for i in range(len(ba)):
+            ba[i] = PuzzleValue.MAX_REMOTENESS
         for i in self._remoteness:
             chunk = self._remoteness[i].to_bytes(1, byteorder='little')
             ba[i] = chunk[0]

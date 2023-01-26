@@ -1,8 +1,8 @@
 from .solver import Solver
-
-from ..util import PuzzleValue, PuzzleException
+from ..util import PuzzleValue
 import queue as q
 import progressbar
+import time
 
 class GeneralSolver(Solver):
     def __init__(self, puzzle):
@@ -57,7 +57,7 @@ class GeneralSolver(Solver):
 
         if not self.solved:
             raise SystemError("Solver has not been solved yet")
-        if hash(puzzle) in self._remoteness: 
+        if hash(puzzle) in self._remoteness:
             return self._remoteness[hash(puzzle)]
         return PuzzleValue.MAX_REMOTENESS
 

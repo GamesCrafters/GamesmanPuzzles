@@ -1,9 +1,8 @@
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import SqliteSolver, GeneralSolver
-
-from hashlib import sha1
+from ..solvers import SqliteSolver
+import itertools
 
 MAP_MOVES = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
     str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
@@ -21,6 +20,7 @@ class Peg(ServerPuzzle):
 
     variants = {"Triangle": SqliteSolver}
     test_variants = variants
+    startRandomized = False
 
     def __init__(self, **kwargs):
         if len(kwargs) == 1:
@@ -32,7 +32,7 @@ class Peg(ServerPuzzle):
                         for inner in range(outer + 1):
                             if self.board[outer][inner] == 1:
                                 self.pins += 1  
-        else:    
+        else:
             self.board = [[0],[1,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]] 
             self.pins = 0
             for outer in range(5):
@@ -317,11 +317,20 @@ class Peg(ServerPuzzle):
         return newPuzzle
 
     ### ____________ Solver Funcs ________________
-
     def __hash__(self):
-        h = sha1()
-        h.update(str(self.board).encode())
-        return int(h.hexdigest(), 16)
+        h = 0
+        for piece in reversed(list(itertools.chain.from_iterable(self.board))):
+            h = (h << 1) + piece
+        return h
+
+    @classmethod
+    def fromHash(cls, variantid, hash_val):
+        puzzle = cls()
+        for i in range(len(puzzle.board)):
+            for j in range(len(puzzle.board[i])):
+                puzzle.board[i][j] = hash_val & 1
+                hash_val >>= 1
+        return puzzle
 
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
@@ -362,7 +371,6 @@ class Peg(ServerPuzzle):
             String Puzzle
         """
         s = ""
-        check = True
         for outer in range(5):
             for inner in range(outer + 1):
                 s += str(self.board[outer][inner])
