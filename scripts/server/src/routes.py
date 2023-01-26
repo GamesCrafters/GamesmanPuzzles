@@ -4,6 +4,7 @@ from flask_cors import CORS
 from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue
 from puzzlesolver.puzzles.AutoGUI_v2_Puzzles import *
+from puzzlesolver.puzzles.AutoGUI_Status import get_gui_status
 from werkzeug.exceptions import InternalServerError
 from . import puzzle_solved_variants
 
