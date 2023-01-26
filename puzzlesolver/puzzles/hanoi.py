@@ -2,10 +2,8 @@
 https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
-from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import IndexSolver
 
 def ffs(num):
     """Helper function to return the index of the LSB. 
@@ -30,6 +28,8 @@ class Hanoi(ServerPuzzle):
     variants += ["5_1", "5_2", "5_3", "5_4"]
 
     test_variants = ["3_1", "3_2", "3_3"]
+    
+    startRandomized = False
 
     def __init__(self,  variantid=None, variant=None):
         """Returns the starting position of Hanoi based on variant first, then 
@@ -85,15 +85,15 @@ class Hanoi(ServerPuzzle):
 
         # Hash calculation is the sum of the:
         #   rod index of a disk * rod_variant ** disk size
-        # over all disks  
+        # over all disks
         output = 0
-        for i in range(len(rodscopy)):
-            rod = rodscopy[i]
-            j = 0
+        for rod_idx_of_disk in range(len(rodscopy)):
+            rod = rodscopy[rod_idx_of_disk]
+            disk_size = 0
             while rod != 0:
-                mod = rod % 2
-                output += mod * (i + 1) * self.rod_variant ** j
-                j += 1
+                exist = rod % 2
+                output += exist * (rod_idx_of_disk + 1) * self.rod_variant ** disk_size
+                disk_size += 1
                 rod = rod >> 1
         return output
 
@@ -360,5 +360,13 @@ class Hanoi(ServerPuzzle):
         from_pos = int(parts[2]) % rod_variant
         return (to_pos, from_pos)
 
-
-
+    @classmethod
+    def fromHash(cls, variantid, hash_val):
+        puzzle = cls(variantid)
+        puzzle.rods = [0 for _ in range(puzzle.rod_variant)]
+        disk_size = 0
+        for _ in range(puzzle.disk_variant):
+            puzzle.rods[(hash_val % puzzle.rod_variant - 1) % puzzle.rod_variant] += 1 << disk_size
+            disk_size += 1
+            hash_val //= puzzle.rod_variant
+        return puzzle

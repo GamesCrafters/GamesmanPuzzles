@@ -1,9 +1,5 @@
 from puzzlesolver.puzzles import PuzzleManager
 
-import os
-
-from threading import Thread
-
 # Initalizes the data
 def init_data():
     for p_cls in PuzzleManager.getPuzzleClasses():        

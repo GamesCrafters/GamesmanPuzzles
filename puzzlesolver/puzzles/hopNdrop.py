@@ -21,6 +21,8 @@ class HopNDrop(ServerPuzzle):
     }
 
     test_variants = variants
+    
+    startRandomized = False
 
     def __init__(self, key="map1", **kwargs):
         if key=="map1":

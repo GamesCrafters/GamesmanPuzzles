@@ -21,6 +21,7 @@ jobs:
             sleep 5
             systemctl status gmp-dev.service
           host: nyc.cs.berkeley.edu
+          port: 2222
           user: github
           key: ${{ secrets.KEY }}
   prod:
@@ -42,5 +43,6 @@ jobs:
             sleep 5
             systemctl status gmp.service
           host: nyc.cs.berkeley.edu
+          port: 2222
           user: github
           key: ${{ secrets.KEY }}

@@ -14,6 +14,7 @@ class Bishop(ServerPuzzle):
 	# Chessboard has y rows, 2x columns
 	variants = {str(i[0]) + "x" + str(i[1]): IndexSolver for i in ((2,5), (2,7), (3,7))}
 	test_variants = {str(i[0]) + "x" + str(i[1]): IndexSolver for i in ((2,5), (2,7))}
+	startRandomized = False
 	
 	def __init__(self, bishops=2, rows=5, **kwargs):
 		# The bottom left square has a bishop.
@@ -104,7 +105,6 @@ class Bishop(ServerPuzzle):
 		Helper method that generates moves in one diagonal direction for
 		one piece. Adds moves generated to moves and destination spaces to dest.
 		"""
-		i = 1
 		new = (s[0] + x, s[1] + y)
 		while new[0] >= 0 and new[1] >= 0 \
 		and new[0] < self.rows and new[1] < self.cols \
@@ -176,18 +176,20 @@ class Bishop(ServerPuzzle):
 		if arr[0] == 0:
 			return self.h_encode(arr[1:], w, b)
 		elif arr[0] == 1:
-			return self.r(l-1,w,b) + self.h_encode(arr[1:], w-1, b)
+			return self.r(l-1, w, b) + self.h_encode(arr[1:], w-1, b)
 		else: # arr[0] == 2
 			return self.r(l-1, w-1, b) + self.r(l-1, w, b) + self.h_encode(arr[1:], w, b-1)
 			
 	def r(self, s, m, n):
 		"""
-		Helper method for the combinatorially optimal hash 
+		The rearrange helper method for the combinatorially optimal hash.
+		Returns the number of ways to place m identical pieces of type M
+		and n identical pieces of type N at s distinct locations.
 		"""
 		if m < 0 or n < 0 or s-m-n < 0:
 			return 0
-		return int(math.factorial(s) / math.factorial(s-m-n)\
-		/ math.factorial(m) / math.factorial(n))
+		return math.factorial(s) // math.factorial(s-m-n)\
+		// math.factorial(m) // math.factorial(n)
 		
 	def generateSolutions(self, **kwargs):
 		"""Returns a Iterable of Puzzle objects that are solved states
@@ -217,6 +219,45 @@ class Bishop(ServerPuzzle):
 		result.append("-".join(str(x) for x in white_temp))
 		result.append("-".join(str(x) for x in black_temp))
 		return "_".join(result)
+
+	@classmethod
+	def fromHash(cls, variantid, hash_val):
+		"""
+		Blank = 0, W = 1, B = 2.
+		"""
+		def hArrayIndexToRowCol(i, cols):
+			k = i * 2
+			row = k // cols
+			col = k%cols + row%2
+			return (row, col)
+		
+		if not isinstance(variantid, str):
+			raise TypeError("invalid variantid")
+		if variantid not in Bishop.variants:
+			raise IndexError("out of bounds variantid")
+		if hash_val < 0:
+			raise ValueError("negative hash value")
+		strlist = variantid.split('x')
+		puzzle = cls(int(strlist[0]), int(strlist[1]))
+		puzzle.white = []
+		puzzle.black = []
+		length = puzzle.rows * puzzle.cols // 2
+		whiteRem = puzzle.cols // 2
+		blackRem = puzzle.cols // 2
+		for i in range(length):
+			x = puzzle.r(length - i - 1, whiteRem, blackRem)
+			y = puzzle.r(length - i - 1, whiteRem - 1, blackRem)
+			if hash_val < x:
+				pass
+			elif hash_val < x+y:
+				puzzle.white.append(hArrayIndexToRowCol(i, puzzle.cols))
+				whiteRem -= 1
+				hash_val -= x
+			else: # x+y <= hash_val
+				puzzle.black.append(hArrayIndexToRowCol(i, puzzle.cols))
+				blackRem -= 1
+				hash_val -= x+y
+		return puzzle
 		
 	@classmethod
 	def deserialize(cls, positionid, **kwargs):
@@ -286,5 +327,5 @@ class Bishop(ServerPuzzle):
         """
 		if not isinstance(variantid, str): raise TypeError("Invalid variantid")
 		if variantid not in Bishop.variants: raise IndexError("Out of bounds variantid")
-		return Bishop(bishops = int(variantid[0]), rows = int(variantid[2]))
-
+		strlist = variantid.split('x')
+		return Bishop(int(strlist[0]), int(strlist[1]))

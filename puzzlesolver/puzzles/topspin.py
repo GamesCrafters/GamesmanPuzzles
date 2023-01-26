@@ -1,8 +1,7 @@
-from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import SqliteSolver
-from hashlib import sha1
+import math
 import random
 
 class TopSpin(ServerPuzzle):
@@ -14,6 +13,7 @@ class TopSpin(ServerPuzzle):
 	date 	      = "Nov. 23, 2020"
 	variants      = {'6_2' : SqliteSolver}
 	test_variants = variants
+	startRandomized = True
 
 	def __init__(self, size = 6, spin = 2, **kwargs):
 		self.size = size
@@ -22,13 +22,10 @@ class TopSpin(ServerPuzzle):
 		if len(kwargs) == 1:
 			for key, value in kwargs.items():
 				if key == 'loop':
-					self.loop  = value
+					self.loop = value
 		else:
-			base = random.sample(self.all_nums,size)
-			self.loop = base
+			self.loop = random.sample(self.all_nums,size)
 		self.track = [self.loop[:spin]] + [item for item in self.loop[spin:]]
-
-			
 
 	def __str__(self, **kwargs):
 		return str(self.track)
@@ -41,7 +38,6 @@ class TopSpin(ServerPuzzle):
 		print("     " + str(self.track[3]) + "     " + str(self.track[2]))
 		print('                           ')
 
-
 	def primitive(self,**kwargs):
 		'''
 		since the track is circular, you can find where the 1 is and wrap it around
@@ -50,7 +46,6 @@ class TopSpin(ServerPuzzle):
 		if self.loop == self.all_nums:
 			return PuzzleValue.SOLVABLE
 		return PuzzleValue.UNDECIDED
-
 
 	def generateMoves(self,movetype = 'all', **kwargs):
 		if movetype == 'for' or movetype == 'back':
@@ -70,7 +65,6 @@ class TopSpin(ServerPuzzle):
 		elif idx + move > self.size -1:
 			return idx + move - self.size
 
-
 	def doMove(self, move, **kwargs):
 		if move not in self.generateMoves():
 			raise ValueError
@@ -85,19 +79,21 @@ class TopSpin(ServerPuzzle):
 		new_puzzle = TopSpin(loop = new_loop)
 		return new_puzzle
 
-	
-
 	def __hash__(self):
-		h = sha1()
-		h.update(str(self.loop).encode())
-		return int(h.hexdigest(), 16)
+		# Returns the permutation index of self.loop
+		h = 0
+		nums = list(range(1, self.size + 1))
+		for i in range(self.size):
+			j = nums.index(self.loop[i])
+			del nums[j]
+			h += j * math.factorial(self.size - i - 1)
+		return h
 
 	def generateSolutions(self, **kwargs):
 		solutions = []
 		temp = self.all_nums
 		solutions.append(TopSpin(loop = temp))
 		return solutions
-	
 	
 	@property
 	def variant(self):
@@ -110,6 +106,19 @@ class TopSpin(ServerPuzzle):
 		return "Top Spin " + self.variant
 
 	@classmethod
+	def fromHash(cls, variantid, hash_val):
+		temp = variantid.split('_')
+		size = int(temp[0])
+		spin = int(temp[1])
+		loop = []
+		nums = list(range(1, size+1))
+		for i in range(size):
+			numPermutation = math.factorial(size - i -1)
+			loop.append(nums.pop(hash_val // numPermutation))
+			hash_val %= numPermutation
+		return cls(size, spin, loop=loop)
+
+	@classmethod
 	def generateStartPosition(cls, variantid, **kwargs):
 		if not isinstance(variantid, str):
 			raise TypeError("Invalid variantid")
@@ -117,7 +126,6 @@ class TopSpin(ServerPuzzle):
 			raise IndexError("Out of bounds variantid")
 		temp = variantid.split('_')
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
-
 
 	def serialize(self, **kwargs):
 		result = ''
