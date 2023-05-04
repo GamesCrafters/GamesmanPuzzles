@@ -13,27 +13,24 @@ class Rush(ServerPuzzle):
     desc = """Move pieces around to get the red piece to the right side of the board."""
     date = "April 25, 2023"
 
-    # basic, easy, medium, hard, expert
-    variants = map(str, range(5))
+    variants = ['basic', 'easy', 'medium', 'hard', 'expert']
 
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
-        if not isinstance(variantid, str):
+        if not isinstance(variantid, str) or variantid not in Rush.variants:
             raise TypeError("Invalid variantid")
-        if int(variantid) >= 5:
-            raise ValueError("Out of bounds variantid")
-        return Rush(variant_id=int(variantid))
+        return Rush(variant_id=variantid)
 
-    def __init__(self, variant_id=2, puzzle_id=None, pos=None):
+    def __init__(self, variant_id='medium', puzzle_id=None, pos=None):
         super().__init__()
         self.variant_id = variant_id
-        if not pos:
-            if not puzzle_id:
+        if pos is None:
+            variant_file = f"rush_data/no_walls_{variant_id}.txt"
+            if puzzle_id is None:
                 # Search the database for a random puzzle with the given difficulty level.
-                variant_ranges = [(80454, 261327), (21429, 80454), (5076, 21429), (1257, 5076), (0, 1257)]
-                min_id, max_id = variant_ranges[variant_id]
-                puzzle_id = random.randrange(min_id, max_id)
-            with open("rush_data/no_walls.txt") as variants:
+                variant_ranges = {"basic": 261327, "easy": 59025, "medium": 16351, "hard": 3821, "expert": 1257}
+                puzzle_id = random.randrange(variant_ranges[variant_id])
+            with open(variant_file, 'r') as variants:
                 for i, variant in enumerate(variants):
                     if i == puzzle_id:
                         self.pos = variant[:36]  # remove trailing newline
@@ -50,55 +47,81 @@ class Rush(ServerPuzzle):
     def variant(self):
         return self.variant_id
 
-    def toString(self, **kwargs):
-        display = ""
-        for i in range(6):
-            display += self.pos[6 * i:6 * (i + 1)] + "\n"
-        return display
+    def toString(self, mode="minimal"):
+        if mode == "minimal":
+            return "R_A_" + self.variant_id + "_" + self.pos
+        elif mode == "complex":
+            display = ""
+            for i in range(6):
+                display += self.pos[6 * i:6 * (i + 1)] + "\n"
+            return display.replace('L', '<')\
+                        .replace('R', '>')\
+                        .replace('T', 'A')\
+                        .replace('B', 'V')\
+                        .replace('M', 'H')\
+                        .replace('m', '=')\
+                        .replace('(', 'X')\
+                        .replace(')', 'X')
+        else:
+            raise ValueError("Invalid keyword argument 'mode'")
 
     @classmethod
     def fromString(cls, positionid, **kwargs):
         # Checking if the positionid is a str
-        if not isinstance(positionid, str):
+        if not positionid or not isinstance(positionid, str):
             raise TypeError("PositionID is not type str")
-        # Checking if this is a valid string
-        if not positionid or len(positionid) != 36:
+        # Checking if this is a valid string (extract the board first)
+        board_string = positionid.split("_")[-1]
+        if len(board_string) != 36:
             raise ValueError("PositionID cannot be translated into Puzzle")
         # Check that this will decode into a valid board
         try:
-            # Keep track of all seen letters, map them to their start indices, lengths, and orientations
-            seen = {}
-            for i, piece in enumerate(positionid):
-                # Look through the board, make sure all pieces are either right or down pieces
-                # And make sure no pieces form a non-straight line, or a line of length >3
-                if piece == 'o':
-                    continue
-                # If we've seen it before, and it's not below/to the right of its start, error
-                if piece in seen:
-                    start, length, orientation = seen[piece]
-                    if (orientation == 'R' and i - start >= length
-                            or orientation == 'D' and ((i - start) % 6 != 0 or (i - start) / 6 >= length)):
+            allowed_pieces = {'-', 'L', 'm', 'R', 'T', 'M', 'B', '(', ')'}
+            allowed_top = {'-', 'L', 'm', 'R', 'T'}
+            allowed_bottom = {'-', 'L', 'm', 'R', 'B'}
+            allowed_right = {'-', 'R', 'T', 'M', 'B', ')'}
+            allowed_left = {'-', 'L', 'T', 'M', 'B', '('}
+            seen_red_piece = False
+            for i, piece in enumerate(board_string):
+                # Look through the board, make sure all pieces are allowable pieces
+                # and are surrounded by the correct types of pieces
+                if piece not in allowed_pieces:
+                    raise ValueError
+                # Check that edge pieces are allowed to be there
+                if i % 6 == 0 and piece not in allowed_left \
+                        or i % 6 == 5 and piece not in allowed_right \
+                        or i < 6 and piece not in allowed_top \
+                        or i >= 30 and piece not in allowed_bottom:
+                    raise ValueError
+                # Check that there is only one red piece "()" and it is in row 3
+                if piece == '(':
+                    if seen_red_piece or i < 12 or i > 16:
                         raise ValueError
                     else:
-                        continue
-                # Otherwise, check for orientation, check if length > 2, and add it to the dict
-                # Any future pieces outside that orientation / length range will cause an error
-                if i % 6 < 5 and positionid[i+1] == piece:
-                    length = 2 + (i < 34 and positionid[i + 2] == piece)
-                    seen[piece] = (i, length, 'R')
-                elif i < 30 and positionid[i+6] == piece:
-                    length = 2 + (i < 24 and positionid[i + 12] == piece)
-                    seen[piece] = (i, length, 'D')
-                else:
+                        seen_red_piece = True
+                # Check that the piece to the right is allowed to be on the right of it
+                if i % 6 < 5 and (
+                        piece == 'L' and board_string[i + 1] not in {'m', 'R'}
+                        or piece == 'm' and board_string[i + 1] != 'R'
+                        or piece == '(' and board_string[i + 1] != ')'
+                        or piece not in {'m', 'L', '('} and board_string[i + 1] not in allowed_left
+                ):
+                    raise ValueError
+                # Check that the piece below is allowed to be below it
+                if i < 30 and (
+                        piece == 'T' and board_string[i + 1] not in {'M', 'B'}
+                        or piece == 'M' and board_string[i + 1] != 'B'
+                        or piece not in {'T', 'M'} and board_string[i + 1] not in allowed_top
+                ):
                     raise ValueError
         except ValueError:
             raise ValueError("PositionID cannot be translated into Puzzle")
 
         # If no error, we can return a board with the given puzzle
-        return Rush(pos=positionid)
+        return Rush(pos=board_string)
 
     def primitive(self, **kwargs):
-        if self.pos[16:18] == "AA":
+        if self.pos[16:18] == "()":
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
 
@@ -106,79 +129,72 @@ class Rush(ServerPuzzle):
         if movetype == 'for' or movetype == 'back':
             return []  # All moves are bidirectional
         moves = []
-        visited = []  # keep track of which pieces we've seen, by letter
         for i, piece in enumerate(self.pos):
-            if piece == 'o' or piece in visited:
-                continue
-            visited.append(piece)
-            # Check for moves left and right. First check the piece's orientation.
-            # Since we traverse the board left-to-right, we only need to check the piece to the right.
-            if i % 6 != 5 and self.pos[i + 1] == piece:
-                # Check for left-right moves. Since the current square is at the left endpoint,
-                # we know to check immediately to the left for empty squares to move into.
-                j = 1
-                while (i % 6) - j >= 0 and self.pos[i - j] == 'o':
-                    moves.append((piece, -j))
+            # Check for leftward moves
+            if piece in {'(', 'L'}:
+                j = 0
+                while (i - j) % 6 > 0 and self.pos[i - j - 1] == '-':
                     j += 1
-                # Find the right endpoint of the piece, then check for rightward moves.
-                offset = 1 + (i < 34 and self.pos[i + 2] == piece)
-                j = 1
-                while (i % 6) + j + offset <= 5 and self.pos[i + offset + j] == 'o':
-                    moves.append((piece, j))
+                    moves.append(f"M_{i}_{i-j}")
+            # Check for rightward moves
+            elif piece in {'R', ')'}:
+                j = 0
+                while (i + j) % 6 < 5 and self.pos[i + j + 1] == '-':
                     j += 1
-            else:
-                # Otherwise it must be an up-down piece, check for moves accordingly.
+                    moves.append(f"M_{i}_{i+j}")
+            # Check for upward moves
+            elif piece == 'T':
                 j = 1
-                while i - 6 * j >= 0 and self.pos[i - 6 * j] == 'o':
-                    moves.append((piece, j))
+                while i - 6 * j >= 0 and self.pos[i - 6*j] == '-':
+                    moves.append(f"M_{i}_{i-6*j}")
                     j += 1
-                # Find the bottom endpoint of the piece, then check for downward moves.
-                offset = 1 + (i < 24 and self.pos[i + 12] == piece)
+            # Check for downward moves
+            elif piece == 'B':
                 j = 1
-                while i + 6 * (j + offset) < 36 and self.pos[i + 6 * (j + offset)] == 'o':
-                    moves.append((piece, -j))
+                while i + 6 * j < 36 and self.pos[i + 6*j] == '-':
+                    moves.append(f"M_{i}_{i+6*j}")
                     j += 1
         return moves
 
     def doMove(self, move, **kwargs):
-        if (
-            not isinstance(move, tuple)
-            or len(move) != 2
-            or not isinstance(move[0], str)
-            or not isinstance(move[1], int)
-        ):
-            raise TypeError
         if move not in self.generateMoves():
             raise ValueError
+        _, start, end = move.split("_")
+        start = int(start)
+        end = int(end)
         new_pos = list(self.pos)
-        # unpack move
-        piece = move[0]
-        i = self.pos.find(piece)
-        n = move[1]
-        # First check the piece's orientation to know which way to move
-        if i % 6 != 5 and self.pos[i + 1] == piece:
-            # Then find the piece length (only check to the right)
-            length = 2 + (i < 34 and self.pos[i + 2] == piece)
-            # Move the corresponding slice to the left or right
-            new_pos[(i+n):(i+n+length)] = [piece] * length
-            # Finally replace vacated spaces by o's
-            if n > 0:
-                new_pos[i:i+n] = ['o'] * n
-            else:
-                new_pos[i+length+n:i+length] = ['o'] * (-n)
+        # First check the move's orientation to know which way to move
+        if end >= start + 6:
+            # Downward move, meaning `start` is a 'B' square. Find the entire piece's length to determine what to move.
+            length = 2 + (start >= 12 and self.pos[start - 12] == 'T')
+            # Move the vertical slice containing the piece, down to the end of the move
+            new_pos[(end - 6*(length-1)):(end + 1):6] = self.pos[(start - 6*(length-1)):(start + 1):6]
+            # Replace vacated squares by empty '-'
+            distance = (end - start) // 6
+            new_pos[(start - 6*(length-1)):(end - 6*(length-1)):6] = ['-'] * distance
+        elif end > start:
+            # Rightward move, meaning `start` is a 'R' square.
+            length = 2 + (start % 6 >= 2 and self.pos[start - 2] == 'L')
+            new_pos[(end - length + 1):(end + 1)] = self.pos[(start - length + 1):(start + 1)]
+            distance = end - start
+            new_pos[(start - length + 1):(end - length + 1)] = ['-'] * distance
+        elif end <= start - 6:
+            # Upward move, meaning `start` is a 'T' square.
+            length = 2 + (start < 24 and self.pos[start + 12] == 'B')
+            new_pos[end:(end + 6*length):6] = self.pos[start:(start + 6*length):6]
+            distance = (start - end) // 6
+            new_pos[(end + 6*length):(start + 6*length):6] = ['-'] * distance
         else:
-            length = 2 + (i < 24 and self.pos[i + 12] == piece)
-            # Here n > 0 means an upward move, which moves backwards in the array; so flip its sign for clarity
-            n = -n
-            new_pos[i+n*6:i+(length+n)*6:6] = [piece] * length
-            if n > 0:
-                new_pos[i:i+n*6:6] = ['o'] * n
-            else:
-                new_pos[i+(length+n)*6:i+length*6:6] = ['o'] * (-n)
+            # Leftward move, meaning `start` is a 'L' square.
+            length = 2 + (start % 6 < 4 and self.pos[start + 2] == 'R')
+            new_pos[end:(end + length)] = self.pos[start:(start + length)]
+            distance = start - end
+            new_pos[(end + length):(start + length)] = ['-'] * distance
+
         return Rush(variant_id=self.variant_id, pos=''.join(new_pos))
 
 
-puzzle = Rush(variant_id=4)
+puzzle = Rush(variant_id='expert')
 TUI(puzzle, solver=GeneralSolver(puzzle), info=True).play()
 # from scripts.server import test_puzzle
 # test_puzzle(Rush)
