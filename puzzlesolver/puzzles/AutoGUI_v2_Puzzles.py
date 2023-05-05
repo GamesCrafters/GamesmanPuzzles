@@ -220,9 +220,57 @@ def getHanoi(variant_id):
                 }
             }
 
+
+def getRush(variant_id):
+    return {
+            "defaultTheme": "regular",
+            "themes": {
+                "regular": {
+                    "backgroundGeometry": [6, 6],
+                    "backgroundImage": "rush/grid.svg",
+                    "centers": [[0.5 + (i % 6), 0.5 + (i // 6)] for i in range(36)],
+                    "pieces": {
+                        "L": {
+                            "image": "rush/left.svg",
+                            "scale": 1
+                        },
+                        "m": {
+                            "image": "rush/horizontal.svg",
+                            "scale": 1
+                        },
+                        "R": {
+                            "image": "rush/right.svg",
+                            "scale": 1
+                        },
+                        "T": {
+                            "image": "rush/top.svg",
+                            "scale": 1
+                        },
+                        "M": {
+                            "image": "rush/vertical.svg",
+                            "scale": 1
+                        },
+                        "B": {
+                            "image": "rush/bottom.svg",
+                            "scale": 1
+                        },
+                        "1": {
+                            "image": "rush/left_red.svg",
+                            "scale": 1
+                        },
+                        "2": {
+                            "image": "rush/right_red.svg",
+                            "scale": 1
+                        }
+                    }
+                }
+            }
+        }
+
 autoGUIv2DataFuncs = {
     "nqueens": getNQueens,
-    "hanoi": getHanoi
+    "hanoi": getHanoi,
+    "rush": getRush
 }
 
 def get_autoguiV2Data(puzzle_id, variant_id):

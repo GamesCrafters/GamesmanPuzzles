@@ -1,9 +1,9 @@
-from puzzlesolver.util import *
-from puzzlesolver.puzzles import ServerPuzzle
-from puzzlesolver.solvers import GeneralSolver
-from puzzlesolver.players import TUI
+from ..util import *
+from ..puzzles import ServerPuzzle
 from hashlib import sha1
 import random
+import os
+dirname = os.path.dirname(__file__)
 
 
 class Rush(ServerPuzzle):
@@ -14,6 +14,7 @@ class Rush(ServerPuzzle):
     date = "April 25, 2023"
 
     variants = ['basic', 'easy', 'medium', 'hard', 'expert']
+    startRandomized = False
 
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
@@ -25,11 +26,12 @@ class Rush(ServerPuzzle):
         super().__init__()
         self.variant_id = variant_id
         if pos is None:
-            variant_file = f"rush_data/no_walls_{variant_id}.txt"
+            variant_file = f"{dirname}/../../databases/rush_data/no_walls_{variant_id}.txt"
             if puzzle_id is None:
                 # Search the database for a random puzzle with the given difficulty level.
-                variant_ranges = {"basic": 261327, "easy": 59025, "medium": 16351, "hard": 3821, "expert": 1257}
-                puzzle_id = random.randrange(variant_ranges[variant_id])
+                # variant_ranges = {"basic": 261327, "easy": 59025, "medium": 16351, "hard": 3821, "expert": 1257}
+                # puzzle_id = random.randrange(variant_ranges[variant_id])
+                puzzle_id = 0
             with open(variant_file, 'r') as variants:
                 for i, variant in enumerate(variants):
                     if i == puzzle_id:
@@ -60,8 +62,8 @@ class Rush(ServerPuzzle):
                         .replace('B', 'V')\
                         .replace('M', 'H')\
                         .replace('m', '=')\
-                        .replace('(', 'X')\
-                        .replace(')', 'X')
+                        .replace('1', 'X')\
+                        .replace('2', 'X')
         else:
             raise ValueError("Invalid keyword argument 'mode'")
 
@@ -71,16 +73,16 @@ class Rush(ServerPuzzle):
         if not positionid or not isinstance(positionid, str):
             raise TypeError("PositionID is not type str")
         # Checking if this is a valid string (extract the board first)
-        board_string = positionid.split("_")[-1]
+        _, _, variant_id, board_string = positionid.split("_")
         if len(board_string) != 36:
             raise ValueError("PositionID cannot be translated into Puzzle")
         # Check that this will decode into a valid board
         try:
-            allowed_pieces = {'-', 'L', 'm', 'R', 'T', 'M', 'B', '(', ')'}
-            allowed_top = {'-', 'L', 'm', 'R', 'T'}
+            allowed_pieces = {'-', 'L', 'm', 'R', 'T', 'M', 'B', '1', '2'}
+            allowed_top = {'-', 'L', 'm', 'R', 'T', '1', '2'}
             allowed_bottom = {'-', 'L', 'm', 'R', 'B'}
-            allowed_right = {'-', 'R', 'T', 'M', 'B', ')'}
-            allowed_left = {'-', 'L', 'T', 'M', 'B', '('}
+            allowed_right = {'-', 'R', 'T', 'M', 'B', '2'}
+            allowed_left = {'-', 'L', 'T', 'M', 'B', '1'}
             seen_red_piece = False
             for i, piece in enumerate(board_string):
                 # Look through the board, make sure all pieces are allowable pieces
@@ -93,8 +95,8 @@ class Rush(ServerPuzzle):
                         or i < 6 and piece not in allowed_top \
                         or i >= 30 and piece not in allowed_bottom:
                     raise ValueError
-                # Check that there is only one red piece "()" and it is in row 3
-                if piece == '(':
+                # Check that there is only one red piece "12" and it is in row 3
+                if piece == '1':
                     if seen_red_piece or i < 12 or i > 16:
                         raise ValueError
                     else:
@@ -103,25 +105,25 @@ class Rush(ServerPuzzle):
                 if i % 6 < 5 and (
                         piece == 'L' and board_string[i + 1] not in {'m', 'R'}
                         or piece == 'm' and board_string[i + 1] != 'R'
-                        or piece == '(' and board_string[i + 1] != ')'
-                        or piece not in {'m', 'L', '('} and board_string[i + 1] not in allowed_left
+                        or piece == '1' and board_string[i + 1] != '2'
+                        or piece not in {'m', 'L', '1'} and board_string[i + 1] not in allowed_left
                 ):
                     raise ValueError
                 # Check that the piece below is allowed to be below it
                 if i < 30 and (
-                        piece == 'T' and board_string[i + 1] not in {'M', 'B'}
-                        or piece == 'M' and board_string[i + 1] != 'B'
-                        or piece not in {'T', 'M'} and board_string[i + 1] not in allowed_top
+                        piece == 'T' and board_string[i + 6] not in {'M', 'B'}
+                        or piece == 'M' and board_string[i + 6] != 'B'
+                        or piece not in {'T', 'M'} and board_string[i + 6] not in allowed_top
                 ):
                     raise ValueError
         except ValueError:
             raise ValueError("PositionID cannot be translated into Puzzle")
 
         # If no error, we can return a board with the given puzzle
-        return Rush(pos=board_string)
+        return Rush(variant_id=variant_id, pos=board_string)
 
     def primitive(self, **kwargs):
-        if self.pos[16:18] == "()":
+        if self.pos[16:18] == "12":
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
 
@@ -131,13 +133,13 @@ class Rush(ServerPuzzle):
         moves = []
         for i, piece in enumerate(self.pos):
             # Check for leftward moves
-            if piece in {'(', 'L'}:
+            if piece in {'1', 'L'}:
                 j = 0
                 while (i - j) % 6 > 0 and self.pos[i - j - 1] == '-':
                     j += 1
                     moves.append(f"M_{i}_{i-j}")
             # Check for rightward moves
-            elif piece in {'R', ')'}:
+            elif piece in {'R', '2'}:
                 j = 0
                 while (i + j) % 6 < 5 and self.pos[i + j + 1] == '-':
                     j += 1
@@ -194,8 +196,10 @@ class Rush(ServerPuzzle):
         return Rush(variant_id=self.variant_id, pos=''.join(new_pos))
 
 
-puzzle = Rush(variant_id='expert')
-TUI(puzzle, solver=GeneralSolver(puzzle), info=True).play()
+# from puzzlesolver.solvers import GeneralSolver
+# from puzzlesolver.players import TUI
+# puzzle = Rush(variant_id='expert')
+# TUI(puzzle, solver=GeneralSolver(puzzle), info=True).play()
 # from scripts.server import test_puzzle
 # test_puzzle(Rush)
 
