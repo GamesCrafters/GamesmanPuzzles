@@ -177,9 +177,9 @@ def puzzle_position(puzzle_id, variant_id, position):
                 "move": str(move[0]),
                 "moveValue": PuzzleValue.SOLVABLE
                     if this_remoteness > next_remoteness
-                    else PuzzleValue.UNDECIDED
+                    else PuzzleValue.NOPROGRESS
                     if this_remoteness == next_remoteness
-                    else PuzzleValue.NOPROGRESS,
+                    else PuzzleValue.UNSOLVABLE,
                 "deltaRemoteness": this_remoteness - next_remoteness,
                 "remoteness": next_remoteness
                     if next_remoteness != PuzzleValue.MAX_REMOTENESS
