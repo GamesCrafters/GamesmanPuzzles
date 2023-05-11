@@ -2,13 +2,15 @@ class PuzzleValue:
     SOLVABLE = "win"
     UNSOLVABLE = "lose"
     UNDECIDED = "undecided"
+    NOPROGRESS = "tie"
     MAX_REMOTENESS = 127
 
     @staticmethod
     def contains(key):
         return (key == PuzzleValue.SOLVABLE or 
                 key == PuzzleValue.UNSOLVABLE or 
-                key == PuzzleValue.UNDECIDED)
+                key == PuzzleValue.UNDECIDED or
+                key == PuzzleValue.NOPROGRESS)
 
 class PuzzleException(Exception):
     """An Exception meant to be caught by the server"""

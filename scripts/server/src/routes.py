@@ -179,7 +179,7 @@ def puzzle_position(puzzle_id, variant_id, position):
                     if this_remoteness > next_remoteness
                     else PuzzleValue.UNDECIDED
                     if this_remoteness == next_remoteness
-                    else PuzzleValue.UNSOLVABLE,
+                    else PuzzleValue.NOPROGRESS,
                 "deltaRemoteness": this_remoteness - next_remoteness,
                 "remoteness": next_remoteness
                     if next_remoteness != PuzzleValue.MAX_REMOTENESS
