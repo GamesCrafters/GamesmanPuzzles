@@ -44,15 +44,7 @@ class Hanoi(ServerPuzzle):
         """
         self.rod_variant = 3
         self.disk_variant = 3
-        if variant:
-            if not isinstance(variant, dict):
-                raise TypeError("Variant keyword argument is not of type dict")
-            if "rod_variant" not in variant:
-                raise ValueError("Variant keyword argument does not contain rod_variant")
-            if "disk_variant" not in variant:
-                raise ValueError("Variant keyword argument does not contain disk_variant")
-            self.rod_variant, self.disk_variant = variant["rod_variant"], variant["disk_variant"]
-        elif variantid:
+        if variantid:
             if not isinstance(variantid, str):
                 raise TypeError("VariantID is not of type str")
             strlist = variantid.split("_")
@@ -60,7 +52,6 @@ class Hanoi(ServerPuzzle):
                 raise ValueError("Invalid variantID")
             self.rod_variant = int(strlist[0])
             self.disk_variant = int(strlist[1])
-
         self.rods = [2 ** self.disk_variant - 1] + [0] * (self.rod_variant - 1)
     
     @property
@@ -119,7 +110,7 @@ class Hanoi(ServerPuzzle):
             String representation -- String"""
         
         if mode == "minimal":
-            return "-".join([str(rod) for rod in self.rods])
+            return self.convert_board(self.rods)
         elif mode == "complex":
             # Easier to convert to a list of lists and use
             # [6, 1, 0] -> [["C", "B"], ["A"], []]
@@ -145,7 +136,7 @@ class Hanoi(ServerPuzzle):
             return output
         else:
             raise ValueError("Invalid keyword argument 'mode'")
-    
+
     @classmethod
     def fromString(cls, positionid : str):
         """Returns a Puzzle object based on "minimal"
@@ -167,24 +158,33 @@ class Hanoi(ServerPuzzle):
             Puzzle object based on puzzleid and variantid
         """
         if not isinstance(positionid, str):
-            raise TypeError("PositionID is not type str")
-        
-        rod_strings = positionid.split("-")
-        if not rod_strings:
-            raise ValueError("PositionID cannot be translated into Puzzle")
-        
-        try:
-            rods = [int(rod) for rod in rod_strings]
-        except ValueError:
-            raise ValueError("PositionID cannot be translated into Puzzle")
+            raise TypeError("PositionID is not of type str")
+
+        # Example positionid: "R_A_3_3_A--B--C--"
+        positionid_s = positionid.split("_")
+        disk_variant = int(positionid_s[2])
+        rod_variant = int(positionid_s[3])
+        matrix_str = positionid_s[4]
+
+        if len(matrix_str) != (disk_variant * rod_variant):
+            raise ValueError("invalid PositionID")
+
+        # revisit the use of disk vs rod for rows and cols
+        matrix = [[matrix_str[i*rod_variant + j] for j in range(rod_variant)] for i in range(disk_variant)]
+        disks = [[matrix[i][j] for i in range(disk_variant) if matrix[i][j] != '-'] for j in range(rod_variant)]
+        rods = []
+        for row in disks:
+            rod = 0
+            for letter in row:
+                exp = ord(letter) - 65
+                rod += 2 ** exp
+            rods.append(rod)
 
         sum_rods = sum(rods) + 1
         if sum_rods & -sum_rods != sum_rods:
-            raise ValueError("PositionID cannot be translated into Puzzle")
+            raise ValueError("invalid PositionID")
 
-        newPuzzle = Hanoi(variant={
-            "rod_variant" : len(rods), 
-            "disk_variant" : sum_rods.bit_length() - 1})
+        newPuzzle = Hanoi("{}_{}".format(rod_variant, disk_variant))
         newPuzzle.rods = rods
         return newPuzzle
 
@@ -223,15 +223,15 @@ class Hanoi(ServerPuzzle):
         Outputs:
             Puzzle with move executed
         """
+        if move not in self.generateMoves():
+            raise ValueError("Move not possible")
 
+        move = self.revert_move(move)
         if not isinstance(move, tuple) and \
             len(move) != 2 and \
             isinstance(move[0], int) and \
             isinstance(move[1], int):
             raise TypeError("Invalid type for move")
-
-        if move not in self.generateMoves(): 
-            raise ValueError("Move not possible")
 
         newPuzzle = Hanoi(variantid=self.variant)
         rods = self.rods.copy()
@@ -265,7 +265,8 @@ class Hanoi(ServerPuzzle):
         for i in range(len(rods)):
             for j in range(len(rods)):
                 if rods[i] < rods[j]:
-                    moves.add((i, j))
+                    move = self.convert_move((i, j))
+                    moves.add(move)
         return moves
 
     def generateSolutions(self):
@@ -278,7 +279,11 @@ class Hanoi(ServerPuzzle):
         puzzle_string = "0-" * (self.rod_variant - 1)
         puzzle_string += str(2 ** self.disk_variant - 1)
 
-        return [self.fromString(puzzle_string)]
+        rods = []
+        for c in puzzle_string.split('-'):
+            rods.append(int(c))
+        p = self.convert_board(rods)
+        return [self.fromString(p)]
 
     @classmethod
     def generateStartPosition(cls, variantid, variant=None):
@@ -293,6 +298,67 @@ class Hanoi(ServerPuzzle):
             - A Puzzle of Hanoi
         """
         return Hanoi(variantid, variant)
+
+    def convert_board(self, rods):
+        """Returns the board converted into uwapi format board
+        Input
+            - board
+        Output
+            - uwapi board
+        """
+        letters = [[chr(j + 65) for j in range(self.disk_variant) if (rod >> j)&1] for rod in rods]
+        horizontal = [['-']*(self.disk_variant - len(stack)) + stack for stack in letters]
+        rotate = ''
+        for i in range(self.disk_variant):
+            row = ''
+            for hor in horizontal:
+                row += hor[i]
+            rotate += row
+        # rows = disk,   cols = rods
+        return "R_A_{}_{}_".format(self.disk_variant, self.rod_variant) + rotate
+
+    def convert_move(self, move):
+        """Returns the move converted into uwapi format move
+        Input
+            - move
+        Output
+            - uwapi move
+        """
+        rod_variant = self.rod_variant
+        from_pos = move[0]
+        to_pos = move[1]
+        board = self.convert_board(self.rods)
+        board = board[8:]
+
+        # find top most pos of disk at from_pos column
+        from_top_most = 0
+        for i in range(0, len(board), rod_variant):
+            index = i + from_pos
+            pos = board[index]
+            if pos != '-':
+                from_top_most = index
+                break
+        # find bottom most pos to put fdisk a to_pos column
+        to_bottom_most = 0
+        for i in range(0, len(board), rod_variant):
+            index = i + to_pos
+            pos = board[index]
+            if pos == '-':
+                to_bottom_most = index
+        return "M_{}_{}".format(from_top_most, to_bottom_most)
+
+    def revert_move(self, move):
+        """Returns the uwapi move converted into regular move
+        Input
+            - uwapi move
+        Output
+            - move
+        """
+        rod_variant = self.rod_variant
+        parts = move.split("_")
+        to_pos = int(parts[1]) % rod_variant
+        from_pos = int(parts[2]) % rod_variant
+        return (to_pos, from_pos)
 
     @classmethod
     def fromHash(cls, variantid, hash_val):

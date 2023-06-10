@@ -3,6 +3,7 @@ from flask import jsonify, abort
 from flask_cors import CORS
 from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue
+from puzzlesolver.puzzles.AutoGUI_v2_Puzzles import *
 from puzzlesolver.puzzles.AutoGUI_Status import get_gui_status
 from werkzeug.exceptions import InternalServerError
 from . import puzzle_solved_variants
@@ -103,8 +104,8 @@ def puzzle(puzzle_id):
             "description": variant_id,
             "startPosition": getPuzzle(puzzle_id, variant_id, puzzlecls.startRandomized).toString(),
             "status": check_available(puzzle_id, variant_id),
-            "gui_status": get_gui_status(puzzle_id, variant_id),
-            "variantId": variant_id
+            "variantId": variant_id,
+            'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id)
         } for variant_id in puzzlecls.variants]
     }
     return format_response(response)
@@ -119,8 +120,8 @@ def puzzle_variant(puzzle_id, variant_id):
         "description": variant_id,
         "startPosition": puzzle.toString(mode="minimal"),
         "status": check_available(puzzle_id, variant_id),
-        "gui_status": get_gui_status(puzzle_id, variant_id),
-        "variantId": variant_id
+        "variantId": variant_id,
+        'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id)
     }
     return format_response(response)
 
@@ -176,7 +177,7 @@ def puzzle_position(puzzle_id, variant_id, position):
                 "move": str(move[0]),
                 "moveValue": PuzzleValue.SOLVABLE
                     if this_remoteness > next_remoteness
-                    else PuzzleValue.UNDECIDED
+                    else PuzzleValue.NOPROGRESS
                     if this_remoteness == next_remoteness
                     else PuzzleValue.UNSOLVABLE,
                 "deltaRemoteness": this_remoteness - next_remoteness,
