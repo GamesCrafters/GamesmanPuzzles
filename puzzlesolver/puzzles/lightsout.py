@@ -13,7 +13,6 @@ class LightsOut(ServerPuzzle):
     try:
         from ..extern import m4ri_utils
     except:
-        print("failed")
         variants = [str(i) for i in range(2, 6)]
         closed_form_variants = []
     else:
