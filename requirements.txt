@@ -3,6 +3,7 @@ attrs==19.3.0
 certifi==2022.9.24
 Click==7.0
 coverage==5.0.3
+Cython==0.29.33
 decorator==4.4.2
 Flask==1.1.1
 Flask-Cors==3.0.8

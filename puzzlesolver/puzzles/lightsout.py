@@ -1,4 +1,3 @@
-from pkg_resources import parse_version
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
@@ -12,11 +11,9 @@ class LightsOut(ServerPuzzle):
     date    = "January 14, 2023"
 
     try:
-        from sage.all import version as sage_version_function
-        installed_version = sage_version_function().replace(',','').split()[2]
-        if parse_version(installed_version) < parse_version("9.2"):
-            raise ImportError("It is not recommended to use Sage version earlier than 9.2.")
-    except ImportError:
+        from ..extern import m4ri_utils
+    except:
+        print("failed")
         variants = [str(i) for i in range(2, 6)]
         closed_form_variants = []
     else:
