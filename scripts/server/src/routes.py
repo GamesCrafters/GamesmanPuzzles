@@ -32,7 +32,7 @@ def check_available(puzzle_id, variant=None):
     solver = s_cls(puzzle, dir_path=app.config['DATABASE_DIR'])
 
     import os
-    if os.path.exists(solver.path): 
+    if os.path.exists(solver.path) or solver.path == "closed_form":
         puzzle_solved_variants[puzzle_id][variant] = solver
         return "available"
     return "not available"
