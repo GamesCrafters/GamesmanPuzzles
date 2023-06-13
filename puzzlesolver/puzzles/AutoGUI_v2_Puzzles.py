@@ -220,46 +220,45 @@ def getHanoi(variant_id):
                 }
             }
 
-
-def getRush(variant_id):
+def getRushHour(variant_id):
     return {
             "defaultTheme": "regular",
             "themes": {
                 "regular": {
-                    "backgroundGeometry": [6, 6],
-                    "backgroundImage": "rush/grid.svg",
-                    "centers": [[0.5 + (i % 6), 0.5 + (i // 6)] for i in range(36)],
+                    "backgroundGeometry": [8, 6],
+                    "backgroundImage": "rushhour/grid.svg",
+                    "centers": [[0.5 + (i % 6), 0.5 + (i // 6)] for i in range(36)] + [[6.5, 2.5], [7.5, 2.5]],
                     "pieces": {
                         "L": {
-                            "image": "rush/left.svg",
+                            "image": "rushhour/left.svg",
                             "scale": 1
                         },
                         "m": {
-                            "image": "rush/horizontal.svg",
+                            "image": "rushhour/horizontal.svg",
                             "scale": 1
                         },
                         "R": {
-                            "image": "rush/right.svg",
+                            "image": "rushhour/right.svg",
                             "scale": 1
                         },
                         "T": {
-                            "image": "rush/top.svg",
+                            "image": "rushhour/top.svg",
                             "scale": 1
                         },
                         "M": {
-                            "image": "rush/vertical.svg",
+                            "image": "rushhour/vertical.svg",
                             "scale": 1
                         },
                         "B": {
-                            "image": "rush/bottom.svg",
+                            "image": "rushhour/bottom.svg",
                             "scale": 1
                         },
                         "1": {
-                            "image": "rush/left_red.svg",
+                            "image": "rushhour/left_red.svg",
                             "scale": 1
                         },
                         "2": {
-                            "image": "rush/right_red.svg",
+                            "image": "rushhour/right_red.svg",
                             "scale": 1
                         }
                     }
@@ -270,7 +269,7 @@ def getRush(variant_id):
 autoGUIv2DataFuncs = {
     "nqueens": getNQueens,
     "hanoi": getHanoi,
-    "rush": getRush
+    "rushhour": getRushHour
 }
 
 def get_autoguiV2Data(puzzle_id, variant_id):

@@ -15,11 +15,11 @@ from .topspin import TopSpin
 from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
-from .rush import Rush
+from .rushhour import RushHour
 
 # Add your puzzle in the puzzleList
 puzzleList = {
-    Rush.id:        Rush,
+    RushHour.id:    RushHour,
     Npuzzle.id:     Npuzzle,
     Hanoi.id:       Hanoi,
     LightsOut.id:   LightsOut,

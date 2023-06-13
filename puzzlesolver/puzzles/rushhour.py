@@ -1,15 +1,14 @@
 from ..util import *
 from ..puzzles import ServerPuzzle
-from hashlib import sha1
 import random
 import os
 dirname = os.path.dirname(__file__)
 
 
-class Rush(ServerPuzzle):
-    id = "rush"
+class RushHour(ServerPuzzle):
+    id = "rushhour"
     auth = "Christopher Nammour"
-    name = "Rush"
+    name = "Rush Hour"
     desc = """Move pieces around to get the red piece to the right side of the board."""
     date = "April 25, 2023"
 
@@ -18,11 +17,11 @@ class Rush(ServerPuzzle):
 
     @classmethod
     def generateStartPosition(cls, variantid, **kwargs):
-        if not isinstance(variantid, str) or variantid not in Rush.variants:
+        if not isinstance(variantid, str) or variantid not in RushHour.variants:
             raise TypeError("Invalid variantid")
-        return Rush(variant_id=variantid)
+        return RushHour(variant_id=variantid)
 
-    def __init__(self, variant_id='medium', puzzle_id=None, pos=None):
+    def __init__(self, variant_id, puzzle_id=None, pos=None):
         super().__init__()
         self.variant_id = variant_id
         if pos is None:
@@ -35,23 +34,107 @@ class Rush(ServerPuzzle):
             with open(variant_file, 'r') as variants:
                 for i, variant in enumerate(variants):
                     if i == puzzle_id:
-                        self.pos = variant[:36]  # remove trailing newline
+                        self.pos = variant[:36] + "--"  # remove trailing newline
                         break
         else:
             self.pos = pos
-
-    def __hash__(self):
-        h = sha1()
-        h.update(self.pos.encode())
-        return int(h.hexdigest(), 16)
 
     @property
     def variant(self):
         return self.variant_id
 
+    def __hash__(self):
+        # At each step, add to the total, and multiply by the number of options
+        result = 0
+        multiplier = 1
+        # First hash the position of the red piece
+        red_pos = list(self.pos[12:17]).index("1")
+        result += red_pos
+        multiplier *= 5
+        # Then the every other remaining piece in the third row
+        for i in range(12, 18, 2):
+            if i % 6 == red_pos or i % 6 == red_pos + 1:
+                continue
+            result += ['-', 'T', 'M', 'B'].index(self.pos[i]) * multiplier
+            multiplier *= 4
+        # Then the top-left piece
+        result += ['-', 'L', 'T'].index(self.pos[0]) * multiplier
+        multiplier *= 3
+        # Finally every other piece on the rest of the grid
+        for j in range(2, 36):
+            # "every other piece" means row+column is even [also exclude the third row]
+            if j // 6 == 2 or ((j % 6) + (j // 6)) % 2 != 0:
+                continue
+            allowed_pieces = ['-', 'L', 'm', 'R', 'T', 'M', 'B']
+            if j % 6 == 0:
+                allowed_pieces = ['-', 'L', 'T', 'M', 'B']
+            elif j % 6 == 5:
+                allowed_pieces = ['-', 'R', 'T', 'M', 'B']
+            elif j // 6 == 0:
+                allowed_pieces = ['-', 'L', 'm', 'R', 'T']
+            elif j // 6 == 5:
+                allowed_pieces = ['-', 'L', 'm', 'R', 'B']
+            result += allowed_pieces.index(self.pos[j]) * multiplier
+            multiplier *= len(allowed_pieces)
+        return result
+
+    @classmethod
+    def fromHash(cls, variantid, hash_val):
+        # Invert the steps in __hash__ to find every other piece in the board
+        new_pos = ['-'] * 38
+        # First the red piece
+        red_pos = hash_val % 5
+        new_pos[12 + red_pos] = '1'
+        new_pos[12 + red_pos + 1] = '2'
+        hash_val //= 5
+        # Then every other piece in the third row
+        for i in range(12, 18, 2):
+            if i % 6 == red_pos or i % 6 == red_pos + 1:
+                continue
+            new_pos[i] = ['-', 'T', 'M', 'B'][hash_val % 4]
+            hash_val //= 4
+        # Then the top-left piece
+        new_pos[0] = ['-', 'L', 'T'][hash_val % 3]
+        hash_val //= 3
+        # Finally every other piece on the rest of the grid
+        for i in range(2, 36):
+            if i // 6 == 2 or ((i % 6) + (i // 6)) % 2 != 0:
+                continue
+            allowed_pieces = ['-', 'L', 'm', 'R', 'T', 'M', 'B']
+            if i % 6 == 0:
+                allowed_pieces = ['-', 'L', 'T', 'M', 'B']
+            elif i % 6 == 5:
+                allowed_pieces = ['-', 'R', 'T', 'M', 'B']
+            elif i // 6 == 0:
+                allowed_pieces = ['-', 'L', 'm', 'R', 'T']
+            elif i // 6 == 5:
+                allowed_pieces = ['-', 'L', 'm', 'R', 'B']
+            n = len(allowed_pieces)
+            new_pos[i] = allowed_pieces[hash_val % n]
+            hash_val //= n
+        # Once we have every other piece, extrapolate the rest of the board
+        for i in range(1, 36):
+            if new_pos[i] != '-' or ((i % 6) + (i // 6)) % 2 == 0:
+                continue
+            if i % 6 > 0 and new_pos[i - 1] in {'L', 'm'}:
+                if i % 6 < 5 and new_pos[i + 1] == 'R':
+                    new_pos[i] = 'm'
+                else:
+                    new_pos[i] = 'R'
+            elif i % 6 < 5 and new_pos[i + 1] in {'R', 'm'}:
+                new_pos[i] = 'L'
+            elif i >= 6 and new_pos[i - 6] in {'T', 'M'}:
+                if i < 30 and new_pos[i + 6] == 'B':
+                    new_pos[i] = 'M'
+                else:
+                    new_pos[i] = 'B'
+            elif i < 30 and new_pos[i + 6] in {'B', 'M'}:
+                new_pos[i] = 'T'
+        return RushHour(variantid, pos=''.join(new_pos))
+
     def toString(self, mode="minimal"):
         if mode == "minimal":
-            return "R_A_" + self.variant_id + "_" + self.pos
+            return f"R_A_0_{RushHour.variants.index(self.variant_id)}_{self.to_winning_string()}"
         elif mode == "complex":
             display = ""
             for i in range(6):
@@ -67,15 +150,44 @@ class Rush(ServerPuzzle):
         else:
             raise ValueError("Invalid keyword argument 'mode'")
 
+    def to_winning_string(self):
+        """Converts a winning position to a string representation of it:
+        moves the red piece out to the last two indices in the string.
+        If not in a winning position, does nothing."""
+        if self.pos[16:18] == "12":
+            return self.pos[:16] + "--" + self.pos[18:36] + "12"
+        else:
+            return self.pos
+
+    @staticmethod
+    def from_winning_string(board_string):
+        """Inverts to_winning_string: moves the red piece from the last
+        two indices in the string (if it is there) back inside the board.
+        Assumes this is a standard board string of length 38, in a valid winning position."""
+        if board_string[-2:] == "12":
+            return board_string[:16] + "12" + board_string[18:36] + "--"
+        else:
+            return board_string
+
     @classmethod
     def fromString(cls, positionid, **kwargs):
         # Checking if the positionid is a str
         if not positionid or not isinstance(positionid, str):
             raise TypeError("PositionID is not type str")
-        # Checking if this is a valid string (extract the board first)
-        _, _, variant_id, board_string = positionid.split("_")
-        if len(board_string) != 36:
+        # Checking if this is a valid string (extract the board and difficulty first)
+        variant_id, board_string = positionid.split("_")[-2:]
+        try:
+            variant_id = RushHour.variants[int(variant_id)]
+        except Exception:
             raise ValueError("PositionID cannot be translated into Puzzle")
+        if len(board_string) != 38:
+            raise ValueError("PositionID cannot be translated into Puzzle")
+        # Check that the last two characters are either empty or the red piece in a winning state
+        if not (board_string[-2:] == "--" or
+                board_string[-2:] == "12" and board_string[16:18] == "--"):
+            raise ValueError("PositionID cannot be translated into Puzzle")
+        # Move the red piece back into the board if it's outside
+        board_string = RushHour.from_winning_string(board_string)
         # Check that this will decode into a valid board
         try:
             allowed_pieces = {'-', 'L', 'm', 'R', 'T', 'M', 'B', '1', '2'}
@@ -84,7 +196,7 @@ class Rush(ServerPuzzle):
             allowed_right = {'-', 'R', 'T', 'M', 'B', '2'}
             allowed_left = {'-', 'L', 'T', 'M', 'B', '1'}
             seen_red_piece = False
-            for i, piece in enumerate(board_string):
+            for i, piece in enumerate(board_string[:36]):
                 # Look through the board, make sure all pieces are allowable pieces
                 # and are surrounded by the correct types of pieces
                 if piece not in allowed_pieces:
@@ -116,11 +228,13 @@ class Rush(ServerPuzzle):
                         or piece not in {'T', 'M'} and board_string[i + 6] not in allowed_top
                 ):
                     raise ValueError
+            if not seen_red_piece:
+                raise ValueError
         except ValueError:
             raise ValueError("PositionID cannot be translated into Puzzle")
 
-        # If no error, we can return a board with the given puzzle
-        return Rush(variant_id=variant_id, pos=board_string)
+        # If no error, we can return a board with the given puzzle.
+        return RushHour(variant_id=variant_id, pos=board_string)
 
     def primitive(self, **kwargs):
         if self.pos[16:18] == "12":
@@ -131,19 +245,29 @@ class Rush(ServerPuzzle):
         if movetype == 'for' or movetype == 'back':
             return []  # All moves are bidirectional
         moves = []
-        for i, piece in enumerate(self.pos):
+        for i, piece in enumerate(self.pos[:36]):
             # Check for leftward moves
             if piece in {'1', 'L'}:
                 j = 0
                 while (i - j) % 6 > 0 and self.pos[i - j - 1] == '-':
                     j += 1
-                    moves.append(f"M_{i}_{i-j}")
+                    if i == 16:
+                        # If it's a leftward move from a winning position,
+                        # display it as though it is coming from outside the grid
+                        moves.append(f"M_{36}_{i-j}")
+                    else:
+                        moves.append(f"M_{i}_{i-j}")
             # Check for rightward moves
             elif piece in {'R', '2'}:
                 j = 0
                 while (i + j) % 6 < 5 and self.pos[i + j + 1] == '-':
                     j += 1
-                    moves.append(f"M_{i}_{i+j}")
+                    if i + j == 17:
+                        # If it's a rightward move to a winning position,
+                        # display it as though it is going outside the grid
+                        moves.append(f"M_{i}_{36}")
+                    else:
+                        moves.append(f"M_{i}_{i+j}")
             # Check for upward moves
             elif piece == 'T':
                 j = 1
@@ -164,6 +288,9 @@ class Rush(ServerPuzzle):
         _, start, end = move.split("_")
         start = int(start)
         end = int(end)
+        # If the move is to/from a winning position, adjust to the true destination (see generateMoves)
+        if start == 36: start = 16
+        if end == 36: end = 17
         new_pos = list(self.pos)
         # First check the move's orientation to know which way to move
         if end >= start + 6:
@@ -193,13 +320,4 @@ class Rush(ServerPuzzle):
             distance = start - end
             new_pos[(end + length):(start + length)] = ['-'] * distance
 
-        return Rush(variant_id=self.variant_id, pos=''.join(new_pos))
-
-
-# from puzzlesolver.solvers import GeneralSolver
-# from puzzlesolver.players import TUI
-# puzzle = Rush(variant_id='expert')
-# TUI(puzzle, solver=GeneralSolver(puzzle), info=True).play()
-# from scripts.server import test_puzzle
-# test_puzzle(Rush)
-
+        return RushHour(variant_id=self.variant_id, pos=''.join(new_pos))
