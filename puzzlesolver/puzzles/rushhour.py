@@ -13,6 +13,8 @@ class RushHour(ServerPuzzle):
     date = "April 25, 2023"
 
     variants = ['basic', 'easy', 'medium', 'hard', 'expert']
+    # "True" would mean that the game would start at a random solvable board,
+    # by looking at all solvable hashes -- hence False to ensure we fix a start position
     startRandomized = False
 
     @classmethod
@@ -28,9 +30,8 @@ class RushHour(ServerPuzzle):
             variant_file = f"{dirname}/../../databases/rush_data/no_walls_{variant_id}.txt"
             if puzzle_id is None:
                 # Search the database for a random puzzle with the given difficulty level.
-                # variant_ranges = {"basic": 261327, "easy": 59025, "medium": 16351, "hard": 3821, "expert": 1257}
-                # puzzle_id = random.randrange(variant_ranges[variant_id])
-                puzzle_id = 0
+                variant_ranges = {"basic": 4943, "easy": 4998, "medium": 5000, "hard": 4043, "expert": 1336}
+                puzzle_id = random.randrange(variant_ranges[variant_id])
             with open(variant_file, 'r') as variants:
                 for i, variant in enumerate(variants):
                     if i == puzzle_id:
