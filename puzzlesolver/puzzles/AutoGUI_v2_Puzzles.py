@@ -1,3 +1,75 @@
+def getNPuzzle(variant_id):
+    if variant_id == '2':
+        return {
+                "defaultTheme": "regular",
+                "themes": {
+                    "regular": {
+                        "backgroundGeometry": [2, 2],
+                        "centers": [[0.5 + (i % 2), 0.5 + (i // 2)] for i in range(4)],
+                        "piecesOverArrows": True,
+                        "pieces": {
+                            "1": {
+                                "image": "npuzzle/1.svg",
+                                "scale": 1
+                            },
+                            "2": {
+                                "image": "npuzzle/2.svg",
+                                "scale": 1
+                            },
+                            "3": {
+                                "image": "npuzzle/3.svg",
+                                "scale": 1
+                            }
+                        }
+                    }
+                }
+            }
+    else:
+        return {
+                "defaultTheme": "regular",
+                "themes": {
+                    "regular": {
+                        "backgroundGeometry": [3, 3],
+                        "centers": [[0.5 + (i % 3), 0.5 + (i // 3)] for i in range(9)],
+                        "piecesOverArrows": True,
+                        "pieces": {
+                            "1": {
+                                "image": "npuzzle/1.svg",
+                                "scale": 1
+                            },
+                            "2": {
+                                "image": "npuzzle/2.svg",
+                                "scale": 1
+                            },
+                            "3": {
+                                "image": "npuzzle/3.svg",
+                                "scale": 1
+                            },
+                            "4": {
+                                "image": "npuzzle/4.svg",
+                                "scale": 1
+                            },
+                            "5": {
+                                "image": "npuzzle/5.svg",
+                                "scale": 1
+                            },
+                            "6": {
+                                "image": "npuzzle/6.svg",
+                                "scale": 1
+                            },
+                            "7": {
+                                "image": "npuzzle/7.svg",
+                                "scale": 1
+                            },
+                            "8": {
+                                "image": "npuzzle/8.svg",
+                                "scale": 1
+                            }
+                        }
+                    }
+                }
+            }
+
 def getNQueens(variant_id):
     if variant_id == '4':
         return {
@@ -26,6 +98,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/3_4_variant_grid.svg",
                         "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 1.6] for i in range(12)],
+                        "arrowWidth": 0.06,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/A.svg",
@@ -55,6 +128,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/3_3_variant_grid.svg",
                         "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 1.8] for i in range(9)],
+                        "arrowWidth": 0.06,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/A.svg",
@@ -80,6 +154,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/3_2_variant_grid.svg",
                         "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 2.0] for i in range(9)],
+                        "arrowWidth": 0.06,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/B.svg",
@@ -101,6 +176,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/3_1_variant_grid.svg",
                         "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 2.2] for i in range(9)],
+                        "arrowWidth": 0.06,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/C.svg",
@@ -118,6 +194,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [3, 3],
                         "backgroundImage": "hanoi/2_1_variant_grid.svg",
                         "centers": [[1 + (i % 2), 0.2 * (i // 2) + 2.25] for i in range(9)],
+                        "arrowWidth": 0.06,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/C.svg",
@@ -135,6 +212,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [4, 4],
                         "backgroundImage": "hanoi/4_1_variant_grid.svg",
                         "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 3.0] for i in range(16)],
+                        "arrowWidth": 0.08,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/C.svg",
@@ -152,6 +230,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [4, 4],
                         "backgroundImage": "hanoi/4_2_variant_grid.svg",
                         "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.8] for i in range(16)],
+                        "arrowWidth": 0.08,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/B.svg",
@@ -173,6 +252,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [4, 4],
                         "backgroundImage": "hanoi/4_3_variant_grid.svg",
                         "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.6] for i in range(16)],
+                        "arrowWidth": 0.08,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/A.svg",
@@ -198,6 +278,7 @@ def getHanoi(variant_id):
                         "backgroundGeometry": [4, 4],
                         "backgroundImage": "hanoi/4_4_variant_grid.svg",
                         "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.4] for i in range(16)],
+                        "arrowWidth": 0.08,
                         "pieces": {
                             "A": {
                                 "image": "hanoi/A.svg",
@@ -222,7 +303,8 @@ def getHanoi(variant_id):
 
 autoGUIv2DataFuncs = {
     "nqueens": getNQueens,
-    "hanoi": getHanoi
+    "hanoi": getHanoi,
+    "npuzzle": getNPuzzle
 }
 
 def get_autoguiV2Data(puzzle_id, variant_id):

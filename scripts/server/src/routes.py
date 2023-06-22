@@ -175,7 +175,9 @@ def puzzle_position(puzzle_id, variant_id, position):
                 "position": move[1].toString(mode="minimal"),
                 "positionValue": s.getValue(move[1]),
                 "move": str(move[0]),
-                "moveValue": PuzzleValue.SOLVABLE
+                "moveValue": PuzzleValue.UNDECIDED 
+                    if this_remoteness == PuzzleValue.MAX_REMOTENESS
+                    else PuzzleValue.SOLVABLE
                     if this_remoteness > next_remoteness
                     else PuzzleValue.NOPROGRESS
                     if this_remoteness == next_remoteness
