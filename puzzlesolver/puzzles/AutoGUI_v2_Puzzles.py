@@ -227,6 +227,7 @@ def getRushHour(variant_id):
                 "regular": {
                     "backgroundGeometry": [8, 6],
                     "backgroundImage": "rushhour/grid.svg",
+                    "arrowWidth": 0.1,
                     "centers": [[0.5 + (i % 6), 0.5 + (i // 6)] for i in range(36)] + [[6.5, 2.5], [7.5, 2.5]],
                     "pieces": {
                         "L": {
