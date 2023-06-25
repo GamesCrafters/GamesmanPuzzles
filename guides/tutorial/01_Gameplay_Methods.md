@@ -28,7 +28,7 @@ def toString(self, **kwargs):
     return str(self.stacks)
 ```
 #### `primitive(self, **kwargs)`
-The primitive of the puzzle describes if the puzzle has reached the solution or not. If it has reached the endstate, we will a arbitrary value that we define as SOLVABLE. Otherwise, it's considered to be UNDECIDED. For our version of Hanoi, a SOLVABLE primitive would be when all the rings are stacked on the rightmost rod.
+The primitive of the puzzle describes if the puzzle has reached the solution or not. If it has reached the endstate, we will return an arbitrary value that we define as SOLVABLE. Otherwise, it's considered to be UNDECIDED. For our version of Hanoi, a SOLVABLE primitive would be when all the rings are stacked on the rightmost rod.
 ```python
 def primitive(self, **kwargs):
     if self.stacks[2] == [3, 2, 1]:
