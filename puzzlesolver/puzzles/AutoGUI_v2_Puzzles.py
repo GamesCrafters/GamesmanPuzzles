@@ -301,10 +301,58 @@ def getHanoi(variant_id):
                 }
             }
 
+def getRushHour(variant_id):
+    return {
+            "defaultTheme": "regular",
+            "themes": {
+                "regular": {
+                    "backgroundGeometry": [8, 6],
+                    "backgroundImage": "rushhour/grid.svg",
+                    "arrowWidth": 0.1,
+                    "centers": [[0.5 + (i % 6), 0.5 + (i // 6)] for i in range(36)] + [[6.5, 2.5], [7.5, 2.5]],
+                    "pieces": {
+                        "L": {
+                            "image": "rushhour/left.svg",
+                            "scale": 1
+                        },
+                        "m": {
+                            "image": "rushhour/horizontal.svg",
+                            "scale": 1
+                        },
+                        "R": {
+                            "image": "rushhour/right.svg",
+                            "scale": 1
+                        },
+                        "T": {
+                            "image": "rushhour/top.svg",
+                            "scale": 1
+                        },
+                        "M": {
+                            "image": "rushhour/vertical.svg",
+                            "scale": 1
+                        },
+                        "B": {
+                            "image": "rushhour/bottom.svg",
+                            "scale": 1
+                        },
+                        "1": {
+                            "image": "rushhour/left_red.svg",
+                            "scale": 1
+                        },
+                        "2": {
+                            "image": "rushhour/right_red.svg",
+                            "scale": 1
+                        }
+                    }
+                }
+            }
+        }
+
 autoGUIv2DataFuncs = {
     "nqueens": getNQueens,
     "hanoi": getHanoi,
-    "npuzzle": getNPuzzle
+    "npuzzle": getNPuzzle,
+    "rushhour": getRushHour
 }
 
 def get_autoguiV2Data(puzzle_id, variant_id):

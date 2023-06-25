@@ -12,4 +12,7 @@ ISolver = IndexSolver
 from .picklesolver import PickleSolver
 PSolver = PickleSolver
 
+from .lightsoutclosedformsolver import LightsOutClosedFormSolver
+LOCFSolver = LightsOutClosedFormSolver
+
 from .solver import Solver as _Solver

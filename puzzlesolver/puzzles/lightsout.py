@@ -1,7 +1,6 @@
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import IndexSolver
 
 class LightsOut(ServerPuzzle):
 
@@ -9,10 +8,17 @@ class LightsOut(ServerPuzzle):
     auth    = "Anthony Ling, Robert Shi"
     name    = "Lights Out"
     desc    = "Click on the squares on the grid to turn it and adjacent squares off. Try to turn off all the squares!"
-    date    = "December 31, 2022"
+    date    = "January 14, 2023"
 
-    variants = {str(i) : IndexSolver for i in range(2, 6)}
-    test_variants = {str(i) : IndexSolver for i in range(2, 5)}
+    try:
+        from ..extern import m4ri_utils
+    except:
+        variants = [str(i) for i in range(2, 6)]
+        closed_form_variants = []
+    else:
+        variants = [str(i) for i in range(2, 9)]
+        closed_form_variants = ['2', '3', '6', '7', '8']
+    test_variants = [str(i) for i in range(2, 5)]
     startRandomized = True
 
     def __init__(self, variant='3'):
