@@ -3,8 +3,6 @@ from . import ServerPuzzle
 from ..util import *
 from ..solvers import SqliteSolver
 
-from hashlib import sha1
-
 class Chairs(ServerPuzzle):
 
     id      = 'chairs'
@@ -15,6 +13,7 @@ class Chairs(ServerPuzzle):
 
     variants = {"10" : SqliteSolver}
     test_variants = variants
+    startRandomized = False
 
     def __init__(self, **kwargs):
         self.board = ['x','x','x','x','x', '-', 'o','o','o','o','o']
@@ -137,9 +136,10 @@ class Chairs(ServerPuzzle):
     ### ____________ Solver Funcs ________________
 
     def __hash__(self):
-        h = sha1()
-        h.update(str(self.board).encode())
-        return int(h.hexdigest(), 16)
+        h = 0
+        for piece in reversed(self.board):
+            h = h*3 + (0 if piece == 'x' else 1 if piece == '-' else 2)
+        return h
 
     def generateSolutions(self, **kwargs):
         newPuzzle = Chairs()
@@ -147,6 +147,15 @@ class Chairs(ServerPuzzle):
         return [newPuzzle]
 
     ### ________ Server _________
+    @classmethod
+    def fromHash(cls, variantid, hash_val):
+        puzzle = cls()
+        for i in range(len(puzzle.board)):
+            piece_val = hash_val % 3
+            puzzle.board[i] = 'x' if piece_val == 0 else '-' if piece_val == 1 else 'o'
+            hash_val //= 3
+        return puzzle
+
     @classmethod
     def deserialize(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid

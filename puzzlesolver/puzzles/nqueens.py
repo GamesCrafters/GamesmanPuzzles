@@ -1,14 +1,9 @@
 """N Queens Puzzle
  https://en.wikipedia.org/wiki/Eight_queens_puzzle
 """
-
-from copy import deepcopy
 from puzzlesolver.puzzles._models import ServerPuzzle
 from puzzlesolver.util import *
-from puzzlesolver.solvers import IndexSolver
-
 import math
-
 
 class NQueens(ServerPuzzle):
 
@@ -18,27 +13,23 @@ class NQueens(ServerPuzzle):
     desc = 'Place the N queens in a way such that they do not attack each other'
     date = 'March 17, 2021'
 
-    variants = ['4', '5', '6', '7', '8']
-    test_variants = ["4"]
+    variants = ['4', '5']
+    test_variants = ['4']
+    startRandomized = True
 
     def __init__(self, variantid=None):
         """Returns the starting position of nqueens based on the variant
         Input:(Optional) variantid - str
         Output: A N queens puzzle
         """
-
         self.size = 4
-
         if variantid:
             if not isinstance(variantid, str):
                 raise TypeError("VariantID is not type str")
-            int_variant_id = int(variantid)
-            if int_variant_id > 8 or int_variant_id < 4:
+            if variantid not in self.variants:
                 raise ValueError("Invalid variantID")
-
-            self.size = int_variant_id
-
-        self.board = [1 for x in range(self.size)] + [0 for y in range(self.size * self.size - self.size)]
+            self.size = int(variantid)
+        self.board = [1 for _ in range(self.size)] + [0 for _ in range(self.size * self.size - self.size)]
 
     @property
     def variant(self):
@@ -57,7 +48,7 @@ class NQueens(ServerPuzzle):
         h = ""
         for ele in self.board:
             h += str(ele)
-        return int(h)
+        return int(h, base=2)
 
     def toString(self, mode='minimal'):
         """Returns the string representation of the Puzzle based on the type.
@@ -83,6 +74,15 @@ class NQueens(ServerPuzzle):
                 str2 += "{}\n".format(str3)
                 col += self.size
             return str2
+
+    @classmethod
+    def fromHash(cls, variantid, hash_val):
+        puzzle = cls(variantid)
+        board_size = puzzle.size * puzzle.size
+        hash_str = "{0:b}".format(hash_val).zfill(board_size)
+        for i in range(board_size):
+            puzzle.board[i] = int(hash_str[i] == '1')
+        return puzzle
 
     @classmethod
     def fromString(cls, positionid):
@@ -137,7 +137,6 @@ class NQueens(ServerPuzzle):
         new_board = NQueens(str(self.size))
         board = self.board[:]
         parts = move.split("_")
-        print(parts)
         i_from = int(parts[1])
         i_to = int(parts[2])
         temp = board[i_from]

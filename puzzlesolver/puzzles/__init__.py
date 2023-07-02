@@ -1,13 +1,12 @@
-from puzzlesolver.solvers import indexsolver
 from ._models import *
-from ..solvers import IndexSolver, PickleSolver
+from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
+from .graphpuzzle import GraphPuzzle
 from .hanoi import Hanoi
 from .lightsout import LightsOut
 from .pegSolitaire import Peg
-from .graphpuzzle import GraphPuzzle
 from .npuzzle import Npuzzle
 from .chairs import Chairs
 from .bishop import Bishop
@@ -15,9 +14,11 @@ from .topspin import TopSpin
 from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
+from .rushhour import RushHour
 
 # Add your puzzle in the puzzleList
 puzzleList = {
+    RushHour.id:    RushHour,
     Npuzzle.id:     Npuzzle,
     Hanoi.id:       Hanoi,
     LightsOut.id:   LightsOut,
@@ -57,6 +58,8 @@ class PuzzleManagerClass:
         # if puzzleid in [Hanoi.id, LightsOut.id, Bishop.id, Npuzzle.id]:
         #     return IndexSolver
         if puzzleid == LightsOut.id:
+            if variantid in LightsOut.closed_form_variants:
+                return LightsOutClosedFormSolver
             return IndexSolver
         return PickleSolver
     

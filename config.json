@@ -1,0 +1,4 @@
+{
+	"TESTING": false,
+	"DATABASE_DIR": "./databases"
+}
