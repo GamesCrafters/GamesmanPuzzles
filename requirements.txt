@@ -5,7 +5,7 @@ Click==7.0
 coverage==5.0.3
 Cython==0.29.33
 decorator==4.4.2
-Flask==1.1.1
+Flask==2.2.5
 Flask-Cors==3.0.8
 importlib-metadata==1.5.0
 isort==4.3.21
