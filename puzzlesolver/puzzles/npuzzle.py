@@ -73,7 +73,7 @@ class Npuzzle(ServerPuzzle):
         index_0 = self.position.index(0)
         adjacent = self.getAdjacent(index_0)
 
-        return ["M_{}_{}".format(a, index_0) for a in adjacent]
+        return ["M_{}_{}_x".format(a, index_0) for a in adjacent]
 
     def generateSolutions(self):
         newPuzzle = Npuzzle(size=self.size)

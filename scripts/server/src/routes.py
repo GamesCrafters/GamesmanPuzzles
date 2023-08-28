@@ -105,7 +105,8 @@ def puzzle(puzzle_id):
             "startPosition": getPuzzle(puzzle_id, variant_id, puzzlecls.startRandomized).toString(),
             "status": check_available(puzzle_id, variant_id),
             "variantId": variant_id,
-            'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id)
+            'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id),
+            'gui_status': get_gui_status(puzzle_id, variant_id)
         } for variant_id in puzzlecls.variants]
     }
     return format_response(response)

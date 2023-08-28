@@ -1,4 +1,5 @@
 def getNPuzzle(variant_id):
+    sounds = {"x": "general/slide.mp3"}
     if variant_id == '2':
         return {
                 "defaultTheme": "regular",
@@ -20,7 +21,9 @@ def getNPuzzle(variant_id):
                                 "image": "npuzzle/3.svg",
                                 "scale": 1
                             }
-                        }
+                        },
+                        "sounds": sounds,
+                        "animationType": "simpleSlidePlaceRemove"
                     }
                 }
             }
@@ -65,7 +68,9 @@ def getNPuzzle(variant_id):
                                 "image": "npuzzle/8.svg",
                                 "scale": 1
                             }
-                        }
+                        },
+                        "sounds": sounds,
+                        "animationType": "simpleSlidePlaceRemove"
                     }
                 }
             }
