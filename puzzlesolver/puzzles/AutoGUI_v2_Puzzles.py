@@ -20,7 +20,8 @@ def getNPuzzle(variant_id):
                                 "image": "npuzzle/3.svg",
                                 "scale": 1
                             }
-                        }
+                        },
+                        "animationType": "simpleSlidePlaceRemove"
                     }
                 }
             }
@@ -65,7 +66,8 @@ def getNPuzzle(variant_id):
                                 "image": "npuzzle/8.svg",
                                 "scale": 1
                             }
-                        }
+                        },
+                        "animationType": "simpleSlidePlaceRemove"
                     }
                 }
             }
