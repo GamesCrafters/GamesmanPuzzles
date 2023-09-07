@@ -1,366 +1,163 @@
-def getNPuzzle(variant_id):
-    sounds = {"x": "general/slide.mp3"}
-    if variant_id == '2':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [2, 2],
-                        "centers": [[0.5 + (i % 2), 0.5 + (i // 2)] for i in range(4)],
-                        "piecesOverArrows": True,
-                        "pieces": {
-                            "1": {
-                                "image": "npuzzle/1.svg",
-                                "scale": 1
-                            },
-                            "2": {
-                                "image": "npuzzle/2.svg",
-                                "scale": 1
-                            },
-                            "3": {
-                                "image": "npuzzle/3.svg",
-                                "scale": 1
-                            }
-                        },
-                        "sounds": sounds,
-                        "animationType": "simpleSlidePlaceRemove"
-                    }
-                }
-            }
-    else:
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [3, 3],
-                        "centers": [[0.5 + (i % 3), 0.5 + (i // 3)] for i in range(9)],
-                        "piecesOverArrows": True,
-                        "pieces": {
-                            "1": {
-                                "image": "npuzzle/1.svg",
-                                "scale": 1
-                            },
-                            "2": {
-                                "image": "npuzzle/2.svg",
-                                "scale": 1
-                            },
-                            "3": {
-                                "image": "npuzzle/3.svg",
-                                "scale": 1
-                            },
-                            "4": {
-                                "image": "npuzzle/4.svg",
-                                "scale": 1
-                            },
-                            "5": {
-                                "image": "npuzzle/5.svg",
-                                "scale": 1
-                            },
-                            "6": {
-                                "image": "npuzzle/6.svg",
-                                "scale": 1
-                            },
-                            "7": {
-                                "image": "npuzzle/7.svg",
-                                "scale": 1
-                            },
-                            "8": {
-                                "image": "npuzzle/8.svg",
-                                "scale": 1
-                            }
-                        },
-                        "sounds": sounds,
-                        "animationType": "simpleSlidePlaceRemove"
-                    }
-                }
-            }
+"""
+===== STEP 1 ===== 
+Create a function that returns Image AutoGUI Data for your puzzle, given a variant of that puzzle.
+Return None if there is no Image AutoGUI Data for the given variant.
 
-def getNQueens(variant_id):
+get_<puzzle>(variant_id) should return JSON of the following form:
+
+    {
+        "defaultTheme": <name of default theme>,
+        "themes": {
+            <name of theme1>: {
+                "space": [<width>, <height>],
+                "centers": [ [<x0>,<y0>], [<x1>, <y1>], [<x2>, <y2>], [<x3>, <y3>], ... ],
+                "background": <optional, path to background image>,
+                "foreground": <optional, path to foreground image>,
+                "entities": {
+                    <char1>: {"image": <path to entity image>, "scale": <image scale>},
+                    <char2>: { ... }
+                    ...
+                },
+                "circleButtonRadius: <optional, radius of all default circle move buttons>,
+                "lineWidth": <optional, width of all line move buttons>,
+                "arrowWidth": <optional, width of all arrow move buttons>,
+                "entitiesOverArrows": <optional, Boolean, whether entities are drawn over arrows>,
+                "sounds": <optional> {
+                    <char1>: <string, path to sound file>,
+                    <char2>:
+                }
+                "animationType": <optional, string, animation type>,
+                "defaultAnimationWindow": [start, end] <optional>
+            },
+            <name of theme2>: {
+                ...
+            },
+            ...
+        }
+    }
+
+(Scroll all the way down for Step 2).
+
+"""
+
+def get_hanoi(variant_id):
+    if not (len(variant_id) == 3 and variant_id[0].isdigit() and variant_id[-1].isdigit()):
+        return None
+    num_poles = int(variant_id[0])
+    num_disks = int(variant_id[-1])
+    alpha = "ABCDEFGHIJK"
+    pieces = {
+        alpha[c]: {"image": f"hanoi/{alpha[c]}.svg", "scale": 1} for c in range(num_disks)
+    }
+
+    regularTheme = {
+        "space": [3, 3] if num_poles <= 3 else [4, 4],
+        "background": f"hanoi/{num_poles}_{num_disks}_variant_grid.svg",
+        "entities": pieces,
+        "arrowWidth": 0.06 if num_poles <= 3 else 0.08
+    }
+
+    if variant_id == '3_4':
+        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 1.6] for i in range(12)]
+    elif variant_id == '3_3':
+        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 1.8] for i in range(9)]
+    elif variant_id == '3_2':
+        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 2.0] for i in range(9)]
+    elif variant_id == '3_1':
+        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 2.2] for i in range(9)]
+    elif variant_id == '2_1':
+        regularTheme["centers"] = [[1 + (i % 2), 0.2 * (i // 2) + 2.25] for i in range(9)]
+    elif variant_id == '4_1':
+        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 3.0] for i in range(16)]
+    elif variant_id == '4_2':
+        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.8] for i in range(16)]
+    elif variant_id == '4_3':
+        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.6] for i in range(16)]
+    elif variant_id == '4_4':
+        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.4] for i in range(16)]
+    else:
+        return None
+    return {
+        "defaultTheme": "regular",
+        "themes": {
+            "regular": regularTheme
+        }
+    }
+
+def get_npuzzle(variant_id):
+    if variant_id not in ("2", "3"):
+        return None
+    
+    sideLength = int(variant_id)
+    sL2 = sideLength * sideLength
+
+    return {
+        "defaultTheme": "regular",
+        "themes": {
+            "regular": {
+                "space": [sideLength, sideLength],
+                "centers": [[i % sideLength + 0.5, i // sideLength + 0.5] for i in range(sL2)],
+                "entities": {
+                    str(n): {"image": f"npuzzle/{n}.svg", "scale": 1} for n in range(1, sL2)
+                },
+                "entitiesOverArrows": True,
+                "sounds": {"x": "general/slide.mp3"},
+                "animationType": "simpleSlidePlaceRemove"
+            }
+        }
+    }
+
+def get_nqueens(variant_id):
     if variant_id == '4':
         return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [4, 4],
-                        "backgroundImage": "nqueens/grid.svg",
-                        "centers": [[0.5 + (i % 4), 0.5 + (i // 4)] for i in range(16)],
-                        "pieces": {
-                            "q": {
-                                "image": "chess/Q.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-
-def getHanoi(variant_id):
-    if variant_id == '3_4':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/3_4_variant_grid.svg",
-                        "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 1.6] for i in range(12)],
-                        "arrowWidth": 0.06,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/A.svg",
-                                "scale": 1
-                            },
-                            "B": {
-                                "image": "hanoi/B.svg",
-                                "scale": 1
-                            },
-                            "C": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            },
-                            "D": {
-                                "image": "hanoi/D.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-    if variant_id == '3_3':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/3_3_variant_grid.svg",
-                        "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 1.8] for i in range(9)],
-                        "arrowWidth": 0.06,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/A.svg",
-                                "scale": 1
-                            },
-                            "B": {
-                                "image": "hanoi/B.svg",
-                                "scale": 1
-                            },
-                            "C": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-    if variant_id == '3_2':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/3_2_variant_grid.svg",
-                        "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 2.0] for i in range(9)],
-                        "arrowWidth": 0.06,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/B.svg",
-                                "scale": 1
-                            },
-                            "B": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-    if variant_id == '3_1':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/3_1_variant_grid.svg",
-                        "centers": [[0.5 + (i % 3), 0.2 * (i // 3) + 2.2] for i in range(9)],
-                        "arrowWidth": 0.06,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-    if variant_id == '2_1':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [3, 3],
-                        "backgroundImage": "hanoi/2_1_variant_grid.svg",
-                        "centers": [[1 + (i % 2), 0.2 * (i // 2) + 2.25] for i in range(9)],
-                        "arrowWidth": 0.06,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-    if variant_id == '4_1':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [4, 4],
-                        "backgroundImage": "hanoi/4_1_variant_grid.svg",
-                        "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 3.0] for i in range(16)],
-                        "arrowWidth": 0.08,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-    if variant_id == '4_2':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [4, 4],
-                        "backgroundImage": "hanoi/4_2_variant_grid.svg",
-                        "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.8] for i in range(16)],
-                        "arrowWidth": 0.08,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/B.svg",
-                                "scale": 1
-                            },
-                            "B": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-    if variant_id == '4_3':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [4, 4],
-                        "backgroundImage": "hanoi/4_3_variant_grid.svg",
-                        "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.6] for i in range(16)],
-                        "arrowWidth": 0.08,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/A.svg",
-                                "scale": 1
-                            },
-                            "B": {
-                                "image": "hanoi/B.svg",
-                                "scale": 1
-                            },
-                            "C": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-    if variant_id == '4_4':
-        return {
-                "defaultTheme": "regular",
-                "themes": {
-                    "regular": {
-                        "backgroundGeometry": [4, 4],
-                        "backgroundImage": "hanoi/4_4_variant_grid.svg",
-                        "centers": [[0.5 + (i % 4), 0.2 * (i // 4) + 2.4] for i in range(16)],
-                        "arrowWidth": 0.08,
-                        "pieces": {
-                            "A": {
-                                "image": "hanoi/A.svg",
-                                "scale": 1
-                            },
-                            "B": {
-                                "image": "hanoi/B.svg",
-                                "scale": 1
-                            },
-                            "C": {
-                                "image": "hanoi/C.svg",
-                                "scale": 1
-                            },
-                            "D": {
-                                "image": "hanoi/D.svg",
-                                "scale": 1
-                            }
-                        }
-                    }
-                }
-            }
-
-def getRushHour(variant_id):
-    return {
             "defaultTheme": "regular",
             "themes": {
                 "regular": {
-                    "backgroundGeometry": [8, 6],
-                    "backgroundImage": "rushhour/grid.svg",
-                    "arrowWidth": 0.1,
-                    "centers": [[0.5 + (i % 6), 0.5 + (i // 6)] for i in range(36)] + [[6.5, 2.5], [7.5, 2.5]],
-                    "pieces": {
-                        "L": {
-                            "image": "rushhour/left.svg",
-                            "scale": 1
-                        },
-                        "m": {
-                            "image": "rushhour/horizontal.svg",
-                            "scale": 1
-                        },
-                        "R": {
-                            "image": "rushhour/right.svg",
-                            "scale": 1
-                        },
-                        "T": {
-                            "image": "rushhour/top.svg",
-                            "scale": 1
-                        },
-                        "M": {
-                            "image": "rushhour/vertical.svg",
-                            "scale": 1
-                        },
-                        "B": {
-                            "image": "rushhour/bottom.svg",
-                            "scale": 1
-                        },
-                        "1": {
-                            "image": "rushhour/left_red.svg",
-                            "scale": 1
-                        },
-                        "2": {
-                            "image": "rushhour/right_red.svg",
-                            "scale": 1
-                        }
+                    "space": [4, 4],
+                    "centers": [[i % 4 + 0.5, i // 4 + 0.5] for i in range(16)],
+                    "background": "nqueens/grid.svg",
+                    "entities": {
+                        "q": {"image": "chess/Q.svg", "scale": 1}
                     }
                 }
             }
         }
+    return None
 
-autoGUIv2DataFuncs = {
-    "nqueens": getNQueens,
-    "hanoi": getHanoi,
-    "npuzzle": getNPuzzle,
-    "rushhour": getRushHour
+def get_rushhour(variant_id):
+    pieces = {
+        "L": "left", "m": "horizontal", "R": "right", "T": "top",
+        "M": "vertical", "B": "bottom", "1": "left_red", "2": "right_red"
+    }
+    centers = [[i % 6 + 0.5, i // 6 + 0.5] for i in range(36)] + [[6.5, 2.5], [7.5, 2.5]]
+    return {
+        "defaultTheme": "regular",
+        "themes": {
+            "regular": {
+                "space": [8, 6],
+                "centers": centers,
+                "background": "rushhour/grid.svg",
+                "entities": {
+                    p: {"image": f"rushhour/{pieces[p]}.svg", "scale": 1} for p in pieces
+                },
+                "arrowWidth": 0.1
+            }
+        }
+    }
+
+"""
+===== STEP 2 ===== 
+Add your function to the image_autogui_data_funcs dict in alphabetical order by puzzle_id.
+"""
+
+image_autogui_data_funcs = {
+    "hanoi": get_hanoi,
+    "npuzzle": get_npuzzle,
+    "nqueens": get_nqueens,
+    "rushhour": get_rushhour
 }
 
-def get_autoguiV2Data(puzzle_id, variant_id):
-    if puzzle_id in autoGUIv2DataFuncs:
-        return autoGUIv2DataFuncs[puzzle_id](variant_id)
+def get_image_autogui_data(puzzle_id, variant_id):
+    if puzzle_id in image_autogui_data_funcs:
+        return image_autogui_data_funcs[puzzle_id](variant_id)
     return None

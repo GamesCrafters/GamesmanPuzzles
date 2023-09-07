@@ -105,7 +105,7 @@ def puzzle(puzzle_id):
             "startPosition": getPuzzle(puzzle_id, variant_id, puzzlecls.startRandomized).toString(),
             "status": check_available(puzzle_id, variant_id),
             "variantId": variant_id,
-            'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id),
+            'imageAutoGUIData': get_image_autogui_data(puzzle_id, variant_id),
             'gui_status': get_gui_status(puzzle_id, variant_id)
         } for variant_id in puzzlecls.variants]
     }
@@ -122,7 +122,7 @@ def puzzle_variant(puzzle_id, variant_id):
         "startPosition": puzzle.toString(mode="minimal"),
         "status": check_available(puzzle_id, variant_id),
         "variantId": variant_id,
-        'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id)
+        'imageAutoGUIData': get_image_autogui_data(puzzle_id, variant_id)
     }
     return format_response(response)
 
