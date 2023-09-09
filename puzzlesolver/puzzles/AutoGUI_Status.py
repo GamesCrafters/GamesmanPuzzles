@@ -7,7 +7,7 @@ gui_status = {
         '4': 'v2'
     },
     'hanoi': {
-        None: 'v2',
+        None: 'v3',
         '5_1': 'v1',
         '5_2': 'v1',
         '5_3': 'v1',
@@ -20,7 +20,7 @@ gui_status = {
         '3_8': 'v1'
     },
     'rushhour': {
-        None: 'v2'
+        None: 'v3'
     },
     'npuzzle': {
         None: 'v3'
