@@ -117,7 +117,7 @@ def get_nqueens(variant_id):
                     "centers": [[i % 4 + 0.5, i // 4 + 0.5] for i in range(16)],
                     "background": "nqueens/grid.svg",
                     "entities": {
-                        "q": {"image": "chess/Q.svg", "scale": 1}
+                        "q": {"image": "chess/wikipedia/Q.svg", "scale": 1}
                     }
                 }
             }
