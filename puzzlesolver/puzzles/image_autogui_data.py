@@ -54,7 +54,8 @@ def get_hanoi(variant_id):
         "space": [3, 3] if num_poles <= 3 else [4, 4],
         "background": f"hanoi/{num_poles}_{num_disks}_variant_grid.svg",
         "entities": pieces,
-        "arrowWidth": 0.06 if num_poles <= 3 else 0.08
+        "arrowWidth": 0.06 if num_poles <= 3 else 0.08,
+        "animationType": "simpleSlidePlaceRemove"
     }
 
     if variant_id == '3_4':
@@ -140,7 +141,9 @@ def get_rushhour(variant_id):
                 "entities": {
                     p: {"image": f"rushhour/{pieces[p]}.svg", "scale": 1} for p in pieces
                 },
-                "arrowWidth": 0.1
+                "arrowWidth": 0.1,
+                "sounds": {"x": "general/slide.mp3"},
+                "animationType": "multipleSlides"
             }
         }
     }
