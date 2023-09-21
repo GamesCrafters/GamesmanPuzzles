@@ -1,6 +1,6 @@
 gui_status = {
     'lights': {
-        None: 'v1'
+        None: 'v3'
     },
     'nqueens': {
         None: 'v1',
