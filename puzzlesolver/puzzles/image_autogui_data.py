@@ -55,27 +55,28 @@ def get_hanoi(variant_id):
         "background": f"hanoi/{num_poles}_{num_disks}_variant_grid.svg",
         "entities": pieces,
         "arrowWidth": 0.06 if num_poles <= 3 else 0.08,
-        "animationType": "simpleSlidePlaceRemove"
+        "sounds": {"x": "general/slideThenRemove.mp3"},
+        "animationType": "simpleSlides",
     }
 
     if variant_id == '3_4':
-        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 1.6] for i in range(12)]
+        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 1.605] for i in range(12)]
     elif variant_id == '3_3':
-        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 1.8] for i in range(9)]
+        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 1.805] for i in range(9)]
     elif variant_id == '3_2':
-        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 2.0] for i in range(9)]
+        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 2.005] for i in range(9)]
     elif variant_id == '3_1':
-        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 2.2] for i in range(9)]
+        regularTheme["centers"] = [[0.5 + (i % 3), 0.2 * (i // 3) + 2.205] for i in range(9)]
     elif variant_id == '2_1':
         regularTheme["centers"] = [[1 + (i % 2), 0.2 * (i // 2) + 2.25] for i in range(9)]
     elif variant_id == '4_1':
-        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 3.0] for i in range(16)]
+        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.98] for i in range(16)]
     elif variant_id == '4_2':
-        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.8] for i in range(16)]
+        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.78] for i in range(16)]
     elif variant_id == '4_3':
-        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.6] for i in range(16)]
+        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.58] for i in range(16)]
     elif variant_id == '4_4':
-        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.4] for i in range(16)]
+        regularTheme["centers"] = [[0.5 + (i % 4), 0.2 * (i // 4) + 2.38] for i in range(16)]
     else:
         return None
     return {
@@ -84,6 +85,30 @@ def get_hanoi(variant_id):
             "regular": regularTheme
         }
     }
+
+def get_lightsout(variant_id):
+    if variant_id not in "2345678":
+        return None
+    
+    sideLength = int(variant_id)
+    sL2 = sideLength * sideLength
+
+    return {
+        "defaultTheme": "regular",
+        "themes": {
+            "regular": {
+                "space": [sideLength, sideLength],
+                "centers": [[i % sideLength + 0.5, i // sideLength + 0.5] for i in range(sL2)],
+                "background": "lightsout/background.svg",
+                "entities": {
+                    c: {"image": f"lightsout/{c}.svg", "scale": 1} for c in "01t"
+                },
+                "sounds": {"x": "general/remove.mp3"},
+                "animationType": "entityFade"
+            }
+        }
+    }
+    
 
 def get_npuzzle(variant_id):
     if variant_id not in ("2", "3"):
@@ -103,7 +128,7 @@ def get_npuzzle(variant_id):
                 },
                 "entitiesOverArrows": True,
                 "sounds": {"x": "general/slide.mp3"},
-                "animationType": "simpleSlidePlaceRemove"
+                "animationType": "simpleSlides"
             }
         }
     }
@@ -119,7 +144,8 @@ def get_nqueens(variant_id):
                     "background": "nqueens/grid.svg",
                     "entities": {
                         "q": {"image": "chess/wikipedia/Q.svg", "scale": 1}
-                    }
+                    },
+                    "animationType": "simpleSlides"
                 }
             }
         }
@@ -143,7 +169,7 @@ def get_rushhour(variant_id):
                 },
                 "arrowWidth": 0.1,
                 "sounds": {"x": "general/slide.mp3"},
-                "animationType": "multipleSlides"
+                "animationType": "simpleSlides"
             }
         }
     }
@@ -155,6 +181,7 @@ Add your function to the image_autogui_data_funcs dict in alphabetical order by 
 
 image_autogui_data_funcs = {
     "hanoi": get_hanoi,
+    "lights": get_lightsout,
     "npuzzle": get_npuzzle,
     "nqueens": get_nqueens,
     "rushhour": get_rushhour
