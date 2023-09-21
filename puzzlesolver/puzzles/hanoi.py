@@ -345,7 +345,7 @@ class Hanoi(ServerPuzzle):
             pos = board[index]
             if pos == '-':
                 to_bottom_most = index
-        return "M_{}_{}".format(from_top_most, to_bottom_most)
+        return "M_{}_{}_x".format(from_top_most, to_bottom_most)
 
     def revert_move(self, move):
         """Returns the uwapi move converted into regular move

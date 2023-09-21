@@ -55,7 +55,8 @@ def get_hanoi(variant_id):
         "background": f"hanoi/{num_poles}_{num_disks}_variant_grid.svg",
         "entities": pieces,
         "arrowWidth": 0.06 if num_poles <= 3 else 0.08,
-        "animationType": "simpleSlidePlaceRemove"
+        "sounds": {"x": "general/slideThenRemove.mp3"},
+        "animationType": "simpleSlides",
     }
 
     if variant_id == '3_4':
@@ -85,6 +86,29 @@ def get_hanoi(variant_id):
         }
     }
 
+def get_lightsout(variant_id):
+    if variant_id not in "2345678":
+        return None
+    
+    sideLength = int(variant_id)
+    sL2 = sideLength * sideLength
+
+    return {
+        "defaultTheme": "regular",
+        "themes": {
+            "regular": {
+                "space": [sideLength, sideLength],
+                "centers": [[i % sideLength + 0.5, i // sideLength + 0.5] for i in range(sL2)],
+                "entities": {
+                    str(n): {"image": f"npuzzle/{n}.svg", "scale": 1} for n in range(1, sL2)
+                },
+                "sounds": {"x": "general/place.mp3"},
+                "animationType": "entityFade"
+            }
+        }
+    }
+    
+
 def get_npuzzle(variant_id):
     if variant_id not in ("2", "3"):
         return None
@@ -103,7 +127,7 @@ def get_npuzzle(variant_id):
                 },
                 "entitiesOverArrows": True,
                 "sounds": {"x": "general/slide.mp3"},
-                "animationType": "simpleSlidePlaceRemove"
+                "animationType": "simpleSlides"
             }
         }
     }
@@ -119,7 +143,8 @@ def get_nqueens(variant_id):
                     "background": "nqueens/grid.svg",
                     "entities": {
                         "q": {"image": "chess/wikipedia/Q.svg", "scale": 1}
-                    }
+                    },
+                    "animationType": "simpleSlides"
                 }
             }
         }
@@ -143,7 +168,7 @@ def get_rushhour(variant_id):
                 },
                 "arrowWidth": 0.1,
                 "sounds": {"x": "general/slide.mp3"},
-                "animationType": "multipleSlides"
+                "animationType": "simpleSlides"
             }
         }
     }
