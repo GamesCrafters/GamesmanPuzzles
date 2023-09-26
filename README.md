@@ -14,6 +14,12 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
+To get optional closed-form solver for Lights Out, run the following commands from the project's root directory:
+```
+cd puzzlesolver/extern
+python setup.py build_ext --inplace
+```
+
 Run from the base directory of the repositiory
 ```
 cd puzzlesolver/players
