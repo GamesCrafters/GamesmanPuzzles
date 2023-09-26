@@ -12,7 +12,8 @@ class Bishop(ServerPuzzle):
 	desc 	= """Swap the locations of two sets of bishops on opposite ends of a chessboard, without moving them into threatened positions."""
 	date 	= "October 30, 2020"
 	# Chessboard has y rows, 2x columns
-	variants = {str(i[0]) + "x" + str(i[1]): IndexSolver for i in ((2,5), (2,7), (3,7))}
+	variants = [str(i[0]) + "x" + str(i[1]) for i in ((2,5), (2,7), (3,7))]
+	variants_desc = variants
 	test_variants = {str(i[0]) + "x" + str(i[1]): IndexSolver for i in ((2,5), (2,7))}
 	startRandomized = False
 	

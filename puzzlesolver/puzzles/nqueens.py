@@ -14,6 +14,7 @@ class NQueens(ServerPuzzle):
     date = 'March 17, 2021'
 
     variants = ['4', '5']
+    variants_desc = ["4x4", "5x5"]
     test_variants = ['4']
     startRandomized = True
 

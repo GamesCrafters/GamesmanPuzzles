@@ -13,12 +13,8 @@ class HopNDrop(ServerPuzzle):
     desc    = """Clear all platforms before reaching the goal tile. Don't get stuck or fall!"""
     date    = "Oct 10, 2020"
 
-    variants = {
-        "map1" : SqliteSolver, 
-        "map2" : SqliteSolver, 
-        "map3" : SqliteSolver, 
-        # "map4" : SqliteSolver
-    }
+    variants = ["map1", "map2", "map3"]
+    variants_desc = variants
 
     test_variants = variants
     

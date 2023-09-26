@@ -17,8 +17,9 @@ class Npuzzle(ServerPuzzle):
     desc    = "Shift pieces to get puzzle in ascending order."
     date    = "April 10, 2020"
     
-    variants = {str(i) : IndexSolver for i in range(2, 4)}
-    test_variants = {"2" : IndexSolver}
+    variants = [str(i) for i in range(2, 4)]
+    variants_desc = ["{}-puzzle".format(i * i - 1) for i in range(2, 4)]
+    test_variants = ["2"]
     startRandomized = True
 
     def __init__(self, size=3):

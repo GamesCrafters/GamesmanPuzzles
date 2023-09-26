@@ -101,12 +101,12 @@ def puzzle(puzzle_id):
         "description":      puzzlecls.desc,
         "date_created":     puzzlecls.date,
         "variants":         [{
-            "description": variant_id,
-            "startPosition": getPuzzle(puzzle_id, variant_id, puzzlecls.startRandomized).toString(),
-            "status": check_available(puzzle_id, variant_id),
-            "variantId": variant_id,
-            'autogui_v2_data': get_autoguiV2Data(puzzle_id, variant_id)
-        } for variant_id in puzzlecls.variants]
+            "description": puzzlecls.variants_desc[i],
+            "startPosition": getPuzzle(puzzle_id, puzzlecls.variants[i], puzzlecls.startRandomized).toString(),
+            "status": check_available(puzzle_id, puzzlecls.variants[i]),
+            "variantId": puzzlecls.variants[i],
+            'autogui_v2_data': get_autoguiV2Data(puzzle_id, puzzlecls.variants[i])
+        } for i in range(len(puzzlecls.variants))]
     }
     return format_response(response)
 

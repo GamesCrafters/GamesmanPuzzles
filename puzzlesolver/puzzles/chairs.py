@@ -11,7 +11,8 @@ class Chairs(ServerPuzzle):
     desc    = """Move all pieces from one side of the board to the other by hopping over adjacent pieces. The end result should be a flipped version of the starting state."""
     date    = "April 25, 2020"
 
-    variants = {"10" : SqliteSolver}
+    variants = ["10"]
+    variants_desc = variants
     test_variants = variants
     startRandomized = False
 

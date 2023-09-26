@@ -14,9 +14,11 @@ class LightsOut(ServerPuzzle):
         from ..extern import m4ri_utils
     except:
         variants = [str(i) for i in range(2, 6)]
+        variants_desc = ["{}x{}".format(i, i) for i in range(2, 6)]
         closed_form_variants = []
     else:
         variants = [str(i) for i in range(2, 9)]
+        variants_desc = ["{}x{}".format(i, i) for i in range(2, 9)]
         closed_form_variants = ['2', '3', '6', '7', '8']
     test_variants = [str(i) for i in range(2, 5)]
     startRandomized = True
