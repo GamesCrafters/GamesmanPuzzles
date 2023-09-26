@@ -28,7 +28,7 @@
  *
  ********************************************************************/
 
-#include <m4ri/mzd.h>
+#include <mzd.h>
 
 /**
  * \brief Solves L X = B with X and B matrices and L lower triangular using Gray code tables.

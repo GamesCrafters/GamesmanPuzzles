@@ -29,7 +29,7 @@
  *
  ********************************************************************/
 
-#include <m4ri/mzd.h>
+#include <mzd.h>
 
 /**
  * \brief Matrix multiplication via the cubic multiplication algorithm on

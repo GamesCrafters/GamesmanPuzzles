@@ -28,13 +28,13 @@
  *
  ********************************************************************/
 
-#include <m4ri/m4ri_config.h>
+#include <m4ri_config.h>
 
 #if __M4RI_HAVE_SSE2
 #include <emmintrin.h>
 #endif
 
-#include <m4ri/misc.h>
+#include <misc.h>
 
 /**
  * Compute c[i] += t1[i] for 0 <= i < wide

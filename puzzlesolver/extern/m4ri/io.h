@@ -28,8 +28,8 @@
  *
  ********************************************************************/
 
-#include <m4ri/m4ri_config.h>
-#include <m4ri/mzd.h>
+#include <m4ri_config.h>
+#include <mzd.h>
 
 /**
  * \brief Print row i of M to an output stream.

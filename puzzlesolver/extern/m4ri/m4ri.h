@@ -54,21 +54,21 @@
 extern "C" {
 #endif
 
-#include <m4ri/brilliantrussian.h>
-#include <m4ri/djb.h>
-#include <m4ri/echelonform.h>
-#include <m4ri/graycode.h>
-#include <m4ri/io.h>
-#include <m4ri/mp.h>
-#include <m4ri/mzd.h>
-#include <m4ri/mzp.h>
-#include <m4ri/parity.h>
-#include <m4ri/ple.h>
-#include <m4ri/ple_russian.h>
-#include <m4ri/solve.h>
-#include <m4ri/strassen.h>
-#include <m4ri/triangular.h>
-#include <m4ri/triangular_russian.h>
+#include <brilliantrussian.h>
+#include <djb.h>
+#include <echelonform.h>
+#include <graycode.h>
+#include <io.h>
+#include <mp.h>
+#include <mzd.h>
+#include <mzp.h>
+#include <parity.h>
+#include <ple.h>
+#include <ple_russian.h>
+#include <solve.h>
+#include <strassen.h>
+#include <triangular.h>
+#include <triangular_russian.h>
 
 #if defined(__cplusplus) && !defined(_MSC_VER)
 }

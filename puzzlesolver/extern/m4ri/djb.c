@@ -7,11 +7,11 @@
 #include "config.h"
 #endif
 
-#include <m4ri/djb.h>
-#include <m4ri/io.h>
-#include <m4ri/misc.h>
-#include <m4ri/mzd.h>
-#include <m4ri/xor.h>
+#include <djb.h>
+#include <io.h>
+#include <misc.h>
+#include <mzd.h>
+#include <xor.h>
 
 #ifndef _MSC_VER
 #include <unistd.h>

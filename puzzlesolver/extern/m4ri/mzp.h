@@ -28,7 +28,7 @@
 #ifndef M4RI_MZP
 #define M4RI_MZP
 
-#include <m4ri/mzd.h>
+#include <mzd.h>
 
 /**
  * \brief Permutations.

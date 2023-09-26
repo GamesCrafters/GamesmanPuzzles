@@ -33,7 +33,7 @@
  *
  ********************************************************************/
 
-#include <m4ri/m4ri_config.h>
+#include <m4ri_config.h>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
