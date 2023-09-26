@@ -60,7 +60,7 @@ class LightsOut(ServerPuzzle):
         moves = []
         for i in range(len(self.grid)):
             for j in range(len(self.grid)):
-                move_str = "A_{}_{}".format("1" if self.grid[j][i] else "0", str(i + j * len(self.grid)))
+                move_str = "A_t_{}_x".format(str(i + j * len(self.grid)))
                 moves.append(move_str)
         return moves
 
@@ -90,7 +90,7 @@ class LightsOut(ServerPuzzle):
     def generateStartPosition(cls, variantid):
         variant = int(variantid)
         position = "R_{}_{}_{}_".format("A", variant, variant)
-        position += '-' * (variant ** 2)
+        position += '1' * (variant ** 2)
         return cls.deserialize(position)
 
     @classmethod
@@ -111,7 +111,7 @@ class LightsOut(ServerPuzzle):
         puzzle.grid = []
         for i in range(variant):
             row = position[i*variant:(i+1)*variant]
-            row = [True if i == '-' else False for i in row]
+            row = [True if i == '1' else False for i in row]
             puzzle.grid.append(row)
         return puzzle
 
@@ -120,7 +120,7 @@ class LightsOut(ServerPuzzle):
 
         result = ""
         for row in self.grid:
-            str_row = ["-" if entry else "*" for entry in row]
+            str_row = ["1" if entry else "0" for entry in row]
             result += "".join(str_row)
         output += result
         return output

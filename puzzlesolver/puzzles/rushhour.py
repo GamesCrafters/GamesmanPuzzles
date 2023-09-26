@@ -256,9 +256,9 @@ class RushHour(ServerPuzzle):
                     if i == 16:
                         # If it's a leftward move from a winning position,
                         # display it as though it is coming from outside the grid
-                        moves.append(f"M_{36}_{i-j}")
+                        moves.append(f"M_{36}_{i-j}_x")
                     else:
-                        moves.append(f"M_{i}_{i-j}")
+                        moves.append(f"M_{i}_{i-j}_x")
             # Check for rightward moves
             elif piece in {'R', '2'}:
                 j = 0
@@ -267,27 +267,27 @@ class RushHour(ServerPuzzle):
                     if i + j == 17:
                         # If it's a rightward move to a winning position,
                         # display it as though it is going outside the grid
-                        moves.append(f"M_{i}_{36}")
+                        moves.append(f"M_{i}_{36}_x")
                     else:
-                        moves.append(f"M_{i}_{i+j}")
+                        moves.append(f"M_{i}_{i+j}_x")
             # Check for upward moves
             elif piece == 'T':
                 j = 1
                 while i - 6 * j >= 0 and self.pos[i - 6*j] == '-':
-                    moves.append(f"M_{i}_{i-6*j}")
+                    moves.append(f"M_{i}_{i-6*j}_x")
                     j += 1
             # Check for downward moves
             elif piece == 'B':
                 j = 1
                 while i + 6 * j < 36 and self.pos[i + 6*j] == '-':
-                    moves.append(f"M_{i}_{i+6*j}")
+                    moves.append(f"M_{i}_{i+6*j}_x")
                     j += 1
         return moves
 
     def doMove(self, move, **kwargs):
         if move not in self.generateMoves():
             raise ValueError
-        _, start, end = move.split("_")
+        _, start, end, _ = move.split("_")
         start = int(start)
         end = int(end)
         # If the move is to/from a winning position, adjust to the true destination (see generateMoves)
