@@ -27,6 +27,8 @@ class Hanoi(ServerPuzzle):
     variants += ["4_1", "4_2", "4_3", "4_4", "4_5", "4_6"]
     variants += ["5_1", "5_2", "5_3", "5_4"]
 
+    variants_desc = variants
+
     test_variants = ["3_1", "3_2", "3_3"]
     
     startRandomized = False

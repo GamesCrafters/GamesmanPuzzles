@@ -22,7 +22,8 @@ class Rubiks(ServerPuzzle):
     desc    = """Solve the Rubiks cube by getting one color/number on each face using rotations.."""
     date    = "September 14th, 2020"
 
-    variants = {"2x2" : SqliteSolver}
+    variants = ["2x2"]
+    variants_desc = variants
     startRandomized = True
 
     def __init__(self, **kwargs):

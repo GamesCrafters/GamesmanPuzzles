@@ -32,8 +32,8 @@
  *
  ********************************************************************/
 
-#include <m4ri/brilliantrussian.h>
-#include <m4ri/mzd.h>
+#include <brilliantrussian.h>
+#include <mzd.h>
 #include <math.h>
 
 /**

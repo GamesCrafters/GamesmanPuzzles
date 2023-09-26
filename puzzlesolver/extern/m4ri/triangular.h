@@ -29,7 +29,7 @@
  *
  ********************************************************************/
 
-#include <m4ri/mzd.h>
+#include <mzd.h>
 
 /**
  * \brief Solves X U = B with X and B matrices and U upper triangular.

@@ -14,8 +14,7 @@ def test_puzzle(puzzle):
     PuzzleManager = PuzzleManagerClass(puzzleList)
     app.run()
 
-@app.before_first_request
-def server_start():
+with app.app_context():
     # Check which Puzzles have been solved or not solved
     for p_cls in PuzzleManager.getPuzzleClasses():
         if p_cls.id not in puzzle_solved_variants:

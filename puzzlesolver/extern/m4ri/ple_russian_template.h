@@ -1,4 +1,4 @@
-#include <m4ri/misc.h>
+#include <misc.h>
 
 void __M4RI_TEMPLATE_NAME(_mzd_process_rows_ple)(mzd_t *M, rci_t startrow, rci_t stoprow,
                                                  rci_t startcol, int const k[N],

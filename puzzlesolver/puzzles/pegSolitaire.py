@@ -18,7 +18,8 @@ class Peg(ServerPuzzle):
     desc    = """Jump over a peg with an adjacent peg, removing it from the board. Have one peg remaining by end of the game."""
     date    = "April 15, 2020"
 
-    variants = {"Triangle": SqliteSolver}
+    variants = ["Triangle"]
+    variants_desc = variants;
     test_variants = variants
     startRandomized = False
 

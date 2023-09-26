@@ -13,6 +13,7 @@ class RushHour(ServerPuzzle):
     date = "April 25, 2023"
 
     variants = ['basic', 'easy', 'medium', 'hard', 'expert']
+    variants_desc = variants
     # "True" would mean that the game would start at a random solvable board,
     # by looking at all solvable hashes -- hence False to ensure we fix a start position
     startRandomized = False

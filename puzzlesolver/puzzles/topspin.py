@@ -11,7 +11,8 @@ class TopSpin(ServerPuzzle):
 	name 	      = "Top Spin"
 	desc 	      = "Move the beads along the track and spin the ones in the spinner until the beads are in order clock-wise, with 1 in the first spot in the spinner." 
 	date 	      = "Nov. 23, 2020"
-	variants      = {'6_2' : SqliteSolver}
+	variants      = ['6_2']
+	variants_desc = variants
 	test_variants = variants
 	startRandomized = True
 

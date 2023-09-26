@@ -28,7 +28,7 @@
  *
  ********************************************************************/
 
-#include <m4ri/mzd.h>
+#include <mzd.h>
 
 /**
  * Density at which we switch to PLE decomposition.

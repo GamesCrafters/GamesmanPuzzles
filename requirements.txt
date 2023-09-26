@@ -6,7 +6,7 @@ coverage==5.0.3
 Cython==0.29.33
 decorator==4.4.2
 Flask==2.2.5
-Flask-Cors==3.0.8
+Flask-Cors==3.0.10
 importlib-metadata==3.6.0
 isort==4.3.21
 itsdangerous==2.1.2
@@ -22,7 +22,7 @@ progressbar2==3.51.0
 py==1.10.0
 pylint==2.4.4
 pyparsing==2.4.6
-pytest==5.3.5
+pytest==7.4.0
 pytest-cov==2.8.1
 python-utils==2.4.0
 six==1.14.0

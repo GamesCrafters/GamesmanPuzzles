@@ -24,7 +24,7 @@
 #ifndef M4RI_DEBUG_DUMP
 #define M4RI_DEBUG_DUMP
 
-#include <m4ri/misc.h>
+#include <misc.h>
 
 static inline word calculate_hash(word const *rowptr, wi_t wide) {
   word hash = 0;

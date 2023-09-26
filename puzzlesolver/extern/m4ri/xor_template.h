@@ -1,5 +1,5 @@
-#include <m4ri/m4ri_config.h>
-#include <m4ri/misc.h>
+#include <m4ri_config.h>
+#include <misc.h>
 
 /**
  * Compute c[i] += sum(t[j][i], 0 <= j < N) for 0 <= i < wide

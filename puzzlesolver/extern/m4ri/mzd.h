@@ -36,7 +36,7 @@
 #include "config.h"
 #endif
 
-#include <m4ri/m4ri_config.h>
+#include <m4ri_config.h>
 
 #include <assert.h>
 #include <math.h>
@@ -46,7 +46,7 @@
 #include <emmintrin.h>
 #endif
 
-#include <m4ri/debug_dump.h>
+#include <debug_dump.h>
 
 /**
  * \brief Matrix multiplication block-ing dimension.

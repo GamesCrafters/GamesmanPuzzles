@@ -17,7 +17,7 @@
 #ifndef M4RI_DJB_H
 #define M4RI_DJB_H
 
-#include <m4ri/mzd.h>
+#include <mzd.h>
 
 /**
  * \brief Specify source type of addition
