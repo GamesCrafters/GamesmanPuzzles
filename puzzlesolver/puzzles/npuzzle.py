@@ -13,12 +13,12 @@ class Npuzzle(ServerPuzzle):
     
     id      = 'npuzzle'
     auth    = "Arturo Olvera"
-    name    = "N x N '15'-puzzle"
+    name    = "Sliding Number Puzzle"
     desc    = "Shift pieces to get puzzle in ascending order."
     date    = "April 10, 2020"
     
-    variants = [str(i) for i in range(2, 4)]
-    variants_desc = ["{}-puzzle".format(i * i - 1) for i in range(2, 4)]
+    variants = [str(i) for i in range(3, 4)]
+    variants_desc = ["{}-Puzzle".format(i * i - 1) for i in range(3, 4)]
     test_variants = ["2"]
     startRandomized = True
 
@@ -35,10 +35,12 @@ class Npuzzle(ServerPuzzle):
         return str(self.size)
 
     def __hash__(self):
+        board_size = self.size * self.size
         h = 0
-        for i in self.position:
-            h += i
-            h *= len(self.position)
+        col_ids = list(range(board_size))
+        for i in range(board_size):
+            h += col_ids.index(self.position[i]) * math.factorial(board_size - i - 1)
+            col_ids.remove(self.position[i])
         return h
 
     def __str__(self):
@@ -49,9 +51,6 @@ class Npuzzle(ServerPuzzle):
             ret += "\n"
         return ret
 
-    def getName(self):
-        return self.variant + '-puzzle' 
-
     def primitive(self):
         if self.position == [i for i in range(1, self.size**2)] + [0]:
             return PuzzleValue.SOLVABLE
@@ -59,22 +58,15 @@ class Npuzzle(ServerPuzzle):
 
     def doMove(self, move):
         newPuzzle = Npuzzle(size=self.size)
-        position = deepcopy(self.position)
-        parts = move.split("_")
-        zeroindex = int(parts[2])
-        moveindex = int(parts[1])
-        # zeroindex = position.index(0)
-        # moveindex = position.index(move)
-        newPuzzle.position = Npuzzle.swap(position, moveindex, zeroindex)
-        return newPuzzle        
+        newPuzzle.position = Npuzzle.swap(self.position[:], move[0], move[1])
+        return newPuzzle
 
     def generateMoves(self, movetype='bi'):
         if movetype == 'for':
             return []
         index_0 = self.position.index(0)
         adjacent = self.getAdjacent(index_0)
-
-        return ["M_{}_{}_x".format(a, index_0) for a in adjacent]
+        return [(a, index_0) for a in adjacent]
 
     def generateSolutions(self):
         newPuzzle = Npuzzle(size=self.size)
@@ -90,9 +82,13 @@ class Npuzzle(ServerPuzzle):
     def fromHash(cls, variantid, hash_val):
         puzzle = cls(int(variantid))
         board_size = puzzle.size**2
-        for i in range(board_size):
-            hash_val //= board_size
-            puzzle.position[board_size - i - 1] = hash_val % board_size
+        col_ids = list(range(board_size))
+        position = []
+        for r in range(board_size - 1, -1, -1):
+            f = math.factorial(r)
+            position.append(col_ids.pop(hash_val // f))
+            hash_val %= f
+        puzzle.position = position
         return puzzle
 
     @classmethod
@@ -102,22 +98,25 @@ class Npuzzle(ServerPuzzle):
         return Npuzzle(size=int(variantid))
 
     @classmethod
-    def deserialize(cls, puzzleid, **kwargs):
+    def fromString(cls, puzzleid):
         try:
-            parts = puzzleid.split("_")
+            parts = puzzleid.split('_')
             puzzleid = parts[4]
-
             puzzle = Npuzzle()
-            puzzle.position = [int(i) if i != "-" else 0 for i in puzzleid]
+            puzzle.position = [int(i) if i != '-' else 0 for i in puzzleid]
             puzzle.size = int(math.sqrt(len(puzzle.position)))
             return puzzle
         except Exception as _:
-            raise PuzzleException("Invalid puzzleid")
-
-    def serialize(self, **kwargs):
-        output = "R_{}_{}_{}_".format("A", self.size, self.size)
-        board = "".join([str(x) if int(x) != 0 else "-" for x in self.position]) 
-        return output + board
+            raise PuzzleException('Invalid puzzleid')
+    
+    def toString(self, mode='minimal'):
+        return 'R_A_0_0_' + ''.join([str(x) if int(x) != 0 else '-' for x in self.position])
+    
+    def moveString(self, move, mode='humanreadable'):
+        if mode == 'uwapi':
+            return f'M_{move[0]}_{move[1]}_x'
+        else:
+            return str(self.position[move[0]])
 
     def getAdjacent(self, index):
         adj = []

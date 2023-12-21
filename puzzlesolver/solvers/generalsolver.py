@@ -86,13 +86,13 @@ class GeneralSolver(Solver):
                 # Not a CSP - use generateSolutions()
                 for solution in solutions: 
                     # Check if all the solutions are SOLVABLE
-                    assert solution.primitive() == PuzzleValue.SOLVABLE, "`generateSolutions` contains an UNSOLVABLE position"
+                    assert solution.primitive() == PuzzleValue.SOLVABLE, "`generateSolutions` contains an UNDECIDED OR UNSOLVABLE position"
                     self._remoteness[hash(solution)] = 0
                     self._queue.put(solution)
                 
         # Progressbar
         if verbose: 
-            print('Solving: {}{}'.format(self.puzzle.name, self.puzzle.variant))
+            print('Solving {} (Variant {})...'.format(self.puzzle.name, self.puzzle.variant))
             bar = progressbar.ProgressBar(max_value=self.puzzle.numPositions)
 
         # BFS for remoteness classification                        

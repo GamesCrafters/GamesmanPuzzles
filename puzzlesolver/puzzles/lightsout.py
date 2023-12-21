@@ -42,9 +42,6 @@ class LightsOut(ServerPuzzle):
         return PuzzleValue.SOLVABLE
     
     def doMove(self, move):
-        parts = move.split("_")
-        index = int(parts[2])
-        move = (index % len(self.grid), index // len(self.grid))
         x, y = move[0], move[1]
         puzzle = LightsOut(variant=str(self.size))
         puzzle.grid = deepcopy(self.grid)
@@ -57,12 +54,7 @@ class LightsOut(ServerPuzzle):
 
     def generateMoves(self, movetype="all"):
         if movetype == 'for' and movetype == 'back': return []
-        moves = []
-        for i in range(len(self.grid)):
-            for j in range(len(self.grid)):
-                move_str = "A_t_{}_x".format(str(i + j * len(self.grid)))
-                moves.append(move_str)
-        return moves
+        return [(i, j) for i in range(len(self.grid)) for j in range(len(self.grid))]
 
     def __hash__(self):
         result = ""
@@ -91,10 +83,10 @@ class LightsOut(ServerPuzzle):
         variant = int(variantid)
         position = "R_{}_{}_{}_".format("A", variant, variant)
         position += '1' * (variant ** 2)
-        return cls.deserialize(position)
+        return cls.fromString(position)
 
     @classmethod
-    def deserialize(cls, position: str):
+    def fromString(cls, position: str):
         parts = position.split("_")
         if (len(parts) <= 4): 
             raise ValueError("Invalid position")
@@ -115,7 +107,7 @@ class LightsOut(ServerPuzzle):
             puzzle.grid.append(row)
         return puzzle
 
-    def serialize(self):
+    def toString(self, mode='minimal'):
         output = "R_{}_{}_{}_".format("A", len(self.grid), len(self.grid[0]))
 
         result = ""
@@ -124,6 +116,12 @@ class LightsOut(ServerPuzzle):
             result += "".join(str_row)
         output += result
         return output
+    
+    def moveString(self, move, mode='uwapi'):
+        if mode == 'uwapi':
+            return f'A_t_{move[0] + move[1] * len(self.grid)}_x'
+        else:
+            return f"{chr(ord('a') + move[0])}{len(self.grid) - move[1]}"
 
     def isLegalPosition(self):
         return True

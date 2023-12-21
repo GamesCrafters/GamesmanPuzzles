@@ -18,8 +18,7 @@ class Hanoi(ServerPuzzle):
     id      = 'hanoi'
     auth    = "Anthony Ling"
     name    = "Towers of Hanoi"
-    desc    = """Move smaller discs ontop of bigger discs. 
-        Fill the rightmost stack."""
+    desc    = """Move smaller discs ontop of bigger discs. Fill the rightmost stack."""
     date    = "April 2, 2020"
 
     variants =  ["2_1"]
@@ -27,7 +26,10 @@ class Hanoi(ServerPuzzle):
     variants += ["4_1", "4_2", "4_3", "4_4", "4_5", "4_6"]
     variants += ["5_1", "5_2", "5_3", "5_4"]
 
-    variants_desc = variants
+    variants_desc = [
+        f"{variant.split('_')[0]} Rod{'' if variant.split('_')[0] == '1' else 's'} & \
+            {variant.split('_')[1]} Disk{'' if variant.split('_')[1] == '1' else 's'}" for variant in variants
+    ]
 
     test_variants = ["3_1", "3_2", "3_3"]
     
@@ -189,6 +191,12 @@ class Hanoi(ServerPuzzle):
         newPuzzle = Hanoi("{}_{}".format(rod_variant, disk_variant))
         newPuzzle.rods = rods
         return newPuzzle
+    
+    def moveString(self, move, mode='uwapi'):
+        if mode == 'uwapi':
+            return self.convert_move(move)
+        else:
+            return f'{move[0] + 1} → {move[1] + 1}'
 
     def __repr__(self):
         """Returns the string representation of the Puzzle as a 
@@ -228,13 +236,6 @@ class Hanoi(ServerPuzzle):
         if move not in self.generateMoves():
             raise ValueError("Move not possible")
 
-        move = self.revert_move(move)
-        if not isinstance(move, tuple) and \
-            len(move) != 2 and \
-            isinstance(move[0], int) and \
-            isinstance(move[1], int):
-            raise TypeError("Invalid type for move")
-
         newPuzzle = Hanoi(variantid=self.variant)
         rods = self.rods.copy()
 
@@ -267,8 +268,7 @@ class Hanoi(ServerPuzzle):
         for i in range(len(rods)):
             for j in range(len(rods)):
                 if rods[i] < rods[j]:
-                    move = self.convert_move((i, j))
-                    moves.add(move)
+                    moves.add((i, j))
         return moves
 
     def generateSolutions(self):
@@ -348,19 +348,6 @@ class Hanoi(ServerPuzzle):
             if pos == '-':
                 to_bottom_most = index
         return "M_{}_{}_x".format(from_top_most, to_bottom_most)
-
-    def revert_move(self, move):
-        """Returns the uwapi move converted into regular move
-        Input
-            - uwapi move
-        Output
-            - move
-        """
-        rod_variant = self.rod_variant
-        parts = move.split("_")
-        to_pos = int(parts[1]) % rod_variant
-        from_pos = int(parts[2]) % rod_variant
-        return (to_pos, from_pos)
 
     @classmethod
     def fromHash(cls, variantid, hash_val):

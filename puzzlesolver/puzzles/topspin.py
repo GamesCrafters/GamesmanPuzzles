@@ -103,9 +103,6 @@ class TopSpin(ServerPuzzle):
 		var = size + '_' + spin
 		return var
 
-	def getName(self, **kwargs):
-		return "Top Spin " + self.variant
-
 	@classmethod
 	def fromHash(cls, variantid, hash_val):
 		temp = variantid.split('_')

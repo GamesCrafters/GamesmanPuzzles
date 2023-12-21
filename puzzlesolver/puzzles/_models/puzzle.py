@@ -78,6 +78,19 @@ class Puzzle:
             self.toString(mode="complex")
         """
         return self.toString(mode="complex")
+    
+    def moveString(self, move, mode="uwapi"):
+        """Returns the string representation of the move based on the type.
+
+        If mode is "uwapi", return a UWAPI movestring.
+        If mode is "humanreadable", return a human-readable movestring.
+
+        Inputs:
+            mode -- "uwapi", "humanreadable"
+        Outputs:
+            String representation of move -- String"""
+        
+        return str(move)
 
     #################################################################
     # Gameplay methods
@@ -233,12 +246,3 @@ class Puzzle:
         Can be custom defined"""
         
         return str(self)
-    
-    @depreciated("puzzle.getName is depreciated. See puzzle.name")
-    def getName(self, **kwargs):
-        """Returns the name of the Puzzle.
-
-        Outputs:
-            String name
-        """
-        return self.__class__.__name__

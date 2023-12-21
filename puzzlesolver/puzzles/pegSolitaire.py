@@ -1,402 +1,196 @@
-from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
-from ..solvers import SqliteSolver
-import itertools
 
-MAP_MOVES = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
-    str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
+triangle_maps = [
+    [1, 3, 2, 5], # from 0 you can hop over 1 to 3 or over 2 to 5
+    [3, 6, 4, 8], # from 1 you can hop over 3 to 6 or over 4 to 8
+    [4, 7, 5, 9],
+    [1, 0, 4, 5, 6, 10, 7, 12],
+    [7, 11, 8, 13],
+    [2, 0, 4, 3, 8, 12, 9, 14],
+    [3, 1, 7, 8],
+    [4, 2, 8, 9],
+    [4, 1, 7, 6],
+    [5, 2, 8, 7],
+    [6, 3, 11, 12],
+    [7, 4, 12, 13],
+    [7, 3, 8, 5, 11, 10, 13, 14],
+    [8, 4, 12, 11],
+    [9, 5, 13, 12]
+]
 
-UNMAP_MOVES = {'[A]':[0,0], '[B]':[1,0], '[C]':[1,1], '[D]':[2,0], '[E]':[2,1], '[F]':[2,2], '[G]':[3,0],
-    '[H]':[3,1], '[I]':[3,2], '[J]':[3,3], '[K]':[4,0], '[L]':[4,1], '[M]':[4,2], '[N]':[4,3], '[O]':[4,4]}
+star_maps = [
+    [2, 5, 3, 7],
+    [2, 3, 5, 9],
+    [3, 4, 5, 8, 6, 10],
+    [2, 1, 6, 9, 7, 11],
+    [3, 2, 7, 10],
+    [2, 0, 6, 7, 9, 12],
+    [],
+    [3, 0, 6, 5, 10, 12],
+    [5, 2, 9, 10],
+    [5, 1, 6, 3, 10, 11],
+    [6, 2, 7, 4, 9, 8],
+    [7, 3, 10, 9],
+    [9, 5, 10, 7]
+]
+
+trapezoid_maps = [
+    [1,2,4,9,5,11],
+    [2,3,5,10,6,12],
+    [1,0,6,11,7,13],
+    [2,1,7,12,8,14],
+    [5,6,9,15,10,17],
+    [6,7,10,16,11,18],
+    [5,4,7,8,11,17,12,19],
+    [6,5,12,18,13,20],
+    [7,6,13,19,14,21],
+    [4,0,10,11],
+    [5,1,11,12],
+    [5,0,6,2,10,9,12,13],
+    [6,1,7,3,11,10,13,14],
+    [7,2,12,11],
+    [8,3,13,12],
+    [9,4,16,17],
+    [10,5,17,18],
+    [10,4,11,6,16,15,18,19],
+    [11,5,12,7,17,16,19,20],
+    [12,6,13,8,18,17,20,21],
+    [13,7,19,18],
+    [14,8,20,19]
+]
+
+# Cross is expected to take 10 hours to solve. Commenting out for now...
+#cross_maps = [ [1,2,3,8], [4,9], [1,0,5,10], [4,5,8,15], [9,16], [4,3,10,17], [7,8,13,20], [8,9,14,21], [3,0,7,6,9,10,15,22], [4,1,8,7,10,11,16,23], [5,2,9,8,11,12,17,24], [10,9,18,25], [11,10,19,26], [14,15], [15,16], [8,3,14,13,16,17,22,27], [9,4,15,14,17,18,23,28], [10,5,16,15,18,19,24,29], [17,16], [18,17], [13,6,21,22], [14,7,22,23], [15,8,21,20,23,24,27,30], [16,9,22,21,24,25,28,31], [17,10,23,22,25,26,29,32], [18,11,24,23], [19,12,25,24], [22,15,28,29], [23,16], [24,17,28,27], [27,22,31,32], [28,23], [29,24,31,30] ]
+
+variant_data = {
+    'triangle': {'size': 15, 'mps': triangle_maps, 'start': 0b111111111111110, 'slotlabels': 'abcadabcbcadada'},
+    'star': {'size': 13, 'mps': star_maps, 'start': 0b1111111111110, 'slotlabels': 'abcbcadacbcba'},
+    'trapezoid': {'size': 22, 'mps': trapezoid_maps, 'start': 0b1111111111111111101111, 'slotlabels': 'ababcdcdcabababcdcdcdc'},
+    #'cross': {'size': 33, 'mps': cross_maps, 'start': 0b111111111111111101111111111111111, 'slotlabels': 'ababababababababababababababababa'}
+}
 
 class Peg(ServerPuzzle):
 
-    id      = 'pegSolitaire'
-    auth    = "Mark Presten"
+    id      = 'pegsolitaire'
+    auth    = "Mark Presten, Cameron Cheung"
     name    = "Peg Solitaire"
     desc    = """Jump over a peg with an adjacent peg, removing it from the board. Have one peg remaining by end of the game."""
     date    = "April 15, 2020"
 
-    variants = ["Triangle"]
-    variants_desc = variants;
+    variants = ["triangle", "star", "trapezoid"]
+    #variants = ["triangle", "star", "trapezoid", "cross"]
+    variants_desc = [variant[0].upper() + variant[1:] for variant in variants]
+    
     test_variants = variants
     startRandomized = False
 
-    def __init__(self, **kwargs):
-        if len(kwargs) == 1:
-            for key,value in kwargs.items():
-                if key=='board':
-                    self.board = value #[[0],[1,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]] 
-                    self.pins = 0
-                    for outer in range(5):
-                        for inner in range(outer + 1):
-                            if self.board[outer][inner] == 1:
-                                self.pins += 1  
+    def __init__(self, variant_id, board=None):
+        self.variant_id = variant_id
+        if board:
+            self.board = board
         else:
-            self.board = [[0],[1,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]] 
-            self.pins = 0
-            for outer in range(5):
-                for inner in range(outer + 1):
-                    if self.board[outer][inner] == 1:
-                        self.pins += 1  
-
+            self.board = variant_data[variant_id]['start']
+        
     @property
     def variant(self):
-        return "Triangle"
-
-    ### _________ Print Funcs _______________
-    def printInfo(self):
-        #Print Puzzle
-        d = {str([0,0]):'[A]', str([1,0]):'[B]', str([1,1]):'[C]', str([2,0]):'[D]', str([2,1]):'[E]', str([2,2]):'[F]', str([3,0]):'[G]',
-            str([3,1]):'[H]', str([3,2]):'[I]', str([3,3]):'[J]', str([4,0]):'[K]', str([4,1]):'[L]', str([4,2]):'[M]', str([4,3]):'[N]', str([4,4]):'[O]'}
-        space = 20 * " "
-        output = ""
-        for outer in range(5):
-            output += space
-            for inner in range(outer + 1):
-                output += str(self.board[outer][inner]) + "       "
-            output += "\n"
-            temp = list(space)
-            temp = temp[:-4]
-            space = "".join(temp)
-            output += " " + space + " "
-            for inner2 in range(outer + 1):
-                output += " " +d[str([outer, inner2])] + "    "
-            output += "\n"
-        return output
-
-    def getName(self, **kwargs):
-        return "Peg_Solitaire_" + self.variant
-
-    # ________ End Print Funcs _________
-
-    def playPuzzle(self, moves):
-        d1 = {'a':[0,0], 'b':[1,0], 'c':[1,1], 'd':[2,0], 'e':[2,1], 'f':[2,2], 'g':[3,0],
-            'h':[3,1], 'i':[3,2], 'j':[3,3], 'k':[4,0], 'l':[4,1], 'm':[4,2], 'n':[4,3], 'o':[4,4]}
-        print("Possible Moves: ")
-        new_moves = []
-        for move in moves:
-            print(move)
-            from_peg = move[1].lower()
-            to_peg = move[-2].lower()
-            new_moves.append(from_peg + to_peg)
-        print("| Type starting peg to ending peg in lower case, e.g. for [D]->[A], type 'da' |")
-        inp = str(input())
-        if inp == '':
-            return "BEST"
-        from_peg = inp[0].upper()
-        to_peg = inp[1].upper()
-        if len(inp) != 2 or inp not in new_moves:
-            return "OOPS"
-        command = '[' + from_peg + ']->[' + to_peg + ']'
-        return command
+        return self.variant_id
+    
+    def __hash__(self):
+        return self.board
 
     def primitive(self, **kwargs):
-        if self.pins == 1:
+        # The position is primitive if one bit is set, i.e. self.board
+        # is a power of 2. We also check that self.board is nonzero.
+        if (self.board & (self.board - 1)) == 0 and self.board:
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
+    
+    def doMove(self, move):
+        src, dest = move
+        jump_data = variant_data[self.variant_id]['mps'][src]
+        over = jump_data[jump_data.index(dest) - 1]
+        return Peg(self.variant_id, self.board ^ (1 << src) ^ (1 << over) ^ (1 << dest))
 
-    # Generate Legal Movees & all undo moves
+    # Generate Legal Moves & all undo moves
     def generateMoves(self, movetype="all", **kwargs):
         moves = []
         key = False
-        if movetype=='bi':
-            return []
+
         if movetype=='all':
             key = True
+
+        size = variant_data[self.variant_id]['size']
+        mps = variant_data[self.variant_id]['mps']
+
         if movetype=='for' or movetype=='legal' or key:
-            for outer in range(5):
-                for inner in range(outer + 1):
-                    if self.board[outer][inner] == 1: #for each peg
-                        #LV
-                        check1 = self.search_lv([outer, inner], True)
-                        check1_len = len(check1)
-                        for i in range(check1_len):
-                            moves.append(check1[i])
-                        #RV
-                        check2 = self.search_rv([outer, inner], True)
-                        check2_len = len(check2)
-                        for i in range(check2_len):
-                            moves.append(check2[i])
-                        #HV
-                        check3 = self.search_h([outer, inner], True)
-                        check3_len = len(check3)
-                        for i in range(check3_len):
-                            moves.append(check3[i])        
+            # if over slot is filled and dest slot is empty then this is a move
+            for src in range(size):
+                if self.board & (1 << src):
+                    for j in range(0, len(mps[src]), 2):
+                        over, dest = mps[src][j], mps[src][j + 1]
+                        if self.board & (1 << over) and (self.board >> dest) & 1 == 0:
+                            moves.append((src, dest))
         if movetype=='undo' or movetype=='back' or key:
-            for outer in range(5):
-                for inner in range(outer + 1):
-                    if self.board[outer][inner] == 1: #for each peg
-                        #LV
-                        check1 = self.search_lv([outer, inner], False)
-                        check1_len = len(check1)
-                        for i in range(check1_len):
-                            moves.append(check1[i])
-                        #RV
-                        check2 = self.search_rv([outer, inner], False)
-                        check2_len = len(check2)
-                        for i in range(check2_len):
-                            moves.append(check2[i])
-                        #HV
-                        check3 = self.search_h([outer, inner], False)
-                        check3_len = len(check3)
-                        for i in range(check3_len):
-                            moves.append(check3[i])
-        new_moves = []
-        for i in moves:
-            from_peg = MAP_MOVES[str(i[0])]
-            to_peg = MAP_MOVES[str(i[1])]
-            if len(i) == 3:
-                item = from_peg + '->' + to_peg + 'U'
-            else:
-                item = from_peg + '->' + to_peg
-            new_moves.append(item)
+            # if over slot is empty and src slot is empty then this is an undomove
+            for dest in range(size):
+                if self.board & (1 << dest):
+                    for j in range(0, len(mps[dest]), 2):
+                        over, src = mps[dest][j], mps[dest][j + 1]
+                        if (self.board >> over) & 1 == 0 and (self.board >> src) & 1 == 0:
+                            moves.append((src, dest))
 
-        return new_moves
-
-    ### _____ generateMoves HELPERS _______ ###
-    
-    # left vertical
-    def search_lv(self, peg, legal):
-        moves = []
-        out_ind = peg[0]
-        inn_ind = peg[1]
-        # (up)
-        check_out = out_ind - 1
-        if check_out >= 0 and inn_ind <= check_out:
-            if self.board[check_out][inn_ind] == 0:
-                # start undo
-                if not legal:
-                    check_out = out_ind - 2
-                    if check_out >= 0 and inn_ind <= check_out:
-                        if self.board[check_out][inn_ind] == 0:
-                            moves.append([[out_ind, inn_ind], [check_out, inn_ind], 'undo'])
-                # end undo
-                else:                  
-                    check_out = out_ind + 1
-                    if check_out <= 4:
-                        if self.board[check_out][inn_ind] == 1:
-                            moves.append([[out_ind + 1, inn_ind],[out_ind - 1, inn_ind]])
-        # (down)
-        check_out = out_ind + 1
-        if check_out <= 4:
-            if self.board[check_out][inn_ind] == 0:
-                # start undo
-                if not legal:
-                    check_out = out_ind + 2
-                    if check_out <= 4:
-                        if self.board[check_out][inn_ind] == 0:
-                            moves.append([[out_ind, inn_ind], [check_out, inn_ind], 'undo'])
-                # end undo 
-                else:   
-                    check_out = out_ind - 1
-                    if check_out >= 0 and inn_ind <= check_out:
-                        if self.board[check_out][inn_ind] == 1:
-                            moves.append([[out_ind - 1, inn_ind],[out_ind + 1, inn_ind]])
         return moves
 
-    # right vertical
-    def search_rv(self, peg, legal):
-        moves = []
-        out_ind = peg[0]
-        inn_ind = peg[1]
-        # (up)
-        check_out = out_ind - 1
-        check_inn = inn_ind - 1
-        if check_out >= 0 and check_inn >= 0:
-            if self.board[check_out][check_inn] == 0:
-                # start undo
-                if not legal:
-                    check_out = out_ind - 2
-                    check_inn = inn_ind - 2
-                    if check_out >= 0 and check_inn >= 0:
-                        if self.board[check_out][check_inn] == 0:
-                            moves.append([[out_ind, inn_ind], [check_out, check_inn], 'undo'])
-                # end undo
-                else:               
-                    check_out = out_ind + 1
-                    check_inn = inn_ind + 1
-                    if check_out <= 4:
-                        if self.board[check_out][check_inn] == 1:
-                            moves.append([[out_ind + 1, inn_ind + 1], [out_ind - 1, inn_ind - 1]])
-        # (down)
-        check_out = out_ind + 1
-        check_inn = inn_ind + 1
-        if check_out <= 4:
-            if self.board[check_out][check_inn] == 0:
-                # start undo
-                if not legal:
-                    check_out = out_ind + 2
-                    check_inn = inn_ind + 2
-                    if check_out <= 4:
-                        if self.board[check_out][check_inn] == 0:
-                            moves.append([[out_ind, inn_ind], [check_out, check_inn], 'undo'])
-                # end undo
-                else:                 
-                    check_out = out_ind - 1
-                    check_inn = inn_ind - 1
-                    if check_out >= 0 and check_inn >= 0:
-                        if self.board[check_out][check_inn] == 1:
-                            moves.append([[out_ind - 1, inn_ind - 1], [out_ind + 1, inn_ind + 1]])
-        return moves
-
-    #horizontal
-    def search_h(self, peg, legal):
-        moves = []
-        out_ind = peg[0]
-        inn_ind = peg[1]
-        # (right)
-        check_inn = inn_ind + 1
-        if check_inn <= out_ind:
-            if self.board[out_ind][check_inn] == 0:
-                # start undo
-                if not legal:
-                    check_inn = inn_ind + 2
-                    if check_inn <= out_ind:
-                        if self.board[out_ind][check_inn] == 0:
-                            moves.append([[out_ind, inn_ind], [out_ind, check_inn], 'undo'])
-                # end undo
-                else:
-                    check_inn = inn_ind - 1
-                    if check_inn >= 0:
-                        if self.board[out_ind][check_inn] == 1:
-                            moves.append([[out_ind, inn_ind - 1], [out_ind, inn_ind + 1]])
-        # (left)
-        check_inn = inn_ind - 1
-        if check_inn >= 0:
-            if self.board[out_ind][check_inn] == 0:
-                # start undo
-                if not legal:
-                    check_inn = inn_ind - 2
-                    if check_inn >= 0:
-                        if self.board[out_ind][check_inn] == 0:
-                            moves.append([[out_ind, inn_ind], [out_ind, check_inn], 'undo'])
-                # end undo
-                else:
-                    check_inn = inn_ind + 1
-                    if check_inn <= out_ind:
-                        if self.board[out_ind][check_inn] == 1:
-                            moves.append([[out_ind, inn_ind + 1], [out_ind, inn_ind - 1]])
-        return moves
-
-    ### _________ end HELPERS _________________ ###
-
-    def doMove(self, move, **kwargs):
-        if move not in self.generateMoves(): raise ValueError
-
-        new_board = deepcopy(self.board)
-        from_peg = UNMAP_MOVES[move[:3]] 
-        to_peg = UNMAP_MOVES[move[5:8]] 
-        new_board[from_peg[0]][from_peg[1]] = 0
-        new_board[to_peg[0]][to_peg[1]] = 1
-        #find middle peg to set to ZERO OR ONE
-        if len(move) == 9:
-            set_num = 1
-        else:
-            set_num = 0
-        #h
-        if from_peg[0] == to_peg[0]:
-            if from_peg[1] > to_peg[1]:
-                new_board[from_peg[0]][from_peg[1] - 1] = set_num
-            else:
-                new_board[from_peg[0]][from_peg[1] + 1] = set_num
-        #lv
-        elif from_peg[1] == to_peg[1]:
-            if from_peg[0] > to_peg[0]:
-                new_board[from_peg[0] - 1][from_peg[1]] = set_num
-            else: 
-                new_board[from_peg[0] + 1][from_peg[1]] = set_num
-        #rv
-        else:
-            if from_peg[0] > to_peg[0]:
-                new_board[from_peg[0] - 1][from_peg[1] - 1] = set_num
-            else: 
-                new_board[from_peg[0] + 1][from_peg[1] + 1] = set_num
-
-        newPuzzle = Peg(board=new_board)
-        return newPuzzle
-
-    ### ____________ Solver Funcs ________________
-    def __hash__(self):
-        h = 0
-        for piece in reversed(list(itertools.chain.from_iterable(self.board))):
-            h = (h << 1) + piece
-        return h
-
-    @classmethod
-    def fromHash(cls, variantid, hash_val):
-        puzzle = cls()
-        for i in range(len(puzzle.board)):
-            for j in range(len(puzzle.board[i])):
-                puzzle.board[i][j] = hash_val & 1
-                hash_val >>= 1
-        return puzzle
-
-    @classmethod
-    def generateStartPosition(cls, variantid, **kwargs):
-        if not isinstance(variantid, str): raise TypeError("Invalid variantid")
-        if variantid not in Peg.variants: raise IndexError("Out of bounds variantid")
-        return Peg(board=[[0],[1,1],[1,1,1],[1,1,1,1],[1,1,1,1,1]])
-
-    @classmethod
-    def deserialize(cls, positionid, **kwargs):
-        """Returns a Puzzle object based on positionid
-        Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
-        with two stacks of discs ((3,2) and (1))
-        Inputs:
-            positionid - String id from puzzle, serialize() must be able to generate it
-        Outputs:
-            Puzzle object based on puzzleid and variantid
-        """
-        val = 0
-        new_val = 0
-        out = []
-        temp = []
-        for i in positionid:
-            if i == '_':
-                new_val = len(temp)
-                if new_val - 1 != val:
-                    raise ValueError
-                val = new_val
-                out.append(temp)
-                temp = []
-                continue
-            temp.append(int(i))
-        puzzle = Peg(board=out)
-        return puzzle
-
-    def serialize(self, **kwargs):
-        """Returns a serialized based on self
-        Outputs:
-            String Puzzle
-        """
-        s = ""
-        for outer in range(5):
-            for inner in range(outer + 1):
-                s += str(self.board[outer][inner])
-            s += "_"
-        return s
+    def generateSolutions(self):
+        return [Peg(self.variant_id, 1 << i) for i in range(variant_data[self.variant_id]['size'])]
     
     @classmethod
-    def isLegalPosition(cls, positionid, variantid=None, **kwargs):
+    def fromHash(cls, variant_id, hash_val):
+        puzzle = cls(variant_id)
+        puzzle.board = hash_val
+        return puzzle
+    
+    @classmethod
+    def generateStartPosition(cls, variant_id, **kwargs):
+        if not isinstance(variant_id, str): raise TypeError("Invalid variantid")
+        if variant_id not in Peg.variants: raise IndexError("Out of bounds variantid")
+        return Peg(variant_id)
+
+    @classmethod
+    def fromString(cls, puzzleid):
+        try:
+            parts = puzzleid.split("_")
+            pieces, variant_id = parts[-2], parts[-1]
+            board = 0
+            for i in range(variant_data[variant_id]['size']):
+                if pieces[i] != '-':
+                    board |= (1 << i)
+            return Peg(variant_id, board)
+        except Exception as _:
+            raise PuzzleException("Invalid puzzleid")
+
+    def toString(self, mode='minimal'):
+        output = "R_A_0_0_"
+        slotlabels = variant_data[self.variant_id]['slotlabels']
+        for i in range(variant_data[self.variant_id]['size']):
+            if self.board & (1 << i):
+                output += slotlabels[i]
+            else:
+                output += '-'
+        return output + f'_{self.variant_id}'
+    
+    def moveString(self, move, mode='uwapi'):
+        if mode == 'uwapi':
+            return f'M_{move[0]}_{move[1]}_x'
+        else:
+            return f'{move[0]} → {move[1]}'
+    
+    @classmethod
+    def isLegalPosition(cls, positionid):
         """Checks if the Puzzle is valid given the rules.
         For example, Hanoi cannot have a larger ring on top of a smaller one.
         Outputs:
             - True if Puzzle is valid, else False
         """
-        try: puzzle = cls.deserialize(positionid)
-        except: return False
-        if puzzle.pins == 15 or puzzle.pins == 0:
-            return False
         return True
-
-    def generateSolutions(self, **kwargs):
-        solutions = []
-        for outer in range(5):
-            for inner in range(outer + 1):
-                temp_board = [[0],[0,0],[0,0,0],[0,0,0,0],[0,0,0,0,0]]
-                temp_board[outer][inner] = 1
-                newPuzzle = Peg(board=temp_board)
-                solutions.append(newPuzzle)
-        return solutions

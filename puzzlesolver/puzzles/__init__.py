@@ -8,7 +8,7 @@ from .hanoi import Hanoi
 from .lightsout import LightsOut
 from .pegSolitaire import Peg
 from .npuzzle import Npuzzle
-from .chairs import Chairs
+from .toadsandfrogspuzzle import ToadsAndFrogsPuzzle
 from .bishop import Bishop
 from .topspin import TopSpin
 from .hopNdrop import HopNDrop
@@ -18,17 +18,17 @@ from .rushhour import RushHour
 
 # Add your puzzle in the puzzleList
 puzzleList = {
-    RushHour.id:    RushHour,
-    Npuzzle.id:     Npuzzle,
-    Hanoi.id:       Hanoi,
-    LightsOut.id:   LightsOut,
-    Peg.id:         Peg,
-    Chairs.id:      Chairs,
     Bishop.id:      Bishop,
-    TopSpin.id:     TopSpin,
+    Hanoi.id:       Hanoi,
     HopNDrop.id:    HopNDrop,
+    LightsOut.id:   LightsOut,
+    Npuzzle.id:     Npuzzle,
+    NQueens.id:     NQueens,
+    Peg.id:         Peg,
+    ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
+    TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
-    NQueens.id:     NQueens
+    RushHour.id:    RushHour
 }
 
 class PuzzleManagerClass:
@@ -55,8 +55,8 @@ class PuzzleManagerClass:
     
     def getSolverClass(self, puzzleid, variantid=None, test=False):
         """Get Solver Class given the puzzleid"""
-        # if puzzleid in [Hanoi.id, LightsOut.id, Bishop.id, Npuzzle.id]:
-        #     return IndexSolver
+        if puzzleid in [Bishop.id, Hanoi.id, Npuzzle.id, NQueens.id, Peg.id, ToadsAndFrogsPuzzle.id, Rubiks.id, HopNDrop.id]:
+            return IndexSolver
         if puzzleid == LightsOut.id:
             if variantid in LightsOut.closed_form_variants:
                 return LightsOutClosedFormSolver

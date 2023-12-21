@@ -58,7 +58,7 @@ class ServerPuzzle(Puzzle):
     # Depreciated Methods
     #################################################################
 
-    @depreciated("serverPuzzle.serialize is depreciated. See serverPuzzle.fromString")
+    @depreciated("serverPuzzle.serialize is depreciated. See serverPuzzle.toString")
     def serialize(self):
         """Returns a serialized based on self
 
@@ -74,7 +74,7 @@ class ServerPuzzle(Puzzle):
         raise NotImplementedError
     
     @classmethod
-    @depreciated("serverPuzzle.deserialize is depreciated. See puzzle.toString")
+    @depreciated("serverPuzzle.deserialize is depreciated. See puzzle.fromString")
     def deserialize(cls, positionid):
         """Returns a Puzzle object based on positionid
 

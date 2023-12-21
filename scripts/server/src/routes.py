@@ -117,8 +117,12 @@ def puzzle_variant(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)
     puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
     puzzle = getPuzzle(puzzle_id, variant_id, puzzlecls.startRandomized)
+    
+    description = variant_id
+    if variant_id in puzzlecls.variants and len(puzzlecls.variants_desc) >= len(puzzlecls.variants):
+        description = puzzlecls.variants_desc[puzzlecls.variants.index(variant_id)]
     response = {
-        "description": variant_id,
+        "description": description,
         "startPosition": puzzle.toString(mode="minimal"),
         "status": check_available(puzzle_id, variant_id),
         "variantId": variant_id,
@@ -136,19 +140,22 @@ def puzzle_randpos(puzzle_id, variant_id):
     }
     return format_response(response)
 
-def generateMovePositions(puzzle, movetype="legal"):
-    """Generate an iterable of puzzles with all moves fitting movetype
-    executed.
+def generateMoveData(puzzle, movetype="legal"):
+    """Generate an iterable of tuples containing resulting
+    puzzles and move string representations based on input movetype.
 
     Inputs:
         - movetype: The type of move to generate the puzzles
     
     Outputs:
-        - Iterable of puzzles 
+        - Iterable of tuples containing puzzle resulting from move,
+        UWAPI representation of the move, and human-readable string
+        representation of the move. 
     """
     puzzles = []
     for move in puzzle.generateMoves(movetype=movetype):
-        puzzles.append((move, puzzle.doMove(move)))
+        puzzles.append((puzzle.doMove(move), puzzle.moveString(move, 'uwapi'), 
+                        puzzle.moveString(move, 'humanreadable')))
     return puzzles
 
 @app.route('/<puzzle_id>/<variant_id>/<position>/', methods=['GET'])
@@ -157,7 +164,7 @@ def puzzle_position(puzzle_id, variant_id, position):
     validate(puzzle_id, variant_id, position)
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(position)
     s = puzzle_solved_variants[puzzle_id][variant_id]
-    moves = generateMovePositions(puzzle)
+    moves = generateMoveData(puzzle)
     
     this_remoteness = s.getRemoteness(puzzle)
 
@@ -165,18 +172,19 @@ def puzzle_position(puzzle_id, variant_id, position):
         "position": puzzle.toString(mode="minimal"),
         "remoteness": this_remoteness 
             if this_remoteness != PuzzleValue.MAX_REMOTENESS
-            else -1,
+            else -200, # indicates infinite remoteness,
         "positionValue": s.getValue(puzzle),
     }
     move_attr = []
     for move in moves:
-        next_remoteness = s.getRemoteness(move[1])
+        next_remoteness = s.getRemoteness(move[0])
         move_attr.append(
             {
-                "position": move[1].toString(mode="minimal"),
-                "positionValue": s.getValue(move[1]),
-                "move": str(move[0]),
-                "moveValue": PuzzleValue.UNDECIDED 
+                "position": move[0].toString(mode="minimal"),
+                "positionValue": s.getValue(move[0]),
+                "move": move[1],
+                "moveName": move[2],
+                "moveValue": PuzzleValue.UNSOLVABLE
                     if this_remoteness == PuzzleValue.MAX_REMOTENESS
                     else PuzzleValue.SOLVABLE
                     if this_remoteness > next_remoteness
@@ -186,10 +194,10 @@ def puzzle_position(puzzle_id, variant_id, position):
                 "deltaRemoteness": this_remoteness - next_remoteness,
                 "remoteness": next_remoteness
                     if next_remoteness != PuzzleValue.MAX_REMOTENESS
-                    else -1,
+                    else -200, # indicates infinite remoteness,
             }
         )
-        response["moves"] = move_attr
+    response["moves"] = move_attr
 
     return format_response(response)
 

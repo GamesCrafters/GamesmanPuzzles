@@ -32,6 +32,8 @@ class IndexSolver(GeneralSolver):
             self._read()
             GeneralSolver.solve(self, *args, **kwargs)
             self._write()
+        else:
+            print(f'Database file {self.path} found! No need to re-solve.')
 
     def _read(self):
         if not os.path.exists(self.path): open(self.path, 'wb').close()

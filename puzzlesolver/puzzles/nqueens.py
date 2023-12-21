@@ -1,249 +1,272 @@
 """N Queens Puzzle
  https://en.wikipedia.org/wiki/Eight_queens_puzzle
 """
-from puzzlesolver.puzzles._models import ServerPuzzle
-from puzzlesolver.util import *
+from . import ServerPuzzle
+from ..util import *
 import math
+import itertools
 
 class NQueens(ServerPuzzle):
 
     id = 'nqueens'
-    auth = 'Mia Campdera-Pulido'
-    name = 'N queens puzzle'
-    desc = 'Place the N queens in a way such that they do not attack each other'
+    auth = 'Mia Campdera-Pulido, Cameron Cheung'
+    name = 'N Queens Puzzle'
+    desc = 'Place N queens on an N-row, N-column chessboard in a non-attacking configuration.'
     date = 'March 17, 2021'
 
-    variants = ['4', '5']
-    variants_desc = ["4x4", "5x5"]
-    test_variants = ['4']
-    startRandomized = True
+    variants = [str(N) for N in range(4, 10)]
+    variants_desc = [N + " Queens" for N in variants]
+    test_variants = variants
+    startRandomized = False
 
-    def __init__(self, variantid=None):
-        """Returns the starting position of nqueens based on the variant
-        Input:(Optional) variantid - str
-        Output: A N queens puzzle
-        """
-        self.size = 4
-        if variantid:
-            if not isinstance(variantid, str):
-                raise TypeError("VariantID is not type str")
-            if variantid not in self.variants:
-                raise ValueError("Invalid variantID")
-            self.size = int(variantid)
-        self.board = [1 for _ in range(self.size)] + [0 for _ in range(self.size * self.size - self.size)]
-
+    def __init__(self, variant_id, bitboard = 0, placed_so_far = 0):
+        self.variant_id = variant_id
+        self.N = int(variant_id)
+        self.bitboard = bitboard
+        self.placed_so_far = placed_so_far
+        
     @property
     def variant(self):
-        return str(self.size)
-
-    @property
-    def numPositions(self):
-        """Returns the upperbound number of possible hashes
-        Output: numPositions - int
+        return str(self.N)
+    
+    def safe_squares(self, bitboard):
         """
-        n = self.size * self.size
-        k = self.size
-        return int(math.factorial(n) / (math.factorial(n-k) * math.factorial(k)))
+        A "safe square" is a square that's not attacked by any of the queens on the
+        board. A queen does not attack its own square, but another queen might attack it.
+        Return a bitstring where the i-th bit indicates whether the square is
+        safe (1) or attacked (0).
+        """
+
+        N2 = self.N * self.N
+        attacked_bitstring = 0
+        for b in range(N2):
+            if bitboard & (1 << b):
+                l = b - (b % self.N)
+                for i in range(l, l + self.N): # Mark row as attacked
+                    if i != b:
+                        attacked_bitstring |= (1 << i)
+                for i in range(b % self.N, N2, self.N): # Mark column as attacked
+                    if i != b:
+                        attacked_bitstring |= (1 << i)
+                
+                i = b + self.N + 1 # Down right
+                while i % self.N != 0 and i < N2:
+                    attacked_bitstring |= (1 << i)
+                    i += self.N + 1
+
+                i = b + self.N - 1 # Down left
+                while i % self.N != self.N - 1 and i < N2:
+                    attacked_bitstring |= (1 << i)
+                    i += self.N - 1
+
+                i = b - (self.N + 1) # Up left
+                while i >= 0 and i % self.N != self.N - 1:
+                    attacked_bitstring |= (1 << i)
+                    i -= (self.N + 1)
+
+                i = b - (self.N - 1) # Up right
+                while i >= 0 and i % self.N != 0:
+                    attacked_bitstring |= (1 << i)
+                    i -= (self.N - 1)
+        
+        return ((1 << (self.N * self.N)) - 1) ^ attacked_bitstring
+    
+    def nonattacking_configuration(self, bitboard, safe_squares):
+        """
+        Check whether n (which is some number between 0 and N inclusive) queens
+        on the board are in a non-attacking configuration given the safe squares
+        bitstring of the bitboard baord.
+        Does not indicate whether the current board will lead to a completed puzzle,
+        only checks whether the queens placed thus far don't attack each other.
+        Return True if non-attacking, False otherwise.
+        """
+        return safe_squares | bitboard == safe_squares
+
+
+    def F(N, r):
+        return math.factorial(N) // math.factorial(N - r)
+
+    def G(N, placed_so_far):
+        return math.comb(N, placed_so_far) * NQueens.F(N, placed_so_far)
+
+    def B(N, placed_so_far):
+        """
+            Calculate bias given number of queens placed so far.
+        """
+        total = 0
+        for i in range(placed_so_far):
+            total += NQueens.G(N, i)
+        return total
+    
+    def inv_B(N, hash_val):
+        """
+            Given hash value of a position, return number of queens placed so far
+            and hash value with num-queens-placed bias subtracted away.
+        """
+        placed_so_far = 0
+        while True:
+            g = NQueens.G(N, placed_so_far)
+            if hash_val - g < 0:
+                return placed_so_far, hash_val
+            hash_val -= g
+            placed_so_far += 1
+    
+    def h1(N, row_ids):
+        """
+            Given occupied rows in ascending order.
+        """
+        h1 = 0
+        placed_so_far = len(row_ids)
+        m = 0
+        for i in range(placed_so_far):
+            for sw in range(m, row_ids[i]):
+                h1 += math.comb(N - 1 - sw, placed_so_far - i - 1)
+            m = row_ids[i] + 1
+        return h1
+    
+    def inv_h1(N, placed_so_far, h1):
+        row_ids = []
+        total, m, q = 0, 0, 0
+        for i in range(placed_so_far):
+            for sw in range(m, N):
+                q = math.comb(N - 1 - sw, placed_so_far - i - 1)
+                if total + q > h1:
+                    row_ids.append(sw)
+                    m = sw + 1
+                    break
+                total += q
+        return row_ids
+
+    def h2(N, col_ids):
+        """
+            Given the columns of the queens, ordered according to 
+            ascending order of rows, calculate the h2 part of the calculation.
+        """
+        h2, r = 0, 0
+        empty_cols = list(range(N))
+        for col_id in col_ids:
+            normalized_col_id = empty_cols.index(col_id)
+            h2 += normalized_col_id * NQueens.F(N, r)
+            empty_cols.remove(col_id)
+            r += 1
+        return h2
+
+    def inv_h2(N, placed_so_far, h2):
+        normalized_col_ids = []
+        for r in range(N, N - placed_so_far, -1):
+            normalized_col_ids.append(h2 % r)
+            h2 //= r
+        empty_cols = list(range(N))
+        col_ids = []
+        for normalized_col_id in normalized_col_ids:
+            col_ids.append(empty_cols[normalized_col_id])
+            empty_cols.pop(normalized_col_id)
+        return col_ids     
 
     def __hash__(self):
-        h = ""
-        for ele in self.board:
-            h += str(ele)
-        return int(h, base=2)
+        # Count how many queens placed so far, calculate big bias
+        # Get sorted ids of rows containing a queen, calculate h1
+        # Get cols of each queen in the containing columns, calculate h2
+        placed_so_far = 0
+        row_ids = [] # row ids will be in sorted order
+        col_ids = []
+        for b in range(self.N * self.N):
+            if self.bitboard & (1 << b):
+                placed_so_far += 1
+                row_ids.append(b // self.N)
+                col_ids.append(b % self.N)
+        B = NQueens.B(self.N, placed_so_far)
+        h1 = NQueens.h1(self.N, row_ids)
+        h2 = NQueens.h2(self.N, col_ids)
+        return B + h1 * NQueens.F(self.N, placed_so_far) + h2
 
-    def toString(self, mode='minimal'):
-        """Returns the string representation of the Puzzle based on the type.
-        Inputs:
-            'minimal' mode: returns serialize() version
-            'complex' mode: returns printInfo() version
-        Output: String representation
-        """
-        str1 = ""
-        for ele in self.board:
-            str1 += str(ele)
-        list_board = ["q" if ele == '1' else "-" for ele in str1]
-        lst_str = ''
-        for ele in list_board:
-            lst_str += ele
-        if mode == 'minimal':
-            return "R_{}_{}_{}_".format("A", self.size, self.size) + lst_str
-        elif mode == 'complex':
-            col = 0
-            str2 = ''
-            for i in range(self.size):
-                str3 = lst_str[col:col + self.size]
-                str2 += "{}\n".format(str3)
-                col += self.size
-            return str2
-
-    @classmethod
-    def fromHash(cls, variantid, hash_val):
-        puzzle = cls(variantid)
-        board_size = puzzle.size * puzzle.size
-        hash_str = "{0:b}".format(hash_val).zfill(board_size)
-        for i in range(board_size):
-            puzzle.board[i] = int(hash_str[i] == '1')
-        return puzzle
-
-    @classmethod
-    def fromString(cls, positionid):
-        board = positionid[8:]
-        if not isinstance(positionid, str):
-            raise TypeError("PositionID is not type str")
-        a = math.sqrt(len(board))
-
-        if a > int(a):
-            raise ValueError("PositionID cannot be translated into Puzzle")
-
-        board_list = []
-        board = positionid[8:]
-        for i in range(len(board)):
-            board_list += [board[i:i + 1]]
-        board = [1 if ele == 'q' else 0 for ele in board_list]
-        variantid = str(int(math.sqrt(len(positionid))))
-        new_board = NQueens(variantid)
-        new_board.board = board
-        return new_board
-
-
-    def __repr__(self):
-        """"Returns the string representation of the Puzzle as a
-        Python object
-        """
-        return self.toString('complex')
-
-    def primitive(self):
-        """If the Puzzle is at an endstate, return PuzzleValue.SOLVABLE or PuzzleValue.UNSOLVABLE
-        else return PuzzleValue.UNDECIDED
-        PuzzleValue located in the util class. If you're in the puzzles or solvers directory
-        you can write from ..util import *
-        Outputs:
-            Primitive of Puzzle type PuzzleValue
-        """
-        if self.check_win():
+    def primitive(self, **kwargs):
+        if self.placed_so_far == self.N:
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
-
+    
     def doMove(self, move):
-        """Given a valid move, returns a new Puzzle object with that move executed.
-        Does nothing to the original Puzzle object
-        Input: Move - 'all'
-        Output: Puzzle with move executed
-        """
-        if not isinstance(move, str):
-            raise TypeError("Invalid type for move")
-        if move not in self.generateMoves():
-            raise ValueError("Move not possible")
+        bitboard, placed_so_far = self.bitboard, self.placed_so_far
+        if bitboard & (1 << move): # is an undomove
+            placed_so_far -= 1
+        else: # is a forward move
+            placed_so_far += 1
+        bitboard ^= (1 << move)
+        return NQueens(self.variant_id, bitboard, placed_so_far)
 
-        new_board = NQueens(str(self.size))
-        board = self.board[:]
-        parts = move.split("_")
-        i_from = int(parts[1])
-        i_to = int(parts[2])
-        temp = board[i_from]
-        board[i_from] = board[i_to]
-        board[i_to] = temp
-        new_board.board = board
-        return new_board
-
-    @classmethod
-    def generateStartPosition(cls, variantid):
-        """Returns the starting position of NQueens based on
-        variantID. Follows the same functionality as __init__
-        Inputs
-            - (Optional) variantid: string
-
-        Outputs
-            - A Puzzle of NQueens
-        """
-        return NQueens(variantid)
-
-    def generateMoves(self, movetype='all'):
-        """Generate moves from self (including undos).
-        NOTE: For NQueens, all moves are bidirectional, so movetype doens't matter
-        Inputs:
-            movetype -- str, can be the following
-            - 'for': forward moves
-            - 'bi': bidirectional moves
-            - 'back': back moves
-            - 'legal': legal moves (for + bi)
-            - 'undo': undo moves (back + bi)
-            - 'all': any defined move (for + bi + back)
-        Output: Iterable of moves, move must be hashable
-        """
-        empty_pos = []
-        queens_pos = []
-        i = 0
-        for p in self.board:
-            if p == 0:
-                empty_pos += [i]
-            if p == 1:
-                queens_pos += [i]
-            i += 1
-        moves = set()
-        for q in queens_pos:
-            for e in empty_pos:
-                moves.add("M_{}_{}".format(q, e))
-                # moves.add((self.index_to_coordinates(q), self.index_to_coordinates(e)))
+    # Generate Legal Moves & all undo moves
+    def generateMoves(self, movetype="all", **kwargs):
+        moves = []
+        if movetype in ('for', 'legal', 'all'):
+            # The squares where you can place another queen such that it doesn't attack / is not
+            # attacked by any other queens are the safe squares [see definition in safe_squares()]
+            # excluding safe squares that have queens already on them. We can assume self.bitboard is a 
+            # noonattacking configuration [see definition in nonattacking_configuration()] to begin with.
+            legal_placements = self.safe_squares(self.bitboard) ^ self.bitboard
+            moves.extend([b for b in range(self.N * self.N) if legal_placements & (1 << b)]) # strings
+        if movetype in ('undo', 'back', 'all'):
+            moves.extend([b for b in range(self.N * self.N) if self.bitboard & (1 << b)]) # ints
         return moves
 
-    def index_to_coordinates(self, i):
-        c = str(i // self.size) + str(i % self.size)
-        return c
+    def generateSolutions(self):
+        solutions = []
+        for perm in itertools.permutations(range(self.N)):
+            bitboard = 0
+            for i in range(self.N):
+                bitboard |= (1 << (self.N * i + perm[i]))
+            if self.nonattacking_configuration(bitboard, self.safe_squares(bitboard)):
+                solutions.append(NQueens(self.variant_id, bitboard, self.N))
+        return solutions
+    
+    @classmethod
+    def fromHash(cls, variant_id, hash_val):
+        puzzle = cls(variant_id)
+        # count how many queens on board, calculate big bias and subtract it away
+        # get sorted ids of rows containing a queen, calculate h1
+        # get cols of each queen in the containing columns, assemble board
 
-    def coordinates_to_index(self, c):
-        col = int(c[:1])
-        row = int(c[1:])
-        i = col * self.size + row
-        return i
+        placed_so_far, hash_val = NQueens.inv_B(puzzle.N, hash_val)
 
-    def check_win(self):
-        return self.check_col() and self.check_row() and self.check_diag()
+        m = NQueens.F(puzzle.N, placed_so_far)
+        row_ids = NQueens.inv_h1(puzzle.N, placed_so_far, hash_val // m)
+        col_ids = NQueens.inv_h2(puzzle.N, placed_so_far, hash_val % m)
 
-    def check_diag(self):
-        count = 0
-        for k in range(self.size):
-            for i, j in zip(range(k, self.size), range(self.size)):
-                count += self.board[self.coordinates_to_index(str(i) + str(j))]
-            if count >= 2:
-                return False
-            count = 0
-        for k in range(1, self.size):
-            for i, j in zip(range(self.size), range(k, self.size)):
-                count += self.board[self.coordinates_to_index(str(i) + str(j))]
-                if count >= 2:
-                    return False
-            count = 0
-        for k in range(self.size):
-            for i, j in zip(range(k, self.size), reversed(range(self.size))):
-                count += self.board[self.coordinates_to_index(str(i) + str(j))]
-                if count >= 2:
-                    return False
-            count = 0
-        for k in range(1, self.size):
-            for i, j in zip(range(self.size), reversed(range(self.size - k))):
-                count += self.board[self.coordinates_to_index(str(i) + str(j))]
-                if count >= 2:
-                    return False
-            count = 0
-        return True
+        for row, col in zip(row_ids, col_ids):
+            puzzle.bitboard |= (1 << (row * puzzle.N) + col)
+        return puzzle
+    
+    @classmethod
+    def generateStartPosition(cls, variant_id, **kwargs):
+        return NQueens(variant_id, 0, 0) # Empty Board bitboard = 0
 
-    def check_row(self):
-        for i in range(self.size):
-            count = 0
-            for j in range(self.size):
-                count += self.board[self.coordinates_to_index(str(i) + str(j))]
-                if count >= 2:
-                    return False
-            count = 0
-        return True
+    @classmethod
+    def fromString(cls, puzzleid):
+        try:
+            board_str = puzzleid.split('_')[-1]
+            variant_id = str(math.isqrt(len(board_str)))
+            bitboard, placed_so_far = 0, 0
+            for b in range(len(board_str)):
+                if board_str[b] == 'Q':
+                    bitboard |= (1 << b)
+                    placed_so_far += 1
+            return NQueens(variant_id, bitboard, placed_so_far)
+        except Exception as _:
+            raise PuzzleException('Invalid puzzleid')
 
-    def check_col(self):
-        for i in range(self.size):
-            count = 0
-            for j in range(self.size):
-                count += self.board[self.coordinates_to_index(str(j) + str(i))]
-                if count >= 2:
-                    return False
-            count = 0
+    def toString(self, mode='minimal'):
+        return 'R_A_0_0_' + ''.join(['Q' if (self.bitboard & (1 << b)) else '-' for b in range(self.N * self.N)])
+    
+    def moveString(self, move, mode='uwapi'):
+        if mode == 'uwapi':
+            return f'A_h_{move}_x'
+        else:
+            return f"{chr(ord('a') + move % self.N)}{self.N - move // self.N}"
+    
+    @classmethod
+    def isLegalPosition(cls, positionid):
+        """Checks if the Puzzle is valid given the rules.
+        For example, Hanoi cannot have a larger ring on top of a smaller one.
+        Outputs:
+            - True if Puzzle is valid, else False
+        """
         return True
