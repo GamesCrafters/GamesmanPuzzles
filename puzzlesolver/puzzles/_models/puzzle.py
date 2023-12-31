@@ -1,6 +1,6 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
-from ...util import classproperty, depreciated
+from ...util import classproperty, deprecated
 import progressbar
 import warnings
 
@@ -238,7 +238,7 @@ class Puzzle:
         return "<{} object with {}>".format(self.__class__.__name__, self.toString(mode="minimal"))
 
     #################################################################
-    # Depreciated methods
+    # Deprecated methods
     #################################################################
 
     def printInfo(self):

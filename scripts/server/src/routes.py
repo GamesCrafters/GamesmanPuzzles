@@ -3,16 +3,12 @@ from flask import jsonify, abort
 from flask_cors import CORS
 from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue
-from puzzlesolver.puzzles.image_autogui_data import *
-from puzzlesolver.puzzles.AutoGUI_Status import get_gui_status
 from werkzeug.exceptions import InternalServerError
 from . import puzzle_solved_variants
 
 app = flask.Flask("PuzzleServer")
-app.config["DEBUG"] = False
-app.config["TESTING"] = False
 app.config['DATABASE_DIR'] = 'databases'
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+app.json_provider_class.compact = False
 
 CORS(app)
 
@@ -69,13 +65,11 @@ def puzzles():
         {
             "gameId": puzzle_id,
             "name"  : PuzzleManager.getPuzzleClass(puzzle_id).name,
-            "status": check_available(puzzle_id),
-            "gui_status": get_gui_status(puzzle_id)
+            "status": check_available(puzzle_id)
         }
         for puzzle_id in PuzzleManager.getPuzzleIds()
     ]
-    response.sort(key=lambda p: p["name"])
-    return format_response(response)
+    return response
 
 def getPuzzle(puzzle_id, variant_id, randomize):
     puzzlecls = PuzzleManager.getPuzzleClass(puzzle_id)
@@ -105,11 +99,9 @@ def puzzle(puzzle_id):
             "startPosition": getPuzzle(puzzle_id, puzzlecls.variants[i], puzzlecls.startRandomized).toString(),
             "status": check_available(puzzle_id, puzzlecls.variants[i]),
             "variantId": puzzlecls.variants[i],
-            'imageAutoGUIData': get_image_autogui_data(puzzle_id, puzzlecls.variants[i]),
-            'gui_status': get_gui_status(puzzle_id, puzzlecls.variants[i])
         } for i in range(len(puzzlecls.variants))]
     }
-    return format_response(response)
+    return response
 
 @app.route('/<puzzle_id>/<variant_id>/', methods=['GET'])
 @app.route('/<puzzle_id>/variants/<variant_id>/', methods=['GET'])
@@ -125,20 +117,16 @@ def puzzle_variant(puzzle_id, variant_id):
         "description": description,
         "startPosition": puzzle.toString(mode="minimal"),
         "status": check_available(puzzle_id, variant_id),
-        "variantId": variant_id,
-        'imageAutoGUIData': get_image_autogui_data(puzzle_id, variant_id)
+        "variantId": variant_id
     }
-    return format_response(response)
+    return response
 
 @app.route('/<puzzle_id>/<variant_id>/randpos/', methods=['GET'])
 @app.route('/<puzzle_id>/variants/<variant_id>/randpos/', methods=['GET'])
 def puzzle_randpos(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)
     puzzle = getPuzzle(puzzle_id, variant_id, True)
-    response = {
-        "position": puzzle.toString(mode="minimal")
-    }
-    return format_response(response)
+    return {"position": puzzle.toString(mode="minimal")}
 
 def generateMoveData(puzzle, movetype="legal"):
     """Generate an iterable of tuples containing resulting
@@ -199,7 +187,7 @@ def puzzle_position(puzzle_id, variant_id, position):
         )
     response["moves"] = move_attr
 
-    return format_response(response)
+    return response
 
 # Handling Exceptions
 @app.errorhandler(InternalServerError)

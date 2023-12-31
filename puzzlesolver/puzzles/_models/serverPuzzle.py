@@ -1,4 +1,4 @@
-from ...util import classproperty, depreciated
+from ...util import classproperty, deprecated
 from . import Puzzle
 
 class ServerPuzzle(Puzzle):
@@ -55,10 +55,10 @@ class ServerPuzzle(Puzzle):
         raise NotImplementedError
     
     #################################################################
-    # Depreciated Methods
+    # Deprecated Methods
     #################################################################
 
-    @depreciated("serverPuzzle.serialize is depreciated. See serverPuzzle.toString")
+    @deprecated("serverPuzzle.serialize is deprecated. See serverPuzzle.toString")
     def serialize(self):
         """Returns a serialized based on self
 
@@ -74,7 +74,7 @@ class ServerPuzzle(Puzzle):
         raise NotImplementedError
     
     @classmethod
-    @depreciated("serverPuzzle.deserialize is depreciated. See puzzle.fromString")
+    @deprecated("serverPuzzle.deserialize is deprecated. See puzzle.fromString")
     def deserialize(cls, positionid):
         """Returns a Puzzle object based on positionid
 
@@ -91,7 +91,7 @@ class ServerPuzzle(Puzzle):
         raise NotImplementedError
 
     @classmethod
-    @depreciated("isLegalPosition is depreciated")
+    @deprecated("isLegalPosition is deprecated")
     def isLegalPosition(cls, positionid, variantid=None):
         """Checks if the positionid is valid given the rules of the Puzzle cls. 
         This function is invariant and only checks if all the rules are satisified

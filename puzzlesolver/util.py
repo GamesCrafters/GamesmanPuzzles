@@ -45,7 +45,7 @@ def classproperty(func):
 
 import warnings
 
-def depreciated(msg):
+def deprecated(msg):
     def decorator(func):
         def wrapper(*args, **kwargs):
             warnings.warn(msg, DeprecationWarning)
