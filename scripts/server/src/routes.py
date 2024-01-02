@@ -53,18 +53,7 @@ def validate(puzzleid=None, variantid=None, position=None):
             abort(404, description=str(e))
 
 # Routes
-@app.route('/', methods=['GET'])
-def puzzles(): # Not called by GamesCraftersUWAPI
-    response = [
-        {
-            "puzzleId": puzzle_id,
-            "name"  : PuzzleManager.getPuzzleClass(puzzle_id).name
-        }
-        for puzzle_id in PuzzleManager.getPuzzleIds()
-    ]
-    return response
-
-@app.route('/<puzzle_id>/<variant_id>/start', methods=['GET'])
+@app.route('/<puzzle_id>/<variant_id>/start/', methods=['GET'])
 def get_start_position(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)
     puzzle = None
@@ -104,8 +93,6 @@ def puzzle_position(puzzle_id, variant_id, position):
         }
         if child_position_value == PuzzleValue.SOLVABLE:
             move_obj['remoteness'] = s.getRemoteness(child_position)
-        else:
-            move_obj['remoteness'] = -200 # -200 is the code for infinite remoteness
         move_objs.append(move_obj)
         
     response["moves"] = move_objs
