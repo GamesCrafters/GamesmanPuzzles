@@ -111,7 +111,7 @@ class ToadsAndFrogsPuzzle(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        board = list(positionid[8:])
+        board = list(positionid.split('_')[-1])
         variant_id = len(board) ^ 1
         puzzle = ToadsAndFrogsPuzzle(variant_id)
         puzzle.board = board
@@ -128,7 +128,7 @@ class ToadsAndFrogsPuzzle(ServerPuzzle):
         Outputs:
             String Puzzle
         """
-        return 'R_A_0_0_' + ''.join(self.board)
+        return '1_' + ''.join(self.board)
 
     @classmethod
     def isLegalPosition(cls, positionid, variantid=None, **kwargs):

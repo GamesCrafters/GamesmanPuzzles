@@ -168,7 +168,7 @@ class Bishop(ServerPuzzle):
 		Outputs:
 			String Puzzle
 		"""
-		return 'R_A_0_0_' + self.board
+		return '1_' + self.board
     
 	def moveString(self, move, mode='uwapi'):
 		if mode == 'uwapi':

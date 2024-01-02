@@ -100,8 +100,7 @@ class Npuzzle(ServerPuzzle):
     @classmethod
     def fromString(cls, puzzleid):
         try:
-            parts = puzzleid.split('_')
-            puzzleid = parts[4]
+            puzzleid = puzzleid.split('_')[-1]
             puzzle = Npuzzle()
             puzzle.position = [int(i) if i != '-' else 0 for i in puzzleid]
             puzzle.size = int(math.sqrt(len(puzzle.position)))
@@ -110,7 +109,7 @@ class Npuzzle(ServerPuzzle):
             raise PuzzleException('Invalid puzzleid')
     
     def toString(self, mode='minimal'):
-        return 'R_A_0_0_' + ''.join([str(x) if int(x) != 0 else '-' for x in self.position])
+        return '1_' + ''.join([str(x) if int(x) != 0 else '-' for x in self.position])
     
     def moveString(self, move, mode='humanreadable'):
         if mode == 'uwapi':

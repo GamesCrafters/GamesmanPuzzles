@@ -164,11 +164,11 @@ class Hanoi(ServerPuzzle):
         if not isinstance(positionid, str):
             raise TypeError("PositionID is not of type str")
 
-        # Example positionid: "R_A_3_3_A--B--C--"
+        # Example positionid: "1_A--B--C--_3_3"
         positionid_s = positionid.split("_")
         disk_variant = int(positionid_s[2])
         rod_variant = int(positionid_s[3])
-        matrix_str = positionid_s[4]
+        matrix_str = positionid_s[1]
 
         if len(matrix_str) != (disk_variant * rod_variant):
             raise ValueError("invalid PositionID")
@@ -317,7 +317,7 @@ class Hanoi(ServerPuzzle):
                 row += hor[i]
             rotate += row
         # rows = disk,   cols = rods
-        return "R_A_{}_{}_".format(self.disk_variant, self.rod_variant) + rotate
+        return f'1_{rotate}_{self.disk_variant}_{self.rod_variant}'
 
     def convert_move(self, move):
         """Returns the move converted into uwapi format move
@@ -329,8 +329,7 @@ class Hanoi(ServerPuzzle):
         rod_variant = self.rod_variant
         from_pos = move[0]
         to_pos = move[1]
-        board = self.convert_board(self.rods)
-        board = board[8:]
+        board = self.convert_board(self.rods).split('_')[1]
 
         # find top most pos of disk at from_pos column
         from_top_most = 0

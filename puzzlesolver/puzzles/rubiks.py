@@ -178,7 +178,7 @@ class Rubiks(ServerPuzzle):
                 entity_string[k] = chr(self.cube[k] + starts[i])
             for k in range(start_idxs[i][1], start_idxs[i][1] + 4):
                 entity_string[k] = chr(self.cube[k] + starts[i])
-        return 'R_A_0_0_' + ''.join(entity_string)
+        return '1_' + ''.join(entity_string)
     
     def moveString(self, move, mode='uwapi'):
         if mode == 'uwapi':

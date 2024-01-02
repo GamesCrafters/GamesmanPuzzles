@@ -136,7 +136,7 @@ class RushHour(ServerPuzzle):
 
     def toString(self, mode="minimal"):
         if mode == "minimal":
-            return f"R_A_0_{RushHour.variants.index(self.variant_id)}_{self.to_winning_string()}"
+            return f'1_{self.to_winning_string()}_{RushHour.variants.index(self.variant_id)}'
         elif mode == "complex":
             display = ""
             for i in range(6):
@@ -177,7 +177,7 @@ class RushHour(ServerPuzzle):
         if not positionid or not isinstance(positionid, str):
             raise TypeError("PositionID is not type str")
         # Checking if this is a valid string (extract the board and difficulty first)
-        variant_id, board_string = positionid.split("_")[-2:]
+        board_string, variant_id = positionid.split('_')[1:]
         try:
             variant_id = RushHour.variants[int(variant_id)]
         except Exception:

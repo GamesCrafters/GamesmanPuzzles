@@ -81,23 +81,15 @@ class LightsOut(ServerPuzzle):
     @classmethod
     def generateStartPosition(cls, variantid):
         variant = int(variantid)
-        position = "R_{}_{}_{}_".format("A", variant, variant)
-        position += '1' * (variant ** 2)
-        return cls.fromString(position)
+        return cls.fromString('1_' + '1' * (variant ** 2))
 
     @classmethod
     def fromString(cls, position: str):
         parts = position.split("_")
-        if (len(parts) <= 4): 
-            raise ValueError("Invalid position")
-        l = int(parts[2])
-        w = int(parts[3])
-        if (l != w):
-            raise TypeError("Unsupported variant")
-        position = parts[4]
+        position = parts[1]
 
         variant = int(len(position) ** (1/2))
-        if (l != variant):
+        if str(variant) not in LightsOut.variants:
             raise TypeError("Unsupported variant")
         puzzle = cls(variant=variant)
         puzzle.grid = []
@@ -108,14 +100,11 @@ class LightsOut(ServerPuzzle):
         return puzzle
 
     def toString(self, mode='minimal'):
-        output = "R_{}_{}_{}_".format("A", len(self.grid), len(self.grid[0]))
-
-        result = ""
+        result = "1_"
         for row in self.grid:
             str_row = ["1" if entry else "0" for entry in row]
             result += "".join(str_row)
-        output += result
-        return output
+        return result
     
     def moveString(self, move, mode='uwapi'):
         if mode == 'uwapi':

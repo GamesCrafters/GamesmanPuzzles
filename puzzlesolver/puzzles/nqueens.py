@@ -254,7 +254,7 @@ class NQueens(ServerPuzzle):
             raise PuzzleException('Invalid puzzleid')
 
     def toString(self, mode='minimal'):
-        return 'R_A_0_0_' + ''.join(['Q' if (self.bitboard & (1 << b)) else '-' for b in range(self.N * self.N)])
+        return '1_' + ''.join(['Q' if (self.bitboard & (1 << b)) else '-' for b in range(self.N * self.N)])
     
     def moveString(self, move, mode='uwapi'):
         if mode == 'uwapi':

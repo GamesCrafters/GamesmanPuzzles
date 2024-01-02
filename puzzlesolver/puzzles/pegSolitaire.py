@@ -171,7 +171,7 @@ class Peg(ServerPuzzle):
             raise PuzzleException("Invalid puzzleid")
 
     def toString(self, mode='minimal'):
-        output = "R_A_0_0_"
+        output = "1_"
         slotlabels = variant_data[self.variant_id]['slotlabels']
         for i in range(variant_data[self.variant_id]['size']):
             if self.board & (1 << i):
