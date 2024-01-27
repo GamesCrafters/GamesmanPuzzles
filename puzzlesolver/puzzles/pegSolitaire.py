@@ -170,8 +170,8 @@ class Peg(ServerPuzzle):
         except Exception as _:
             raise PuzzleException("Invalid puzzleid")
 
-    def toString(self, mode='minimal'):
-        output = "1_"
+    def toString(self, mode):
+        output = '1_' if mode == StringMode.AUTOGUI else ''
         slotlabels = variant_data[self.variant_id]['slotlabels']
         for i in range(variant_data[self.variant_id]['size']):
             if self.board & (1 << i):
@@ -180,8 +180,8 @@ class Peg(ServerPuzzle):
                 output += '-'
         return output + f'_{self.variant_id}'
     
-    def moveString(self, move, mode='uwapi'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return f'M_{move[0]}_{move[1]}_x'
         else:
             return f'{move[0]} → {move[1]}'

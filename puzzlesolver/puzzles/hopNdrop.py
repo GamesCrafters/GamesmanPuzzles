@@ -286,7 +286,7 @@ class HopNDrop(ServerPuzzle):
 
     ### ________ Server _________
     @classmethod
-    def deserialize(cls, positionid, **kwargs):
+    def fromString(cls, positionid, **kwargs):
         """Returns a Puzzle object based on positionid
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
@@ -321,12 +321,12 @@ class HopNDrop(ServerPuzzle):
         newPuzzle.board = b
         return newPuzzle
 
-    def serialize(self, **kwargs):
+    def toString(self, mode):
         """Returns a serialized based on self
         Outputs:
             String Puzzle
         """
-        return "a"
+        return "Unavailable"
         # out = ""
         # for row in self.board:
         #     for i in row:

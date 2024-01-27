@@ -126,8 +126,7 @@ class TopSpin(ServerPuzzle):
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
 	def toString(self, **kwargs):
-		result = ''
-		result += '_'.join([str(item) for item in self.track[0]])
+		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
 			result += str(item)

@@ -117,18 +117,19 @@ class ToadsAndFrogsPuzzle(ServerPuzzle):
         puzzle.board = board
         return puzzle
     
-    def moveString(self, move, mode='uwapi'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return f"A_h_{move}_x"
         else:
             return str(move + 1) # 1-index
 
-    def toString(self, mode='minimal'):
+    def toString(self, mode):
         """Returns a serialized based on self
         Outputs:
             String Puzzle
         """
-        return '1_' + ''.join(self.board)
+        prefix = '1_' if mode == StringMode.AUTOGUI else ''
+        return prefix + ''.join(self.board)
 
     @classmethod
     def isLegalPosition(cls, positionid, variantid=None, **kwargs):

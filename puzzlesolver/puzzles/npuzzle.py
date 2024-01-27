@@ -2,11 +2,9 @@
 https://en.wikipedia.org/wiki/15_puzzle
 """
 
-from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import *
-
 import math
 
 class Npuzzle(ServerPuzzle):
@@ -108,11 +106,12 @@ class Npuzzle(ServerPuzzle):
         except Exception as _:
             raise PuzzleException('Invalid puzzleid')
     
-    def toString(self, mode='minimal'):
-        return '1_' + ''.join([str(x) if int(x) != 0 else '-' for x in self.position])
+    def toString(self, mode):
+        prefix = '1_' if mode == StringMode.AUTOGUI else ''
+        return prefix + ''.join([str(x) if int(x) != 0 else '-' for x in self.position])
     
-    def moveString(self, move, mode='humanreadable'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return f'M_{move[0]}_{move[1]}_x'
         else:
             return str(self.position[move[0]])

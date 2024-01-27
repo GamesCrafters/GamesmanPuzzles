@@ -153,15 +153,14 @@ class Bishop(ServerPuzzle):
 		return cls(variant_id)
 	
 	@classmethod
-	def fromString(cls, positionid):
+	def fromString(cls, position_str):
 		"""Returns a Puzzle object based on positionid
 		Inputs:
 			positionid - String id from puzzle, serialize() must be able to generate it
 		Outputs:
 			Puzzle object based on puzzleid and variantid
 		"""
-		entity_string = positionid.split('_')[-1]
-		return cls(size_to_variant[len(entity_string)], entity_string)
+		return cls(size_to_variant[len(position_str)], position_str)
 
 	def toString(self, mode):
 		"""Human-readable string shall match autogui string."""

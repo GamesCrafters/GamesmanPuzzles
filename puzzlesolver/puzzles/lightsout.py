@@ -85,7 +85,6 @@ class LightsOut(ServerPuzzle):
 
     @classmethod
     def fromString(cls, position: str):
-        position = position.split("_")[-1]
         variant = int(len(position) ** (1/2))
         if str(variant) not in LightsOut.variants:
             raise TypeError("Unsupported variant")
@@ -97,15 +96,15 @@ class LightsOut(ServerPuzzle):
             puzzle.grid.append(row)
         return puzzle
 
-    def toString(self, mode='minimal'):
-        result = "1_"
+    def toString(self, mode):
+        result = '1_' if mode == StringMode.AUTOGUI else ''
         for row in self.grid:
             str_row = ['1' if entry else '0' for entry in row]
             result += ''.join(str_row)
         return result
     
-    def moveString(self, move, mode='uwapi'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return f'A_t_{move[0] + move[1] * len(self.grid)}_x'
         else:
             return f"{chr(ord('a') + move[0])}{len(self.grid) - move[1]}"
