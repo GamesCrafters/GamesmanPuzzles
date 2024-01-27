@@ -125,7 +125,7 @@ class TopSpin(ServerPuzzle):
 		temp = variantid.split('_')
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
-	def serialize(self, **kwargs):
+	def toString(self, **kwargs):
 		result = ''
 		result += '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
@@ -134,7 +134,7 @@ class TopSpin(ServerPuzzle):
 		return result
 
 	@classmethod
-	def deserialize(cls, positionid, **kwargs):
+	def fromString(cls, positionid, **kwargs):
 		new_loop = []
 		stacks = positionid.split('-')
 		in_spin = stacks[0].split('_')

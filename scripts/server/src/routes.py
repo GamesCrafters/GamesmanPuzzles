@@ -2,7 +2,7 @@ import flask
 from flask import abort
 from flask_cors import CORS
 from puzzlesolver.puzzles import PuzzleManager
-from puzzlesolver.util import PuzzleException, PuzzleValue
+from puzzlesolver.util import PuzzleException, PuzzleValue, StringMode
 from werkzeug.exceptions import InternalServerError
 from . import puzzle_solved_variants
 
@@ -68,7 +68,10 @@ def get_start_position(puzzle_id, variant_id):
     else:
         puzzle = puzzlecls.generateStartPosition(variant_id)
 
-    return {"startPosition": puzzle.toString(mode="minimal")}
+    return {
+        'position': puzzle.toString(mode=StringMode.HUMAN_READABLE_ONELINE),
+        'autoguiPosition': puzzle.toString(mode=StringMode.AUTOGUI)
+    }
 
 @app.route('/<puzzle_id>/<variant_id>/positions/<position>/', methods=['GET'])
 def puzzle_position(puzzle_id, variant_id, position):
@@ -77,7 +80,7 @@ def puzzle_position(puzzle_id, variant_id, position):
     s = puzzle_solved_variants[puzzle_id][variant_id]
     
     value = s.getValue(puzzle)
-    response = {'position': position, 'positionValue': value}
+    response = {'position': position, 'autoguiPosition': puzzle.toString(mode=StringMode.AUTOGUI), 'positionValue': value}
     if value == PuzzleValue.SOLVABLE:
         response['remoteness'] = s.getRemoteness(puzzle)
 
@@ -86,10 +89,12 @@ def puzzle_position(puzzle_id, variant_id, position):
         child_position = puzzle.doMove(move)
         child_position_value = s.getValue(child_position)
         move_obj = {
-            "position": child_position.toString(mode="minimal"),
+            "position": child_position.toString(mode=StringMode.HUMAN_READABLE_ONELINE),
+            "autoguiPosition": child_position.toString(mode=StringMode.AUTOGUI),
             "positionValue": child_position_value,
-            "move": puzzle.moveString(move, 'uwapi'),
-            "moveName": puzzle.moveString(move, 'humanreadable')
+            "move": puzzle.moveString(move, mode=StringMode.HUMAN_READABLE_ONELINE),
+            "autoguiMove": puzzle.moveString(move, mode=StringMode.AUTOGUI),
+            "deltaRemoteness": 0
         }
         if child_position_value == PuzzleValue.SOLVABLE:
             move_obj['remoteness'] = s.getRemoteness(child_position)

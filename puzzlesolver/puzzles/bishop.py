@@ -163,15 +163,13 @@ class Bishop(ServerPuzzle):
 		entity_string = positionid.split('_')[-1]
 		return cls(size_to_variant[len(entity_string)], entity_string)
 
-	def toString(self, mode='minimal'):
-		"""Returns a serialized based on self
-		Outputs:
-			String Puzzle
-		"""
-		return '1_' + self.board
+	def toString(self, mode):
+		"""Human-readable string shall match autogui string."""
+		prefix = '1_' if mode == StringMode.AUTOGUI else ''
+		return prefix + self.board
     
-	def moveString(self, move, mode='uwapi'):
-		if mode == 'uwapi':
+	def moveString(self, move, mode):
+		if mode == StringMode.AUTOGUI:
 			return f'M_{move[0]}_{move[1]}_x'
 		else:
 			return f"{chr(ord('a') + self.rows - 1 - move[0] % self.rows)}{move[0] // self.rows} {chr(ord('a') + self.rows - move[1] % self.rows)}{move[1] // self.rows}"
