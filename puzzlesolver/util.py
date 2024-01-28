@@ -14,7 +14,7 @@ class PuzzleValue:
 
 class StringMode(int, Enum):
     AUTOGUI = 0
-    HUMAN_READABLE_ONELINE = 1
+    HUMAN_READABLE = 1
     HUMAN_READABLE_MULTILINE = 2
 
 class PuzzleException(Exception):

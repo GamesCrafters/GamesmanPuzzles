@@ -1,5 +1,9 @@
-"""Game for Tower of Hanoi
-https://en.wikipedia.org/wiki/Tower_of_Hanoi
+"""
+File: hanoi.py
+Puzzle: Towers of Hanoi
+Author: Anthony Ling (Backend); Mia Campdera-Pulido, Linh Tran (AutoGUI)
+Date: April 2, 2020
+Description: See https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
 from . import ServerPuzzle
@@ -15,21 +19,12 @@ def ffs(num):
 
 class Hanoi(ServerPuzzle):
 
-    id      = 'hanoi'
-    auth    = "Anthony Ling"
-    name    = "Towers of Hanoi"
-    desc    = """Move smaller discs ontop of bigger discs. Fill the rightmost stack."""
-    date    = "April 2, 2020"
+    id = 'hanoi'
 
     variants =  ["2_1"]
     variants += ["3_1", "3_2", "3_3", "3_4", "3_5", "3_6", "3_7", "3_8"]
     variants += ["4_1", "4_2", "4_3", "4_4", "4_5", "4_6"]
     variants += ["5_1", "5_2", "5_3", "5_4"]
-
-    variants_desc = [
-        f"{variant.split('_')[0]} Rod{'' if variant.split('_')[0] == '1' else 's'} & \
-            {variant.split('_')[1]} Disk{'' if variant.split('_')[1] == '1' else 's'}" for variant in variants
-    ]
 
     test_variants = ["3_1", "3_2", "3_3"]
     

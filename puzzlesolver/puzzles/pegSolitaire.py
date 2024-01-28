@@ -1,3 +1,10 @@
+"""
+File: pegSolitaire.py
+Puzzle: Peg Solitaire
+Author: Mark Presten (Backend), Cameron Cheung (Backend, AutoGUI)
+Date: April 15, 2020
+"""
+
 from . import ServerPuzzle
 from ..util import *
 
@@ -72,15 +79,10 @@ variant_data = {
 
 class Peg(ServerPuzzle):
 
-    id      = 'pegsolitaire'
-    auth    = "Mark Presten, Cameron Cheung"
-    name    = "Peg Solitaire"
-    desc    = """Jump over a peg with an adjacent peg, removing it from the board. Have one peg remaining by end of the game."""
-    date    = "April 15, 2020"
+    id = 'pegsolitaire'
 
     variants = ["triangle", "star", "trapezoid"]
     #variants = ["triangle", "star", "trapezoid", "cross"]
-    variants_desc = [variant[0].upper() + variant[1:] for variant in variants]
     
     test_variants = variants
     startRandomized = False

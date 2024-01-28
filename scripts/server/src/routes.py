@@ -69,7 +69,7 @@ def get_start_position(puzzle_id, variant_id):
         puzzle = puzzlecls.generateStartPosition(variant_id)
 
     return {
-        'position': puzzle.toString(mode=StringMode.HUMAN_READABLE_ONELINE),
+        'position': puzzle.toString(mode=StringMode.HUMAN_READABLE),
         'autoguiPosition': puzzle.toString(mode=StringMode.AUTOGUI)
     }
 
@@ -89,10 +89,10 @@ def puzzle_position(puzzle_id, variant_id, position):
         child_position = puzzle.doMove(move)
         child_position_value = s.getValue(child_position)
         move_obj = {
-            "position": child_position.toString(mode=StringMode.HUMAN_READABLE_ONELINE),
+            "position": child_position.toString(mode=StringMode.HUMAN_READABLE),
             "autoguiPosition": child_position.toString(mode=StringMode.AUTOGUI),
             "positionValue": child_position_value,
-            "move": puzzle.moveString(move, mode=StringMode.HUMAN_READABLE_ONELINE),
+            "move": puzzle.moveString(move, mode=StringMode.HUMAN_READABLE),
             "autoguiMove": puzzle.moveString(move, mode=StringMode.AUTOGUI),
             "deltaRemoteness": 0
         }

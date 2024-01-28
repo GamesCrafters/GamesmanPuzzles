@@ -1,3 +1,10 @@
+"""
+File: rubiks.py
+Puzzle: Rubik's Cube
+Author: Mark Presten (Backend), Cameron Cheung (Backend, AutoGUI)
+Date: September 14th, 2020
+"""
+
 import random
 from . import ServerPuzzle
 from ..util import *
@@ -65,14 +72,8 @@ start_idxs = [(0, 16), (4, 12), (8, 20)]
 
 class Rubiks(ServerPuzzle):
 
-    id      = 'rubiks'
-    auth    = "Mark Presten"
-    name    = "Rubik's Cube"
-    desc    = """Solve the Rubiks cube by getting one color/number on each face using rotations."""
-    date    = "September 14th, 2020"
-
+    id = 'rubiks'
     variants = ["2x2x2"]
-    variants_desc = variants
     startRandomized = True
 
     def __init__(self, cube=None, **kwargs):
@@ -155,14 +156,14 @@ class Rubiks(ServerPuzzle):
     def fromString(cls, position_str):
         """Returns a Puzzle object based on positionid
         Inputs:
-            positionid - String id from puzzle, serialize() must be able to generate it
+            positionid - String id from puzzle
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
         return Rubiks([int(k) for k in position_str])
 
     def toString(self, mode):
-        """Returns a serialized based on self
+        """Returns a position string
         Outputs:
             String Puzzle
         """

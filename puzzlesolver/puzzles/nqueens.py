@@ -1,3 +1,10 @@
+"""
+File: nqueens.py
+Puzzle: N Queens Puzzle
+Author: Mia Campdera-Pulido, Cameron Cheung
+Date: March 17, 2021
+"""
+
 """N Queens Puzzle
  https://en.wikipedia.org/wiki/Eight_queens_puzzle
 """
@@ -9,13 +16,8 @@ import itertools
 class NQueens(ServerPuzzle):
 
     id = 'nqueens'
-    auth = 'Mia Campdera-Pulido, Cameron Cheung'
-    name = 'N Queens Puzzle'
-    desc = 'Place N queens on an N-row, N-column chessboard in a non-attacking configuration.'
-    date = 'March 17, 2021'
 
     variants = [str(N) for N in range(4, 10)]
-    variants_desc = [N + " Queens" for N in variants]
     test_variants = variants
     startRandomized = False
 

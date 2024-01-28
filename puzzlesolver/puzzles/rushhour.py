@@ -1,3 +1,11 @@
+"""
+File: rushhour.py
+Puzzle: Rush Hour
+Author: Christopher Nammour
+Date: April 25, 2023
+"""
+
+
 from ..util import *
 from ..puzzles import ServerPuzzle
 import random
@@ -7,13 +15,7 @@ dirname = os.path.dirname(__file__)
 
 class RushHour(ServerPuzzle):
     id = "rushhour"
-    auth = "Christopher Nammour"
-    name = "Rush Hour"
-    desc = """Move pieces around to get the red piece to the right side of the board."""
-    date = "April 25, 2023"
-
     variants = ['basic', 'easy', 'medium', 'hard', 'expert']
-    variants_desc = [variant[0].upper() + variant[1:] for variant in variants]
     # "True" would mean that the game would start at a random solvable board,
     # by looking at all solvable hashes -- hence False to ensure we fix a start position
     startRandomized = False

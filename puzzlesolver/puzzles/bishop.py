@@ -1,3 +1,10 @@
+"""
+File: bishop.py
+Puzzle: Bishop Puzzle
+Author: Brian Delaney (Backend), Cameron Cheung (AutoGUI)
+Date: October 30, 2020
+"""
+
 from . import ServerPuzzle
 from ..util import *
 import math
@@ -17,14 +24,8 @@ components = {
 }
 
 class Bishop(ServerPuzzle):
-	id      = 'bishop'
-	auth 	= 'Brian Delaney'
-	name 	= 'Bishop Puzzle'
-	desc 	= """Swap the locations of two sets of bishops on opposite ends of a chessboard, without moving them into threatened positions."""
-	date 	= "October 30, 2020"
-
+	id = 'bishop'
 	variants = ["4x5_8", "4x7_4", "6x7_6"]
-	variants_desc = ["Standard", "4 Bishops on 4x7", "6 Bishops on 6x7"]
 	test_variants = variants
 	startRandomized = False
 
@@ -156,7 +157,7 @@ class Bishop(ServerPuzzle):
 	def fromString(cls, position_str):
 		"""Returns a Puzzle object based on positionid
 		Inputs:
-			positionid - String id from puzzle, serialize() must be able to generate it
+			positionid - String id from puzzle
 		Outputs:
 			Puzzle object based on puzzleid and variantid
 		"""

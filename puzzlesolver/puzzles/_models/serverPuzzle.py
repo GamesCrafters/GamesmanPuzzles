@@ -50,8 +50,6 @@ class ServerPuzzle(Puzzle):
                 raise TypeError("PositionID must be type str")
             if not cls.isLegalPosition(positionid): 
                 raise ValueError("PositionID could not be translated into a puzzle")
-        if hasattr(cls, "deserialize"):
-            return cls.deserialize(positionid)
         raise NotImplementedError
     
     #################################################################
@@ -71,23 +69,6 @@ class ServerPuzzle(Puzzle):
     def fromHash(cls, variantid, hash_val):
         """Returns a Puzzle object based on variantid and the given hash_val
         """
-        raise NotImplementedError
-    
-    @classmethod
-    @deprecated("serverPuzzle.deserialize is deprecated. See puzzle.fromString")
-    def deserialize(cls, positionid):
-        """Returns a Puzzle object based on positionid
-
-        Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
-        with two stacks of discs ((3,2) and (1))
-
-        Inputs:
-            positionid - String id from puzzle, serialize() must be able to generate it
-
-        Outputs:
-            Puzzle object based on puzzleid and variantid
-        """
-
         raise NotImplementedError
 
     @classmethod

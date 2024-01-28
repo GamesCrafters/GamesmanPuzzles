@@ -1,26 +1,27 @@
+"""
+File: hopNdrop.py
+Puzzle: Towers of Hanoi
+Author: Mark Presten
+Date: Oct 10, 2020
+"""
+
+"""
+    (STILL IN DEVELOPMENT)
+    Some sections of code commented out until someone 
+    can fix the AutoGUI.
+"""
+
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import GeneralSolver, SqliteSolver
-
 from hashlib import sha1
-
-"""
-    (STILL IN DEVELOPMENT)
-    Some sections of code comented out until someone 
-    can fix the AutoGUI.
-"""
 
 class HopNDrop(ServerPuzzle):
 
-    id      = 'hopndrop'
-    auth    = "Mark Presten"
-    name    = "Hop N' Drop"
-    desc    = """Clear all platforms before reaching the goal tile. Don't get stuck or fall!"""
-    date    = "Oct 10, 2020"
+    id = 'hopndrop'
 
     variants = ["map1"]#, "map2", "map3"]
-    variants_desc = variants
 
     test_variants = variants
     
@@ -355,7 +356,7 @@ class HopNDrop(ServerPuzzle):
         Outputs:
             - True if Puzzle is valid, else False
         """
-        try: puzzle = cls.deserialize(positionid)
+        try: puzzle = cls.fromString(positionid)
         except: raise PuzzleException("Position is invalid")
         return True
 

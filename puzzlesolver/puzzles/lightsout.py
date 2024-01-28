@@ -1,24 +1,25 @@
+"""
+File: lightsout.py
+Puzzle: Lights Out
+Author: Anthony Ling (v0), Robert Shi (v1, AutoGUI)
+Date: January 14, 2023
+"""
+
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 
 class LightsOut(ServerPuzzle):
 
-    id      = "lights"
-    auth    = "Anthony Ling, Robert Shi"
-    name    = "Lights Out"
-    desc    = "Click on the squares on the grid to turn it and adjacent squares off. Try to turn off all the squares!"
-    date    = "January 14, 2023"
+    id = "lights"
 
     try:
         from ..extern import m4ri_utils
     except:
         variants = [str(i) for i in range(2, 6)]
-        variants_desc = ["{}x{}".format(i, i) for i in range(2, 6)]
         closed_form_variants = []
     else:
         variants = [str(i) for i in range(2, 9)]
-        variants_desc = ["{}x{}".format(i, i) for i in range(2, 9)]
         closed_form_variants = ['2', '3', '6', '7', '8']
     test_variants = [str(i) for i in range(2, 5)]
     startRandomized = True

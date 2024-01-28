@@ -1,3 +1,10 @@
+"""
+File: npuzzle.py
+Puzzle: N-Puzzle (Sliding Number Puzzle)
+Author: Arturo Olvera (Backend), Cameron Cheung (AutoGUI)
+Date: April 10, 2020
+"""
+
 """Game for 15 puzzle, generalized to N x N
 https://en.wikipedia.org/wiki/15_puzzle
 """
@@ -9,14 +16,9 @@ import math
 
 class Npuzzle(ServerPuzzle):
     
-    id      = 'npuzzle'
-    auth    = "Arturo Olvera"
-    name    = "Sliding Number Puzzle"
-    desc    = "Shift pieces to get puzzle in ascending order."
-    date    = "April 10, 2020"
+    id = 'npuzzle'
     
     variants = [str(i) for i in range(3, 4)]
-    variants_desc = ["{}-Puzzle".format(i * i - 1) for i in range(3, 4)]
     test_variants = ["2"]
     startRandomized = True
 
@@ -146,7 +148,7 @@ class Npuzzle(ServerPuzzle):
 
     @classmethod
     def isLegalPosition(cls, positionid):
-        puzzle = cls.deserialize(positionid)
+        puzzle = cls.fromString(positionid)
         if len(puzzle.position) != puzzle.size ** 2:
             raise PuzzleException("Incorrect puzzle length.")
 
