@@ -13,9 +13,9 @@ class PuzzleValue:
                 key == PuzzleValue.UNDECIDED)
 
 class StringMode(int, Enum):
-    AUTOGUI = 0
-    HUMAN_READABLE = 1
-    HUMAN_READABLE_MULTILINE = 2
+    AUTOGUI = 0 # Used for puzzlesserver
+    HUMAN_READABLE = 1 # Used for puzzlesserver
+    HUMAN_READABLE_MULTILINE = 2 # Used for playing puzzle on command line
 
 class PuzzleException(Exception):
     """An Exception meant to be caught by the server"""

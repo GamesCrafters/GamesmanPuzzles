@@ -46,14 +46,16 @@ python -m scripts.server
 ```
 to access the webserver locally. The server should be running at http://127.0.0.1:9001/.
 
-### Building from pip _(discontinued)_
-Install via pip (tested on MacOS and Linux):
-```
-pip install GamesmanPuzzles
-```
-For more info about the package, check out this little [guide](guides/build.md).
 
-## Testing
+##### Routes
+
+`http://localhost:9001/<puzzle_id>/<variant_id>/start/` gives the initial position of the variant of ID `variant_id` of the puzzle of ID `puzzle_id`. If the puzzle supports randomized starting positions, the content of the response will correspond to a random initial position.
+- Example: http://localhost:9001/npuzzle/3/start/ will give a starting position of the variant with ID “3” of the puzzle with ID “npuzzle”, i.e., variant 3 of the sliding number puzzle.
+
+`http://localhost:9001/<puzzle_id>/<variant_id>/positions/<human_readable_position_string>/` shows information about the puzzle position represented by `human_readable_position_string` of the variant of ID `variant_id` of the puzzle of ID `position_id`.
+- Example: http://localhost:9001/npuzzle/3/positions/4325718-6/ will show the position information for position represented by the string 4325718-6 of variant 3 of the sliding number puzzle.
+
+## Testing (Broken)
 To run all the tests, run the following command:
 ```
 pytest --cov puzzlesolver
@@ -68,14 +70,14 @@ Tips for exploring this repository:
 ## Contributing to GamesmanPuzzles
 See [contributing](/guides/Contributing.md)
 ### Contributors:
-Spring 2020:
+Spring 2020: [Anthony Ling](https://github.com/Ant1ng2), [Mark Presten](https://github.com/mpresten), [Arturo Olvera](https://github.com/olveraarturo)
 
-[Anthony Ling](https://github.com/Ant1ng2), [Mark Presten](https://github.com/mpresten), [Arturo Olvera](https://github.com/olveraarturo)
+Fall 2020: Anthony Ling, Mark Presten, [Brian Delaney](https://github.com/briancdelaney), [Yishu Chao](https://github.com/yishuchao), [Sophia Xiao](https://github.com/sofa-x)
 
-Fall 2020:
+Spring 2021: Anthony Ling, Mark Presten, [Mia Campdera-Pulido](https://github.com/miacampdera)
 
-Anthony Ling, Mark Presten, [Brian Delaney](https://github.com/briancdelaney), [Yishu Chao](https://github.com/yishuchao), [Sophia Xiao](https://github.com/sofa-x)
+Fall 2022: [Linh Tran](https://github.com/Linh-Tran-nlt)
 
-Spring 2021:
+Spring 2023: [Christopher Nammour](https://github.com/chrisnammour)
 
-Anthony Ling, Mark Presten, [Mia Campdera-Pulido](https://github.com/miacampdera)
+Current: [Cameron Cheung](https://github.com/cameroncheung00), [Robert Shi](https://github.com/robertyishi)

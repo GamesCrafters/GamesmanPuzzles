@@ -14,9 +14,11 @@ from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
 from .rushhour import RushHour
+#from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
 puzzleList = {
+    #ExamplePuzzle.id: ExamplePuzzle,
     Bishop.id:      Bishop,
     Hanoi.id:       Hanoi,
     HopNDrop.id:    HopNDrop,
