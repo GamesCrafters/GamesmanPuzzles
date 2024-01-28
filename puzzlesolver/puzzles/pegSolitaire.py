@@ -170,7 +170,7 @@ class Peg(ServerPuzzle):
     def toString(self, mode):
         output = ''
         if mode == StringMode.AUTOGUI:
-            output = '1_' if mode == StringMode.AUTOGUI else ''
+            output = '1_'
             slotlabels = variant_data[self.variant_id]['slotlabels']
             for i in range(variant_data[self.variant_id]['size']):
                 if self.board & (1 << i):

@@ -93,8 +93,7 @@ def puzzle_position(puzzle_id, variant_id, position):
             "autoguiPosition": child_position.toString(mode=StringMode.AUTOGUI),
             "positionValue": child_position_value,
             "move": puzzle.moveString(move, mode=StringMode.HUMAN_READABLE),
-            "autoguiMove": puzzle.moveString(move, mode=StringMode.AUTOGUI),
-            "deltaRemoteness": 0
+            "autoguiMove": puzzle.moveString(move, mode=StringMode.AUTOGUI)
         }
         if child_position_value == PuzzleValue.SOLVABLE:
             move_obj['remoteness'] = s.getRemoteness(child_position)
