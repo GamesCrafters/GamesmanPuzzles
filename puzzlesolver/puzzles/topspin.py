@@ -15,7 +15,6 @@ class TopSpin(ServerPuzzle):
 
 	id = 'topspin'
 	variants = ['6_2']
-	test_variants = variants
 	startRandomized = True
 
 	def __init__(self, size = 6, spin = 2, **kwargs):

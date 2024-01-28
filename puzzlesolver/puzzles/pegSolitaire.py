@@ -80,11 +80,8 @@ variant_data = {
 class Peg(ServerPuzzle):
 
     id = 'pegsolitaire'
-
     variants = ["triangle", "star", "trapezoid"]
-    #variants = ["triangle", "star", "trapezoid", "cross"]
-    
-    test_variants = variants
+    #variants = ["triangle", "star", "trapezoid", "cross"]    
     startRandomized = False
 
     def __init__(self, variant_id, board=None):

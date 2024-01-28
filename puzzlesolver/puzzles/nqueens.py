@@ -18,7 +18,6 @@ class NQueens(ServerPuzzle):
     id = 'nqueens'
 
     variants = [str(N) for N in range(4, 10)]
-    test_variants = variants
     startRandomized = False
 
     def __init__(self, variant_id, bitboard = 0, placed_so_far = 0):

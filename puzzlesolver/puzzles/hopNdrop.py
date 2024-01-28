@@ -22,8 +22,6 @@ class HopNDrop(ServerPuzzle):
     id = 'hopndrop'
 
     variants = ["map1"]#, "map2", "map3"]
-
-    test_variants = variants
     
     startRandomized = False
 

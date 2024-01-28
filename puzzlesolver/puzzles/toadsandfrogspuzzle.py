@@ -12,7 +12,6 @@ class ToadsAndFrogsPuzzle(ServerPuzzle):
 
     id      = 'toadsandfrogspuzzle'
     variants = ["4", "6", "8", "10"] # Number of frogs and toads total, must be even
-    test_variants = variants
     startRandomized = False
 
     def __init__(self, variant_id, **kwargs):

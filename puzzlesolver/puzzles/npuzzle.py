@@ -19,7 +19,6 @@ class Npuzzle(ServerPuzzle):
     id = 'npuzzle'
     
     variants = [str(i) for i in range(3, 4)]
-    test_variants = ["2"]
     startRandomized = True
 
     def __init__(self, size=3):

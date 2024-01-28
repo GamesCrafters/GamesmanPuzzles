@@ -1,7 +1,7 @@
 """
 File: bishop.py
 Puzzle: Bishop Puzzle
-Author: Brian Delaney (Backend), Cameron Cheung (AutoGUI)
+Author: Brian Delaney (Backend), Cameron Cheung (Backend, AutoGUI)
 Date: October 30, 2020
 """
 
@@ -26,7 +26,6 @@ components = {
 class Bishop(ServerPuzzle):
 	id = 'bishop'
 	variants = ["4x5_8", "4x7_4", "6x7_6"]
-	test_variants = variants
 	startRandomized = False
 
 	# Indices will be in COLUMN-MAJOR order

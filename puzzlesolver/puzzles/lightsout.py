@@ -21,7 +21,6 @@ class LightsOut(ServerPuzzle):
     else:
         variants = [str(i) for i in range(2, 9)]
         closed_form_variants = ['2', '3', '6', '7', '8']
-    test_variants = [str(i) for i in range(2, 5)]
     startRandomized = True
 
     def __init__(self, variant='3'):
