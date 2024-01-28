@@ -135,7 +135,7 @@ class TopSpin(ServerPuzzle):
 		return result
 
 	@classmethod
-	def fromString(cls, positionid, **kwargs):
+	def fromString(cls, variant_id, positionid):
 		new_loop = []
 		stacks = positionid.split('-')
 		in_spin = stacks[0].split('_')

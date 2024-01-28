@@ -242,9 +242,8 @@ class NQueens(ServerPuzzle):
         return NQueens(variant_id, 0, 0) # Empty Board bitboard = 0
 
     @classmethod
-    def fromString(cls, position_str):
+    def fromString(cls, variant_id, position_str):
         try:
-            variant_id = str(math.isqrt(len(position_str)))
             bitboard, placed_so_far = 0, 0
             for b in range(len(position_str)):
                 if position_str[b] == 'Q':

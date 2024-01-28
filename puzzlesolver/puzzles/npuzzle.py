@@ -98,12 +98,12 @@ class Npuzzle(ServerPuzzle):
         return Npuzzle(size=int(variantid))
 
     @classmethod
-    def fromString(cls, puzzleid):
+    def fromString(cls, variant_id, puzzleid):
         try:
             puzzleid = puzzleid.split('_')[-1]
             puzzle = Npuzzle()
             puzzle.position = [int(i) if i != '-' else 0 for i in puzzleid]
-            puzzle.size = int(math.sqrt(len(puzzle.position)))
+            puzzle.size = int(variant_id)
             return puzzle
         except Exception as _:
             raise PuzzleException('Invalid puzzleid')

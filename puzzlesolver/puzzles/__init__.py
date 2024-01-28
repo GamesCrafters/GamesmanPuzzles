@@ -89,7 +89,7 @@ class PuzzleManagerClass:
         
         if positionid is not None:
             try:
-                puzzle = puzzlecls.fromString(positionid)
+                puzzle = puzzlecls.fromString(variantid, positionid)
             except (ValueError, TypeError):
                 raise PuzzleException("Invalid PositionID")
 

@@ -76,7 +76,7 @@ def get_start_position(puzzle_id, variant_id):
 @app.route('/<puzzle_id>/<variant_id>/positions/<position>/', methods=['GET'])
 def puzzle_position(puzzle_id, variant_id, position):
     validate(puzzle_id, variant_id, position)
-    puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(position)
+    puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(variant_id, position)
     s = puzzle_solved_variants[puzzle_id][variant_id]
     
     value = s.getValue(puzzle)

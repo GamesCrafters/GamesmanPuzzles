@@ -103,7 +103,7 @@ class ToadsAndFrogsPuzzle(ServerPuzzle):
         return puzzle
 
     @classmethod
-    def fromString(cls, positionid):
+    def fromString(cls, variant_id, positionid):
         """Returns a Puzzle object based on positionid
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
@@ -113,7 +113,6 @@ class ToadsAndFrogsPuzzle(ServerPuzzle):
             Puzzle object based on puzzleid and variantid
         """
         board = list(positionid.split('_')[-1])
-        variant_id = len(board) ^ 1
         puzzle = ToadsAndFrogsPuzzle(variant_id)
         puzzle.board = board
         return puzzle

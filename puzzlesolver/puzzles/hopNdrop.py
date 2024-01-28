@@ -287,7 +287,7 @@ class HopNDrop(ServerPuzzle):
 
     ### ________ Server _________
     @classmethod
-    def fromString(cls, positionid, **kwargs):
+    def fromString(cls, variant_id, positionid):
         """Returns a Puzzle object based on positionid
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))

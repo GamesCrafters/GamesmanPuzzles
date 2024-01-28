@@ -82,11 +82,11 @@ class LightsOut(ServerPuzzle):
     @classmethod
     def generateStartPosition(cls, variantid):
         variant = int(variantid)
-        return cls.fromString('1_' + '1' * (variant ** 2))
+        return cls.fromString(variantid, '1' * (variant ** 2))
 
     @classmethod
-    def fromString(cls, position: str):
-        variant = int(len(position) ** (1/2))
+    def fromString(cls, variant_id, position: str):
+        variant = int(variant_id)
         if str(variant) not in LightsOut.variants:
             raise TypeError("Unsupported variant")
         puzzle = cls(variant=variant)

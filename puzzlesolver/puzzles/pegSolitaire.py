@@ -160,27 +160,29 @@ class Peg(ServerPuzzle):
         return Peg(variant_id)
 
     @classmethod
-    def fromString(cls, puzzleid):
+    def fromString(cls, variant_id, position_str):
         try:
-            parts = puzzleid.split("_")
-            pieces, variant_id = parts[-2], parts[-1]
             board = 0
             for i in range(variant_data[variant_id]['size']):
-                if pieces[i] != '-':
+                if position_str[i] != '-':
                     board |= (1 << i)
             return Peg(variant_id, board)
         except Exception as _:
             raise PuzzleException("Invalid puzzleid")
 
     def toString(self, mode):
-        output = '1_' if mode == StringMode.AUTOGUI else ''
-        slotlabels = variant_data[self.variant_id]['slotlabels']
-        for i in range(variant_data[self.variant_id]['size']):
-            if self.board & (1 << i):
-                output += slotlabels[i]
-            else:
-                output += '-'
-        return output + f'_{self.variant_id}'
+        output = ''
+        if mode == StringMode.AUTOGUI:
+            output = '1_' if mode == StringMode.AUTOGUI else ''
+            slotlabels = variant_data[self.variant_id]['slotlabels']
+            for i in range(variant_data[self.variant_id]['size']):
+                if self.board & (1 << i):
+                    output += slotlabels[i]
+                else:
+                    output += '-'
+        else:
+            output = ''.join([('x' if self.board & (1 << i) else '-') for i in range(variant_data[self.variant_id]['size'])])
+        return output
     
     def moveString(self, move, mode):
         if mode == StringMode.AUTOGUI:

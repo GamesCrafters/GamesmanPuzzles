@@ -153,7 +153,7 @@ class Rubiks(ServerPuzzle):
         return cls()
 
     @classmethod
-    def fromString(cls, position_str):
+    def fromString(cls, variant_id, position_str):
         """Returns a Puzzle object based on positionid
         Inputs:
             positionid - String id from puzzle
