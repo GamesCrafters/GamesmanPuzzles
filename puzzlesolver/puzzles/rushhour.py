@@ -1,3 +1,11 @@
+"""
+File: rushhour.py
+Puzzle: Rush Hour
+Author: Christopher Nammour
+Date: April 25, 2023
+"""
+
+
 from ..util import *
 from ..puzzles import ServerPuzzle
 import random
@@ -7,13 +15,7 @@ dirname = os.path.dirname(__file__)
 
 class RushHour(ServerPuzzle):
     id = "rushhour"
-    auth = "Christopher Nammour"
-    name = "Rush Hour"
-    desc = """Move pieces around to get the red piece to the right side of the board."""
-    date = "April 25, 2023"
-
     variants = ['basic', 'easy', 'medium', 'hard', 'expert']
-    variants_desc = [variant[0].upper() + variant[1:] for variant in variants]
     # "True" would mean that the game would start at a random solvable board,
     # by looking at all solvable hashes -- hence False to ensure we fix a start position
     startRandomized = False
@@ -134,10 +136,8 @@ class RushHour(ServerPuzzle):
                 new_pos[i] = 'T'
         return RushHour(variantid, pos=''.join(new_pos))
 
-    def toString(self, mode="minimal"):
-        if mode == "minimal":
-            return f"R_A_0_{RushHour.variants.index(self.variant_id)}_{self.to_winning_string()}"
-        elif mode == "complex":
+    def toString(self, mode):
+        if mode == StringMode.HUMAN_READABLE_MULTILINE:
             display = ""
             for i in range(6):
                 display += self.pos[6 * i:6 * (i + 1)] + "\n"
@@ -150,7 +150,11 @@ class RushHour(ServerPuzzle):
                         .replace('1', 'X')\
                         .replace('2', 'X')
         else:
-            raise ValueError("Invalid keyword argument 'mode'")
+            entity_string = self.to_winning_string()
+            if mode == StringMode.AUTOGUI:
+                return f'1_{entity_string}'
+            else:
+                return entity_string
 
     def to_winning_string(self):
         """Converts a winning position to a string representation of it:
@@ -172,16 +176,12 @@ class RushHour(ServerPuzzle):
             return board_string
 
     @classmethod
-    def fromString(cls, positionid, **kwargs):
+    def fromString(cls, variant_id, board_string):
         # Checking if the positionid is a str
-        if not positionid or not isinstance(positionid, str):
+        if not board_string or not isinstance(board_string, str):
             raise TypeError("PositionID is not type str")
         # Checking if this is a valid string (extract the board and difficulty first)
-        variant_id, board_string = positionid.split("_")[-2:]
-        try:
-            variant_id = RushHour.variants[int(variant_id)]
-        except Exception:
-            raise ValueError("PositionID cannot be translated into Puzzle")
+
         if len(board_string) != 38:
             raise ValueError("PositionID cannot be translated into Puzzle")
         # Check that the last two characters are either empty or the red piece in a winning state
@@ -323,3 +323,10 @@ class RushHour(ServerPuzzle):
             new_pos[(end + length):(start + length)] = ['-'] * distance
 
         return RushHour(variant_id=self.variant_id, pos=''.join(new_pos))
+    
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
+            return move
+        else:
+            parts = move.split('_')
+            return f'{parts[1]} {parts[2]}'

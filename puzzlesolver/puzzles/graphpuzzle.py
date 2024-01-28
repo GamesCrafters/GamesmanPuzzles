@@ -47,8 +47,7 @@ class GraphPuzzle(Puzzle):
         return hash(str(self.name))
 
     def __eq__(self, puzzle):
-        return (isinstance(puzzle, GraphPuzzle) and 
-                self.name == puzzle.name and
+        return (isinstance(puzzle, GraphPuzzle) and
                 self.value == puzzle.value and
                 self.graph == puzzle.graph and
                 self.solutions == puzzle.solutions)

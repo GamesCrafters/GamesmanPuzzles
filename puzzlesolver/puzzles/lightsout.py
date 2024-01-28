@@ -1,26 +1,26 @@
+"""
+File: lightsout.py
+Puzzle: Lights Out
+Author: Anthony Ling (v0), Robert Shi (v1, AutoGUI)
+Date: January 14, 2023
+"""
+
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 
 class LightsOut(ServerPuzzle):
 
-    id      = "lights"
-    auth    = "Anthony Ling, Robert Shi"
-    name    = "Lights Out"
-    desc    = "Click on the squares on the grid to turn it and adjacent squares off. Try to turn off all the squares!"
-    date    = "January 14, 2023"
+    id = "lights"
 
     try:
         from ..extern import m4ri_utils
     except:
         variants = [str(i) for i in range(2, 6)]
-        variants_desc = ["{}x{}".format(i, i) for i in range(2, 6)]
         closed_form_variants = []
     else:
         variants = [str(i) for i in range(2, 9)]
-        variants_desc = ["{}x{}".format(i, i) for i in range(2, 9)]
         closed_form_variants = ['2', '3', '6', '7', '8']
-    test_variants = [str(i) for i in range(2, 5)]
     startRandomized = True
 
     def __init__(self, variant='3'):
@@ -81,23 +81,12 @@ class LightsOut(ServerPuzzle):
     @classmethod
     def generateStartPosition(cls, variantid):
         variant = int(variantid)
-        position = "R_{}_{}_{}_".format("A", variant, variant)
-        position += '1' * (variant ** 2)
-        return cls.fromString(position)
+        return cls.fromString(variantid, '1' * (variant ** 2))
 
     @classmethod
-    def fromString(cls, position: str):
-        parts = position.split("_")
-        if (len(parts) <= 4): 
-            raise ValueError("Invalid position")
-        l = int(parts[2])
-        w = int(parts[3])
-        if (l != w):
-            raise TypeError("Unsupported variant")
-        position = parts[4]
-
-        variant = int(len(position) ** (1/2))
-        if (l != variant):
+    def fromString(cls, variant_id, position: str):
+        variant = int(variant_id)
+        if str(variant) not in LightsOut.variants:
             raise TypeError("Unsupported variant")
         puzzle = cls(variant=variant)
         puzzle.grid = []
@@ -107,18 +96,15 @@ class LightsOut(ServerPuzzle):
             puzzle.grid.append(row)
         return puzzle
 
-    def toString(self, mode='minimal'):
-        output = "R_{}_{}_{}_".format("A", len(self.grid), len(self.grid[0]))
-
-        result = ""
+    def toString(self, mode):
+        result = '1_' if mode == StringMode.AUTOGUI else ''
         for row in self.grid:
-            str_row = ["1" if entry else "0" for entry in row]
-            result += "".join(str_row)
-        output += result
-        return output
+            str_row = ['1' if entry else '0' for entry in row]
+            result += ''.join(str_row)
+        return result
     
-    def moveString(self, move, mode='uwapi'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return f'A_t_{move[0] + move[1] * len(self.grid)}_x'
         else:
             return f"{chr(ord('a') + move[0])}{len(self.grid) - move[1]}"

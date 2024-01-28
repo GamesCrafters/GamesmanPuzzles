@@ -1,4 +1,4 @@
-from ...util import classproperty, depreciated
+from ...util import classproperty, deprecated
 from . import Puzzle
 
 class ServerPuzzle(Puzzle):
@@ -26,7 +26,7 @@ class ServerPuzzle(Puzzle):
     #################################################################
 
     @classmethod
-    def fromString(cls, positionid):
+    def fromString(cls, variant_id, position_str):
         """Returns a Puzzle object based on "minimal"
         String representation of the Puzzle (i.e. `toString(mode="minimal")`)
 
@@ -46,52 +46,24 @@ class ServerPuzzle(Puzzle):
             Puzzle object based on puzzleid and variantid
         """
         if hasattr(cls, "isLegalPosition"):
-            if not isinstance(positionid, str): 
+            if not isinstance(position_str, str): 
                 raise TypeError("PositionID must be type str")
-            if not cls.isLegalPosition(positionid): 
+            if not cls.isLegalPosition(position_str): 
                 raise ValueError("PositionID could not be translated into a puzzle")
-        if hasattr(cls, "deserialize"):
-            return cls.deserialize(positionid)
         raise NotImplementedError
     
     #################################################################
-    # Depreciated Methods
+    # Deprecated Methods
     #################################################################
-
-    @depreciated("serverPuzzle.serialize is depreciated. See serverPuzzle.toString")
-    def serialize(self):
-        """Returns a serialized based on self
-
-        Outputs:
-            String Puzzle
-        """
-        return str(self)
 
     @classmethod
     def fromHash(cls, variantid, hash_val):
         """Returns a Puzzle object based on variantid and the given hash_val
         """
         raise NotImplementedError
-    
-    @classmethod
-    @depreciated("serverPuzzle.deserialize is depreciated. See puzzle.fromString")
-    def deserialize(cls, positionid):
-        """Returns a Puzzle object based on positionid
-
-        Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
-        with two stacks of discs ((3,2) and (1))
-
-        Inputs:
-            positionid - String id from puzzle, serialize() must be able to generate it
-
-        Outputs:
-            Puzzle object based on puzzleid and variantid
-        """
-
-        raise NotImplementedError
 
     @classmethod
-    @depreciated("isLegalPosition is depreciated")
+    @deprecated("isLegalPosition is deprecated")
     def isLegalPosition(cls, positionid, variantid=None):
         """Checks if the positionid is valid given the rules of the Puzzle cls. 
         This function is invariant and only checks if all the rules are satisified

@@ -3,7 +3,6 @@ from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
-from .graphpuzzle import GraphPuzzle
 from .hanoi import Hanoi
 from .lightsout import LightsOut
 from .pegSolitaire import Peg
@@ -55,13 +54,13 @@ class PuzzleManagerClass:
     
     def getSolverClass(self, puzzleid, variantid=None, test=False):
         """Get Solver Class given the puzzleid"""
-        if puzzleid in [Bishop.id, Hanoi.id, Npuzzle.id, NQueens.id, Peg.id, ToadsAndFrogsPuzzle.id, Rubiks.id, HopNDrop.id]:
-            return IndexSolver
+        if puzzleid == RushHour.id or puzzleid == TopSpin.id:
+            return PickleSolver
         if puzzleid == LightsOut.id:
             if variantid in LightsOut.closed_form_variants:
                 return LightsOutClosedFormSolver
             return IndexSolver
-        return PickleSolver
+        return IndexSolver
     
     def validate(self, puzzleid, variantid=None, positionid=None):
         """Checks if the positionid fits the rules set for the puzzle, as
@@ -90,7 +89,7 @@ class PuzzleManagerClass:
         
         if positionid is not None:
             try:
-                puzzle = puzzlecls.fromString(positionid)
+                puzzle = puzzlecls.fromString(variantid, positionid)
             except (ValueError, TypeError):
                 raise PuzzleException("Invalid PositionID")
 

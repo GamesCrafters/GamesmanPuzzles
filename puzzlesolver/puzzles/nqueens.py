@@ -1,3 +1,10 @@
+"""
+File: nqueens.py
+Puzzle: N Queens Puzzle
+Author: Mia Campdera-Pulido, Cameron Cheung
+Date: March 17, 2021
+"""
+
 """N Queens Puzzle
  https://en.wikipedia.org/wiki/Eight_queens_puzzle
 """
@@ -9,14 +16,8 @@ import itertools
 class NQueens(ServerPuzzle):
 
     id = 'nqueens'
-    auth = 'Mia Campdera-Pulido, Cameron Cheung'
-    name = 'N Queens Puzzle'
-    desc = 'Place N queens on an N-row, N-column chessboard in a non-attacking configuration.'
-    date = 'March 17, 2021'
 
     variants = [str(N) for N in range(4, 10)]
-    variants_desc = [N + " Queens" for N in variants]
-    test_variants = variants
     startRandomized = False
 
     def __init__(self, variant_id, bitboard = 0, placed_so_far = 0):
@@ -240,33 +241,23 @@ class NQueens(ServerPuzzle):
         return NQueens(variant_id, 0, 0) # Empty Board bitboard = 0
 
     @classmethod
-    def fromString(cls, puzzleid):
+    def fromString(cls, variant_id, position_str):
         try:
-            board_str = puzzleid.split('_')[-1]
-            variant_id = str(math.isqrt(len(board_str)))
             bitboard, placed_so_far = 0, 0
-            for b in range(len(board_str)):
-                if board_str[b] == 'Q':
+            for b in range(len(position_str)):
+                if position_str[b] == 'Q':
                     bitboard |= (1 << b)
                     placed_so_far += 1
             return NQueens(variant_id, bitboard, placed_so_far)
         except Exception as _:
             raise PuzzleException('Invalid puzzleid')
 
-    def toString(self, mode='minimal'):
-        return 'R_A_0_0_' + ''.join(['Q' if (self.bitboard & (1 << b)) else '-' for b in range(self.N * self.N)])
+    def toString(self, mode):
+        prefix = '1_' if mode == StringMode.AUTOGUI else ''
+        return prefix + ''.join(['Q' if (self.bitboard & (1 << b)) else '-' for b in range(self.N * self.N)])
     
-    def moveString(self, move, mode='uwapi'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return f'A_h_{move}_x'
         else:
             return f"{chr(ord('a') + move % self.N)}{self.N - move // self.N}"
-    
-    @classmethod
-    def isLegalPosition(cls, positionid):
-        """Checks if the Puzzle is valid given the rules.
-        For example, Hanoi cannot have a larger ring on top of a smaller one.
-        Outputs:
-            - True if Puzzle is valid, else False
-        """
-        return True

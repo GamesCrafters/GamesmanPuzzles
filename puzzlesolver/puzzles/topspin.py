@@ -1,3 +1,10 @@
+"""
+File: topspin.py
+Puzzle: Top Spin
+Author: Yishu Chao
+Date: November 23, 2020
+"""
+
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import SqliteSolver
@@ -6,14 +13,8 @@ import random
 
 class TopSpin(ServerPuzzle):
 
-	id   	      = 'topspin'
-	auth 	      = "Yishu Chao"
-	name 	      = "Top Spin"
-	desc 	      = "Move the beads along the track and spin the ones in the spinner until the beads are in order clock-wise, with 1 in the first spot in the spinner." 
-	date 	      = "Nov. 23, 2020"
-	variants      = ['6_2']
-	variants_desc = variants
-	test_variants = variants
+	id = 'topspin'
+	variants = ['6_2']
 	startRandomized = True
 
 	def __init__(self, size = 6, spin = 2, **kwargs):
@@ -125,16 +126,15 @@ class TopSpin(ServerPuzzle):
 		temp = variantid.split('_')
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
-	def serialize(self, **kwargs):
-		result = ''
-		result += '_'.join([str(item) for item in self.track[0]])
+	def toString(self, **kwargs):
+		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
 			result += str(item)
 		return result
 
 	@classmethod
-	def deserialize(cls, positionid, **kwargs):
+	def fromString(cls, variant_id, positionid):
 		new_loop = []
 		stacks = positionid.split('-')
 		in_spin = stacks[0].split('_')
@@ -148,7 +148,7 @@ class TopSpin(ServerPuzzle):
 	@classmethod
 	def isLegalPosition(cls, positionid, variantid=None, **kwargs):
 		try:
-			puzzle = cls.deserialize(positionid)
+			puzzle = cls.fromString(positionid)
 		except:
 			return False
 		size = int(puzzle.variant[0])

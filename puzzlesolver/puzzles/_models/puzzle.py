@@ -1,20 +1,12 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
-from ...util import classproperty, depreciated
+from ...util import classproperty, deprecated, StringMode
 import progressbar
 import warnings
 
 class Puzzle:
-
-    #################################################################
-    # Background data
-    #################################################################
-
-    id   = None
-    auth = None
-    name = None
-    desc = None
-    date = None
+    id = None
+    startRandomized = False
 
     #################################################################
     # Initializer
@@ -51,23 +43,19 @@ class Puzzle:
     # String representations
     #################################################################
 
-    def toString(self, mode="minimal"):
+    def toString(self, mode=StringMode.HUMAN_READABLE):
         """Returns the string representation of the Puzzle based on the type. 
 
-        If mode is "minimal", return the serialize() version
-        If mode is "complex", return the printInfo() version
+        If mode is "minimal", 
+        If mode is "complex",
 
         Inputs:
             mode -- "minimal", "complex"
         
         Outputs:
             String representation -- String"""
-
-        if mode == "minimal" and hasattr(self, "serialize"):
-            return self.serialize()
-        if mode == "complex" and hasattr(self, "printInfo"):
-            return self.printInfo()
-        return "No string representation available"
+        
+        return self.toString(mode)
 
     def __str__(self):
         """Returns the toString representation in "complex" mode
@@ -79,7 +67,7 @@ class Puzzle:
         """
         return self.toString(mode="complex")
     
-    def moveString(self, move, mode="uwapi"):
+    def moveString(self, move, mode):
         """Returns the string representation of the move based on the type.
 
         If mode is "uwapi", return a UWAPI movestring.
@@ -238,7 +226,7 @@ class Puzzle:
         return "<{} object with {}>".format(self.__class__.__name__, self.toString(mode="minimal"))
 
     #################################################################
-    # Depreciated methods
+    # Deprecated methods
     #################################################################
 
     def printInfo(self):

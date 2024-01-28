@@ -1,5 +1,9 @@
-"""Game for Tower of Hanoi
-https://en.wikipedia.org/wiki/Tower_of_Hanoi
+"""
+File: hanoi.py
+Puzzle: Towers of Hanoi
+Author: Anthony Ling (Backend); Mia Campdera-Pulido, Linh Tran (AutoGUI)
+Date: April 2, 2020
+Description: See https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
 from . import ServerPuzzle
@@ -15,23 +19,11 @@ def ffs(num):
 
 class Hanoi(ServerPuzzle):
 
-    id      = 'hanoi'
-    auth    = "Anthony Ling"
-    name    = "Towers of Hanoi"
-    desc    = """Move smaller discs ontop of bigger discs. Fill the rightmost stack."""
-    date    = "April 2, 2020"
-
+    id = 'hanoi'
     variants =  ["2_1"]
     variants += ["3_1", "3_2", "3_3", "3_4", "3_5", "3_6", "3_7", "3_8"]
     variants += ["4_1", "4_2", "4_3", "4_4", "4_5", "4_6"]
     variants += ["5_1", "5_2", "5_3", "5_4"]
-
-    variants_desc = [
-        f"{variant.split('_')[0]} Rod{'' if variant.split('_')[0] == '1' else 's'} & \
-            {variant.split('_')[1]} Disk{'' if variant.split('_')[1] == '1' else 's'}" for variant in variants
-    ]
-
-    test_variants = ["3_1", "3_2", "3_3"]
     
     startRandomized = False
 
@@ -101,21 +93,16 @@ class Hanoi(ServerPuzzle):
                 rod = rod >> 1
         return output
 
-    def toString(self, mode="minimal"):
+    def toString(self, mode):
         """Returns the string representation of the Puzzle based on the type. 
-
-        If mode is "minimal", return the serialize() version
-        If mode is "complex", return the printInfo() version
 
         Inputs:
             mode -- "minimal", "complex"
         
         Outputs:
             String representation -- String"""
-        
-        if mode == "minimal":
-            return self.convert_board(self.rods)
-        elif mode == "complex":
+
+        if mode == StringMode.HUMAN_READABLE_MULTILINE:
             # Easier to convert to a list of lists and use
             # [6, 1, 0] -> [["C", "B"], ["A"], []]
             letters = []
@@ -139,10 +126,14 @@ class Hanoi(ServerPuzzle):
             output += "   " + "   ".join(str(i) for i in range(0, self.rod_variant))
             return output
         else:
-            raise ValueError("Invalid keyword argument 'mode'")
+            pos_str = self.convert_board(self.rods)
+            if mode == StringMode.AUTOGUI:
+                return pos_str
+            else:
+                return pos_str[2:]
 
     @classmethod
-    def fromString(cls, positionid : str):
+    def fromString(cls, variant_id, position_str : str):
         """Returns a Puzzle object based on "minimal"
         String representation of the Puzzle (i.e. `toString(mode="minimal")`)
 
@@ -156,25 +147,21 @@ class Hanoi(ServerPuzzle):
         position based on the rules of the Puzzle
 
         Inputs:
-            positionid - String id from puzzle, serialize() must be able to generate it
+            positionid - String id from puzzle
 
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        if not isinstance(positionid, str):
-            raise TypeError("PositionID is not of type str")
+        # Example position_str: "1_A--B--C--"
+        # Example variant_id: "3_3" (which means 3 disks, 3 rods)
+        variant_id_parts = variant_id.split('_')
+        rod_variant, disk_variant = int(variant_id_parts[0]), int(variant_id_parts[1])
 
-        # Example positionid: "R_A_3_3_A--B--C--"
-        positionid_s = positionid.split("_")
-        disk_variant = int(positionid_s[2])
-        rod_variant = int(positionid_s[3])
-        matrix_str = positionid_s[4]
-
-        if len(matrix_str) != (disk_variant * rod_variant):
+        if len(position_str) != (disk_variant * rod_variant):
             raise ValueError("invalid PositionID")
 
         # revisit the use of disk vs rod for rows and cols
-        matrix = [[matrix_str[i*rod_variant + j] for j in range(rod_variant)] for i in range(disk_variant)]
+        matrix = [[position_str[i*rod_variant + j] for j in range(rod_variant)] for i in range(disk_variant)]
         disks = [[matrix[i][j] for i in range(disk_variant) if matrix[i][j] != '-'] for j in range(rod_variant)]
         rods = []
         for row in disks:
@@ -188,12 +175,12 @@ class Hanoi(ServerPuzzle):
         if sum_rods & -sum_rods != sum_rods:
             raise ValueError("invalid PositionID")
 
-        newPuzzle = Hanoi("{}_{}".format(rod_variant, disk_variant))
+        newPuzzle = Hanoi(variant_id)
         newPuzzle.rods = rods
         return newPuzzle
     
-    def moveString(self, move, mode='uwapi'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return self.convert_move(move)
         else:
             return f'{move[0] + 1} → {move[1] + 1}'
@@ -306,7 +293,7 @@ class Hanoi(ServerPuzzle):
         Input
             - board
         Output
-            - uwapi board
+            - autogui board
         """
         letters = [[chr(j + 65) for j in range(self.disk_variant) if (rod >> j)&1] for rod in rods]
         horizontal = [['-']*(self.disk_variant - len(stack)) + stack for stack in letters]
@@ -317,7 +304,7 @@ class Hanoi(ServerPuzzle):
                 row += hor[i]
             rotate += row
         # rows = disk,   cols = rods
-        return "R_A_{}_{}_".format(self.disk_variant, self.rod_variant) + rotate
+        return f'1_{rotate}'
 
     def convert_move(self, move):
         """Returns the move converted into uwapi format move
@@ -329,8 +316,7 @@ class Hanoi(ServerPuzzle):
         rod_variant = self.rod_variant
         from_pos = move[0]
         to_pos = move[1]
-        board = self.convert_board(self.rods)
-        board = board[8:]
+        board = self.convert_board(self.rods).split('_')[1]
 
         # find top most pos of disk at from_pos column
         from_top_most = 0

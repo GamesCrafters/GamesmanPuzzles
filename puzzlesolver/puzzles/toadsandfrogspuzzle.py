@@ -1,17 +1,17 @@
+"""
+File: toadsandfrogspuzzle.py
+Puzzle: Toads and Frogs Puzzle
+Author: Mark Presten (Backend), Cameron Cheung (AutoGUI)
+Date: April 25, 2020
+"""
+
 from . import ServerPuzzle
 from ..util import *
 
 class ToadsAndFrogsPuzzle(ServerPuzzle):
 
     id      = 'toadsandfrogspuzzle'
-    auth    = "Mark Presten"
-    name    = "Toads and Frogs Puzzle"
-    desc    = """Move all pieces from one side of the board to the other by hopping over adjacent pieces. The end result should be a flipped version of the starting state."""
-    date    = "April 25, 2020"
-
     variants = ["4", "6", "8", "10"] # Number of frogs and toads total, must be even
-    variants_desc = [f"{int(variant) // 2} Frogs, {int(variant) // 2} Toads" for variant in variants]
-    test_variants = variants
     startRandomized = False
 
     def __init__(self, variant_id, **kwargs):
@@ -102,33 +102,33 @@ class ToadsAndFrogsPuzzle(ServerPuzzle):
         return puzzle
 
     @classmethod
-    def fromString(cls, positionid):
+    def fromString(cls, variant_id, positionid):
         """Returns a Puzzle object based on positionid
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
         Inputs:
-            positionid - String id from puzzle, serialize() must be able to generate it
+            positionid - String id from puzzle
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        board = list(positionid[8:])
-        variant_id = len(board) ^ 1
+        board = list(positionid.split('_')[-1])
         puzzle = ToadsAndFrogsPuzzle(variant_id)
         puzzle.board = board
         return puzzle
     
-    def moveString(self, move, mode='uwapi'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return f"A_h_{move}_x"
         else:
             return str(move + 1) # 1-index
 
-    def toString(self, mode='minimal'):
-        """Returns a serialized based on self
+    def toString(self, mode):
+        """Returns a position string
         Outputs:
             String Puzzle
         """
-        return 'R_A_0_0_' + ''.join(self.board)
+        prefix = '1_' if mode == StringMode.AUTOGUI else ''
+        return prefix + ''.join(self.board)
 
     @classmethod
     def isLegalPosition(cls, positionid, variantid=None, **kwargs):

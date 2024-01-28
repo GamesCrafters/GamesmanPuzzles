@@ -35,7 +35,7 @@ def test_correct_path(database_dir):
             if puzzle.numPositions:
                 assert puzzle.numPositions >= len(
                 solver._remoteness), "{} defined numPositions to be {} but solver calculated {}".format(
-                    puzzle.name, puzzle.numPositions, len(solver)
+                    puzzle.id, puzzle.numPositions, len(solver)
                 )
 
             while puzzle.primitive() != PuzzleValue.SOLVABLE:

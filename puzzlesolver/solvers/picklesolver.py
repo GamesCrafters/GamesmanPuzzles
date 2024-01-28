@@ -35,7 +35,8 @@ class PickleSolver(GeneralSolver):
             self._generateSolvableHashes()
             self._write()
         else:
-            self._read()
+            print(f'Database file {self.path} found! No need to re-solve.')
+            #self._read()
 
     def _read(self):
         if not self._remoteness and os.path.exists(self.path):

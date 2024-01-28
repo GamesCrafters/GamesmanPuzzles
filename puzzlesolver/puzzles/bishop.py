@@ -1,3 +1,10 @@
+"""
+File: bishop.py
+Puzzle: Bishop Puzzle
+Author: Brian Delaney (Backend), Cameron Cheung (Backend, AutoGUI)
+Date: October 30, 2020
+"""
+
 from . import ServerPuzzle
 from ..util import *
 import math
@@ -17,15 +24,8 @@ components = {
 }
 
 class Bishop(ServerPuzzle):
-	id      = 'bishop'
-	auth 	= 'Brian Delaney'
-	name 	= 'Bishop Puzzle'
-	desc 	= """Swap the locations of two sets of bishops on opposite ends of a chessboard, without moving them into threatened positions."""
-	date 	= "October 30, 2020"
-
+	id = 'bishop'
 	variants = ["4x5_8", "4x7_4", "6x7_6"]
-	variants_desc = ["Standard", "4 Bishops on 4x7", "6 Bishops on 6x7"]
-	test_variants = variants
 	startRandomized = False
 
 	# Indices will be in COLUMN-MAJOR order
@@ -153,25 +153,22 @@ class Bishop(ServerPuzzle):
 		return cls(variant_id)
 	
 	@classmethod
-	def fromString(cls, positionid):
+	def fromString(cls, variant_id, position_str):
 		"""Returns a Puzzle object based on positionid
 		Inputs:
-			positionid - String id from puzzle, serialize() must be able to generate it
+			positionid - String id from puzzle
 		Outputs:
 			Puzzle object based on puzzleid and variantid
 		"""
-		entity_string = positionid.split('_')[-1]
-		return cls(size_to_variant[len(entity_string)], entity_string)
+		return cls(variant_id, position_str)
 
-	def toString(self, mode='minimal'):
-		"""Returns a serialized based on self
-		Outputs:
-			String Puzzle
-		"""
-		return 'R_A_0_0_' + self.board
+	def toString(self, mode):
+		"""Human-readable string shall match autogui string."""
+		prefix = '1_' if mode == StringMode.AUTOGUI else ''
+		return prefix + self.board
     
-	def moveString(self, move, mode='uwapi'):
-		if mode == 'uwapi':
+	def moveString(self, move, mode):
+		if mode == StringMode.AUTOGUI:
 			return f'M_{move[0]}_{move[1]}_x'
 		else:
 			return f"{chr(ord('a') + self.rows - 1 - move[0] % self.rows)}{move[0] // self.rows} {chr(ord('a') + self.rows - move[1] % self.rows)}{move[1] // self.rows}"

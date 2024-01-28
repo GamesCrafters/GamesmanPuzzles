@@ -1,3 +1,10 @@
+"""
+File: rubiks.py
+Puzzle: Rubik's Cube
+Author: Mark Presten (Backend), Cameron Cheung (Backend, AutoGUI)
+Date: September 14th, 2020
+"""
+
 import random
 from . import ServerPuzzle
 from ..util import *
@@ -65,14 +72,8 @@ start_idxs = [(0, 16), (4, 12), (8, 20)]
 
 class Rubiks(ServerPuzzle):
 
-    id      = 'rubiks'
-    auth    = "Mark Presten"
-    name    = "Rubik's Cube"
-    desc    = """Solve the Rubiks cube by getting one color/number on each face using rotations."""
-    date    = "September 14th, 2020"
-
+    id = 'rubiks'
     variants = ["2x2x2"]
-    variants_desc = variants
     startRandomized = True
 
     def __init__(self, cube=None, **kwargs):
@@ -152,36 +153,35 @@ class Rubiks(ServerPuzzle):
         return cls()
 
     @classmethod
-    def fromString(cls, positionid):
+    def fromString(cls, variant_id, position_str):
         """Returns a Puzzle object based on positionid
         Inputs:
-            positionid - String id from puzzle, serialize() must be able to generate it
+            positionid - String id from puzzle
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        cube = list(positionid.split('_')[-1])
-        for i in range(3):
-            for k in range(start_idxs[i][0], start_idxs[i][0] + 4):
-                cube[k] = ord(cube[k]) - starts[i]
-            for k in range(start_idxs[i][1], start_idxs[i][1] + 4):
-                cube[k] = ord(cube[k]) - starts[i]
-        return Rubiks(cube)
+        return Rubiks([int(k) for k in position_str])
 
-    def toString(self, mode='minimal'):
-        """Returns a serialized based on self
+    def toString(self, mode):
+        """Returns a position string
         Outputs:
             String Puzzle
         """
-        entity_string = self.cube[:]
-        for i in range(3):
-            for k in range(start_idxs[i][0], start_idxs[i][0] + 4):
-                entity_string[k] = chr(self.cube[k] + starts[i])
-            for k in range(start_idxs[i][1], start_idxs[i][1] + 4):
-                entity_string[k] = chr(self.cube[k] + starts[i])
-        return 'R_A_0_0_' + ''.join(entity_string)
+        prefix = ''
+        if mode == StringMode.AUTOGUI:
+            entity_string = self.cube[:]
+            prefix = '1_'
+            for i in range(3):
+                for k in range(start_idxs[i][0], start_idxs[i][0] + 4):
+                    entity_string[k] = chr(self.cube[k] + starts[i])
+                for k in range(start_idxs[i][1], start_idxs[i][1] + 4):
+                    entity_string[k] = chr(self.cube[k] + starts[i])
+        else:
+            entity_string = [str(k) for k in self.cube]
+        return prefix + ''.join(entity_string)
     
-    def moveString(self, move, mode='uwapi'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             i = 24 + (move << 1)
             return f'M_{i}_{i + 1}_x'
         else:

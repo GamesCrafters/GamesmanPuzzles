@@ -1,25 +1,24 @@
+"""
+File: npuzzle.py
+Puzzle: N-Puzzle (Sliding Number Puzzle)
+Author: Arturo Olvera (Backend), Cameron Cheung (AutoGUI)
+Date: April 10, 2020
+"""
+
 """Game for 15 puzzle, generalized to N x N
 https://en.wikipedia.org/wiki/15_puzzle
 """
 
-from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import *
-
 import math
 
 class Npuzzle(ServerPuzzle):
     
-    id      = 'npuzzle'
-    auth    = "Arturo Olvera"
-    name    = "Sliding Number Puzzle"
-    desc    = "Shift pieces to get puzzle in ascending order."
-    date    = "April 10, 2020"
+    id = 'npuzzle'
     
     variants = [str(i) for i in range(3, 4)]
-    variants_desc = ["{}-Puzzle".format(i * i - 1) for i in range(3, 4)]
-    test_variants = ["2"]
     startRandomized = True
 
     def __init__(self, size=3):
@@ -98,22 +97,22 @@ class Npuzzle(ServerPuzzle):
         return Npuzzle(size=int(variantid))
 
     @classmethod
-    def fromString(cls, puzzleid):
+    def fromString(cls, variant_id, puzzleid):
         try:
-            parts = puzzleid.split('_')
-            puzzleid = parts[4]
+            puzzleid = puzzleid.split('_')[-1]
             puzzle = Npuzzle()
             puzzle.position = [int(i) if i != '-' else 0 for i in puzzleid]
-            puzzle.size = int(math.sqrt(len(puzzle.position)))
+            puzzle.size = int(variant_id)
             return puzzle
         except Exception as _:
             raise PuzzleException('Invalid puzzleid')
     
-    def toString(self, mode='minimal'):
-        return 'R_A_0_0_' + ''.join([str(x) if int(x) != 0 else '-' for x in self.position])
+    def toString(self, mode):
+        prefix = '1_' if mode == StringMode.AUTOGUI else ''
+        return prefix + ''.join([str(x) if int(x) != 0 else '-' for x in self.position])
     
-    def moveString(self, move, mode='humanreadable'):
-        if mode == 'uwapi':
+    def moveString(self, move, mode):
+        if mode == StringMode.AUTOGUI:
             return f'M_{move[0]}_{move[1]}_x'
         else:
             return str(self.position[move[0]])
@@ -148,7 +147,7 @@ class Npuzzle(ServerPuzzle):
 
     @classmethod
     def isLegalPosition(cls, positionid):
-        puzzle = cls.deserialize(positionid)
+        puzzle = cls.fromString(positionid)
         if len(puzzle.position) != puzzle.size ** 2:
             raise PuzzleException("Incorrect puzzle length.")
 

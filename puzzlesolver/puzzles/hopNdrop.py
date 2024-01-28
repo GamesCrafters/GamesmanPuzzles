@@ -1,28 +1,27 @@
+"""
+File: hopNdrop.py
+Puzzle: Towers of Hanoi
+Author: Mark Presten
+Date: Oct 10, 2020
+"""
+
+"""
+    (STILL IN DEVELOPMENT)
+    Some sections of code commented out until someone 
+    can fix the AutoGUI.
+"""
+
 from copy import deepcopy
 from . import ServerPuzzle
 from ..util import *
 from ..solvers import GeneralSolver, SqliteSolver
-
 from hashlib import sha1
-
-"""
-    (STILL IN DEVELOPMENT)
-    Some sections of code comented out until someone 
-    can fix the AutoGUI.
-"""
 
 class HopNDrop(ServerPuzzle):
 
-    id      = 'hopndrop'
-    auth    = "Mark Presten"
-    name    = "Hop N' Drop"
-    desc    = """Clear all platforms before reaching the goal tile. Don't get stuck or fall!"""
-    date    = "Oct 10, 2020"
+    id = 'hopndrop'
 
     variants = ["map1"]#, "map2", "map3"]
-    variants_desc = variants
-
-    test_variants = variants
     
     startRandomized = False
 
@@ -286,7 +285,7 @@ class HopNDrop(ServerPuzzle):
 
     ### ________ Server _________
     @classmethod
-    def deserialize(cls, positionid, **kwargs):
+    def fromString(cls, variant_id, positionid):
         """Returns a Puzzle object based on positionid
         Example: positionid="3_2-1-" for Hanoi creates a Hanoi puzzle
         with two stacks of discs ((3,2) and (1))
@@ -321,12 +320,12 @@ class HopNDrop(ServerPuzzle):
         newPuzzle.board = b
         return newPuzzle
 
-    def serialize(self, **kwargs):
+    def toString(self, mode):
         """Returns a serialized based on self
         Outputs:
             String Puzzle
         """
-        return "a"
+        return "Unavailable"
         # out = ""
         # for row in self.board:
         #     for i in row:
@@ -355,7 +354,7 @@ class HopNDrop(ServerPuzzle):
         Outputs:
             - True if Puzzle is valid, else False
         """
-        try: puzzle = cls.deserialize(positionid)
+        try: puzzle = cls.fromString(positionid)
         except: raise PuzzleException("Position is invalid")
         return True
 
