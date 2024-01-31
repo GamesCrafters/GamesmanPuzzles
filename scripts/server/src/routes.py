@@ -1,5 +1,5 @@
 import flask
-from flask import abort
+from flask import abort, request
 from flask_cors import CORS
 from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue, StringMode
@@ -73,8 +73,11 @@ def get_start_position(puzzle_id, variant_id):
         'autoguiPosition': puzzle.toString(mode=StringMode.AUTOGUI)
     }
 
-@app.route('/<puzzle_id>/<variant_id>/positions/<position>/', methods=['GET'])
-def puzzle_position(puzzle_id, variant_id, position):
+@app.route('/<puzzle_id>/<variant_id>/positions/', methods=['GET'])
+def puzzle_position(puzzle_id, variant_id):
+    position = request.args.get('p', None)
+    if not position:
+        abort(404, description="Position not found")
     validate(puzzle_id, variant_id, position)
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(variant_id, position)
     s = puzzle_solved_variants[puzzle_id][variant_id]
