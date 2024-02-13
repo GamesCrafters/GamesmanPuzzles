@@ -24,7 +24,7 @@ components = {
 }
 
 class Bishop(ServerPuzzle):
-	id = 'bishop'
+	id = 'bishoppuzzle'
 	variants = ["4x5_8", "4x7_4", "6x7_6"]
 	startRandomized = False
 

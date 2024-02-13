@@ -11,7 +11,7 @@ from ..util import *
 
 class LightsOut(ServerPuzzle):
 
-    id = "lights"
+    id = "lightsout"
 
     try:
         from ..extern import m4ri_utils
