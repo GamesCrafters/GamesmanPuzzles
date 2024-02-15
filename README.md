@@ -5,7 +5,6 @@
 A collection of Puzzles bundled together in a simple yet powerful Python interface. Developed as of part of the [UC Berkeley GamesCrafters.](http://gamescrafters.berkeley.edu/)
 
 ## Installation
-### Building from source
 Clone this repository and install the dependencies (it's recommended to use a virtualenv when installing dependencies of any project):
 ```
 git clone https://github.com/GamesCrafters/GamesmanPuzzles.git
@@ -20,25 +19,20 @@ cd puzzlesolver/extern
 python setup.py build_ext --inplace
 ```
 
-Run from the base directory of the repositiory
+Run from the base directory of the repository
 ```
 cd puzzlesolver/players
 python tui.py hanoi
 ```
-to play a puzzle of Towers of Hanoi
+to play a puzzle of Towers of Hanoi.
 
-### Web app
-The Web application requires two things:
-1. Desired Puzzles to be solved
-2. Server to be running
-
-#### Solving Puzzles
+## Solving Puzzles
 You can solve all the puzzles by running the following in the base project directory:
 ```
 python -m scripts.solve
 ```
 
-#### Serving Puzzles
+## Serving Puzzles
 
 Run from the base directory of the respository
 ```
@@ -47,13 +41,76 @@ python -m scripts.server
 to access the webserver locally. The server should be running at http://127.0.0.1:9001/.
 
 
-##### Routes
+### Routes
 
-`http://localhost:9001/<puzzle_id>/<variant_id>/start/` gives the initial position of the variant of ID `variant_id` of the puzzle of ID `puzzle_id`. If the puzzle supports randomized starting positions, the content of the response will correspond to a random initial position.
-- Example: http://localhost:9001/npuzzle/3/start/ will give a starting position of the variant with ID “3” of the puzzle with ID “npuzzle”, i.e., variant 3 of the sliding number puzzle.
+- `/<puzzle_id>/<variant_id>/start/` 
+  - Returns the initial position of the variant of ID `variant_id` of the puzzle of ID `puzzle_id`. If the puzzle supports randomized starting positions, the content of the response will correspond to a random initial position.
 
-`http://localhost:9001/<puzzle_id>/<variant_id>/positions/<human_readable_position_string>/` shows information about the puzzle position represented by `human_readable_position_string` of the variant of ID `variant_id` of the puzzle of ID `position_id`.
-- Example: http://localhost:9001/npuzzle/3/positions/4325718-6/ will show the position information for position represented by the string 4325718-6 of variant 3 of the sliding number puzzle.
+    The response contains two fields:
+      - `position`: (String) The human-readable string representation of the position.
+      - `autoguiPosition`: (String) The AutoGUI-formatted string corresponding to the position, which tells the frontend application how to render the position.
+
+    Below is an example response for `/npuzzle/3/start/` which gives a starting position for the variant with `variant_id` "3" of the puzzle with `puzzle_id` "npuzzle" (i.e., the 8-Puzzle variant of the Sliding Number Puzzle).
+
+    ```json
+    {
+        "position": "7-2453681",
+        "autoguiPosition": "1_7-2453681"
+    }
+    ```
+
+    Since the Sliding Number Puzzle supports randomized starting positions, this response is randomized. Below is another example response for `/npuzzle/3/start/`.
+
+    ```json
+    {
+        "position": "62-581374",
+        "autoguiPosition": "1_62-581374"
+    }
+    ```
+
+- `/<puzzle_id>/<variant_id>/positions/?p=<position_string>`
+  - Returns information about the position specified by `position_string` of the variant specified by `variant_id` of the game specified by `game_id`. This is used, for example, by GamesmanUni when it needs to load a new position every time a user makes a move.
+
+    When using this route to get information about a position, `position_string` should be the human-readable string representation of the position, and NOT the AutoGUI-formatted position string corresponding to that position.
+
+    The response contains the following fields:
+      - `position`: (String) The human-readable string representation of the puzzle position.
+      - `autoguiPosition`: (String) The AutoGUI-formatted string corresponding to the position, which tells the frontend application how to render the position.
+      - `positionValue`: (String) The value of this position. This field will either be `win` (the puzzle is solvable from this position) or `lose` (the puzzle cannot be solved from this position).
+      - `remoteness`: (Number, may be undefined) If `positionValue` is `win`, i.e., the puzzle is solvable from this position, then this is a non-negative integer indicating the number of moves needed to solve the puzzle from this position. If `positionValue` is `lose`, i.e., the puzzle cannot be solved from this position, then this field is undefined.
+      - `moves`: (Array): A list of move objects, in no particular order. If there are no legal moves from this position, this is an empty array. Each move object contains the following fields:
+        - `move`: (String) The human-readable string representation of the move.
+        - `autoguiMove`: (String) An AutoGUI-formatted move string, which tells the frontend application how to render the button that the user can click to make this move.
+        - `position`, `autoguiPosition`, `positionValue`, `remoteness` of the child position reached after making this move.
+    
+    Below is the response for position `-87125364` of the 8-Puzzle variant (`variant_id` of "3") of the Sliding Number Puzzle (`puzzle_id` of "npuzzle"), i.e., the response for `/npuzzle/3/positions/?p=-87125364`. The puzzle can be solved in as few as 28 moves and both legal moves make progress toward the solved state.
+
+    ```json
+    {
+        "position": "-87125364", 
+        "autoguiPosition": "1_-87125364",
+        "positionValue": "win",
+        "remoteness": 28,
+        "moves": [
+            {
+                "autoguiMove": "M_1_0_x",
+                "autoguiPosition": "1_8-7125364",
+                "move": "8",
+                "position": "8-7125364",
+                "positionValue": "win",
+                "remoteness": 27
+            },
+            {
+                "autoguiMove": "M_3_0_x",
+                "autoguiPosition": "1_187-25364",
+                "move": "1",
+                "position": "187-25364",
+                "positionValue": "win",
+                "remoteness": 27
+            }
+        ]
+    }
+    ```
 
 ## Testing (Broken)
 To run all the tests, run the following command:

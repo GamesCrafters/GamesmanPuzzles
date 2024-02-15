@@ -84,7 +84,7 @@ def puzzle_position(puzzle_id, variant_id):
 
     # We put this special case for towers of hanoi temporarily because we currently
     # don't have support for SOLVABLE positions with remoteness > 126.
-    get_value = lambda x: PuzzleValue.SOLVABLE if puzzle_id == 'towersofhanoi' else s.getValue
+    get_value = (lambda _: PuzzleValue.SOLVABLE) if puzzle_id == 'towersofhanoi' else s.getValue
 
     value = get_value(puzzle)
     response = {'position': position, 'autoguiPosition': puzzle.toString(mode=StringMode.AUTOGUI), 'positionValue': value}
