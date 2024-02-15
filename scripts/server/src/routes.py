@@ -81,8 +81,12 @@ def puzzle_position(puzzle_id, variant_id):
     validate(puzzle_id, variant_id, position)
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(variant_id, position)
     s = puzzle_solved_variants[puzzle_id][variant_id]
-    
-    value = s.getValue(puzzle)
+
+    # We put this special case for towers of hanoi temporarily because we currently
+    # don't have support for SOLVABLE positions with remoteness > 126.
+    get_value = (lambda _: PuzzleValue.SOLVABLE) if puzzle_id == 'towersofhanoi' else s.getValue
+
+    value = get_value(puzzle)
     response = {'position': position, 'autoguiPosition': puzzle.toString(mode=StringMode.AUTOGUI), 'positionValue': value}
     if value == PuzzleValue.SOLVABLE:
         response['remoteness'] = s.getRemoteness(puzzle)
@@ -90,7 +94,7 @@ def puzzle_position(puzzle_id, variant_id):
     move_objs = []
     for move in puzzle.generateMoves(movetype='legal'):
         child_position = puzzle.doMove(move)
-        child_position_value = s.getValue(child_position)
+        child_position_value = get_value(child_position)
         move_obj = {
             "position": child_position.toString(mode=StringMode.HUMAN_READABLE),
             "autoguiPosition": child_position.toString(mode=StringMode.AUTOGUI),

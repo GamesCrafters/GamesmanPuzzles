@@ -1,7 +1,7 @@
 """
 File: hanoi.py
 Puzzle: Towers of Hanoi
-Author: Anthony Ling (Backend); Mia Campdera-Pulido, Linh Tran (AutoGUI)
+Author: Anthony Ling (Backend); Mia Campdera-Pulido, Linh Tran, Cameron Cheung (AutoGUI)
 Date: April 2, 2020
 Description: See https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
@@ -19,12 +19,8 @@ def ffs(num):
 
 class Hanoi(ServerPuzzle):
 
-    id = 'hanoi'
-    variants =  ["2_1"]
-    variants += ["3_1", "3_2", "3_3", "3_4", "3_5", "3_6", "3_7", "3_8"]
-    variants += ["4_1", "4_2", "4_3", "4_4", "4_5", "4_6"]
-    variants += ["5_1", "5_2", "5_3", "5_4"]
-    
+    id = 'towersofhanoi'
+    variants = [f'{x}_{y}' for x in range(3, 5) for y in range(1, 9)]
     startRandomized = False
 
     def __init__(self,  variantid=None, variant=None):
@@ -152,7 +148,7 @@ class Hanoi(ServerPuzzle):
         Outputs:
             Puzzle object based on puzzleid and variantid
         """
-        # Example position_str: "1_A--B--C--"
+        # Example position_str: "A--B--C--"
         # Example variant_id: "3_3" (which means 3 disks, 3 rods)
         variant_id_parts = variant_id.split('_')
         rod_variant, disk_variant = int(variant_id_parts[0]), int(variant_id_parts[1])
@@ -271,8 +267,8 @@ class Hanoi(ServerPuzzle):
         rods = []
         for c in puzzle_string.split('-'):
             rods.append(int(c))
-        p = self.convert_board(rods)
-        return [self.fromString(p)]
+        p = self.convert_board(rods)[2:]
+        return [self.fromString(f'{self.rod_variant}_{self.disk_variant}', p)]
 
     @classmethod
     def generateStartPosition(cls, variantid, variant=None):

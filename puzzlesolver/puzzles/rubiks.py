@@ -72,7 +72,7 @@ start_idxs = [(0, 16), (4, 12), (8, 20)]
 
 class Rubiks(ServerPuzzle):
 
-    id = 'rubiks'
+    id = 'rubikscube'
     variants = ["2x2x2"]
     startRandomized = True
 
