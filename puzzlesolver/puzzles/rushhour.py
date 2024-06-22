@@ -30,7 +30,7 @@ class RushHour(ServerPuzzle):
         super().__init__()
         self.variant_id = variant_id
         if pos is None:
-            variant_file = f"{dirname}/../../databases/rushhourstarts/{variant_id}.txt"
+            variant_file = f"{dirname}/../assets/rushhour/{variant_id}.txt"
             if puzzle_id is None:
                 # Search the database for a random puzzle with the given difficulty level.
                 variant_ranges = {"basic": 4943, "easy": 4998, "medium": 5000, "hard": 4043, "expert": 1336}
