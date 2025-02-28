@@ -39,11 +39,13 @@ class TUI:
             _ = system('clear')
 
     def printInfo(self):
-        print("Turn:                  ", self.turn), 
-        if self.puzzle.primitive() == 'UNDECIDED':
+        print("Turn:                  ", self.turn) 
+        if self.puzzle.primitive() == PuzzleValue.UNDECIDED:
             prim = "UNDECIDED"
-        else:
-            prim = "SOLVED"
+        elif self.puzzle.primitive() == PuzzleValue.SOLVABLE:
+            prim = "SOLVABLE"
+        elif self.puzzle.primitive() == PuzzleValue.UNSOLVABLE:
+            prim = "UNSOLVABLE"
         print("Primitive:             ", prim)
         if self.info and self.solver:
             if self.solver.getValue(self.puzzle) == 'UNSOLVABLE':

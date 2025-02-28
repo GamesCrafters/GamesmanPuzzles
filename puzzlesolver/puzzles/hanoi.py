@@ -6,8 +6,10 @@ Date: April 2, 2020
 Description: See https://en.wikipedia.org/wiki/Tower_of_Hanoi
 """
 
-from . import ServerPuzzle
-from ..util import *
+from puzzlesolver.util import *
+from puzzlesolver.puzzles import ServerPuzzle
+from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver.players import TUI
 
 def ffs(num):
     """Helper function to return the index of the LSB. 
@@ -341,3 +343,9 @@ class Hanoi(ServerPuzzle):
             disk_size += 1
             hash_val //= puzzle.rod_variant
         return puzzle
+
+if __name__ == "__main__":
+    from scripts.server import test_puzzle
+    test_puzzle(Hanoi)
+    # TUI(Hanoi()).play()
+
