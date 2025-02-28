@@ -1,4 +1,3 @@
-from re import L
 from puzzlesolver.util import *
 from puzzlesolver.puzzles import ServerPuzzle
 from puzzlesolver.solvers import GeneralSolver
@@ -6,14 +5,12 @@ from puzzlesolver.players import TUI
 
 class Demo(ServerPuzzle):
     id = 'demo'
-    variants = ['4_bi', '3_bi', '4_for']
+    variants = ['4', '3']
 
     def __init__(self, start = 4, variant = None, **kwargs):
         self._start = start
         self._pos = self._start
-        s, mt = variant.split('_')
         self._variant = variant
-        self._movetype = mt
 
     def toString(self, mode):
         if mode == StringMode.AUTOGUI: 
@@ -26,8 +23,8 @@ class Demo(ServerPuzzle):
         return PuzzleValue.UNDECIDED
 
     def generateMoves(self, movetype='all'):
-        # if self._pos == 0:
-        #     return []
+        if self._pos == 0:
+            return []
         if self._pos != 0 and self._pos % 3 == 0:
             return [(-1,)]
         elif self._pos >= self._start:
@@ -64,32 +61,21 @@ class Demo(ServerPuzzle):
         """This setter lets us do self.variant = <something>."""
         self._variant = val
 
-    @property
-    def variant(self):
-        """Override the parent's read-only property with our own."""
-        return self._variant
-
-    @variant.setter
-    def variant(self, val):
-        """This setter lets us do self.variant = <something>."""
-        self._variant = val
-
     @classmethod
     def generateStartPosition(cls, variant_id):
-        start_pos, movetype = variant_id.split('_')
-        return cls(start=int(start_pos), variant=variant_id)
+
+        return cls(start=int(variant_id), variant=variant_id)
 
     @classmethod
     def fromString(cls, variant_id, position_str):
         if position_str == "":
             return cls.generateStartPosition(variant_id)
         try:
-            start_pos, movetype = variant_id.split('_')
-            curr_pos, _ = position_str.split("_")
-            pos = int(curr_pos)
-            puzzle = cls(start=int(start_pos), variant=variant_id)
+            pos = int(position_str)
+            puzzle = cls(start=int(variant_id), variant=variant_id)
             puzzle._pos = pos
             return puzzle
         except ValueError:
             raise ValueError("Position string must be an integer")
+
 # TUI(Demo()).play()
