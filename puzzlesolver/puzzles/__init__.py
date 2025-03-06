@@ -14,9 +14,6 @@ from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
 from .rushhour import RushHour
-# from .demo import Demo
-# from .demo2 import Demo2
-# from .TOH import TOH
 from .Nto0 import Nto0
 #from .examplepuzzle import ExamplePuzzle
 
@@ -35,9 +32,6 @@ puzzleList = {
     Rubiks.id:      Rubiks,
     RushHour.id:    RushHour,
     Nto0.id: Nto0,
-    # Demo.id:        Demo,
-    # Demo2.id:       Demo2,
-    # TOH.id:         TOH,
 }
 
 class PuzzleManagerClass:
