@@ -23,11 +23,16 @@ class Nto0(ServerPuzzle):
 
     def toString(self, mode):
         if mode == StringMode.AUTOGUI:
-            if self._var == "10_bi" and self._pos == 10:
-                return "1_1-0"
-            elif self._var == "10_bi":
-              return f"1_-{self._pos}-"
-            return f'1_{self._pos}'
+            variant_size = int(self._var.split('_')[0])
+            string_length = variant_size + 1  # Include positions 0 to variant_size
+            result = ['-'] * string_length
+            
+            if 0 <= self._pos <= variant_size:
+                result[self._pos] = '1'
+            
+            position_str = ''.join(result)
+            
+            return f"1_{position_str}"
         return str(self._pos)
 
     @classmethod
@@ -78,7 +83,7 @@ class Nto0(ServerPuzzle):
                 4: forward_moves,
                 3: [-1],
                 2: [-2] + forward_moves,
-                1: [-1, 1],
+                1: [-1] + [1],
                 0: backward_moves
             },
             "10_bi": {
@@ -86,12 +91,12 @@ class Nto0(ServerPuzzle):
                 9: [-1],
                 8: [-2] + forward_moves,
                 7: [-1] + forward_moves,
-                6: [-1],
-                5: [-2, 1],
+                6: backward_moves,
+                5: [-2] + [1],
                 4: [-1] + forward_moves,
                 3: [-1],
                 2: [-2] + forward_moves,
-                1: [-1, 1],
+                1: [-1] + [1],
                 0: backward_moves
             }
         }
@@ -130,10 +135,12 @@ class Nto0(ServerPuzzle):
 
     def moveString(self, move, mode):
         """Convert integer move to human-readable string for output."""
-        if move > 0:
-            return f"Take {move}"
-        else:
-            return f"Add {-move}"
+        if mode == StringMode.AUTOGUI:
+            to_position = self._pos
+            to_position -= move 
+            return f"M_{self._pos}_{to_position}_y"
+        if move > 0: return f"Take {move}"
+        else: return f"Add {-move}"
 
     def primitive(self):
         if self._dir == "bi":
