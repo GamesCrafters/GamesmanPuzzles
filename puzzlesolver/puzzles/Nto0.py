@@ -27,9 +27,7 @@ class Nto0(ServerPuzzle):
             string_length = variant_size + 1  # Include positions 0 to variant_size
             result = ['-'] * string_length
             
-            if 0 <= self._pos <= variant_size:
-                result[self._pos] = '1'
-            
+            result[self._pos] = '1'
             position_str = ''.join(result)
             
             return f"1_{position_str}"
