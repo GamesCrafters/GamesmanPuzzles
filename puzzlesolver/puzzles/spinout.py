@@ -38,7 +38,71 @@ class ExamplePuzzle(ServerPuzzle):
         RIGHT_FLAT = 6
         DOWN_FLAT = 7
 
+    def concaveLeft(tile) -> bool:
+        '''If the left side of the tile is concave'''
+        match tile:
+            case Tiles.LEFT:
+                return False
+            case Tiles.UP:
+                return True
+            case Tiles.RIGHT:
+                return True
+            case Tiles.DOWN:
+                return True
+            case Tiles.LEFT_FLAT:
+                return False
+            case Tiles.UP_FLAT:
+                return True
+            case Tiles.RIGHT_FLAT:
+                return False
+            case Tiles.DOWN_FLAT:
+                return True
+            case _: # shouldn't happen
+                return ValueError("Invalid tile")
+                
+    def concaveRight(tile) -> bool:
+        '''If the right side of the tile'''
+        match tile:
+            case Tiles.LEFT:
+                return True
+            case Tiles.UP:
+                return True
+            case Tiles.RIGHT:
+                return False
+            case Tiles.DOWN:
+                return True
+            case Tiles.LEFT_FLAT:
+                return False
+            case Tiles.UP_FLAT:
+                return True
+            case Tiles.RIGHT_FLAT:
+                return False
+            case Tiles.DOWN_FLAT:
+                return True
+            case _: # shouldn't happen
+                return ValueError("Invalid tile")
 
+    def slidable(tile) -> bool:
+        '''If both the top and bottom of the tile are concave'''
+        match tile:
+            case Tiles.LEFT:
+                return True
+            case Tiles.UP:
+                return False
+            case Tiles.RIGHT:
+                return True
+            case Tiles.DOWN:
+                return False
+            case Tiles.LEFT_FLAT:
+                return True
+            case Tiles.UP_FLAT:
+                return False
+            case Tiles.RIGHT_FLAT:
+                return True
+            case Tiles.DOWN_FLAT:
+                return False
+            case _: # shouldn't happen
+                return ValueError("Invalid tile")
 
     def __init__(self, variant_id: str, state = 0):
         """
@@ -70,7 +134,7 @@ class ExamplePuzzle(ServerPuzzle):
         Return PuzzleValue.SOLVABLE if the current position is primitive;
         otherwise return PuzzleValue.UNDECIDED.
         """
-        if slidable():
+        if all(map(self.slidable, self.track)):
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
     
@@ -89,7 +153,7 @@ class ExamplePuzzle(ServerPuzzle):
             case "left":
                 pass
             case "right":
-                pas
+                pass
 
         return ExamplePuzzle(self.variant_id, (self.statee))
 
