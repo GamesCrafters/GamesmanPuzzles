@@ -7,16 +7,38 @@ Date: 2025-03-10
 
 from . import ServerPuzzle
 from ..util import *
+from enum import Enum
 
 class ExamplePuzzle(ServerPuzzle):
 
     id = 'spinout'
-    variants = ["variant0", "variant1"]
     startRandomized = False
 
-    ''' '''
+    # ← → ↑ ↓
+    # ⇐ ⇒ ⇑ ⇓
+    
+    '''Tiles = array of 0-4
+        0 = left 
+        1 = up
+        2 = right
+        3 = down '''
+    # tile_dict = {
+    #     "left" : "⇐"
+    #     "up" : "⇐"
+    #     "right" : "⇐"
+    #     "down" : "⇐"
+    # }
+    class Tiles(Enum):
+        LEFT = 0
+        UP = 1
+        RIGHT = 2
+        DOWN = 3
+        LEFT_FLAT = 4
+        UP_FLAT = 5
+        RIGHT_FLAT = 6
+        DOWN_FLAT = 7
 
-    tile_index = 0
+
 
     def __init__(self, variant_id: str, state = 0):
         """
@@ -30,9 +52,9 @@ class ExamplePuzzle(ServerPuzzle):
         that sufficienctly defines a position as input.
         """
         self.variant_id = variant_id
-        self.tiles = [0,0,0,0,0,0,0,0]
-        self.tile_index = 0
-        self.state = state
+        self.track = [1] + [0] * 6
+        self.tile_index = 6
+        self.state = (self.track, self.tile_index)
         
     @property
     def variant(self):
@@ -48,7 +70,7 @@ class ExamplePuzzle(ServerPuzzle):
         Return PuzzleValue.SOLVABLE if the current position is primitive;
         otherwise return PuzzleValue.UNDECIDED.
         """
-        if self.state == 10:
+        if slidable():
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
     
@@ -58,7 +80,18 @@ class ExamplePuzzle(ServerPuzzle):
         child puzzle position that results from doing the input `move`
         on the current position.
         """
-        return ExamplePuzzle(self.variant_id, self.state + move)
+
+        match move:
+            case "cw":
+                pass
+            case "ccw":
+                pass
+            case "left":
+                pass
+            case "right":
+                pas
+
+        return ExamplePuzzle(self.variant_id, (self.statee))
 
     # Generate Legal Moves & all undo moves
     def generateMoves(self, movetype="all", **kwargs):
@@ -67,7 +100,9 @@ class ExamplePuzzle(ServerPuzzle):
         to understand what the `movetype` parameter means.
         """
         moves = []
+        
 
+        '''
         if movetype=='for' or movetype=='legal' or movetype=='all':
             if self.state < 8:
                 moves += [1, 2]
@@ -84,7 +119,7 @@ class ExamplePuzzle(ServerPuzzle):
             
             if self.variant_id == 'variant1' and self.state == 5 and 0 not in moves:
                 moves += [0]
-            
+        '''
         return moves
 
     def generateSolutions(self):
@@ -168,5 +203,5 @@ class ExamplePuzzle(ServerPuzzle):
     @classmethod
     def isLegalPosition(cls, position_str):
         """Checks if the Puzzle is valid given the rules."""
-        state = int(position_str)
-        return 0 <= state <= 10 
+
+        return True
