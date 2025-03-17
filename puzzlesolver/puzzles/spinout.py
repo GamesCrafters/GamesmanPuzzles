@@ -14,6 +14,10 @@ class ExamplePuzzle(ServerPuzzle):
     variants = ["variant0", "variant1"]
     startRandomized = False
 
+    ''' '''
+
+    tile_index = 0
+
     def __init__(self, variant_id: str, state = 0):
         """
         Your constructor can have any signature you'd like,
@@ -26,6 +30,8 @@ class ExamplePuzzle(ServerPuzzle):
         that sufficienctly defines a position as input.
         """
         self.variant_id = variant_id
+        self.tiles = [0,0,0,0,0,0,0,0]
+        self.tile_index = 0
         self.state = state
         
     @property
