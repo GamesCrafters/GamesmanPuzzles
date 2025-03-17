@@ -10,21 +10,19 @@ from puzzlesolver.util import *
 from puzzlesolver.puzzles import ServerPuzzle
 
 class Nto0(ServerPuzzle):
-    id = "nToZero"
-    variants = ["4_bi", "4_for", "10_bi"]
+    id = "tiltago"
+    variants = ["1"] #only one variant
 
     def __init__(self, variant, position=None):
         self._var = variant
-        p, direction = variant.split("_")
         if variant not in self.variants:
             raise ValueError(f"Invalid variant: {variant}")
         if position is not None:
             self._pos = position
             self._start = position
         else:
-            self._pos = int(p)
-            self._start = int(p)
-        self._dir = direction
+            self._pos = "-74B135B--26-"
+            self._start = "-74B135B--26-"
 
     def __hash__(self):
         return self._pos
