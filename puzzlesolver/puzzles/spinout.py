@@ -8,8 +8,16 @@ Date: 2025-03-10
 from . import ServerPuzzle
 from ..util import *
 from enum import Enum
-
-class ExamplePuzzle(ServerPuzzle):
+class Tiles(Enum):
+    LEFT = 0
+    UP = 1
+    RIGHT = 2
+    DOWN = 3
+    LEFT_FLAT = 4
+    UP_FLAT = 5
+    RIGHT_FLAT = 6
+    DOWN_FLAT = 7
+class Spinout(ServerPuzzle):
 
     id = 'spinout'
     startRandomized = False
@@ -28,15 +36,6 @@ class ExamplePuzzle(ServerPuzzle):
     #     "right" : "⇐"
     #     "down" : "⇐"
     # }
-    class Tiles(Enum):
-        LEFT = 0
-        UP = 1
-        RIGHT = 2
-        DOWN = 3
-        LEFT_FLAT = 4
-        UP_FLAT = 5
-        RIGHT_FLAT = 6
-        DOWN_FLAT = 7
 
     def concaveLeft(tile) -> bool:
         '''If the left side of the tile is concave'''
@@ -155,7 +154,7 @@ class ExamplePuzzle(ServerPuzzle):
             case "right":
                 pass
 
-        return ExamplePuzzle(self.variant_id, (self.statee))
+        return Spinout(self.variant_id, (self.statee))
 
     # Generate Legal Moves & all undo moves
     def generateMoves(self, movetype="all", **kwargs):
@@ -191,7 +190,7 @@ class ExamplePuzzle(ServerPuzzle):
         Return a list of instances of the puzzle class where each instance
         is a possible "solved" state of the puzzle.
         """
-        return [ExamplePuzzle(self.variant_id, 10)]
+        return [Spinout(self.variant_id, 10)]
     
     @classmethod
     def fromHash(cls, variant_id, hash_val):
@@ -207,7 +206,7 @@ class ExamplePuzzle(ServerPuzzle):
         """
         Return an instance of the Puzzle Class corresponding to the initial position.
         """
-        return ExamplePuzzle(variant_id, 0)
+        return Spinout(variant_id, 0)
 
     @classmethod
     def fromString(cls, variant_id, position_str):
@@ -223,7 +222,7 @@ class ExamplePuzzle(ServerPuzzle):
         """
         try:
             state = int(position_str)
-            return ExamplePuzzle(variant_id, state)
+            return Spinout(variant_id, state)
         except Exception as _:
             raise PuzzleException("Invalid puzzleid")
 
