@@ -4,8 +4,8 @@ Puzzle: Spinout
 Author: Joshua Almario, Darren Ting
 Date: 2025-03-10
 """
-
-from . import ServerPuzzle
+from . import Puzzle
+#from . import ServerPuzzle
 from ..util import *
 from enum import Enum
 class Tiles(Enum):
@@ -17,7 +17,7 @@ class Tiles(Enum):
     UP_FLAT = 5
     RIGHT_FLAT = 6
     DOWN_FLAT = 7
-class Spinout(ServerPuzzle):
+class Spinout(Puzzle):
 
     id = 'spinout'
     startRandomized = False
@@ -30,12 +30,21 @@ class Spinout(ServerPuzzle):
         1 = up
         2 = right
         3 = down '''
-    # tile_dict = {
-    #     "left" : "⇐"
-    #     "up" : "⇐"
-    #     "right" : "⇐"
-    #     "down" : "⇐"
-    # }
+    
+    '''Hash representation - tuple:
+        (track, tile_index)
+    '''
+    #used for toString()
+    tile_dict = {
+        Tiles.LEFT : "←",
+        Tiles.UP : "↑",
+        Tiles.RIGHT : "→",
+        Tiles.DOWN : "↓",
+        Tiles.LEFT_FLAT : "⇐",
+        Tiles.UP_FLAT : "⇑",
+        Tiles.RIGHT_FLAT : "⇒",
+        Tiles.DOWN_FLAT : "⇓"
+    }
 
     def concaveLeft(tile) -> bool:
         '''If the left side of the tile is concave'''
@@ -60,7 +69,7 @@ class Spinout(ServerPuzzle):
                 return ValueError("Invalid tile")
                 
     def concaveRight(tile) -> bool:
-        '''If the right side of the tile'''
+        '''If the right side of the tile is concave'''
         match tile:
             case Tiles.LEFT:
                 return True
@@ -83,6 +92,7 @@ class Spinout(ServerPuzzle):
 
     def slidable(tile) -> bool:
         '''If both the top and bottom of the tile are concave'''
+        #LEFT, RIGHT, LEFT_FLAT, RIGHT_FLAT can slide
         match tile:
             case Tiles.LEFT:
                 return True
@@ -115,9 +125,9 @@ class Spinout(ServerPuzzle):
         that sufficienctly defines a position as input.
         """
         self.variant_id = variant_id
-        self.track = [1] + [0] * 6
+        self.track = [Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT]
         self.tile_index = 6
-        self.state = (self.track, self.tile_index)
+        #self.state = (self.track, self.tile_index)
         
     @property
     def variant(self):
@@ -126,7 +136,7 @@ class Spinout(ServerPuzzle):
     
     def __hash__(self):
         """ Return a hash value of your position """
-        return self.state
+        return (self.track, self.tile_index)
 
     def primitive(self, **kwargs):
         """
@@ -146,15 +156,15 @@ class Spinout(ServerPuzzle):
 
         match move:
             case "cw":
-                pass
+                self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4
             case "ccw":
-                pass
+                self.track[self.tile_index] = (self.track[self.tile_index] + 1) % 4
             case "left":
-                pass
+                self.tile_index -= 1
             case "right":
-                pass
+                self.tile_index += 1
 
-        return Spinout(self.variant_id, (self.statee))
+        return Spinout(self.variant_id, (self.track, self.tile_index))
 
     # Generate Legal Moves & all undo moves
     def generateMoves(self, movetype="all", **kwargs):
@@ -163,6 +173,9 @@ class Spinout(ServerPuzzle):
         to understand what the `movetype` parameter means.
         """
         moves = []
+        if self.tile_index > 0 and self.slidable(self.track[self.tile_index - 1]):
+            moves.append("left")
+
         
 
         '''
@@ -190,6 +203,7 @@ class Spinout(ServerPuzzle):
         Return a list of instances of the puzzle class where each instance
         is a possible "solved" state of the puzzle.
         """
+        #only one solvable state
         return [Spinout(self.variant_id, 10)]
     
     @classmethod
@@ -233,15 +247,25 @@ class Spinout(ServerPuzzle):
         
         Outputs:
             String representation of the puzzle position -- String
+            [{0}, 0, 0, 0, 0, 0, 0, 0]
+            tile_index is 0
         """
         # Note: Playing this puzzle on the command-line is not supported,
         # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted position string
-            return f'1_{self.state}'
+            return f'1_{(self.track, self.move_index)}'
         else:
             # Otherwise, return a human-readable position string.
-            return str(self.state)
+            curr_index = 0
+            for tile in self.track:
+                
+                if curr_index == self.tile_index:
+                    track_str += " {" +  str(tile) + "}," 
+                else:
+                    track_str += " " + str(tile) + "," 
+                curr_index += 1
+            return "[" + track_str + "]"
         
     
     def moveString(self, move, mode):
@@ -256,15 +280,21 @@ class Spinout(ServerPuzzle):
         # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted move string
-            if move == 0:
-                return f'A_-_{self.state}_x'
-            return f'M_{self.state}_{self.state + move}_x'
+            match move:
+                case "cw":
+                    return str(move)
+                case "ccw":
+                    return str(move)
+                case "left":
+                    return str(move)
+                case "right":
+                    return str(move)
         else:
-            # Otherwise, return a human-readable move string.
+            # Move is already a string
             return str(move)
     
     @classmethod
     def isLegalPosition(cls, position_str):
         """Checks if the Puzzle is valid given the rules."""
-
+        
         return True
