@@ -44,7 +44,7 @@ class Tiltago(ServerPuzzle):
 
     @classmethod
     def generateStartPosition(cls, variant, **kwargs):
-        return Nto0(variant)
+        return Tiltago(variant)
 
     @classmethod
     def fromString(cls, variant, position_str):
@@ -54,8 +54,8 @@ class Tiltago(ServerPuzzle):
             return cls.generateStartPosition(variant)
         if variant not in cls.variants:
             raise ValueError("Invalid variant")
-        pos = int(position_str)
-        return Nto0(variant, pos)
+        pos = position_str
+        return Tiltago(variant, pos)
 
     def bidirectional_moves(self, movetype="all"):
         # Written a general solver, however, wanted to see case-by-case for debugging purposes.
