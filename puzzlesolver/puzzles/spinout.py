@@ -124,10 +124,11 @@ class Spinout(Puzzle):
         in the puzzle, so the constructor should take in information
         that sufficienctly defines a position as input.
         """
+        #initial state: [Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT]
+
         self.variant_id = variant_id
-        self.track = [Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT]
-        self.tile_index = 6
-        #self.state = (self.track, self.tile_index)
+        self.track = state[0]
+        self.tile_index = state[1]
         
     @property
     def variant(self):
@@ -156,9 +157,15 @@ class Spinout(Puzzle):
 
         match move:
             case "cw":
-                self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4
+                if self.track[self.tile_index] > 3:
+                    self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4 + 4
+                else:
+                    self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4
             case "ccw":
-                self.track[self.tile_index] = (self.track[self.tile_index] + 1) % 4
+                if self.track[self.tile_index] > 3:
+                    self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4 + 4
+                else:
+                    self.track[self.tile_index] = (self.track[self.tile_index] + 1) % 4
             case "left":
                 self.tile_index -= 1
             case "right":
@@ -203,14 +210,15 @@ class Spinout(Puzzle):
         Return a list of instances of the puzzle class where each instance
         is a possible "solved" state of the puzzle.
         """
-        #only one solvable state
-        return [Spinout(self.variant_id, 10)]
+        #only one solvable state, assumes that every state of the puzzle can reach this state
+        return [Spinout(self.variant_id, ([Tiles.LEFT] * 6 + [Tiles.LEFT_FLAT], i) ) for i in range(7)]
     
     @classmethod
     def fromHash(cls, variant_id, hash_val):
         """
         Return an instance of the puzzle class given by the input hash value.
         """
+        #assuming that this is outdated
         puzzle = cls(variant_id)
         puzzle.track = hash_val[0]
         puzzle.tile_index = hash_val[1]
@@ -221,7 +229,7 @@ class Spinout(Puzzle):
         """
         Return an instance of the Puzzle Class corresponding to the initial position.
         """
-        return Spinout(variant_id)
+        return Spinout(variant_id, ([Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT], 6))
 
     @classmethod
     def fromString(cls, variant_id, position_str):
@@ -236,8 +244,8 @@ class Spinout(Puzzle):
             Puzzle object based on puzzleid and variantid
         """
         try:
-            state = int(position_str)
-            return Spinout(variant_id, state)
+            position_str[1:-1].split(",")
+            return Spinout(variant_id, (position_str[1:], position_str[0]))
         except Exception as _:
             raise PuzzleException("Invalid puzzleid")
 
