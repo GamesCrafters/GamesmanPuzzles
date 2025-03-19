@@ -50,7 +50,7 @@ class Tantrix(ServerPuzzle):
         """
         self.variant_id = variant_id
         self.state = state # Each element in the state is a description of a puzzle piece (coordinate, design) 
-                           # Example (0, 0, 1, 4): puzzle is at coordinate (0,0) and has a soft turn to the bottom left from top right
+                           # Example (0, 0, 1, 4): puzzle is at coordinate (0,0) and has a straight line from from top right to bottom left
 
         self.num_pieces = sum(pieces)
         self.pieces = pieces # [sharp, soft, straight] number of pieces for each
@@ -90,6 +90,18 @@ class Tantrix(ServerPuzzle):
         child puzzle position that results from doing the input `move`
         on the current position.
         """
+        if move[1] == 6:
+            new_state = deepcopy(self.state)
+            piece = new_state.pop(move[0])
+            curve = (piece[2] - piece[3] + 6) % 6
+            if curve == 1 or curve == 5: #Sharp turns
+                sharp = self.pieces[0] + 1
+            elif curve == 3: #Straight
+                straight = self.pieces[2] + 1
+            else: #soft turns
+                soft = self.pieces[1] + 1
+            return Tantrix(self.variant_id, new_state, [sharp, soft, straight])
+
         pos = move[0] # pos will be 0 or -1 (head or tail)
 
         if self.state == []:
@@ -136,7 +148,7 @@ class Tantrix(ServerPuzzle):
         See this link https://github.com/GamesCrafters/GamesmanPuzzles/blob/master/guides/tutorial/02_Moves.md
         to understand what the `movetype` parameter means.
         """
-        moves = [] #each element (head or tail of the stack self.state, number 1-5 )
+        moves = set() #each element (head or tail of the stack self.state, number 1-5 )
         #If puzzle starts from the very first piece
         if self.state == []:
             return [(-1, i) for i in range(1, 6)] #Return all possible moves for the very first piece
@@ -152,7 +164,7 @@ class Tantrix(ServerPuzzle):
             elif h_newcoord == t_newcoord and self.piece_exists(head_prev, tail_prev) == False:
                 return moves #return the empty moves as no piece exists to make a legal move
             else: #Get all moves that do not touch another piece
-                for curve in range(1, 3): #Do sharp turns and soft turns
+                for curve in range(0, 3): #Do sharp turns and soft turns
                     if self.pieces[curve-1] == 0: #piece has been used up, skip this type of piece
                         continue
                     else:
@@ -161,24 +173,15 @@ class Tantrix(ServerPuzzle):
                             h_newchange, t_newchange = Tantrix.coord_change[h_direction], Tantrix.coord_change[t_direction]
                             h_exist, t_exist = (h_newcoord[0]+h_newchange[0], h_newcoord[1]+h_newchange[1]), (t_newcoord[0]+t_newchange[0], t_newcoord[1]+t_newchange[1])
                             if h_exist not in self.pieceCoords():
-                                moves.append((0, h_direction))
+                                moves.add((0, h_direction))
                             if t_exist not in self.pieceCoords():
-                                moves.append((-1, t_direction))
-                #add if we can do straight
-                if self.pieces[2] > 0:
-                    h_direction, t_direction = (head_prev + 3) % 6, (tail_prev + 3) % 6
-                    h_newchange, t_newchange = Tantrix.coord_change[h_direction], Tantrix.coord_change[t_direction]
-                    h_exist, t_exist = (h_newcoord[0]+h_newchange[0], h_newcoord[1]+h_newchange[1]), (t_newcoord[0]+t_newchange[0], t_newcoord[1]+t_newchange[1])
-                    if h_exist not in self.pieceCoords():
-                        moves.append((0, h_direction))
-                    if t_exist not in self.pieceCoords():
-                        moves.append((-1, t_direction))
+                                moves.add((-1, t_direction))
                 #return all possible moves
-                return moves
+                return list(moves)
             
 
         if movetype=='undo' or movetype=='back' or movetype=='all': # backwards.
-            pass
+            return  [(-1, 6), (0, 6)] if self.state != [] else []
             
         return moves
 
