@@ -94,17 +94,17 @@ class Tantrix(ServerPuzzle):
             new_coord = (0, 0) #starting position for first piece
         else:
             prev_state = self.state[pos] #Get the previous piece based on head or tail
-            prev_curve = (prev_state[2], prev_state[3]) #
-            prev = (prev_curve[pos] + 3) % 6
-            change = Tantrix.coord_change[prev_curve[pos]]
-            new_coord = (prev_state[0] + change[0], prev_state[1] + change[1])
+            prev_curve = (prev_state[2], prev_state[3]) #start and end of curve in the piece
+            prev = (prev_curve[pos] + 3) % 6 #change the end of curve to be correct for the next piece
+            change = Tantrix.coord_change[prev_curve[pos]] 
+            new_coord = (prev_state[0] + change[0], prev_state[1] + change[1]) #Get the new coords of next piece
 
-        curve = (move[1] - prev + 6) % 6
-        if curve == 1 or curve == 5:
+        curve = (move[1] - prev + 6) % 6 #Check what type of curve
+        if curve == 1 or curve == 5: #Sharp turns
             sharp = self.pieces[0] - 1
-        elif curve == 3:
+        elif curve == 3: #Straight
             straight = self.pieces[2] - 1
-        else:
+        else: #soft turns
             soft = self.pieces[1] - 1
     
         if pos == -1:
@@ -122,6 +122,17 @@ class Tantrix(ServerPuzzle):
             if p[0] == xcoord and p[1] == ycoord and p[3] == exit:
                 return True
         return False
+    
+    #boolean to check if a design type exists
+    def piece_exists(self, start, end):
+        curve = (start-end + 6) % 6
+        if (curve == 1 or curve == 5) and self.pieces[0] > 0: #Sharp turns
+            return True
+        elif curve == 3 and self.pieces[2] > 0: #Straight
+            return True
+        elif (curve == 2 or curve == 4) and self.pieces[1] > 0: #Soft turns
+            return True
+        return False
 
     # Generate Legal Moves & all undo moves
     def generateMoves(self, movetype="all", **kwargs):
@@ -130,20 +141,46 @@ class Tantrix(ServerPuzzle):
         to understand what the `movetype` parameter means.
         """
         moves = [] #each element (head or tail of the stack self.state, number 1-5 )
+        #If puzzle starts from the very first piece
         if self.state == []:
-            return [(-1, i) for i in range(1, 6)]
-        
+            return [(-1, i) for i in range(1, 6)] #Return all possible moves for the very first piece
+        #Get all moves possible from the head and tail of the board
         if movetype=='for' or movetype=='legal' or movetype=='all':
-            for i in range(-1, 1):
-                curr = self.state[i]
-                prev_curve = (curr[2], curr[3])
-                
-                for curve in range(1, 4):
-                    if self.pieces[curve - 1] == 0:
+            #If both head and tail point to same coordinate, then output one move if that move is available
+            head, tail = self.state[0], self.state[-1]
+            head_prev, tail_prev = (head[2] + 3) % 6, (tail[3] + 3) % 6  #head_prev = 4, tail_prev = 4
+            h_change, t_change = Tantrix.coord_change[head[2]], Tantrix.coord_change[tail[3]] #(1,1), (1, -1)
+            h_newcoord, t_newcoord = (head[0]+h_change[0], head[1]+h_change[1]), (tail[0]+t_change[0], tail[1]+t_change[1])
+            if h_newcoord == t_newcoord and self.piece_exists(head_prev, tail_prev): #if both head and tail point to same coord
+                return [(-1, head_prev)] #add to tail to end the puzzle
+            elif h_newcoord == t_newcoord and self.piece_exists(head_prev, tail_prev) == False:
+                return moves #return the empty moves as no piece exists to make a legal move
+            else: #Get all moves that do not touch another piece
+                for curve in range(1, 3): #Do sharp turns and soft turns
+                    if self.pieces[curve-1] == 0: #piece has been used up, skip this type of piece
                         continue
-                    
-
-            pass
+                    else:
+                        for turn in [-1, 1]: #go clockwise or counterclockwise ex: if start is 4, then we do 3 and then 5
+                            h_direction, t_direction = ((turn * curve) + head_prev) % 6, ((turn * curve) + tail_prev) % 6
+                            h_newchange, t_newchange = Tantrix.coord_change[h_direction], Tantrix.coord_change[t_direction]
+                            h_exist, t_exist = (h_newcoord[0]+h_newchange[0], h_newcoord[1]+h_newchange[1]), (t_newcoord[0]+t_newchange[0], t_newcoord[1]+t_newchange[1])
+                            if h_exist not in self.pieceCoords:
+                                moves.append((0, h_direction))
+                            if t_exist not in self.pieceCoords:
+                                moves.append((-1, t_direction))
+                #add if we can do straight
+                if self.pieces[2] > 0:
+                    h_direction, t_direction = (head_prev + 3) % 6, (tail_prev + 3) % 6
+                    h_newchange, t_newchange = Tantrix.coord_change[h_direction], Tantrix.coord_change[t_direction]
+                    h_exist, t_exist = (h_newcoord[0]+h_newchange[0], h_newcoord[1]+h_newchange[1]), (t_newcoord[0]+t_newchange[0], t_newcoord[1]+t_newchange[1])
+                    if h_exist not in self.pieceCoords:
+                        moves.append((0, h_direction))
+                    if t_exist not in self.pieceCoords:
+                        moves.append((-1, t_direction))
+                #return all possible moves
+                return moves
+            
+            
         if movetype=='undo' or movetype=='back' or movetype=='all': # backwards.
             pass
             
