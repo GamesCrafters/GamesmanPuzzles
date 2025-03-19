@@ -165,25 +165,6 @@ class Spinout(ServerPuzzle):
 
         # Important note, move "left" is moving the slider right, same with the inverse for "right"
         # Essentially, one is moving to the piece on the left or right, not moving the entire board left or right
-
-        '''
-        if movetype=='for' or movetype=='legal' or movetype=='all':
-            if self.state < 8:
-                moves += [1, 2]
-            elif self.state == 9:
-                moves += [1]
-            
-            if self.variant_id == 'variant1' and self.state == 5:
-                moves += [0]
-        if movetype=='undo' or movetype=='back' or movetype=='all':
-            if self.state > 1:
-                moves += [-1, -2]
-            elif self.state == 1:
-                moves += [-1]
-            
-            if self.variant_id == 'variant1' and self.state == 5 and 0 not in moves:
-                moves += [0]
-        '''
         return moves
 
     def generateSolutions(self):
