@@ -1,6 +1,6 @@
 # These are general functions that you might want to implement if you are to use the 
 # PuzzlePlayer and the GeneralSolver
-from ...util import classproperty, deprecated, StringMode
+from puzzlesolver.util import classproperty, deprecated, StringMode
 import progressbar
 import warnings
 

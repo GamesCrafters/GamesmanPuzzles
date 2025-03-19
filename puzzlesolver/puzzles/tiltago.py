@@ -5,8 +5,12 @@ Author: Nakul Srikanth, Bella Longhi, Talha Ijaz
 Date: March 10, 2025
 Description: TODO
 """
-
+from copy import deepcopy
 from puzzlesolver.util import *
+from puzzlesolver.puzzles import Puzzle
+from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver.players import TUI
+
 from puzzlesolver.puzzles import ServerPuzzle
 
 class Tiltago(ServerPuzzle):
@@ -29,7 +33,7 @@ class Tiltago(ServerPuzzle):
                              7:[6,8], 8:[7,9], 9:[8], 10:[6,11], 11:[10,12], 12:[11]}
 
     def __hash__(self):
-        return self._pos
+        return hash(self._pos)
 
     def toString(self, mode):
         if mode == StringMode.AUTOGUI:
@@ -130,19 +134,19 @@ class Tiltago(ServerPuzzle):
     #             return [1, 2]
     #         return []
 
-    def generateMoves(self):
+    def generateMoves(self, movetype='legal'):
         return_gen_moves_dict = []
         for i in range(13):
-            if self.pos[i] != "-":
+            if self._pos[i] != "-":
                 for j in self.lookup_table[i]:
-                    if self.pos[j] == '-':
-                        return_gen_moves_dict.append([i, j])
+                    if self._pos[j] == '-':
+                        return_gen_moves_dict.append((i, j))    
                         
         return return_gen_moves_dict
                 
     def doMove(self, move):
         i, j = move[0], move[1]
-        s_list = list(self.pos)
+        s_list = list(self._pos)
         s_list[i], s_list[j] = s_list[j], s_list[i]
         new_pos = ''.join(s_list)
         return Tiltago(self._var, new_pos)
@@ -157,7 +161,7 @@ class Tiltago(ServerPuzzle):
         else: return f"Add {-move}"
 
     def primitive(self):
-        if self.pos == 'B--1234567--B':
+        if self._pos == 'B--1234567--B':
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
     
@@ -174,7 +178,7 @@ class Tiltago(ServerPuzzle):
 
     def generateSolutions(self, **kwargs):
         new_puzzle = Tiltago(self._var)
-        new_puzzle._pos = 0
+        new_puzzle._pos = 'B--1234567--B'
         return [new_puzzle]
 
     @property
@@ -182,5 +186,8 @@ class Tiltago(ServerPuzzle):
         return self._var
 
 if __name__ == "__main__":
-    from scripts.server.src import test_puzzle
-    test_puzzle(Tiltago)
+    # from scripts.server.src import test_puzzle
+    # test_puzzle(Tiltago)
+    puzzle = Tiltago("regular")
+    TUI(puzzle, solver=GeneralSolver(puzzle)).play()
+
