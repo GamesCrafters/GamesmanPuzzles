@@ -173,7 +173,7 @@ class Tiltago(ServerPuzzle):
             return PuzzleValue.UNDECIDED """
 
     def generateSolutions(self, **kwargs):
-        new_puzzle = Nto0(self._var)
+        new_puzzle = Tiltago(self._var)
         new_puzzle._pos = 0
         return [new_puzzle]
 
@@ -183,4 +183,4 @@ class Tiltago(ServerPuzzle):
 
 if __name__ == "__main__":
     from scripts.server.src import test_puzzle
-    test_puzzle(Nto0)
+    test_puzzle(Tiltago)
