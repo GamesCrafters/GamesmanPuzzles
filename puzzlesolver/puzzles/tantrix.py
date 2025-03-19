@@ -71,6 +71,7 @@ class Tantrix(ServerPuzzle):
         Return PuzzleValue.SOLVABLE if the current position is primitive;
         otherwise return PuzzleValue.UNDECIDED.
         """
+        #seems good!
         front_piece = self.state[0] #Takes the very last piece entered into the puzzle from the front
         back_piece = self.state[-1] #Takes the very last piece entered into the puzzle from the back
         change = self.coord_change[back_piece[3]] #Gets the change in coordinates for the back piece
@@ -259,6 +260,7 @@ class Tantrix(ServerPuzzle):
             # Otherwise, return a human-readable move string.
             return str(move)
     
+    #probably useless
     @classmethod
     def isLegalPosition(cls, position_str):
         """Checks if the Puzzle is valid given the rules."""
