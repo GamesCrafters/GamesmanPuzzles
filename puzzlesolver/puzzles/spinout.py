@@ -5,8 +5,9 @@ Author: Joshua Almario, Darren Ting
 Date: 2025-03-10
 """
 from . import ServerPuzzle
-#from . import ServerPuzzle
 from ..util import *
+from solvers import GeneralSolver
+from players import TUI
 from enum import Enum
 
 class Tiles(Enum):
@@ -88,7 +89,7 @@ class Spinout(ServerPuzzle):
     
     def __hash__(self):
         """ Return a hash value of your position """
-        return (self.track, self.tile_index)
+        return hash(tuple(self.track), self.tile_index)
 
     def primitive(self, **kwargs):
         """
@@ -182,7 +183,7 @@ class Spinout(ServerPuzzle):
         """
         #assuming that this is outdated
         puzzle = cls(variant_id)
-        puzzle.track = hash_val[0]
+        puzzle.track = list(hash_val[0])
         puzzle.tile_index = hash_val[1]
         return puzzle
     
@@ -271,3 +272,6 @@ class Spinout(ServerPuzzle):
             raise PuzzleException("All tiles after current must face sideways!")
         
         return True
+
+p = Spinout()
+TUI(p, GeneralSolver(p), info=True)
