@@ -116,13 +116,6 @@ class Tantrix(ServerPuzzle):
     def pieceCoords(self):
         return set([(p[0], p[1]) for p in self.state])
     
-    #Returns true if connected piece connects the line
-    def pieceConnect(self, xcoord, ycoord, exit):
-        for p in self.state:
-            if p[0] == xcoord and p[1] == ycoord and p[3] == exit:
-                return True
-        return False
-    
     #boolean to check if a design type exists
     def piece_exists(self, start, end):
         curve = (start-end + 6) % 6
@@ -164,23 +157,23 @@ class Tantrix(ServerPuzzle):
                             h_direction, t_direction = ((turn * curve) + head_prev) % 6, ((turn * curve) + tail_prev) % 6
                             h_newchange, t_newchange = Tantrix.coord_change[h_direction], Tantrix.coord_change[t_direction]
                             h_exist, t_exist = (h_newcoord[0]+h_newchange[0], h_newcoord[1]+h_newchange[1]), (t_newcoord[0]+t_newchange[0], t_newcoord[1]+t_newchange[1])
-                            if h_exist not in self.pieceCoords:
+                            if h_exist not in self.pieceCoords():
                                 moves.append((0, h_direction))
-                            if t_exist not in self.pieceCoords:
+                            if t_exist not in self.pieceCoords():
                                 moves.append((-1, t_direction))
                 #add if we can do straight
                 if self.pieces[2] > 0:
                     h_direction, t_direction = (head_prev + 3) % 6, (tail_prev + 3) % 6
                     h_newchange, t_newchange = Tantrix.coord_change[h_direction], Tantrix.coord_change[t_direction]
                     h_exist, t_exist = (h_newcoord[0]+h_newchange[0], h_newcoord[1]+h_newchange[1]), (t_newcoord[0]+t_newchange[0], t_newcoord[1]+t_newchange[1])
-                    if h_exist not in self.pieceCoords:
+                    if h_exist not in self.pieceCoords():
                         moves.append((0, h_direction))
-                    if t_exist not in self.pieceCoords:
+                    if t_exist not in self.pieceCoords():
                         moves.append((-1, t_direction))
                 #return all possible moves
                 return moves
             
-            
+
         if movetype=='undo' or movetype=='back' or movetype=='all': # backwards.
             pass
             
