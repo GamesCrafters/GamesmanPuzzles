@@ -9,22 +9,23 @@ Description: TODO
 from puzzlesolver.util import *
 from puzzlesolver.puzzles import ServerPuzzle
 
-class Nto0(ServerPuzzle):
-    id = "nToZero"
-    variants = ["4_bi", "4_for", "10_bi"]
+class Tiltago(ServerPuzzle):
+    id = "tiltago"
+    variants = ["regular"]
 
     def __init__(self, variant, position=None):
         self._var = variant
-        p, direction = variant.split("_")
+        # p, direction = variant.split("_")
         if variant not in self.variants:
             raise ValueError(f"Invalid variant: {variant}")
         if position is not None:
             self._pos = position
             self._start = position
         else:
-            self._pos = int(p)
-            self._start = int(p)
-        self._dir = direction
+            self._start = ""
+            self._pos = 
+            
+        # self._dir = direction
 
     def __hash__(self):
         return self._pos
