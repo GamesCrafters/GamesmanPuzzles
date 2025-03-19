@@ -22,8 +22,8 @@ class Tiltago(ServerPuzzle):
             self._pos = position
             self._start = position
         else:
-            self._start = ""
-            self._pos = 
+            self._start = "765--B-4B21-3"
+            self._pos = "765--B-4B21-3"
             
         # self._dir = direction
 
