@@ -131,12 +131,20 @@ class Tiltago(ServerPuzzle):
     #         return []
 
     def generateMoves(self):
-        
-        
-        
+        return_gen_moves_dict = []
+        for i in range(13):
+            if self.pos[i] != "-":
+                for j in self.lookup_table[i]:
+                    if self.pos[j] == '-':
+                        return_gen_moves_dict.append([i, j])
+                        
+        return return_gen_moves_dict
+                
     def doMove(self, move):
+        temp = self.pos
+        
         new_pos = self._pos - move
-        return Nto0(self._var, new_pos)
+        return Tiltago(self._var, new_pos)
 
     def moveString(self, move, mode):
         """Convert integer move to human-readable string for output."""
@@ -148,7 +156,11 @@ class Tiltago(ServerPuzzle):
         else: return f"Add {-move}"
 
     def primitive(self):
-        if self._dir == "bi":
+        if self.pos == 'B--1234567--B':
+            return PuzzleValue.SOLVABLE
+        return PuzzleValue.UNDECIDED
+    
+        """ if self._dir == "bi":
             if self._pos == 0:
                 return PuzzleValue.SOLVABLE
             return PuzzleValue.UNDECIDED
@@ -157,7 +169,7 @@ class Tiltago(ServerPuzzle):
                 return PuzzleValue.SOLVABLE
             elif self._pos % 3 == 0:
                 return PuzzleValue.UNSOLVABLE
-            return PuzzleValue.UNDECIDED
+            return PuzzleValue.UNDECIDED """
 
     def generateSolutions(self, **kwargs):
         new_puzzle = Nto0(self._var)
