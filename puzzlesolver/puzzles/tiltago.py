@@ -25,7 +25,8 @@ class Tiltago(ServerPuzzle):
             self._start = "765--B-4B21-3"
             self._pos = "765--B-4B21-3"
             
-        # self._dir = direction
+        self.lookup_table = {0:[1], 1:[0,2], 2:[1,6], 3:[4], 4:[3,5], 5:[4,6], 6:[2,5,7,10],
+                             7:[6,8], 8:[7,9], 9:[8], 10:[6,11], 11:[10,12], 12:[11]}
 
     def __hash__(self):
         return self._pos
@@ -130,12 +131,9 @@ class Tiltago(ServerPuzzle):
     #         return []
 
     def generateMoves(self):
-        if self._dir == "bi":
-            return self.bidirectional_moves(movetype)
-        elif self._dir == "for":
-            return self.forward_moves(movetype)
-        raise ValueError(f"Unknown direction: {self._dir}")
-
+        
+        
+        
     def doMove(self, move):
         new_pos = self._pos - move
         return Nto0(self._var, new_pos)
