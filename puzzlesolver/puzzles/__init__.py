@@ -14,6 +14,7 @@ from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
 from .rushhour import RushHour
+from .spinout import Spinout
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -29,7 +30,8 @@ puzzleList = {
     ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
-    RushHour.id:    RushHour
+    RushHour.id:    RushHour,
+    Spinout.id:     Spinout
 }
 
 class PuzzleManagerClass:
