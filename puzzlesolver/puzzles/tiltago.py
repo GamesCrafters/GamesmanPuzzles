@@ -141,9 +141,10 @@ class Tiltago(ServerPuzzle):
         return return_gen_moves_dict
                 
     def doMove(self, move):
-        temp = self.pos
-        
-        new_pos = self._pos - move
+        i, j = move[0], move[1]
+        s_list = list(self.pos)
+        s_list[i], s_list[j] = s_list[j], s_list[i]
+        new_pos = ''.join(s_list)
         return Tiltago(self._var, new_pos)
 
     def moveString(self, move, mode):
