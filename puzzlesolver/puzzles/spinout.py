@@ -113,7 +113,7 @@ class Spinout(Puzzle):
             case _: # shouldn't happen
                 return ValueError("Invalid tile")
 
-    def __init__(self, variant_id: str, state = 0):
+    def __init__(self, variant_id: str, state):
         """
         Your constructor can have any signature you'd like,
         because it is only called by the other methods of this class.
@@ -212,7 +212,8 @@ class Spinout(Puzzle):
         Return an instance of the puzzle class given by the input hash value.
         """
         puzzle = cls(variant_id)
-        puzzle.board = hash_val
+        puzzle.track = hash_val[0]
+        puzzle.tile_index = hash_val[1]
         return puzzle
     
     @classmethod
@@ -220,7 +221,7 @@ class Spinout(Puzzle):
         """
         Return an instance of the Puzzle Class corresponding to the initial position.
         """
-        return Spinout(variant_id, 0)
+        return Spinout(variant_id)
 
     @classmethod
     def fromString(cls, variant_id, position_str):
@@ -255,17 +256,20 @@ class Spinout(Puzzle):
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted position string
             return f'1_{(self.track, self.move_index)}'
-        else:
+        elif mode == StringMode.HUMAN_READABLE_MULTILINE:
             # Otherwise, return a human-readable position string.
             curr_index = 0
             for tile in self.track:
-                
                 if curr_index == self.tile_index:
                     track_str += " {" +  str(tile) + "}," 
                 else:
                     track_str += " " + str(tile) + "," 
                 curr_index += 1
             return "[" + track_str + "]"
+        else:
+            #human readable
+            return str([{self.tile_index}] + self.track)
+
         
     
     def moveString(self, move, mode):
