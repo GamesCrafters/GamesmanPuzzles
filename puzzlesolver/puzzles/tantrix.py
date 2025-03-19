@@ -14,8 +14,9 @@ class Tantrix(ServerPuzzle):
     id = 'tantrix'
     
     # variants defined as number of pieces, sharp, soft, and straight
-    variants = ["3|0|0"]
-
+    variants = ["3|0|0", "2|2|0", "2|2|1", "2|2|2", "2|4|1", "4|2|2", "4|4|1", "2|6|2", "4|4|2", "5|4|1"]
+    #             yellow3, red4,   red5,  blue6,   red7,     blue8,    yellow9, red10,    blue10, yellow10
+    #                                                                            easy,   medium,    hard
     """
     coord_change defined as follows:
         (0, -2)  : Up
@@ -63,7 +64,8 @@ class Tantrix(ServerPuzzle):
         """ Return a hash value of your position """
         hash = "0"
         for state in self.state:
-            hash += state[-1]
+            hash += state[-1] #idk if this works to make each position unique :/
+            #maybe add the first state's start position?
         return int(hash)
 
     def primitive(self, **kwargs):
@@ -114,11 +116,11 @@ class Tantrix(ServerPuzzle):
             return Tantrix(self.variant_id, deepcopy(self.state).insert(pos, (new_coord[0], new_coord[1], move[1], prev)), [sharp, soft, straight])
 
     # Returns the coordinates of each existing piece
-    def pieceCoords(self):
+    def pieceCoords(self): #Helper
         return set([(p[0], p[1]) for p in self.state])
     
     #boolean to check if a design type exists
-    def piece_exists(self, start, end):
+    def piece_exists(self, start, end): #Helper
         curve = (start-end + 6) % 6
         if (curve == 1 or curve == 5) and self.pieces[0] > 0: #Sharp turns
             return True
