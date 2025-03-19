@@ -57,79 +57,79 @@ class Tiltago(ServerPuzzle):
         pos = position_str
         return Tiltago(variant, pos)
 
-    def bidirectional_moves(self, movetype="all"):
-        # Written a general solver, however, wanted to see case-by-case for debugging purposes.
-        # Will keep this for the time-being, if user is interested in writting general solver, then by all means, go for it.
-        # 
-        # 
-        # Here is some observations if interested (don't read if you're interested on solving yourself).
-          # Hard code start, 0 and 1. Then every pos % 3 == 0 should return -1.
-          # Then pos % 3 == 1 will be forward_moves + [(-1,)] and pos % 3 == 2 will be backward_moves + forward_moves.
-          # Since 5 is pos % 4 == 1, we'll have to ensure when this happens, we don't return backward_moves + forward_moves.
-          #
-          #
-          # E.G.
-        """
-          if self._pos != 0 and self._pos % 3 == 0:
-              return [(-1,)]
-          elif self._pos >= self._start:
-              return [(1,), (2,)]
-          if (self._pos + 2) % 3 == 0:
-              return [(-1,), (1,)] if self._pos % 4 == 1 else [(-1,), (1,), (2,)]
-          elif (self._pos + 1) % 3 == 0:
-              return [(-2,), (1,)] if self._pos % 4 == 1 else [(-2,), (1,), (2,)]
-          return [(-2,), (-1,), (1,), (2,)]
-        """
-        # something like this would suffice.
-        if movetype in ["for", "back"]:
-            return []
-        backward_moves = [-2, -1]
-        forward_moves = [1, 2]
-        cases = {
-            "4_bi": {
-                4: forward_moves,
-                3: [-1],
-                2: [-2] + forward_moves,
-                1: [-1] + [1],
-                0: backward_moves
-            },
-            "10_bi": {
-                10: forward_moves,
-                9: [-1],
-                8: [-2] + forward_moves,
-                7: [-1] + forward_moves,
-                6: backward_moves,
-                5: [-2] + [1],
-                4: [-1] + forward_moves,
-                3: [-1],
-                2: [-2] + forward_moves,
-                1: [-1] + [1],
-                0: backward_moves
-            }
-        }
-        return cases.get(self._var, {}).get(self._pos, [])
+    # def bidirectional_moves(self, movetype="all"):
+    #     # Written a general solver, however, wanted to see case-by-case for debugging purposes.
+    #     # Will keep this for the time-being, if user is interested in writting general solver, then by all means, go for it.
+    #     # 
+    #     # 
+    #     # Here is some observations if interested (don't read if you're interested on solving yourself).
+    #       # Hard code start, 0 and 1. Then every pos % 3 == 0 should return -1.
+    #       # Then pos % 3 == 1 will be forward_moves + [(-1,)] and pos % 3 == 2 will be backward_moves + forward_moves.
+    #       # Since 5 is pos % 4 == 1, we'll have to ensure when this happens, we don't return backward_moves + forward_moves.
+    #       #
+    #       #
+    #       # E.G.
+    #     """
+    #       if self._pos != 0 and self._pos % 3 == 0:
+    #           return [(-1,)]
+    #       elif self._pos >= self._start:
+    #           return [(1,), (2,)]
+    #       if (self._pos + 2) % 3 == 0:
+    #           return [(-1,), (1,)] if self._pos % 4 == 1 else [(-1,), (1,), (2,)]
+    #       elif (self._pos + 1) % 3 == 0:
+    #           return [(-2,), (1,)] if self._pos % 4 == 1 else [(-2,), (1,), (2,)]
+    #       return [(-2,), (-1,), (1,), (2,)]
+    #     """
+    #     # something like this would suffice.
+    #     if movetype in ["for", "back"]:
+    #         return []
+    #     backward_moves = [-2, -1]
+    #     forward_moves = [1, 2]
+    #     cases = {
+    #         "4_bi": {
+    #             4: forward_moves,
+    #             3: [-1],
+    #             2: [-2] + forward_moves,
+    #             1: [-1] + [1],
+    #             0: backward_moves
+    #         },
+    #         "10_bi": {
+    #             10: forward_moves,
+    #             9: [-1],
+    #             8: [-2] + forward_moves,
+    #             7: [-1] + forward_moves,
+    #             6: backward_moves,
+    #             5: [-2] + [1],
+    #             4: [-1] + forward_moves,
+    #             3: [-1],
+    #             2: [-2] + forward_moves,
+    #             1: [-1] + [1],
+    #             0: backward_moves
+    #         }
+    #     }
+    #     return cases.get(self._var, {}).get(self._pos, [])
 
-    def forward_moves(self, movetype):
-        if movetype == "undo":
-            if self._pos == 1:
-                return [-1]
-            elif self._pos == 0:
-                return [-1, -2]
-            elif self._pos == 3:
-                return [-1]
-            elif self._pos == 2:
-                return [-2]
-            return []
-        else:
-            if self._pos % 4 == 1:
-                return [1]
-            elif self._pos == 4:
-                return [1, 2]
-            elif self._pos == 2:
-                return [1, 2]
-            return []
+    # def forward_moves(self, movetype):
+    #     if movetype == "undo":
+    #         if self._pos == 1:
+    #             return [-1]
+    #         elif self._pos == 0:
+    #             return [-1, -2]
+    #         elif self._pos == 3:
+    #             return [-1]
+    #         elif self._pos == 2:
+    #             return [-2]
+    #         return []
+    #     else:
+    #         if self._pos % 4 == 1:
+    #             return [1]
+    #         elif self._pos == 4:
+    #             return [1, 2]
+    #         elif self._pos == 2:
+    #             return [1, 2]
+    #         return []
 
-    def generateMoves(self, movetype="all"):
+    def generateMoves(self):
         if self._dir == "bi":
             return self.bidirectional_moves(movetype)
         elif self._dir == "for":
