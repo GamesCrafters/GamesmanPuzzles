@@ -4,10 +4,11 @@ Puzzle: Spinout
 Author: Joshua Almario, Darren Ting
 Date: 2025-03-10
 """
-from . import Puzzle
+from . import ServerPuzzle
 #from . import ServerPuzzle
 from ..util import *
 from enum import Enum
+
 class Tiles(Enum):
     LEFT = 0
     UP = 1
@@ -17,103 +18,49 @@ class Tiles(Enum):
     UP_FLAT = 5
     RIGHT_FLAT = 6
     DOWN_FLAT = 7
-class Spinout(Puzzle):
+
+# ugly set of helper methods ever don't kill us lol
+def concaveLeft(tile) -> bool:
+    '''If the left side of the tile is concave'''
+    if tile.value < 0 or tile.value > 7:
+        return ValueError("Invalid tile")
+    return tile != Tiles.LEFT and tile != Tiles.LEFT_FLAT and tile != Tiles.RIGHT_FLAT
+            
+def concaveRight(tile) -> bool:
+    '''If the right side of the tile is concave'''
+    if tile.value < 0 or tile.value > 7:
+        return ValueError("Invalid tile")
+    return tile != Tiles.RIGHT and tile != Tiles.LEFT_FLAT and tile != Tiles.RIGHT_FLAT
+
+def slidable(tile) -> bool:
+    '''If both the top and bottom of the tile are concave'''
+    #LEFT, RIGHT, LEFT_FLAT, RIGHT_FLAT can slide
+    if tile.value < 0 or tile.value > 7:
+        return ValueError("Invalid tile")
+    return tile.value % 2 == 0 
+
+#used for toString()
+tile_dict = {
+    Tiles.LEFT : "←",
+    Tiles.UP : "↑",
+    Tiles.RIGHT : "→",
+    Tiles.DOWN : "↓",
+    Tiles.LEFT_FLAT : "⇐",
+    Tiles.UP_FLAT : "⇑",
+    Tiles.RIGHT_FLAT : "⇒",
+    Tiles.DOWN_FLAT : "⇓"
+}
+
+class Spinout(ServerPuzzle):
 
     id = 'spinout'
     startRandomized = False
 
-    # ← → ↑ ↓
-    # ⇐ ⇒ ⇑ ⇓
-    
-    '''Tiles = array of 0-4
-        0 = left 
-        1 = up
-        2 = right
-        3 = down '''
-    
     '''Hash representation - tuple:
         (track, tile_index)
     '''
-    #used for toString()
-    tile_dict = {
-        Tiles.LEFT : "←",
-        Tiles.UP : "↑",
-        Tiles.RIGHT : "→",
-        Tiles.DOWN : "↓",
-        Tiles.LEFT_FLAT : "⇐",
-        Tiles.UP_FLAT : "⇑",
-        Tiles.RIGHT_FLAT : "⇒",
-        Tiles.DOWN_FLAT : "⇓"
-    }
 
-    def concaveLeft(tile) -> bool:
-        '''If the left side of the tile is concave'''
-        match tile:
-            case Tiles.LEFT:
-                return False
-            case Tiles.UP:
-                return True
-            case Tiles.RIGHT:
-                return True
-            case Tiles.DOWN:
-                return True
-            case Tiles.LEFT_FLAT:
-                return False
-            case Tiles.UP_FLAT:
-                return True
-            case Tiles.RIGHT_FLAT:
-                return False
-            case Tiles.DOWN_FLAT:
-                return True
-            case _: # shouldn't happen
-                return ValueError("Invalid tile")
-                
-    def concaveRight(tile) -> bool:
-        '''If the right side of the tile is concave'''
-        match tile:
-            case Tiles.LEFT:
-                return True
-            case Tiles.UP:
-                return True
-            case Tiles.RIGHT:
-                return False
-            case Tiles.DOWN:
-                return True
-            case Tiles.LEFT_FLAT:
-                return False
-            case Tiles.UP_FLAT:
-                return True
-            case Tiles.RIGHT_FLAT:
-                return False
-            case Tiles.DOWN_FLAT:
-                return True
-            case _: # shouldn't happen
-                return ValueError("Invalid tile")
-
-    def slidable(tile) -> bool:
-        '''If both the top and bottom of the tile are concave'''
-        #LEFT, RIGHT, LEFT_FLAT, RIGHT_FLAT can slide
-        match tile:
-            case Tiles.LEFT:
-                return True
-            case Tiles.UP:
-                return False
-            case Tiles.RIGHT:
-                return True
-            case Tiles.DOWN:
-                return False
-            case Tiles.LEFT_FLAT:
-                return True
-            case Tiles.UP_FLAT:
-                return False
-            case Tiles.RIGHT_FLAT:
-                return True
-            case Tiles.DOWN_FLAT:
-                return False
-            case _: # shouldn't happen
-                return ValueError("Invalid tile")
-
-    def __init__(self, variant_id: str, state):
+    def __init__(self, variant_id: str = None, state = None):
         """
         Your constructor can have any signature you'd like,
         because it is only called by the other methods of this class.
@@ -127,8 +74,12 @@ class Spinout(Puzzle):
         #initial state: [Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT]
 
         self.variant_id = variant_id
-        self.track = state[0]
-        self.tile_index = state[1]
+        if state == None:
+            self.track = [Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT]
+            self.tile_index = 6
+        else:
+            self.track = state[0]
+            self.tile_index = state[1]
         
     @property
     def variant(self):
@@ -144,7 +95,7 @@ class Spinout(Puzzle):
         Return PuzzleValue.SOLVABLE if the current position is primitive;
         otherwise return PuzzleValue.UNDECIDED.
         """
-        if all(map(self.slidable, self.track)):
+        if all(map(slidable, self.track)):
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
     
@@ -155,21 +106,39 @@ class Spinout(Puzzle):
         on the current position.
         """
 
-        match move:
-            case "cw":
-                if self.track[self.tile_index] > 3:
-                    self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4 + 4
-                else:
-                    self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4
-            case "ccw":
-                if self.track[self.tile_index] > 3:
-                    self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4 + 4
-                else:
-                    self.track[self.tile_index] = (self.track[self.tile_index] + 1) % 4
-            case "left":
-                self.tile_index -= 1
-            case "right":
-                self.tile_index += 1
+        # Important note, move "left" is moving the slider right, same with the inverse for "right"
+        # Essentially, one is moving to the piece on the left or right, not moving the entire board left or right
+
+        # match move:
+        #     case "cw":
+        #         if self.track[self.tile_index] > 3:
+        #             self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4 + 4
+        #         else:
+        #             self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4
+        #     case "ccw":
+        #         if self.track[self.tile_index] > 3:
+        #             self.track[self.tile_index] = (self.track[self.tile_index] - 1) % 4 + 4
+        #         else:
+        #             self.track[self.tile_index] = (self.track[self.tile_index] + 1) % 4
+        #     case "left":
+        #         self.tile_index -= 1
+        #     case "right":
+        #         self.tile_index += 1
+
+        if move == "cw":
+            if self.track[self.tile_index].value > 3:
+                self.track[self.tile_index] = Tiles((self.track[self.tile_index].value + 1) % 4 + 4)
+            else:
+                self.track[self.tile_index] = Tiles((self.track[self.tile_index].value + 1) % 4)
+        if move == "ccw":
+            if self.track[self.tile_index].value > 3:
+                self.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4 + 4)
+            else:
+                self.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4)
+        if move == "left":
+            self.tile_index -= 1
+        if move == "right":
+            self.tile_index += 1
 
         return Spinout(self.variant_id, (self.track, self.tile_index))
 
@@ -180,10 +149,22 @@ class Spinout(Puzzle):
         to understand what the `movetype` parameter means.
         """
         moves = []
-        if self.tile_index > 0 and self.slidable(self.track[self.tile_index - 1]):
-            moves.append("left")
+        current_tile = self.track[self.tile_index]
+        if ((self.tile_index == len(self.track) - 1 or concaveLeft(self.track[self.tile_index + 1])) and
+            (self.tile_index == 0 or concaveRight(self.track[self.tile_index - 1]))):
+            moves.append("cw")
+            moves.append("ccw")
+        if not (current_tile == Tiles.DOWN or current_tile == Tiles.DOWN_FLAT):
+            if (self.tile_index > 0 and
+                # Last tile or if tile to the right is slidable
+                (self.tile_index == len(self.track) - 1 or slidable(self.track[self.tile_index + 1]))):
+                moves.append("left")
+                # Not last tile
+            if (self.tile_index < len(self.track) - 1):
+                moves.append("right")
 
-        
+        # Important note, move "left" is moving the slider right, same with the inverse for "right"
+        # Essentially, one is moving to the piece on the left or right, not moving the entire board left or right
 
         '''
         if movetype=='for' or movetype=='legal' or movetype=='all':
@@ -225,11 +206,11 @@ class Spinout(Puzzle):
         return puzzle
     
     @classmethod
-    def generateStartPosition(cls, variant_id, **kwargs):
+    def generateStartPosition(cls, variant_id = None, **kwargs):
         """
         Return an instance of the Puzzle Class corresponding to the initial position.
         """
-        return Spinout(variant_id, ([Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT], 6))
+        return Spinout(variant_id)
 
     @classmethod
     def fromString(cls, variant_id, position_str):
@@ -264,19 +245,20 @@ class Spinout(Puzzle):
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted position string
             return f'1_{(self.track, self.move_index)}'
-        elif mode == StringMode.HUMAN_READABLE_MULTILINE:
+        else:
             # Otherwise, return a human-readable position string.
             curr_index = 0
+            track_str = ""
             for tile in self.track:
                 if curr_index == self.tile_index:
-                    track_str += " {" +  str(tile) + "}," 
+                    track_str += "(" +  tile_dict[tile] + ")" 
                 else:
-                    track_str += " " + str(tile) + "," 
+                    track_str += str(tile_dict[tile])
                 curr_index += 1
-            return "[" + track_str + "]"
-        else:
-            #human readable
-            return str([{self.tile_index}] + self.track)
+            return track_str
+        # else:
+        #     #human readable
+        #     return str([{self.tile_index}] + self.track)
 
         
     
@@ -288,25 +270,23 @@ class Spinout(Puzzle):
         Outputs:
             String representation of the move -- String
         """
-        # Note: Playing this puzzle on the command-line is not supported,
-        # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
-        if mode == StringMode.AUTOGUI:
-            # If the mode is "autogui", return an autogui-formatted move string
-            match move:
-                case "cw":
-                    return str(move)
-                case "ccw":
-                    return str(move)
-                case "left":
-                    return str(move)
-                case "right":
-                    return str(move)
-        else:
-            # Move is already a string
-            return str(move)
+        # TODO: Add AUTOGUI formatting once we figure out how that works
+        return str(move)
     
     @classmethod
     def isLegalPosition(cls, position_str):
         """Checks if the Puzzle is valid given the rules."""
+        
+        puzzle = cls.fromString(position_str)
+
+        i = 0
+        for tile in puzzle.track:
+            if i != puzzle.tile_index and (tile == Tiles.DOWN or tile == Tiles.DOWN_FLAT):
+                raise PuzzleException("Only current tile can face down!")
+            if (i < len(puzzle.track) and not concaveRight(tile) and not concaveLeft(puzzle.track[i + 1])):
+                raise PuzzleException("Two convex sides facing each other!")
+            i += 1
+        if not all(map(slidable, puzzle.track[puzzle.tile_index + 1:])):
+            raise PuzzleException("All tiles after current must face sideways!")
         
         return True
