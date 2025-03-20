@@ -6,8 +6,6 @@ Date: 2025-03-10
 """
 from . import ServerPuzzle
 from ..util import *
-from solvers import GeneralSolver
-from players import TUI
 from enum import Enum
 
 class Tiles(Enum):
@@ -272,6 +270,3 @@ class Spinout(ServerPuzzle):
             raise PuzzleException("All tiles after current must face sideways!")
         
         return True
-
-p = Spinout()
-TUI(p, GeneralSolver(p), info=True)
