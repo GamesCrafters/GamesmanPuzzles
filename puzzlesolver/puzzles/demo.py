@@ -1,0 +1,38 @@
+from puzzlesolver.util import *
+from puzzlesolver.puzzles import Puzzle
+from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver.players import TUI
+
+class HF(Puzzle):
+
+    def __init__(self, **kwargs):
+        self.start = kwargs.get('start')
+        self.pos = self.start
+    
+    def toString(self, **kwargs):
+        return str(self.pos)
+
+    def primitive(self, **kwargs):
+        if self.pos == 0:
+            return PuzzleValue.SOLVABLE
+        return PuzzleValue.UNDECIDED
+    
+    def generateMoves(self, movetype='all'):
+        if self.pos != 0 and self.pos % 3 == 0:
+            return [(-1,)]
+        elif self.pos >= self.start:
+            return [(1,), (2,)]
+        if (self.pos + 2) % 3 == 0:
+            return [(-1,), (1,)] if self.pos % 4 == 1 else [(-1,), (1,), (2,)]
+        elif (self.pos + 1) % 3 == 0:
+            return [(-2,), (1,)] if self.pos % 4 == 1 else [(-2,), (1,), (2,)]
+        return [(-2,), (-1,), (1,), (2,)]
+    
+    def doMove(self, move, **kwargs):
+        return HF(start=(self.start - move[0]))
+    
+    def __hash__(self):
+        return self.pos
+
+puzzle = HF(start = 10)
+TUI(puzzle, solver=GeneralSolver(puzzle), info=True).play()

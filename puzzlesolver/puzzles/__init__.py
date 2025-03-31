@@ -14,6 +14,8 @@ from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
 from .rushhour import RushHour
+from .tiltago import Tiltago
+
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -26,6 +28,7 @@ puzzleList = {
     Npuzzle.id:     Npuzzle,
     NQueens.id:     NQueens,
     Peg.id:         Peg,
+    Tiltago.id:     Tiltago,
     ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
