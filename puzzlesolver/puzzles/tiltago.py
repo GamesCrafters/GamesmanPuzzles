@@ -34,6 +34,19 @@ class Tiltago(ServerPuzzle):
 
     def __hash__(self):
         return hash(self._pos)
+    
+    @classmethod
+    def getBoard(cls, pos):
+        final = ""
+        for i in range(3):
+            final = final + "   " + pos[i] + "\n"
+        for i in range(7):
+            final = final + pos[2 + i]
+        final += "\n"
+        for i in range (10, 13):
+            final = final + "   " + pos[i] + "\n"
+        return final
+
 
     def toString(self, mode):
         if mode == StringMode.AUTOGUI:
@@ -45,7 +58,12 @@ class Tiltago(ServerPuzzle):
             position_str = ''.join(result)
             
             return f"1_{position_str}"
-        return str(self._pos)
+
+        return self.getBoard(self._pos)
+
+
+
+
 
     @classmethod
     def generateStartPosition(cls, variant, **kwargs):
@@ -189,5 +207,5 @@ if __name__ == "__main__":
     # from scripts.server.src import test_puzzle
     # test_puzzle(Tiltago)
     puzzle = Tiltago("regular")
-    TUI(puzzle, solver=GeneralSolver(puzzle)).play()
+    TUI(puzzle).play()
 
