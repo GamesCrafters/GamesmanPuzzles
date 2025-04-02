@@ -36,12 +36,12 @@ class Tiltago(ServerPuzzle):
         return hash(self._pos)
     
     @classmethod
-    def getBoard(cls, pos):
+    def getBoard(self, pos):
         final = ""
         for i in range(3):
             final = final + "   " + pos[i] + "\n"
         for i in range(7):
-            final = final + pos[2 + i]
+            final = final + pos[3 + i]
         final += "\n"
         for i in range (10, 13):
             final = final + "   " + pos[i] + "\n"
@@ -60,10 +60,6 @@ class Tiltago(ServerPuzzle):
             return f"1_{position_str}"
 
         return self.getBoard(self._pos)
-
-
-
-
 
     @classmethod
     def generateStartPosition(cls, variant, **kwargs):
