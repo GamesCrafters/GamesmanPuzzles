@@ -62,16 +62,16 @@ class Tiltago(ServerPuzzle):
         return self.getBoard(self._pos)
 
     @classmethod
-    def generateStartPosition(cls, variant, **kwargs):
+    def generateStartPosition(self, variant, **kwargs):
         return Tiltago(variant)
 
     @classmethod
-    def fromString(cls, variant, position_str):
+    def fromString(self, variant, position_str):
         if not isinstance(position_str, str):
             raise TypeError("Position string must be a string")
         if position_str == "":
-            return cls.generateStartPosition(variant)
-        if variant not in cls.variants:
+            return self.generateStartPosition(variant)
+        if variant not in self.variants:
             raise ValueError("Invalid variant")
         pos = position_str
         return Tiltago(variant, pos)
