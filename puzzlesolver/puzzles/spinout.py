@@ -4,16 +4,17 @@ Puzzle: Spinout
 Author: Joshua Almario, Darren Ting
 Date: 2025-03-10
 """
-from . import ServerPuzzle
-from ..util import *
-from solvers import GeneralSolver
-from players import TUI
+#from . import ServerPuzzle
+#from ..util import *
+#from solvers import GeneralSolver
+#from players import TUI
 from enum import Enum
-# from copy import deepcopy
-# from puzzlesolver.util import *
-# from puzzlesolver.puzzles import ServerPuzzle
-# from puzzlesolver.solvers import GeneralSolver
-# from puzzlesolver.players import TUI
+from copy import deepcopy
+from puzzlesolver.util import *
+from puzzlesolver.puzzles import ServerPuzzle
+from puzzlesolver.solvers import GeneralSolver
+from puzzlesolver.players import TUI
+import hashlib
 
 class Tiles(Enum):
     LEFT = 0
@@ -81,10 +82,10 @@ class Spinout(ServerPuzzle):
 
         self.variant_id = variant_id
         if state == None:
-            self.track = [Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT]
-            self.tile_index = 6
+            self.track = [Tiles.UP] + [Tiles.LEFT] * 3 + [Tiles.LEFT_FLAT]
+            self.tile_index = 4
         else:
-            self.track = state[0]
+            self.track = deepcopy(state[0])
             self.tile_index = state[1]
         
     @property
@@ -94,13 +95,26 @@ class Spinout(ServerPuzzle):
     
     def __hash__(self):
         """ Return a hash value of your position """
-        return hash(tuple(self.track), self.tile_index)
+        cool_string = \
+            (str
+                (list
+                    (map
+                        (lambda x : x.value, self.track)
+                    )
+                )
+            ) + \
+            str(self.tile_index)
+        result = hash(cool_string) % 200000000
+        # print(result, self.track, self.tile_index)
+        #print(result, cool_string, self.toString(StringMode.HUMAN_READABLE))
+        return result
 
     def primitive(self, **kwargs):
         """
         Return PuzzleValue.SOLVABLE if the current position is primitive;
         otherwise return PuzzleValue.UNDECIDED.
         """
+        print(self.toString(StringMode.HUMAN_READABLE))
         if all(map(slidable, self.track)):
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
@@ -130,23 +144,23 @@ class Spinout(ServerPuzzle):
         #         self.tile_index -= 1
         #     case "right":
         #         self.tile_index += 1
-
+        s = Spinout(self.variant_id, (self.track, self.tile_index))
         if move == "cw":
             if self.track[self.tile_index].value > 3:
-                self.track[self.tile_index] = Tiles((self.track[self.tile_index].value + 1) % 4 + 4)
+                s.track[self.tile_index] = Tiles((self.track[self.tile_index].value + 1) % 4 + 4)
             else:
-                self.track[self.tile_index] = Tiles((self.track[self.tile_index].value + 1) % 4)
+                s.track[self.tile_index] = Tiles((self.track[self.tile_index].value + 1) % 4)
         if move == "ccw":
             if self.track[self.tile_index].value > 3:
-                self.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4 + 4)
+                s.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4 + 4)
             else:
-                self.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4)
+                s.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4)
         if move == "left":
-            self.tile_index -= 1
+            s.tile_index -= 1
         if move == "right":
-            self.tile_index += 1
+            s.tile_index += 1
 
-        return Spinout(self.variant_id, (self.track, self.tile_index))
+        return s
 
     # Generate Legal Moves & all undo moves
     def generateMoves(self, movetype="all", **kwargs):
@@ -179,7 +193,8 @@ class Spinout(ServerPuzzle):
         is a possible "solved" state of the puzzle.
         """
         #only one solvable state, assumes that every state of the puzzle can reach this state
-        return [Spinout(self.variant_id, ([Tiles.LEFT] * 6 + [Tiles.LEFT_FLAT], i) ) for i in range(7)]
+        return [Spinout(self.variant_id, ([Tiles.LEFT] * 4 + [Tiles.LEFT_FLAT], i) ) for i in range(5)] + \
+            [Spinout(self.variant_id, ([Tiles.LEFT] * 4 + [Tiles.RIGHT_FLAT], i) ) for i in range(5)] 
     
     @classmethod
     def fromHash(cls, variant_id, hash_val):
@@ -227,11 +242,9 @@ class Spinout(ServerPuzzle):
             [{0}, 0, 0, 0, 0, 0, 0, 0]
             tile_index is 0
         """
-        # Note: Playing this puzzle on the command-line is not supported,
-        # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted position string
-            return f'1_{(self.track, self.move_index)}'
+            return f'1_{(self.track, self.tile_index)}'
         else:
             # Otherwise, return a human-readable position string.
             curr_index = 0
