@@ -148,9 +148,11 @@ class Spinout(ServerPuzzle):
         split_move = move.split("_").length
         if split_move.length == 2:
             if move[0] == "left":
-                s.tile_index -= move[1]
+                s.tile_index -= int(move[1])
             if move[0] == "right":
-                s.tile_index += move[1]
+                s.tile_index += int(move[1])
+        else:
+            raise ValueError("Incorrect move format")
 
         if move == "cw":
             if self.track[self.tile_index].value > 3:
@@ -178,13 +180,17 @@ class Spinout(ServerPuzzle):
             moves.append("cw")
             moves.append("ccw")
         if not (current_tile == Tiles.DOWN or current_tile == Tiles.DOWN_FLAT):
-            if (self.tile_index > 0 and
+            i = 1
+            while (self.tile_index > 0 and
                 # Last tile or if tile to the right is slidable
                 (self.tile_index == len(self.track) - 1 or slidable(self.track[self.tile_index + 1]))):
-                moves.append("left")
+                moves.append(f"right_{i}")
+                i += 1
                 # Not last tile
-            if (self.tile_index < len(self.track) - 1):
-                moves.append("right")
+            i = 1
+            while (self.tile_index < len(self.track) - 1):
+                moves.append(f"right_{i}")
+                i += 1
 
         # Important note, move "left" is moving the slider right, same with the inverse for "right"
         # Essentially, one is moving to the piece on the left or right, not moving the entire board left or right
@@ -294,5 +300,5 @@ class Spinout(ServerPuzzle):
         
         return True
 
-p = Spinout()
-TUI(p, GeneralSolver(p), info=True)
+# p = Spinout()
+# TUI(p, GeneralSolver(p), info=True)
