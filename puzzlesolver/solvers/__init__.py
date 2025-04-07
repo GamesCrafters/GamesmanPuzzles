@@ -1,5 +1,4 @@
 DATABASE_DIR = 'databases'
-
 from .generalsolver import GeneralSolver
 GSolver = GeneralSolver
 

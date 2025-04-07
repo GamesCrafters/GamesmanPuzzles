@@ -1,7 +1,7 @@
 from .solver import Solver
 from ..util import PuzzleValue
 import queue as q
-import progressbar
+import progressbar 
 import time
 
 class GeneralSolver(Solver):

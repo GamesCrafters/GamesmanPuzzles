@@ -26,11 +26,11 @@ class Tiltago(ServerPuzzle):
             self._pos = position
             self._start = position
         else:
-            self._start = "765--B-4B21-3"
-            self._pos = "765--B-4B21-3"
+            self._start = "5-B-4B213"
+            self._pos = "5-B-4B213"
             
-        self.lookup_table = {0:[1], 1:[0,2], 2:[1,6], 3:[4], 4:[3,5], 5:[4,6], 6:[2,5,7,10],
-                             7:[6,8], 8:[7,9], 9:[8], 10:[6,11], 11:[10,12], 12:[11]}
+        self.lookup_table = {0:[1], 1:[0,4], 2:[3], 3:[2, 4], 4:[1,3,5, 7], 5:[4,6], 6:[5],
+                             7:[4,8], 8:[7]}
 
     def __hash__(self):
         return hash(self._pos)
@@ -38,12 +38,12 @@ class Tiltago(ServerPuzzle):
     @classmethod
     def getBoard(self, pos):
         final = ""
-        for i in range(3):
+        for i in range(2):
             final = final + "   " + pos[i] + "\n"
-        for i in range(7):
+        for i in range(5):
             final = final + pos[3 + i]
         final += "\n"
-        for i in range (10, 13):
+        for i in range (6, 9):
             final = final + "   " + pos[i] + "\n"
         return final
 
@@ -150,7 +150,7 @@ class Tiltago(ServerPuzzle):
 
     def generateMoves(self, movetype='legal'):
         return_gen_moves_dict = []
-        for i in range(13):
+        for i in range(9):
             if self._pos[i] != "-":
                 for j in self.lookup_table[i]:
                     if self._pos[j] == '-':
@@ -175,7 +175,7 @@ class Tiltago(ServerPuzzle):
         else: return f"Add {-move}"
 
     def primitive(self):
-        if self._pos == 'B--1234567--B':
+        if self._pos == 'B--12345--B':
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
     
@@ -192,7 +192,7 @@ class Tiltago(ServerPuzzle):
 
     def generateSolutions(self, **kwargs):
         new_puzzle = Tiltago(self._var)
-        new_puzzle._pos = 'B--1234567--B'
+        new_puzzle._pos = 'B-1234567-B'
         return [new_puzzle]
 
     @property
