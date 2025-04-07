@@ -145,20 +145,23 @@ class Spinout(ServerPuzzle):
         #     case "right":
         #         self.tile_index += 1
         s = Spinout(self.variant_id, (self.track, self.tile_index))
+        split_move = move.split("_").length
+        if split_move.length == 2:
+            if move[0] == "left":
+                s.tile_index -= move[1]
+            if move[0] == "right":
+                s.tile_index += move[1]
+
         if move == "cw":
             if self.track[self.tile_index].value > 3:
                 s.track[self.tile_index] = Tiles((self.track[self.tile_index].value + 1) % 4 + 4)
             else:
                 s.track[self.tile_index] = Tiles((self.track[self.tile_index].value + 1) % 4)
-        if move == "ccw":
+        elif move == "ccw":
             if self.track[self.tile_index].value > 3:
                 s.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4 + 4)
             else:
                 s.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4)
-        if move == "left":
-            s.tile_index -= 1
-        if move == "right":
-            s.tile_index += 1
 
         return s
 
