@@ -39,12 +39,12 @@ class Tiltago(ServerPuzzle):
     def getBoard(self, pos):
         final = ""
         for i in range(2):
-            final = final + "   " + pos[i] + "\n"
-        for i in range(5):
-            final = final + pos[3 + i]
+            final = final + "  " + pos[i] + "\n"
+        for i in range(2, 7):
+            final = final + pos[i]
         final += "\n"
-        for i in range (6, 9):
-            final = final + "   " + pos[i] + "\n"
+        for i in range (7, 9):
+            final = final + "  " + pos[i] + "\n"
         return final
 
 
