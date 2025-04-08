@@ -79,11 +79,12 @@ class Spinout(ServerPuzzle):
         that sufficienctly defines a position as input.
         """
         #initial state: [Tiles.UP] + [Tiles.LEFT] * 5 + [Tiles.LEFT_FLAT]
+        #Number of Tiles.LEFT has been temporarily reduced due to remoteness byte overflow issues
 
         self.variant_id = variant_id
         if state == None:
             self.track = [Tiles.UP] + [Tiles.LEFT] * 3 + [Tiles.LEFT_FLAT]
-            self.tile_index = 4
+            self.tile_index = len(self.track) - 1
         else:
             self.track = deepcopy(state[0])
             self.tile_index = state[1]
@@ -145,14 +146,6 @@ class Spinout(ServerPuzzle):
         #     case "right":
         #         self.tile_index += 1
         s = Spinout(self.variant_id, (self.track, self.tile_index))
-        split_move = move.split("_").length
-        if split_move.length == 2:
-            if move[0] == "left":
-                s.tile_index -= int(move[1])
-            if move[0] == "right":
-                s.tile_index += int(move[1])
-        else:
-            raise ValueError("Incorrect move format")
 
         if move == "cw":
             if self.track[self.tile_index].value > 3:
@@ -164,6 +157,15 @@ class Spinout(ServerPuzzle):
                 s.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4 + 4)
             else:
                 s.track[self.tile_index] = Tiles((self.track[self.tile_index].value - 1) % 4)
+        else:
+            split_move = move.split("_")
+            if len(split_move) == 2:
+                if split_move[0] == "left":
+                    s.tile_index -= int(split_move[1])
+                if split_move[0] == "right":
+                    s.tile_index += int(split_move[1])
+            else:
+                raise ValueError("Incorrect move format")
 
         return s
 
@@ -180,15 +182,15 @@ class Spinout(ServerPuzzle):
             moves.append("cw")
             moves.append("ccw")
         if not (current_tile == Tiles.DOWN or current_tile == Tiles.DOWN_FLAT):
-            i = 1
-            while (self.tile_index > 0 and
+            i = self.tile_index
+            while (i > 0 and
                 # Last tile or if tile to the right is slidable
-                (self.tile_index == len(self.track) - 1 or slidable(self.track[self.tile_index + 1]))):
-                moves.append(f"right_{i}")
-                i += 1
+                (i >= len(self.track) - 1 or slidable(self.track[i + 1]))):
+                moves.append(f"left_{i}")
+                i -= 1
                 # Not last tile
             i = 1
-            while (self.tile_index < len(self.track) - 1):
+            while (self.tile_index + i < len(self.track)):
                 moves.append(f"right_{i}")
                 i += 1
 
@@ -300,5 +302,5 @@ class Spinout(ServerPuzzle):
         
         return True
 
-# p = Spinout()
-# TUI(p, GeneralSolver(p), info=True)
+p = Spinout()
+TUI(p, GeneralSolver(p), info=False)
