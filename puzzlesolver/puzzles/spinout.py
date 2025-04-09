@@ -182,12 +182,12 @@ class Spinout(ServerPuzzle):
             moves.append("cw")
             moves.append("ccw")
         if not (current_tile == Tiles.DOWN or current_tile == Tiles.DOWN_FLAT):
-            i = self.tile_index
-            while (i > 0 and
+            i = 0
+            while (self.tile_index - i > 0 and
                 # Last tile or if tile to the right is slidable
-                (i >= len(self.track) - 1 or slidable(self.track[i + 1]))):
-                moves.append(f"left_{i}")
-                i -= 1
+                (self.tile_index - i >= len(self.track) - 1 or slidable(self.track[self.tile_index - i + 1]))):
+                moves.append(f"left_{i + 1}")
+                i += 1
                 # Not last tile
             i = 1
             while (self.tile_index + i < len(self.track)):
