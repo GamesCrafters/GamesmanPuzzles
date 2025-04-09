@@ -14,10 +14,10 @@ import random
 class TopSpin(ServerPuzzle):
 
 	id = 'topspin'
-	variants = ['6_2']
+	variants = ['6_2', '10_4']
 	startRandomized = True
 
-	def __init__(self, size = 6, spin = 2, **kwargs):
+	def __init__(self, size = 10, spin = 4, **kwargs):
 		self.size = size
 		self.spin = spin
 		self.all_nums = list(range(1, size+1))
@@ -132,6 +132,8 @@ class TopSpin(ServerPuzzle):
 			result += '-'
 			result += str(item)
 		return result
+
+	#add moveString
 
 	@classmethod
 	def fromString(cls, variant_id, positionid):
