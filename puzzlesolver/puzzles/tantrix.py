@@ -86,11 +86,14 @@ class Tantrix(ServerPuzzle):
         new_coordx = back_piece[0] + change[0] #Change the coordinates of the last piece
         new_coordy = back_piece[1] + change[1]
         #Check if the new coordinates equal to the front piece and the length of the puzzle is correct
-        if ((new_coordx, new_coordy) == (front_piece[0], front_piece[1])) and (len(self.state) == self.num_pieces):
-           return PuzzleValue.SOLVABLE
-        elif sum(self.pieces) == 0:
+        if ((new_coordx, new_coordy) == (front_piece[0], front_piece[1])) and (self.num_pieces == 0):
+            if self.num_pieces == 0:
+                return PuzzleValue.SOLVABLE
+            else:
+                return PuzzleValue.UNSOLVABLE
+        elif self.num_pieces == 0:
             return PuzzleValue.UNSOLVABLE
-        print("here")
+        # print("here")
 
         return PuzzleValue.UNDECIDED
 
