@@ -98,6 +98,8 @@ class Tantrix(ServerPuzzle):
         sharp = self.pieces[0]
         soft = self.pieces[1]
         straight = self.pieces[2]
+        # print('\n Move')
+        # print(move)
         if move[1] == 6:
             new_state = deepcopy(self.state)
             piece = new_state.pop(move[0])
@@ -108,8 +110,8 @@ class Tantrix(ServerPuzzle):
                 straight = self.pieces[2] + 1
             else: #soft turns
                 soft = self.pieces[1] + 1
-            print(soft)
-            print("state", self.state)
+            # print(soft)
+            # print("state", self.state)
             return Tantrix(self.variant_id, new_state, [sharp, soft, straight])
 
         pos = move[0] # pos will be 0 or -1 (head or tail)
@@ -131,11 +133,15 @@ class Tantrix(ServerPuzzle):
             straight = self.pieces[2] - 1
         else: #soft turns
             soft = self.pieces[1] - 1
-        
-        if pos == -1:
-            return Tantrix(self.variant_id, deepcopy(self.state).insert(len(self.state), (new_coord[0], new_coord[1], prev, move[1])), [sharp, soft, straight])
-        else:
-            return Tantrix(self.variant_id, deepcopy(self.state).insert(pos, (new_coord[0], new_coord[1], move[1], prev)), [sharp, soft, straight])
+        # print('\nDoMove')
+        # print((new_coord[0], new_coord[1], prev, move[1]))
+        new_state = deepcopy(self.state) # Make a copy of the current state
+        new_piece = (new_coord[0], new_coord[1], prev, move[1]) if pos == -1 else (new_coord[0], new_coord[1], move[1], prev)
+        insert_pos = len(self.state) if pos == -1 else pos
+        new_state.insert(insert_pos, new_piece) # Insert the new piece into the copied state
+        # print("test", deepcopy(self.state)) # Original state (unchanged)
+        # print("test2", new_state) # New state with the inserted piece
+        return Tantrix(self.variant_id, new_state, [sharp, soft, straight])
 
     # Returns the coordinates of each existing piece
     def pieceCoords(self): #Helper
@@ -165,6 +171,8 @@ class Tantrix(ServerPuzzle):
         #Get all moves possible from the head and tail of the board
         if movetype=='for' or movetype=='legal' or movetype=='all':
             #If both head and tail point to same coordinate, then output one move if that move is available
+            # print('\nGenMoves')
+            # print(self.state)
             head, tail = self.state[0], self.state[-1]
             head_prev, tail_prev = (head[2] + 3) % 6, (tail[3] + 3) % 6  #head_prev = 4, tail_prev = 4
             h_change, t_change = Tantrix.coord_change[head[2]], Tantrix.coord_change[tail[3]] #(1,1), (1, -1)
@@ -284,5 +292,5 @@ class Tantrix(ServerPuzzle):
 
 
 if __name__ == "__main__":
-    t = Tantrix("3|0|0")  # Using the first variant from the variants list
+    t = Tantrix("2|2|2")  # Using the first variant from the variants list
     TUI(t).play()
