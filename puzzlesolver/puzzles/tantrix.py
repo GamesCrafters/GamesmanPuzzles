@@ -79,6 +79,7 @@ class Tantrix(ServerPuzzle):
         #seems good!
         if not self.state:
             return PuzzleValue.UNDECIDED
+        
         front_piece = self.state[0] #Takes the very last piece entered into the puzzle from the front
         back_piece = self.state[-1] #Takes the very last piece entered into the puzzle from the back
         change = self.coord_change[back_piece[3]] #Gets the change in coordinates for the back piece
@@ -87,7 +88,12 @@ class Tantrix(ServerPuzzle):
         #Check if the new coordinates equal to the front piece and the length of the puzzle is correct
         if ((new_coordx, new_coordy) == (front_piece[0], front_piece[1])) and (len(self.state) == self.num_pieces):
            return PuzzleValue.SOLVABLE
+        elif sum(self.pieces) == 0:
+            return PuzzleValue.UNSOLVABLE
+        print("here")
+
         return PuzzleValue.UNDECIDED
+
     
     def doMove(self, move):
         """
@@ -98,8 +104,7 @@ class Tantrix(ServerPuzzle):
         sharp = self.pieces[0]
         soft = self.pieces[1]
         straight = self.pieces[2]
-        # print('\n Move')
-        # print(move)
+        print(move)
         if move[1] == 6:
             new_state = deepcopy(self.state)
             piece = new_state.pop(move[0])
@@ -110,8 +115,6 @@ class Tantrix(ServerPuzzle):
                 straight = self.pieces[2] + 1
             else: #soft turns
                 soft = self.pieces[1] + 1
-            # print(soft)
-            # print("state", self.state)
             return Tantrix(self.variant_id, new_state, [sharp, soft, straight])
 
         pos = move[0] # pos will be 0 or -1 (head or tail)
@@ -167,7 +170,13 @@ class Tantrix(ServerPuzzle):
         moves = set() #each element (head or tail of the stack self.state, number 1-5 )
         #If puzzle starts from the very first piece
         if self.state == []:
-            return [(-1, i) for i in range(1, 6)] #Return all possible moves for the very first piece
+            if self.pieces[0] > 0:
+                moves = moves.union(set([(-1, 1), (-1, 5), (0, 1), (0, 5)]))
+            if self.pieces[1] > 0:
+                moves = moves.union(set([(-1, 2), (-1, 4), (0, 2), (0, 4)]))
+            if self.pieces[2] > 0:
+                moves = moves.add(set([(-1, 3), (0, 3)]))
+            return moves #Return all possible moves for the very first piece
         #Get all moves possible from the head and tail of the board
         if movetype=='for' or movetype=='legal' or movetype=='all':
             #If both head and tail point to same coordinate, then output one move if that move is available
