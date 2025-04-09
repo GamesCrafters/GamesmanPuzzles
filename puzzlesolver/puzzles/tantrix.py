@@ -1,13 +1,14 @@
 """
 File: tantrix.py
 Puzzle: Tantrix
-Author: Abraham Hsu, Grant Zhao, Aditiya Tummala
+Author: Abraham Hsu, Grant Zhao, Aditya Tummala
 Date: 2025-03-16
 """
 
 from copy import deepcopy
-from . import ServerPuzzle
-from ..util import *
+from puzzlesolver.util import *
+from puzzlesolver.puzzles import ServerPuzzle
+from puzzlesolver.players import TUI
 
 class Tantrix(ServerPuzzle):
 
@@ -280,3 +281,8 @@ class Tantrix(ServerPuzzle):
         """Checks if the Puzzle is valid given the rules."""
         state = int(position_str)
         return 0 <= state <= 10 
+
+
+if __name__ == "__main__":
+    t = Tantrix("3|0|0")  # Using the first variant from the variants list
+    TUI(t).play()
