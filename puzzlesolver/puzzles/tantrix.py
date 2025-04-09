@@ -107,7 +107,6 @@ class Tantrix(ServerPuzzle):
         sharp = self.pieces[0]
         soft = self.pieces[1]
         straight = self.pieces[2]
-        print(move)
         if move[1] == 6:
             new_state = deepcopy(self.state)
             piece = new_state.pop(move[0])
@@ -249,8 +248,27 @@ class Tantrix(ServerPuzzle):
             Puzzle object based on puzzleid and variantid
         """
         try:
-            state = int(position_str)
-            return ExamplePuzzle(variant_id, state)
+            curr = []
+            parsed_state = []
+            for i in position_str:
+                if i in ["]", "[", "(", ",", " "]:
+                    continue
+                elif i == ")":
+                    parsed_state.append(tuple(curr))
+                    curr = []
+                else:
+                    curr.append(int(i))
+            init_pieces = [0, 0, 0]
+            for i in parsed_state:
+                curve = (i[2]-i[3] + 6) % 6
+                if (curve == 1 or curve == 5): #Sharp turns
+                    init_pieces[0] += 1
+                elif curve == 3: #Straight
+                    init_pieces[1] += 1
+                elif (curve == 2 or curve == 4): #Soft turns
+                    init_pieces[2] += 1
+            total_pieces = [int(variant_id[idx*2]) - init_pieces[idx] for idx in range(len(init_pieces))]
+            return Tantrix(variant_id, state=parsed_state, pieces=total_pieces)
         except Exception as _:
             raise PuzzleException("Invalid puzzleid")
 
@@ -266,6 +284,7 @@ class Tantrix(ServerPuzzle):
         # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted position string
+
             return f'1_{self.state}'
         else:
             # Otherwise, return a human-readable position string.
