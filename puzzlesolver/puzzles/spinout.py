@@ -115,7 +115,7 @@ class Spinout(ServerPuzzle):
         Return PuzzleValue.SOLVABLE if the current position is primitive;
         otherwise return PuzzleValue.UNDECIDED.
         """
-        print(self.toString(StringMode.HUMAN_READABLE))
+        # print(self.toString(StringMode.HUMAN_READABLE))
         if all(map(slidable, self.track)):
             return PuzzleValue.SOLVABLE
         return PuzzleValue.UNDECIDED
@@ -303,4 +303,4 @@ class Spinout(ServerPuzzle):
         return True
 
 p = Spinout()
-TUI(p, GeneralSolver(p), info=False)
+TUI(p, GeneralSolver(p), info=True)
