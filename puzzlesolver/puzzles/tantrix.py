@@ -37,7 +37,7 @@ class Tantrix(ServerPuzzle):
     """
     coord_change = [(0,-2), (1, -1), (1, 1), (0, 2), (-1, 1), (-1, -1)]
 
-    def __init__(self, variant_id: str, state = [], pieces = [3, 0, 0]):
+    def __init__(self, variant_id: str, state = [], pieces = [2, 2, 2]):
         """
             Tantrix class will keep a current index tuple (self.curr_index), which maps to coord_change.
             Current index entries will be in mod 6.
@@ -139,14 +139,12 @@ class Tantrix(ServerPuzzle):
             straight = self.pieces[2] - 1
         else: #soft turns
             soft = self.pieces[1] - 1
-        # print('\nDoMove')
-        # print((new_coord[0], new_coord[1], prev, move[1]))
+        
         new_state = deepcopy(self.state) # Make a copy of the current state
         new_piece = (new_coord[0], new_coord[1], prev, move[1]) if pos == -1 else (new_coord[0], new_coord[1], move[1], prev)
         insert_pos = len(self.state) if pos == -1 else pos
         new_state.insert(insert_pos, new_piece) # Insert the new piece into the copied state
-        # print("test", deepcopy(self.state)) # Original state (unchanged)
-        # print("test2", new_state) # New state with the inserted piece
+        
         return Tantrix(self.variant_id, new_state, [sharp, soft, straight])
 
     # Returns the coordinates of each existing piece
@@ -178,13 +176,11 @@ class Tantrix(ServerPuzzle):
             if self.pieces[1] > 0:
                 moves = moves.union(set([(-1, 2), (-1, 4), (0, 2), (0, 4)]))
             if self.pieces[2] > 0:
-                moves = moves.add(set([(-1, 3), (0, 3)]))
+                moves = moves.union(set([(-1, 3), (0, 3)]))
             return moves #Return all possible moves for the very first piece
         #Get all moves possible from the head and tail of the board
         if movetype=='for' or movetype=='legal' or movetype=='all':
             #If both head and tail point to same coordinate, then output one move if that move is available
-            # print('\nGenMoves')
-            # print(self.state)
             head, tail = self.state[0], self.state[-1]
             head_prev, tail_prev = (head[2] + 3) % 6, (tail[3] + 3) % 6  #head_prev = 4, tail_prev = 4
             h_change, t_change = Tantrix.coord_change[head[2]], Tantrix.coord_change[tail[3]] #(1,1), (1, -1)
@@ -194,7 +190,7 @@ class Tantrix(ServerPuzzle):
             elif h_newcoord == t_newcoord and self.piece_exists(head_prev, tail_prev) == False:
                 return moves #return the empty moves as no piece exists to make a legal move
             else: #Get all moves that do not touch another piece
-                for curve in range(0, 3): #Do sharp turns and soft turns
+                for curve in range(1, 4): #Do sharp turns and soft turns
                     if self.pieces[curve-1] == 0: #piece has been used up, skip this type of piece
                         continue
                     else:
