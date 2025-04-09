@@ -62,9 +62,11 @@ class Tantrix(ServerPuzzle):
     
     def __hash__(self):
         """ Return a hash value of your position """
-        hash = "0"
+        if not self.state:
+            return 0
+        hash = "1" + str(self.state[0][2])
         for state in self.state:
-            hash += state[-1] #idk if this works to make each position unique :/
+            hash += str(state[-1]) #idk if this works to make each position unique :/
             #maybe add the first state's start position?
         return int(hash)
 
@@ -74,6 +76,8 @@ class Tantrix(ServerPuzzle):
         otherwise return PuzzleValue.UNDECIDED.
         """
         #seems good!
+        if not self.state:
+            return PuzzleValue.UNDECIDED
         front_piece = self.state[0] #Takes the very last piece entered into the puzzle from the front
         back_piece = self.state[-1] #Takes the very last piece entered into the puzzle from the back
         change = self.coord_change[back_piece[3]] #Gets the change in coordinates for the back piece
@@ -90,6 +94,9 @@ class Tantrix(ServerPuzzle):
         child puzzle position that results from doing the input `move`
         on the current position.
         """
+        sharp = self.pieces[0]
+        soft = self.pieces[1]
+        straight = self.pieces[2]
         if move[1] == 6:
             new_state = deepcopy(self.state)
             piece = new_state.pop(move[0])
@@ -100,6 +107,8 @@ class Tantrix(ServerPuzzle):
                 straight = self.pieces[2] + 1
             else: #soft turns
                 soft = self.pieces[1] + 1
+            print(soft)
+            print("state", self.state)
             return Tantrix(self.variant_id, new_state, [sharp, soft, straight])
 
         pos = move[0] # pos will be 0 or -1 (head or tail)
@@ -121,7 +130,7 @@ class Tantrix(ServerPuzzle):
             straight = self.pieces[2] - 1
         else: #soft turns
             soft = self.pieces[1] - 1
-    
+        
         if pos == -1:
             return Tantrix(self.variant_id, deepcopy(self.state).insert(len(self.state), (new_coord[0], new_coord[1], prev, move[1])), [sharp, soft, straight])
         else:
@@ -190,7 +199,7 @@ class Tantrix(ServerPuzzle):
         Return a list of instances of the puzzle class where each instance
         is a possible "solved" state of the puzzle.
         """
-        return [ExamplePuzzle(self.variant_id, 10)]
+        return []
     
     @classmethod
     def fromHash(cls, variant_id, hash_val):
