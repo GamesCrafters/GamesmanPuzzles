@@ -267,7 +267,10 @@ class Spinout(ServerPuzzle):
         """
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted position string
-            return f'1_{(self.track, self.tile_index)}'
+            result = "1_"
+            for tile in self.track:
+                result += str(tile.value)
+            return result
         else:
             # Otherwise, return a human-readable position string.
             curr_index = 0
@@ -294,7 +297,20 @@ class Spinout(ServerPuzzle):
             String representation of the move -- String
         """
         # TODO: Add AUTOGUI formatting once we figure out how that works
-        return str(move)
+        if mode == StringMode.AUTOGUI:
+            split_move = move.split("_")
+            if len(split_move) == 2:
+                if split_move[0] == "left":
+                    #move left
+                    return f"M_{self.tile_index}_{self.tile_index - int(split_move[1])}x"
+                else:
+                    return f"M_{self.tile_index}_{self.tile_index + int(split_move[1])}x"
+                    #move right
+            else:
+                #turns
+                return ""
+        else:
+            return str(move)
     
     @classmethod
     def isLegalPosition(cls, position_str):
