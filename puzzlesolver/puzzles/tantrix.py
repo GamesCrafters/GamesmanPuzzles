@@ -15,7 +15,10 @@ class Tantrix(ServerPuzzle):
     id = 'tantrix'
     
     # variants defined as number of pieces, sharp, soft, and straight
-    variants = ["3|0|0", "2|2|0", "2|2|1", "2|2|2", "2|4|1", "4|2|2", "4|4|1", "2|6|2", "4|4|2", "5|4|1"]
+    """
+    variants = ["3_0_0", "2_2_0", "2_2_1", "2_2_2", "2_4_1", "4_2_2", "4_4_1", "2_6_2", "4_4_2", "5_4_1"]
+    """
+    variants = ["3_0_0", "2_2_0", "2_2_1", "2_2_2"]
     #             yellow3, red4,   red5,  blue6,   red7,     blue8,    yellow9, red10,    blue10, yellow10
     #                                                                            easy,   medium,    hard
     """
@@ -31,7 +34,7 @@ class Tantrix(ServerPuzzle):
         0: Start position of the line
         1: Sharp turn < to the top right
         2: Soft turn ( to the bottom right
-        3: Straight | to the bottom
+        3: Straight _ to the bottom
         4: Soft turn ) to the bottom left
         5: Sharp turn > to the top left
     """
@@ -231,7 +234,7 @@ class Tantrix(ServerPuzzle):
         """
         Return an instance of the Puzzle Class corresponding to the initial position.
         """
-        v = variant_id.split("|")
+        v = variant_id.split("_")
         pieces = [int(i) for i in v]
         return Tantrix(variant_id, pieces = pieces)
 
@@ -319,5 +322,5 @@ class Tantrix(ServerPuzzle):
 
 
 if __name__ == "__main__":
-    t = Tantrix("2|2|2")  # Using the first variant from the variants list
+    t = Tantrix("2_2_2")  # Using the first variant from the variants list
     TUI(t).play()
