@@ -21,6 +21,7 @@ from .tantrix import Tantrix
 from .solitairechess import SolitaireChess
 from .clocksolitaire import ClockSolitaire
 from .sevenpennies import SevenPennies
+from .squirrelsgonuts import Squirrels
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -38,6 +39,7 @@ puzzleList = {
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
     RushHour.id:    RushHour,
+    Squirrels.id:    Squirrels,
     Spinout.id:     Spinout,
     EightBall.id: EightBall,
     Tantrix.id: Tantrix,
