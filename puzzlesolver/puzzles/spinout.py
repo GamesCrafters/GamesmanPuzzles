@@ -58,9 +58,12 @@ tile_dict = {
     Tiles.DOWN_FLAT : "⇓"
 }
 
+reversed_tile_dict = {tile_dict[key] : key for key in tile_dict.keys()}
+
 class Spinout(ServerPuzzle):
 
     id = 'spinout'
+    variants = ["5_piece"]
     startRandomized = False
 
     '''Hash representation - tuple:
@@ -92,7 +95,8 @@ class Spinout(ServerPuzzle):
     @property
     def variant(self):
         """ No need to change this. """
-        return self.variant_id
+        return "5_piece"
+        #return self.variant_id
     
     def __hash__(self):
         """ Return a hash value of your position """
@@ -105,10 +109,12 @@ class Spinout(ServerPuzzle):
                 )
             ) + \
             str(self.tile_index)
-        result = hash(cool_string) % 200000000
+        result = hashlib.sha256(cool_string.encode())
+        result_bytes = result.digest()
+        result_int = int.from_bytes(result_bytes, byteorder="big") % 200000000
         # print(result, self.track, self.tile_index)
         #print(result, cool_string, self.toString(StringMode.HUMAN_READABLE))
-        return result
+        return result_int
 
     def primitive(self, **kwargs):
         """
@@ -238,8 +244,14 @@ class Spinout(ServerPuzzle):
             Puzzle object based on puzzleid and variantid
         """
         try:
-            position_str[1:-1].split(",")
-            return Spinout(variant_id, (position_str[1:], position_str[0]))
+            no_parens = position_str.replace("(", "").replace(")","")
+            result = []
+            for char in no_parens:
+                result.append(reversed_tile_dict[char])
+            tile_index = position_str.find("(")
+
+            
+            return Spinout(variant_id, (result, tile_index))
         except Exception as _:
             raise PuzzleException("Invalid puzzleid")
 
@@ -250,7 +262,7 @@ class Spinout(ServerPuzzle):
         
         Outputs:
             String representation of the puzzle position -- String
-            [{0}, 0, 0, 0, 0, 0, 0, 0]
+            (←)←←←←←←←
             tile_index is 0
         """
         if mode == StringMode.AUTOGUI:
@@ -262,7 +274,7 @@ class Spinout(ServerPuzzle):
             track_str = ""
             for tile in self.track:
                 if curr_index == self.tile_index:
-                    track_str += "(" +  tile_dict[tile] + ")" 
+                    track_str += "(" +  str(tile_dict[tile]) + ")" 
                 else:
                     track_str += str(tile_dict[tile])
                 curr_index += 1
