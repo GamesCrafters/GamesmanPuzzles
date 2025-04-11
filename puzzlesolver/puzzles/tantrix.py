@@ -171,11 +171,11 @@ class Tantrix(ServerPuzzle):
         #If puzzle starts from the very first piece
         if self.state == []:
             if self.pieces[0] > 0:
-                moves = moves.union(set([(-1, 1), (-1, 5), (0, 1), (0, 5)]))
+                moves = moves.union(set([(0, 1), (0, 5)]))
             if self.pieces[1] > 0:
-                moves = moves.union(set([(-1, 2), (-1, 4), (0, 2), (0, 4)]))
+                moves = moves.union(set([(0, 2), (0, 4)]))
             if self.pieces[2] > 0:
-                moves = moves.union(set([(-1, 3), (0, 3)]))
+                moves = moves.union(set([(0, 3)]))
             return moves #Return all possible moves for the very first piece
         #Get all moves possible from the head and tail of the board
         if movetype=='for' or movetype=='legal' or movetype=='all':
