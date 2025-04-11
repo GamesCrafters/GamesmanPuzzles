@@ -3,6 +3,9 @@ DATABASE_DIR = 'databases'
 from .generalsolver import GeneralSolver
 GSolver = GeneralSolver
 
+from .undosolver import NoUndoSolver
+UndoSolver = NoUndoSolver
+
 from .sqlitesolver import SqliteSolver
 SQLSolver = SqliteSolver
 
@@ -14,5 +17,6 @@ PSolver = PickleSolver
 
 from .lightsoutclosedformsolver import LightsOutClosedFormSolver
 LOCFSolver = LightsOutClosedFormSolver
+
 
 from .solver import Solver as _Solver
