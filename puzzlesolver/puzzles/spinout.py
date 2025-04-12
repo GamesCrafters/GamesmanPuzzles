@@ -58,10 +58,11 @@ tile_dict = {
     Tiles.DOWN_FLAT : "⇓"
 }
 
+total_positions = 11
+
 reversed_tile_dict = {tile_dict[key] : key for key in tile_dict.keys()}
 
 class Spinout(ServerPuzzle):
-
     id = 'spinout'
     variants = ["5_piece"]
     startRandomized = False
@@ -268,8 +269,13 @@ class Spinout(ServerPuzzle):
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted position string
             result = "1_"
+            for left_empty_pos in range(3 + (4 - self.tile_index)):
+                result += "-"
             for tile in self.track:
                 result += str(tile.value)
+            for right_empty_pos in range(self.tile_index):
+                result += "-"
+
             return result
         else:
             # Otherwise, return a human-readable position string.
@@ -302,13 +308,22 @@ class Spinout(ServerPuzzle):
             if len(split_move) == 2:
                 if split_move[0] == "left":
                     #move left
-                    return f"M_{self.tile_index}_{self.tile_index - int(split_move[1])}x"
+                    return f"M_{2 + self.tile_index - int(split_move[1])}_{7}x"
                 else:
-                    return f"M_{self.tile_index}_{self.tile_index + int(split_move[1])}x"
+                    return f"M_{2 + self.tile_index + int(split_move[1])}_{7}x"
+                #if split_move[0] == "left":
+                    #move left
+                    #return f"M_{2 + self.tile_index}_{2 + self.tile_index - int(split_move[1])}x"
+                #else:
+                    #return f"M_{2 + self.tile_index}_{2 + self.tile_index + int(split_move[1])}x"
                     #move right
             else:
                 #turns
-                return ""
+                #add noise for spinning
+                if move == "cw":
+                    return f"A_c_{2 + (self.tile_index + 1)}_-"
+                else:
+                    return f"A_w_{2 + (self.tile_index + 1)}_-"
         else:
             return str(move)
     
