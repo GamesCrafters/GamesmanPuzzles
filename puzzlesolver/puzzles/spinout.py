@@ -58,6 +58,10 @@ tile_dict = {
     Tiles.DOWN_FLAT : "⇓"
 }
 
+alphabet_string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+#used for toString()
+
 total_positions = 11
 
 reversed_tile_dict = {tile_dict[key] : key for key in tile_dict.keys()}
@@ -271,8 +275,13 @@ class Spinout(ServerPuzzle):
             result = "1_"
             for left_empty_pos in range(3 + (4 - self.tile_index)):
                 result += "-"
-            for tile in self.track:
-                result += str(tile.value)
+                
+            #first 4 tiles
+            for index in range(len(self.track) - 1):
+                result += alphabet_string[self.track[index].value + index * 4]
+            #last tile
+            result += alphabet_string[self.track[4].value + 3 * 4]
+
             for right_empty_pos in range(self.tile_index):
                 result += "-"
 
@@ -311,19 +320,13 @@ class Spinout(ServerPuzzle):
                     return f"M_{2 + self.tile_index - int(split_move[1])}_{7}x"
                 else:
                     return f"M_{2 + self.tile_index + int(split_move[1])}_{7}x"
-                #if split_move[0] == "left":
-                    #move left
-                    #return f"M_{2 + self.tile_index}_{2 + self.tile_index - int(split_move[1])}x"
-                #else:
-                    #return f"M_{2 + self.tile_index}_{2 + self.tile_index + int(split_move[1])}x"
-                    #move right
             else:
                 #turns
                 #add noise for spinning
                 if move == "cw":
-                    return f"A_c_{2 + (self.tile_index + 1)}_-"
+                    return f"A_c_{7}_-"
                 else:
-                    return f"A_w_{2 + (self.tile_index + 1)}_-"
+                    return f"A_w_{7}_-"
         else:
             return str(move)
     
