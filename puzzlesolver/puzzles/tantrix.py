@@ -21,6 +21,7 @@ class Tantrix(ServerPuzzle):
     variants = ["3_0_0", "2_2_0", "2_2_1", "2_2_2"]
     #             yellow3, red4,   red5,  blue6,   red7,     blue8,    yellow9, red10,    blue10, yellow10
     #                                                                            easy,   medium,    hard
+    pieces = ["0_1", "0_2", "0_3", "0_4", "0_5", "1_2", "1_3", "1_4", "1_5", "2_3", "2_4", "2_5", "3_4", "3_5", "4_5"]
     """
     coord_change defined as follows:
         (0, -2)  : Up
@@ -293,8 +294,26 @@ class Tantrix(ServerPuzzle):
         # Note: Playing this puzzle on the command-line is not supported,
         # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
         if mode == StringMode.AUTOGUI:
+            if self.state == []:
+                return "1_" + "-"*116
+            
+            board = [["-" for _ in range(11)] for _ in range(21)]
+            init_x = 5
+            init_y = 9
+            s = "1_"
+            for state in self.state:
+                x_coord = state[0]
+                y_coord = state[1]
+                first = min(state[2], state[3])
+                second = max(state[2], state[3])
+                board[init_y + y_coord][init_x + x_coord] = chr(Tantrix.pieces.index(f"{first}_{second}")+65)
+
+            for j in range(21):
+                for i in range(j % 2, 11, 2):
+                    s += board[j][i]
+
             # If the mode is "autogui", return an autogui-formatted position string
-            return f'1_{self.state}'
+            return s
         else:
             # Otherwise, return a human-readable position string.
             return str(self.state)
@@ -312,9 +331,7 @@ class Tantrix(ServerPuzzle):
         # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted move string
-            if move == 0:
-                return f'A_-_{self.state}_x'
-            return f'M_{self.state}_{self.state + list(move)}_x'
+            return f'{str(move)}'
         else:
             # Otherwise, return a human-readable move string.
             return str(move)
