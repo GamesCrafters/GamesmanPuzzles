@@ -67,7 +67,7 @@ class Tantrix(ServerPuzzle):
     def __hash__(self):
         """ Return a hash value of your position """
         if not self.state:
-            return 0
+            return 1
         hash = "1" + str(self.state[0][2])
         for state in self.state:
             hash += str(state[-1]) #idk if this works to make each position unique :/
@@ -174,11 +174,11 @@ class Tantrix(ServerPuzzle):
         #If puzzle starts from the very first piece
         if self.state == []:
             if self.pieces[0] > 0:
-                moves = moves.union(set([(0, 1), (0, 5)]))
+                moves = moves.union(set([(-1, 1), (-1, 5)]))
             if self.pieces[1] > 0:
-                moves = moves.union(set([(0, 2), (0, 4)]))
+                moves = moves.union(set([(-1, 2), (-1, 4)]))
             if self.pieces[2] > 0:
-                moves = moves.union(set([(0, 3)]))
+                moves = moves.union(set([(-1, 3)]))
             return moves #Return all possible moves for the very first piece
         #Get all moves possible from the head and tail of the board
         if movetype=='for' or movetype=='legal' or movetype=='all':
@@ -253,14 +253,21 @@ class Tantrix(ServerPuzzle):
         try:
             curr = []
             parsed_state = []
+            neg = False
             for i in position_str:
                 if i in ["]", "[", "(", ",", " "]:
                     continue
                 elif i == ")":
                     parsed_state.append(tuple(curr))
                     curr = []
+                elif i == "-":
+                    neg = True
                 else:
-                    curr.append(int(i))
+                    if neg:
+                        curr.append(-int(i))
+                        neg = False
+                    else:
+                        curr.append(int(i))
             init_pieces = [0, 0, 0]
             for i in parsed_state:
                 curve = (i[2]-i[3] + 6) % 6
@@ -287,7 +294,6 @@ class Tantrix(ServerPuzzle):
         # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
         if mode == StringMode.AUTOGUI:
             # If the mode is "autogui", return an autogui-formatted position string
-
             return f'1_{self.state}'
         else:
             # Otherwise, return a human-readable position string.
@@ -308,7 +314,7 @@ class Tantrix(ServerPuzzle):
             # If the mode is "autogui", return an autogui-formatted move string
             if move == 0:
                 return f'A_-_{self.state}_x'
-            return f'M_{self.state}_{self.state + move}_x'
+            return f'M_{self.state}_{self.state + list(move)}_x'
         else:
             # Otherwise, return a human-readable move string.
             return str(move)
