@@ -44,7 +44,7 @@ def slidable(tile) -> bool:
     #LEFT, RIGHT, LEFT_FLAT, RIGHT_FLAT can slide
     if tile.value < 0 or tile.value > 7:
         return ValueError("Invalid tile")
-    return tile.value % 2 == 0 
+    return tile.value % 2 == 0
 
 #used for toString()
 tile_dict = {
@@ -62,7 +62,7 @@ alphabet_string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 #used for toString()
 
-total_positions = 11
+total_positions = 12
 
 reversed_tile_dict = {tile_dict[key] : key for key in tile_dict.keys()}
 
@@ -310,22 +310,21 @@ class Spinout(ServerPuzzle):
         Outputs:
             String representation of the move -- String
         """
-        # TODO: Add AUTOGUI formatting once we figure out how that works
+        #center 7 (index 6) is the piece that can be rotated
         if mode == StringMode.AUTOGUI:
             split_move = move.split("_")
             if len(split_move) == 2:
+                #slide
                 if split_move[0] == "left":
-                    #move left
-                    return f"M_{2 + self.tile_index - int(split_move[1])}_{7}x"
+                    return f"M_{7 - int(split_move[1])}_{7}_s"
                 else:
-                    return f"M_{2 + self.tile_index + int(split_move[1])}_{7}x"
+                    return f"M_{7 + int(split_move[1])}_{7}_s"
             else:
-                #turns
-                #add noise for spinning
+                #rotating
                 if move == "cw":
-                    return f"A_c_{7}_-"
+                    return f"A_c_{13}_r"
                 else:
-                    return f"A_w_{7}_-"
+                    return f"A_w_{14}_r"
         else:
             return str(move)
     
