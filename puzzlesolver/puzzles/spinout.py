@@ -100,8 +100,7 @@ class Spinout(ServerPuzzle):
     @property
     def variant(self):
         """ No need to change this. """
-        return "5_piece"
-        #return self.variant_id
+        return self.variant_id
     
     def __hash__(self):
         """ Return a hash value of your position """
