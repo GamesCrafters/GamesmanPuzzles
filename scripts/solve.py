@@ -8,6 +8,7 @@ def init_data():
         else:
             variants = p_cls.variants
         for variant in variants:
+            print(p_cls.id)
             s_cls = PuzzleManager.getSolverClass(p_cls.id, variant)
             puzzle = p_cls.generateStartPosition(variant)
             solver = s_cls(puzzle, dir_path=data['DATABASE_DIR'])
