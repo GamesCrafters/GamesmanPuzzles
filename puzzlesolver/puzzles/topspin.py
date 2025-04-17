@@ -79,8 +79,8 @@ class TopSpin(ServerPuzzle):
 		else:
 			spinned = self.loop[:self.spin][::-1]
 			new_loop = spinned + self.loop[self.spin:]
-		# new_puzzle = TopSpin(size = self.size, spin = self.spin, loop=new_loop)
-		new_puzzle = TopSpin(loop = new_loop)
+		new_puzzle = TopSpin(size = self.size, spin = self.spin, loop=new_loop)
+		#new_puzzle = TopSpin(loop = new_loop)
 		return new_puzzle
 
 	def __hash__(self):
@@ -129,6 +129,8 @@ class TopSpin(ServerPuzzle):
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
 	def toString(self, mode: StringMode): # TODO
+		if mode == StringMode.AUTOGUI: 
+			return '1_' + "".join([str(i) if i != 10 else '0' for i in self.track[0] + self.track[1:]])
 		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
@@ -139,7 +141,7 @@ class TopSpin(ServerPuzzle):
 		"""
 		returns index of center
 		"""
-		return -turn_count
+		return 1 + self.size - turn_count
 
 	# add moveString
 	def moveString(self, move, mode: StringMode):
@@ -153,6 +155,8 @@ class TopSpin(ServerPuzzle):
 			else: # example: rotate 5 steps clockwise 
 				return f"rotate {move[0]} step{'' if move[0] == 1 else 's'} {move[1]}"
 
+		#return 
+
 	@classmethod
 	def fromString(cls, variant_id, positionid):
 		new_loop = []
@@ -162,7 +166,7 @@ class TopSpin(ServerPuzzle):
 			new_loop.append(int(string))
 		for item in stacks[1:]:
 			new_loop.append(int(item))
-		puzzle = TopSpin(loop=new_loop)
+		puzzle = TopSpin(size=len(new_loop), spin=len(in_spin), loop=new_loop)
 		return puzzle
 
 	@classmethod
