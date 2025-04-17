@@ -14,10 +14,10 @@ import random
 class TopSpin(ServerPuzzle):
 
 	id = 'topspin'
-	variants = ['6_2', '10_4']
+	variants = ['6_2', '10_2', '10_4']
 	startRandomized = True
 
-	def __init__(self, size = 10, spin = 4, **kwargs):
+	def __init__(self, size = 10, spin = 2, **kwargs):
 		self.size = size
 		self.spin = spin
 		self.all_nums = list(range(1, size+1))
@@ -78,6 +78,7 @@ class TopSpin(ServerPuzzle):
 		else:
 			spinned = self.loop[:self.spin][::-1]
 			new_loop = spinned + self.loop[self.spin:]
+		#new_puzzle = TopSpin(size = self.size, spin = self.spin, loop=new_loop)
 		new_puzzle = TopSpin(loop = new_loop)
 		return new_puzzle
 
@@ -134,6 +135,17 @@ class TopSpin(ServerPuzzle):
 		return result
 
 	#add moveString
+	def moveString(self, move, mode):
+		if mode == StringMode.AUTOGUI: #for front end 
+			if move == 'flip':
+				return 'A_flip_x'
+			else:
+				return f"M_{move[0]}_{move[1]}_x"
+		else:
+			if move == 'flip':
+				return 'flip'
+			else: #rotate 5 step clockwise 
+				return f"rotate {move[0]} step {move[1]}"
 
 	@classmethod
 	def fromString(cls, variant_id, positionid):
