@@ -130,25 +130,26 @@ class TopSpin(ServerPuzzle):
 
 	def toString(self, mode: StringMode): # TODO
 		if mode == StringMode.AUTOGUI: 
-			return '1_' + "".join([str(i) if i != 10 else '0' for i in self.track[0] + self.track[1:]])
+			return '1_a' + "".join([str(i) if i != 10 else '0' for i in self.track[0] + self.track[1:]])
 		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
 			result += str(item)
 		return result
 
-	def turncount_to_center(self, turn_count: int) -> int: 
+	def turncount_to_textnum(self, turn_count: int) -> int: 
 		"""
-		returns index of center
+		returns 
 		"""
-		return 1 + self.size - turn_count
+		flat = [i if i != 10 else 0 for i in self.track[0] + self.track[1:]]
+		return flat[-turn_count]
 
 	# add moveString
 	def moveString(self, move, mode: StringMode):
 		if mode == StringMode.AUTOGUI: 
 			if move == 'flip': 
 				return 'A_-_0_-'
-			return f"A_-_{self.turncount_to_center(move[0])}_x"
+			return f"A_{self.turncount_to_textnum(move[0])}_{1 + self.size - move[0]}_x"
 		else:
 			if move == 'flip':
 				return 'flip'
