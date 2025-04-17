@@ -20,27 +20,28 @@ class TopSpin(ServerPuzzle):
 	def __init__(self, size = 10, spin = 2, **kwargs):
 		self.size = size
 		self.spin = spin
-		self.all_nums = list(range(1, size+1))
+		self.all_nums = list(range(1, size + 1))
 		if len(kwargs) == 1:
 			for key, value in kwargs.items():
 				if key == 'loop':
 					self.loop = value
 		else:
-			self.loop = random.sample(self.all_nums,size)
+			self.loop = random.sample(self.all_nums, size)
 		self.track = [self.loop[:spin]] + [item for item in self.loop[spin:]]
 
 	def __str__(self, **kwargs):
 		return str(self.track)
 
 	def printInfo(self):
-		print("Puzzle: ")
-		print('                           ')
-		print ("     "+str(self.track[0]) + '\n')
-		print (str(self.track[4]) + "               " + str(self.track[1]) + '\n')
-		print("     " + str(self.track[3]) + "     " + str(self.track[2]))
-		print('                           ')
+		# print("Puzzle: ")
+		# print('                           ')
+		# print ("     "+str(self.track[0]) + '\n')
+		# print (str(self.track[4]) + "               " + str(self.track[1]) + '\n')
+		# print("     " + str(self.track[3]) + "     " + str(self.track[2]))
+		# print('                           ')
+		assert 1 == 2, 'this is not supposed to be here' # TODO: clean this
 
-	def primitive(self,**kwargs):
+	def primitive(self, **kwargs):
 		'''
 		since the track is circular, you can find where the 1 is and wrap it around
 		to see if it is in sorted order
@@ -49,16 +50,16 @@ class TopSpin(ServerPuzzle):
 			return PuzzleValue.SOLVABLE
 		return PuzzleValue.UNDECIDED
 
-	def generateMoves(self,movetype = 'all', **kwargs):
+	def generateMoves(self, movetype = 'all', **kwargs):
 		if movetype == 'for' or movetype == 'back':
 			return []
 		moves = []
-		for i in range(1,self.size):
-			moves.append((i,'clockwise'))
+		for i in range(1, self.size):
+			moves.append((i, 'clockwise'))
 		moves.append(('flip'))
 		return moves
 
-	#helper fucntion for doMove()
+	# helper fucntion for doMove()
 	def handleMove(self, idx, move):
 		if 0 <= idx + move <= self.size - 1:
 			return idx + move
@@ -78,7 +79,7 @@ class TopSpin(ServerPuzzle):
 		else:
 			spinned = self.loop[:self.spin][::-1]
 			new_loop = spinned + self.loop[self.spin:]
-		#new_puzzle = TopSpin(size = self.size, spin = self.spin, loop=new_loop)
+		# new_puzzle = TopSpin(size = self.size, spin = self.spin, loop=new_loop)
 		new_puzzle = TopSpin(loop = new_loop)
 		return new_puzzle
 
@@ -124,28 +125,33 @@ class TopSpin(ServerPuzzle):
 			raise TypeError("Invalid variantid")
 		if variantid not in TopSpin.variants:
 			raise IndexError("Out of bounds variantid")
-		temp = variantid.split('_')
+		temp = variantid.split('_') # size_spin
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
-	def toString(self, **kwargs):
+	def toString(self, mode: StringMode): # TODO
 		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
 			result += str(item)
 		return result
 
-	#add moveString
-	def moveString(self, move, mode):
-		if mode == StringMode.AUTOGUI: #for front end 
-			if move == 'flip':
-				return 'A_flip_x'
-			else:
-				return f"M_{move[0]}_{move[1]}_x"
+	def turncount_to_center(self, turn_count: int) -> int: 
+		"""
+		returns index of center
+		"""
+		return -turn_count
+
+	# add moveString
+	def moveString(self, move, mode: StringMode):
+		if mode == StringMode.AUTOGUI: 
+			if move == 'flip': 
+				return 'A_-_0_-'
+			return f"A_-_{self.turncount_to_center(move[0])}_x"
 		else:
 			if move == 'flip':
 				return 'flip'
-			else: #rotate 5 step clockwise 
-				return f"rotate {move[0]} step {move[1]}"
+			else: # example: rotate 5 steps clockwise 
+				return f"rotate {move[0]} step{'' if move[0] == 1 else 's'} {move[1]}"
 
 	@classmethod
 	def fromString(cls, variant_id, positionid):
