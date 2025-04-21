@@ -148,7 +148,7 @@ class TopSpin(ServerPuzzle):
 	def moveString(self, move, mode: StringMode):
 		if mode == StringMode.AUTOGUI: 
 			if move == 'flip': 
-				return 'A_-_0_-'
+				return 'A_a_0_-'
 			return f"A_{self.turncount_to_textnum(move[0])}_{1 + self.size - move[0]}_x"
 		else:
 			if move == 'flip':
