@@ -18,11 +18,11 @@ class Tantrix(ServerPuzzle):
     """
     variants = ["3_0_0", "2_2_0", "2_2_1", "2_2_2", "2_4_1", "4_2_2", "4_4_1", "2_6_2", "4_4_2", "5_4_1"]
     """
-    variants = ["3_0_0", "2_2_0", "2_2_1", "2_2_2"]
+    variants = ["3_0_0", "2_2_0", "2_2_1", "2_2_2", "2_4_1", "4_2_2", "4_4_1", "2_6_2", "4_4_2", "5_4_1"]
     #             yellow3, red4,   red5,  blue6,   red7,     blue8,    yellow9, red10,    blue10, yellow10
     #                                                                            easy,   medium,    hard
     pieces = ["0_1", "0_2", "0_3", "0_4", "0_5", "1_2", "1_3", "1_4", "1_5", "2_3", "2_4", "2_5", "3_4", "3_5", "4_5"]
-    changes = [(0, -3.2), (2.8, -1.6), (2.8, 1.6), (0, 3.2), (-2.8, 1.6), (-2.8, -1.6)]
+    changes = [(0, -3.5), (2.8, -1.7), (2.8, 1.5), (0, 3.1), (-2.8, 1.5), (-2.8, -1.7)]
     """
     coord_change defined as follows:
         (0, -2)  : Up
@@ -68,12 +68,12 @@ class Tantrix(ServerPuzzle):
     def __hash__(self):
         """ Return a hash value of your position """
         if not self.state:
-            return 1
-        hash = "1" + str(self.state[0][2])
+            return 0
+        hash_num = str(self.state[0][2] + 1)
         for state in self.state:
-            hash += str(state[-1]) #idk if this works to make each position unique :/
+            hash_num += str(state[-1] + 1) #idk if this works to make each position unique :/
             #maybe add the first state's start position?
-        return int(hash)
+        return int(hash_num, base=7)
 
     def primitive(self, **kwargs):
         """
@@ -89,9 +89,9 @@ class Tantrix(ServerPuzzle):
         change = self.coord_change[back_piece[3]] #Gets the change in coordinates for the back piece
         new_coordx = back_piece[0] + change[0] #Change the coordinates of the last piece
         new_coordy = back_piece[1] + change[1]
-        
+
         #Check if the new coordinates equal to the front piece and the length of the puzzle is correct
-        if ((new_coordx, new_coordy) == (front_piece[0], front_piece[1])) and (self.num_pieces == 0):
+        if ((new_coordx, new_coordy) == (front_piece[0], front_piece[1])):
             if self.num_pieces == 0:
                 return PuzzleValue.SOLVABLE
             else:
@@ -178,11 +178,11 @@ class Tantrix(ServerPuzzle):
         if movetype=='for' or movetype=='legal' or movetype=='all':
             if self.state == []:
                 if self.pieces[0] > 0:
-                    moves = moves.union(set([(-1, 1), (-1, 5)]))
+                    moves = moves.union(set([(0, 1), (0, 5)]))
                 if self.pieces[1] > 0:
-                    moves = moves.union(set([(-1, 2), (-1, 4)]))
+                    moves = moves.union(set([(0, 2), (0, 4)]))
                 if self.pieces[2] > 0:
-                    moves = moves.union(set([(-1, 3)]))
+                    moves = moves.union(set([(0, 3)]))
                 return moves #Return all possible moves for the very first piece
             if self.num_pieces == 0:
                 return []
@@ -204,9 +204,10 @@ class Tantrix(ServerPuzzle):
                             h_direction, t_direction = ((turn * curve) + head_prev) % 6, ((turn * curve) + tail_prev) % 6
                             h_newchange, t_newchange = Tantrix.coord_change[h_direction], Tantrix.coord_change[t_direction]
                             h_exist, t_exist = (h_newcoord[0]+h_newchange[0], h_newcoord[1]+h_newchange[1]), (t_newcoord[0]+t_newchange[0], t_newcoord[1]+t_newchange[1])
-                            if h_exist not in self.pieceCoords():
+
+                            if h_exist not in self.pieceCoords() and h_newcoord not in self.pieceCoords():
                                 moves.add((0, h_direction))
-                            if t_exist not in self.pieceCoords():
+                            if t_exist not in self.pieceCoords() and t_newcoord not in self.pieceCoords():
                                 moves.add((-1, t_direction))
                 #return all possible moves
                 return list(moves)
@@ -300,9 +301,6 @@ class Tantrix(ServerPuzzle):
         # Note: Playing this puzzle on the command-line is not supported,
         # so we can expect that `mode` is not StringMode.HUMAN_READABLE_MULTILINE
         if mode == StringMode.AUTOGUI:
-            if self.state == []:
-                return "1_" + "-"*116
-            
             pos_map = {}
             init_x = 5
             init_y = 9
@@ -315,6 +313,21 @@ class Tantrix(ServerPuzzle):
             for j in range(21):
                 for i in range(j % 2, 11, 2):
                     s += pos_map.get((i, j), "-")
+
+            if self.pieces[0] != 0:
+                s += str(self.pieces[0]) + "A"
+            else:
+                s += "0P"
+
+            if self.pieces[1] != 0:
+                s += str(self.pieces[1]) + "B"
+            else:
+                s += "0Q"
+
+            if self.pieces[2] != 0:
+                s += str(self.pieces[2]) + "C"
+            else:
+                s += "0R"
 
             # If the mode is "autogui", return an autogui-formatted position string
             return s
@@ -374,7 +387,7 @@ class Tantrix(ServerPuzzle):
             first_control_point = f"{k}_{Tantrix.changes[new_piece[2]][0]/1.5}_{Tantrix.changes[new_piece[2]][1]/1.5}_"
             second_control_point = f"{k}_{Tantrix.changes[new_piece[3]][0]/1.5}_{Tantrix.changes[new_piece[3]][1]/1.5}_"
             second_endpoint = f"{k}_{Tantrix.changes[new_piece[3]][0]}_{Tantrix.changes[new_piece[3]][1]}_"
-
+            
             return f"LC_RRRR_" + first_endpoint + first_control_point + second_control_point + second_endpoint + "x"
         else:
             # Otherwise, return a human-readable move string.
