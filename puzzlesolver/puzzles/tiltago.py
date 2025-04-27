@@ -89,19 +89,52 @@ class Tiltago(ServerPuzzle):
     def generateMoves(self, movetype="all"):
         if movetype=='for' or movetype=='back': return []
         
-        return_gen_moves_dict = []
-        for i in range(9):
-            if self._pos[i] != "-":
-                for j in self.lookup_table[i]:
-                    if self._pos[j] == '-':
-                        return_gen_moves_dict.append((i, j))    
-                        
-        return return_gen_moves_dict
+        moves = []
+        occupied = set(i for i in range(9) if self._pos[i] != "-")
+
+        for start in occupied:
+            if start == 4:
+                # Ball is already at center, only need to generate center moves later
+                continue
+
+            # Check if we can reach center (node 4)
+            visited = set()
+            stack = [start]
+            can_reach_center = False
+
+            while stack:
+                current = stack.pop()
+                if current == 4:
+                    can_reach_center = True
+                    break
+                for neighbor in self.lookup_table[current]:
+                    if neighbor not in visited and self._pos[neighbor] == "-":
+                        visited.add(neighbor)
+                        stack.append(neighbor)
+
+            if can_reach_center:
+                moves.append((start, 4))  # Only allow start → 4 move first
+
+        # Now, for balls already at center (4), find all reachable empty slots
+        if self._pos[4] != "-":
+            visited = set()
+            stack = [4]
+
+            while stack:
+                current = stack.pop()
+                for neighbor in self.lookup_table[current]:
+                    if neighbor not in visited and self._pos[neighbor] == "-":
+                        moves.append((4, neighbor))
+                        visited.add(neighbor)
+                        stack.append(neighbor)
+
+        return moves
                 
     def doMove(self, move):
-        i, j = move[0], move[1]
+        start, end = move
         s_list = list(self._pos)
-        s_list[i], s_list[j] = s_list[j], s_list[i]
+        s_list[end] = s_list[start]  # move ball to destination
+        s_list[start] = '-'          # empty original spot
         new_pos = ''.join(s_list)
         return Tiltago(self._var, new_pos)
 
