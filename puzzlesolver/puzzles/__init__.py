@@ -15,7 +15,7 @@ from .rubiks import Rubiks
 from .nqueens import NQueens
 from .rushhour import RushHour
 from .tiltago import Tiltago
-
+from .tantrix import Tantrix
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -32,7 +32,8 @@ puzzleList = {
     ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
-    RushHour.id:    RushHour
+    RushHour.id:    RushHour,
+    Tantrix.id: Tantrix,
 }
 
 class PuzzleManagerClass:
