@@ -1,4 +1,4 @@
-from puzzlesolver.util import classproperty, deprecated
+from ...util import classproperty, deprecated
 from . import Puzzle
 
 class ServerPuzzle(Puzzle):
