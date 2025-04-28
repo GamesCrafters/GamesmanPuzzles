@@ -1,5 +1,5 @@
 from ._models import *
-from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver
+from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver, SolitaireChessSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
@@ -16,6 +16,7 @@ from .nqueens import NQueens
 from .rushhour import RushHour
 from .tiltago import Tiltago
 from .tantrix import Tantrix
+from .solitairechess import SolitaireChess
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -34,6 +35,8 @@ puzzleList = {
     Rubiks.id:      Rubiks,
     RushHour.id:    RushHour,
     Tantrix.id: Tantrix,
+    SolitaireChess.id:      SolitaireChess 
+
 }
 
 class PuzzleManagerClass:
@@ -66,6 +69,8 @@ class PuzzleManagerClass:
             if variantid in LightsOut.closed_form_variants:
                 return LightsOutClosedFormSolver
             return IndexSolver
+        if puzzleid == SolitaireChess.id:
+            return SolitaireChessSolver
         return IndexSolver
     
     def validate(self, puzzleid, variantid=None, positionid=None):
