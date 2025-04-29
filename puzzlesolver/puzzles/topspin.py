@@ -131,7 +131,7 @@ class TopSpin(ServerPuzzle):
 	def toString(self, mode: StringMode):
 		if mode == StringMode.AUTOGUI:
 			# b for 10, c for 11, etc...
-			return '1_a' + "".join([str(i) if i < 9 else chr(88 + i) for i in self.track[0] + self.track[1:]])
+			return '1_a' + "".join([str(i) if i <= 9 else chr(88 + i) for i in self.track[0] + self.track[1:]])
 		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
