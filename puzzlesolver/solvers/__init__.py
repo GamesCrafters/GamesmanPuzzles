@@ -3,6 +3,9 @@ DATABASE_DIR = 'databases'
 from .generalsolver import GeneralSolver
 GSolver = GeneralSolver
 
+from .solitairechesssolver import SolitaireChessSolver
+SSolver = SolitaireChessSolver
+
 from .sqlitesolver import SqliteSolver
 SQLSolver = SqliteSolver
 
