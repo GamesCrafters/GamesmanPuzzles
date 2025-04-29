@@ -15,7 +15,6 @@ CORS(app)
 # Helper functions
 
 def check_available(puzzle_id, variant=None):
-    print(puzzle_id, variant, puzzle_solved_variants)
 
     if puzzle_id not in puzzle_solved_variants:
         puzzle_solved_variants[puzzle_id] = {}
