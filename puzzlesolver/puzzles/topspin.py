@@ -14,7 +14,7 @@ import random
 class TopSpin(ServerPuzzle):
 
 	id = 'topspin'
-	variants = ['6_2', '10_2', '10_4']
+	variants = ['6_2', '10_2', '10_4', '12_3']
 	startRandomized = True
 
 	def __init__(self, size = 10, spin = 2, **kwargs):
