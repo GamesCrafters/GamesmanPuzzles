@@ -98,7 +98,7 @@ class TopSpin(ServerPuzzle):
 		temp = self.all_nums
 		solutions.append(TopSpin(loop = temp))
 		return solutions
-	
+
 	@property
 	def variant(self):
 		size = str(len(self.loop))
@@ -128,35 +128,34 @@ class TopSpin(ServerPuzzle):
 		temp = variantid.split('_') # size_spin
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
-	def toString(self, mode: StringMode): # TODO
-		if mode == StringMode.AUTOGUI: 
-			return '1_a' + "".join([str(i) if i != 10 else '0' for i in self.track[0] + self.track[1:]])
+	def toString(self, mode: StringMode):
+		if mode == StringMode.AUTOGUI:
+			# b for 10, c for 11, etc...
+			return '1_a' + "".join([str(i) if i < 9 else chr(88 + i) for i in self.track[0] + self.track[1:]])
 		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
 			result += str(item)
 		return result
 
-	def turncount_to_textnum(self, turn_count: int) -> int: 
+	def turncount_to_textnum(self, turn_count: int) -> int:
 		"""
-		returns 
+		returns
 		"""
 		flat = [i if i != 10 else 0 for i in self.track[0] + self.track[1:]]
 		return flat[-turn_count]
 
 	# add moveString
 	def moveString(self, move, mode: StringMode):
-		if mode == StringMode.AUTOGUI: 
-			if move == 'flip': 
+		if mode == StringMode.AUTOGUI:
+			if move == 'flip':
 				return 'A_a_0_-'
 			return f"A_{self.turncount_to_textnum(move[0])}_{1 + self.size - move[0]}_x"
 		else:
 			if move == 'flip':
 				return 'flip'
-			else: # example: rotate 5 steps clockwise 
+			else: # example: rotate 5 steps clockwise
 				return f"rotate {move[0]} step{'' if move[0] == 1 else 's'} {move[1]}"
-
-		#return 
 
 	@classmethod
 	def fromString(cls, variant_id, positionid):
@@ -183,7 +182,7 @@ class TopSpin(ServerPuzzle):
 		elif len(puzzle.track[0]) != in_spinner:
 			return False
 		elif max(puzzle.loop) > size or min(puzzle.loop) < 1:
-			return False 
+			return False
 		for i in range(len(puzzle.loop)):
 			for j in range(i+1, len(puzzle.loop)):
 				if puzzle.loop[i] == puzzle.loop[j]:
