@@ -18,16 +18,12 @@ def check_available(puzzle_id, variant=None):
     print(puzzle_id, variant, puzzle_solved_variants)
 
     if puzzle_id not in puzzle_solved_variants:
-        print('1')
         puzzle_solved_variants[puzzle_id] = {}
         if variant is None: 
-            print('2')
             return "unknown"
     elif len(puzzle_solved_variants[puzzle_id]) == 0:
-        print('3')
         return "unavailable"
     elif variant is None or variant in puzzle_solved_variants[puzzle_id]:
-        print('4')
         return "available"
 
     p_cls = PuzzleManager.getPuzzleClass(puzzle_id)

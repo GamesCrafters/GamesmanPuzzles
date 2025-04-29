@@ -218,5 +218,5 @@ class EightBall(ServerPuzzle):
     def isLegalPosition(self):
         pass
 
-p = EightBall(3)
-TUI(p,GeneralSolver(p), info=True)
+#p = EightBall(3)
+#TUI(p,GeneralSolver(p), info=True)
