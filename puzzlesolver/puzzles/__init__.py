@@ -18,6 +18,7 @@ from .eightball import EightBall
 from .tiltago import Tiltago
 from .tantrix import Tantrix
 from .solitairechess import SolitaireChess
+from .clocksolitaire import ClockSolitaire
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -37,7 +38,8 @@ puzzleList = {
     RushHour.id:    RushHour,
     EightBall.id: EightBall,
     Tantrix.id: Tantrix,
-    SolitaireChess.id:      SolitaireChess
+    SolitaireChess.id:      SolitaireChess,
+    ClockSolitaire.id:    ClockSolitaire
 }
 
 class PuzzleManagerClass:
