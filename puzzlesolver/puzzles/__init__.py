@@ -36,7 +36,7 @@ puzzleList = {
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
     RushHour.id:    RushHour,
-    Spinout.id:     Spinout
+    Spinout.id:     Spinout,
     EightBall.id: EightBall,
     Tantrix.id: Tantrix,
     SolitaireChess.id:      SolitaireChess
