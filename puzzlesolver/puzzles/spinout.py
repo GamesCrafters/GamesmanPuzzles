@@ -346,5 +346,5 @@ class Spinout(ServerPuzzle):
         
         return True
 
-p = Spinout()
-TUI(p, GeneralSolver(p), info=True)
+#p = Spinout()
+#TUI(p, GeneralSolver(p), info=True)
