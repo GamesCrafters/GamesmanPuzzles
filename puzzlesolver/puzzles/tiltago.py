@@ -142,7 +142,7 @@ class Tiltago(ServerPuzzle):
         """Convert integer move to human-readable string for output."""
         if mode == StringMode.AUTOGUI:
             before, after = move
-            return f"M_{before}_{after}_y"
+            return f"M_{before}_{after}_x"
         
         return move
 
