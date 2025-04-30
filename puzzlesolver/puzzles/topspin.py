@@ -1,8 +1,8 @@
 """
 File: topspin.py
 Puzzle: Top Spin
-Author: Yishu Chao
-Date: November 23, 2020
+Author: Yishu Chao (2020) | Update: Esther Zeng, Benji Xu, Maria Rufova (2025)
+Date: November 23, 2020 | Update: April 29, 2025
 """
 
 from . import ServerPuzzle
@@ -131,7 +131,9 @@ class TopSpin(ServerPuzzle):
 	def toString(self, mode: StringMode):
 		if mode == StringMode.AUTOGUI:
 			# b for 10, c for 11, etc...
-			return '1_a' + "".join([str(i) if i != 10 else '0' for i in self.track[0] + self.track[1:]])
+			return '1_a' + "".join([str(i) if i <= 9 else chr(88 + i) for i in self.track[0] + self.track[1:]])
+			# return '1_a' + "".join([str(i) if i != 10 else 'i' for i in self.track[0] + self.track[1:]])
+
 		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
@@ -142,7 +144,7 @@ class TopSpin(ServerPuzzle):
 		"""
 		returns
 		"""
-		flat = [i if i != 10 else 0 for i in self.track[0] + self.track[1:]]
+		flat = [i if i <= 9 else chr(88 + i) for i in self.track[0] + self.track[1:]]
 		return flat[-turn_count]
 
 	# add moveString
