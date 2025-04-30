@@ -7,6 +7,7 @@ def init_data():
             variants = p_cls.test_variants
         else:
             variants = p_cls.variants
+
         for variant in variants:
             s_cls = PuzzleManager.getSolverClass(p_cls.id, variant)
             puzzle = p_cls.generateStartPosition(variant)
