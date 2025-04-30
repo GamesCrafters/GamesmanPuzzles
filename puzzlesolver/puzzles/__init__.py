@@ -14,6 +14,7 @@ from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
 from .rushhour import RushHour
+from .spinout import Spinout
 from .eightball import EightBall
 from .tiltago import Tiltago
 from .tantrix import Tantrix
@@ -36,6 +37,7 @@ puzzleList = {
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
     RushHour.id:    RushHour,
+    Spinout.id:     Spinout,
     EightBall.id: EightBall,
     Tantrix.id: Tantrix,
     SolitaireChess.id:      SolitaireChess,
