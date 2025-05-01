@@ -19,6 +19,7 @@ from .eightball import EightBall
 from .tiltago import Tiltago
 from .tantrix import Tantrix
 from .solitairechess import SolitaireChess
+from .clocksolitaire import ClockSolitaire
 from .sevenpennies import SevenPennies
 #from .examplepuzzle import ExamplePuzzle
 
@@ -41,7 +42,8 @@ puzzleList = {
     EightBall.id: EightBall,
     Tantrix.id: Tantrix,
     SolitaireChess.id:      SolitaireChess,
-    SevenPennies.id: SevenPennies
+    SevenPennies.id: SevenPennies,
+    ClockSolitaire.id:    ClockSolitaire
 }
 
 class PuzzleManagerClass:
