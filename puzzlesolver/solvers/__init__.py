@@ -21,5 +21,9 @@ PSolver = PickleSolver
 from .lightsoutclosedformsolver import LightsOutClosedFormSolver
 LOCFSolver = LightsOutClosedFormSolver
 
+from .no_undo_solver import NoUndoSolver
+NoUndo = NoUndoSolver
+
+from .squirrelsolver import SquirrelSolver
 
 from .solver import Solver as _Solver
