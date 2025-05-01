@@ -1,5 +1,5 @@
 from ._models import *
-from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver
+from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver, SquirrelSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
@@ -30,8 +30,7 @@ puzzleList = {
     ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
-    RushHour.id:    RushHour,
-    Squirrels.id:    Squirrels
+    RushHour.id:    RushHour
 }
 
 class PuzzleManagerClass:
@@ -58,6 +57,8 @@ class PuzzleManagerClass:
     
     def getSolverClass(self, puzzleid, variantid=None, test=False):
         """Get Solver Class given the puzzleid"""
+        if puzzleid == Squirrels.id:
+            return SquirrelSolver
         if puzzleid == RushHour.id or puzzleid == TopSpin.id:
             return PickleSolver
         if puzzleid == LightsOut.id:
