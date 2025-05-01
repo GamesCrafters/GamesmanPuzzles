@@ -14,7 +14,7 @@ import random
 class TopSpin(ServerPuzzle):
 
 	id = 'topspin'
-	variants = ['6_2', '10_2', '10_4', '12_3']
+	variants = ['10_2', '12_3']
 	startRandomized = True
 
 	def __init__(self, size = 10, spin = 2, **kwargs):
@@ -31,16 +31,7 @@ class TopSpin(ServerPuzzle):
 
 	def __str__(self, **kwargs):
 		return str(self.track)
-
-	def printInfo(self):
-		# print("Puzzle: ")
-		# print('                           ')
-		# print ("     "+str(self.track[0]) + '\n')
-		# print (str(self.track[4]) + "               " + str(self.track[1]) + '\n')
-		# print("     " + str(self.track[3]) + "     " + str(self.track[2]))
-		# print('                           ')
-		assert 1 == 2, 'this is not supposed to be here' # TODO: clean this
-
+	
 	def primitive(self, **kwargs):
 		'''
 		since the track is circular, you can find where the 1 is and wrap it around
