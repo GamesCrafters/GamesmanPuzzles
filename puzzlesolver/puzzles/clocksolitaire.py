@@ -103,7 +103,7 @@ class ClockSolitaire(ServerPuzzle):
 
         new_state = self.state ^ (1 << src) ^ (1 << dest) ^ (1 << over)
 
-        return Clock(self.variant_id, new_state)
+        return ClockSolitaire(self.variant_id, new_state)
     
 
     # Generate Legal Moves & all undo moves
@@ -203,7 +203,7 @@ class ClockSolitaire(ServerPuzzle):
         """
         Return an instance of the Puzzle Class corresponding to the initial position.
         """
-        return Clock(variant_id, 0b0111111111111111111)
+        return ClockSolitaire(variant_id, 0b0111111111111111111)
 
     @classmethod
     def fromString(cls, variant_id, position_str):
@@ -222,7 +222,7 @@ class ClockSolitaire(ServerPuzzle):
             for i, char in enumerate(position_str.strip()):
                 if char.lower() != '-':
                     state |= (1 << i)
-            return Clock(variant_id, state)
+            return ClockSolitaire(variant_id, state)
         except Exception as _:
             raise PuzzleException("Invalid puzzleid")
 
