@@ -14,10 +14,13 @@ from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
 from .rushhour import RushHour
+from .spinout import Spinout
 from .eightball import EightBall
 from .tiltago import Tiltago
 from .tantrix import Tantrix
 from .solitairechess import SolitaireChess
+from .clocksolitaire import ClockSolitaire
+from .sevenpennies import SevenPennies
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -35,9 +38,12 @@ puzzleList = {
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
     RushHour.id:    RushHour,
+    Spinout.id:     Spinout,
     EightBall.id: EightBall,
     Tantrix.id: Tantrix,
-    SolitaireChess.id:      SolitaireChess
+    SolitaireChess.id:      SolitaireChess,
+    SevenPennies.id: SevenPennies,
+    ClockSolitaire.id:    ClockSolitaire
 }
 
 class PuzzleManagerClass:
