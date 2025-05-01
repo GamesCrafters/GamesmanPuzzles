@@ -35,6 +35,7 @@ puzzleList = {
     NQueens.id:     NQueens,
     Peg.id:         Peg,
     Tiltago.id:     Tiltago,
+    Squirrels.id:   Squirrels,
     ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
