@@ -161,6 +161,11 @@ class Squirrels(ServerPuzzle):
             'l': 10,
             '4': 11,
             'A': 12,
+            '5': 12,
+            '6': 12,
+            '7': 12,
+            '8': 12,
+            '9': 12,
             'H': 13,
             'X': 14,
             '-': 15
@@ -262,7 +267,7 @@ class Squirrels(ServerPuzzle):
         return display
         """
         '''
-        A = acorn in hole on board
+        6,7,8,9 = acorn in hole on board
         H = hole
         l = left empty squirrel piece
         L = left squirrel piece
@@ -287,7 +292,9 @@ class Squirrels(ServerPuzzle):
                 if piece[0] == 'H':
                     outlist[i] = 'H'
                     if i in self.actual_hole_list.keys():
-                        outlist[i] = 'A'
+                        acorn_num = int(self.actual_hole_list[i][2])
+                        acorn_num += 5
+                        outlist[i] = str(acorn_num)
                 if piece[0] == 'N':
                     if " " in piece:
                             piece = piece.split(" ")[0]
@@ -309,7 +316,6 @@ class Squirrels(ServerPuzzle):
                             outlist[i] = 'B'
                     elif i + 1 < ((i // 4 + 1) * 4) and self.pos[i + 1][0] == 'N' and piece[:3] == self.pos[i + 1][:3]:
                         if piece[4] == 'O':
-                            #print(self.nuts_left)
                             if piece in self.nuts_left:
                                 outlist[i] = '4'
                             else:
