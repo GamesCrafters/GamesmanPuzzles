@@ -5,11 +5,13 @@ Author: Christopher Nammour
 Date: April 25, 2023
 """
 
+
 from ..util import *
 from ..puzzles import ServerPuzzle
 import random
 import os
 dirname = os.path.dirname(__file__)
+
 
 class RushHour(ServerPuzzle):
     id = "rushhour"
