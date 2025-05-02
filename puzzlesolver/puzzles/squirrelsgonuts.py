@@ -25,7 +25,7 @@ dirname = os.path.dirname(__file__)
 # if nut_count == 0 -> terminate
 class Squirrels(ServerPuzzle):
     id = "squirrels"
-    variants = ['starter', 'junior', 'master']
+    variants = ['starter', 'junior', 'expert', 'master', 'wizard']
     # "True" would mean that the game would start at a random solvable board,
     # by looking at all solvable hashes -- hence False to ensure we fix a start position
     startRandomized = False
@@ -83,7 +83,6 @@ class Squirrels(ServerPuzzle):
             self.hole_list = {}
             self.actual_hole_list = {}
             self.hole_matching = {}
-            ##print("check")
             for i, piece in enumerate(self.pos):
                 if " " in piece:
                     nut_part = piece.split(" ")[0]
@@ -97,7 +96,6 @@ class Squirrels(ServerPuzzle):
                     # for nut
                     type, type_index, relation, orientation = nut_part.split("_")
                     if relation == "O":
-                        ##print(piece)
                         self.nuts_left.append(nut_part)
                         self.nuts_list[type_index] = nut_part
                     if type_index not in self.squirrels_list:
@@ -110,7 +108,6 @@ class Squirrels(ServerPuzzle):
                 elif "N" in piece: # means this is a nut piece
                     type, type_index, relation, orientation = piece.split("_")
                     if relation == "O":
-                        ##print(piece)
                         self.nuts_left.append(piece)
                         self.nuts_list[type_index] = piece
                     if type_index not in self.squirrels_list:
@@ -176,7 +173,6 @@ class Squirrels(ServerPuzzle):
     @classmethod
     def fromString(cls, variant_id, board_string):
         # Checking if the positionid is a str
-        #print(f'parsing {board_string}')
         if not board_string or not isinstance(board_string, str):
             raise TypeError("PositionID is not type str")
         # Checking if this is a valid string (extract the board and difficulty first)
@@ -208,8 +204,10 @@ class Squirrels(ServerPuzzle):
                     hole_type, hole_type_index, hole_relation = hole_part.split("_")
                 new_hole_list[hole_type_index] = hole_relation
                 new_hole_matching[i] = hole_part
-                if dropped_nut != None:
-                    new_actual_hole_list[i] = "N_" + dropped_nut[1]
+                if dropped_nut is not None:
+                    dropped_nut_str = "N_" + dropped_nut[1]
+                    if dropped_nut_str not in new_actual_hole_list.values():
+                        new_actual_hole_list[i] = dropped_nut_str
                 # for nut
                 type, type_index, relation, orientation = nut_part.split("_")
                 if relation == "O":
@@ -226,8 +224,10 @@ class Squirrels(ServerPuzzle):
                 #type, type_index, relation = piece.split("_")
                 new_hole_list[hole_type_index] = hole_relation
                 new_hole_matching[i] = piece
-                if dropped_nut != None:
-                    new_actual_hole_list[i] = "N_" + dropped_nut[1]
+                if dropped_nut is not None:
+                    dropped_nut_str = "N_" + dropped_nut[1]
+                    if dropped_nut_str not in new_actual_hole_list.values():
+                        new_actual_hole_list[i] = dropped_nut_str
             elif "N" in piece: # means this is a nut piece
                 type, type_index, relation, orientation = piece.split("_")
                 if relation == "O":
@@ -289,6 +289,8 @@ class Squirrels(ServerPuzzle):
                     if i in self.actual_hole_list.keys():
                         outlist[i] = 'A'
                 if piece[0] == 'N':
+                    if " " in piece:
+                            piece = piece.split(" ")[0]
                     if i - 1 >= (i // 4) * 4 and self.pos[i - 1][0] == 'N' and piece[:3] == self.pos[i - 1][:3]:
                         if piece[4] == 'O':
                             if piece in self.nuts_left:
@@ -339,18 +341,14 @@ class Squirrels(ServerPuzzle):
                     line.append(nut_part + " " + hole_part)
                 elif "H" in piece:
                     type, type_index, relation = piece.split("_")
-                    #print(type_index)
-                    #print(self.actual_hole_list)
                     if i in self.actual_hole_list.keys() and "D" not in piece:
                         _, nut_dropped = self.actual_hole_list[i].split("_")
                         new_piece = piece + "_D" + nut_dropped
                         line.append(new_piece)
                     else:
                         line.append(piece)
-                    #stringer = self.pos[i]
                 else:
                     line.append(piece)
-            #print(line)
             return '|'.join(line)
 
 
@@ -361,14 +359,11 @@ class Squirrels(ServerPuzzle):
         Return PuzzleValue.SOLVABLE if the current position is primitive;
         otherwise return PuzzleValue.UNDECIDED.
         """
-        ##print(self.nuts_left)
-        ##print(self.actual_hole_list)
         if len(self.nuts_left) == 0:
             return PuzzleValue.SOLVABLE
         elif len(self.actual_hole_list) > 0:
             for index, nut_piece in self.actual_hole_list.items():
                 # if the nut index is not equal to the hole's nut relation, it's unsolvable
-                ##print(nut_piece)
                 type, type_index = nut_piece.split("_")
                 _, hole_index, nut_relation = self.hole_matching[index].split("_")
                 if type_index != nut_relation:
@@ -383,12 +378,9 @@ class Squirrels(ServerPuzzle):
         for i, piece in enumerate(self.pos):
             # Check for leftward moves
             if " " in piece:
-                ##print(piece)
                 piece = piece.split(" ")[0]
             if piece in self.nuts_list.values(): # checks if its a squirrel + nut -> can enumerate from there with squirrel index
-                ##print(piece)
                 type, type_index, relation, orientation = piece.split("_")
-                ##print(self.squirrels_list[type_index])
                 if type_index not in checked_squirrel:
                     num_blocks = len(self.squirrels_list[type_index])
                     # will need to check if the move is also a hole -> can move into holes as well as a move
@@ -409,13 +401,10 @@ class Squirrels(ServerPuzzle):
                     # checks if rightward move possible
                     count = []
                     for squirrel_block in self.squirrels_list[type_index]:
-                        ##print(squirrel_block)
                         Stype, Stype_index, Srelation, Sorientation = squirrel_block.split("_")
                         Sorientation = int(Sorientation)
                         if (i + Sorientation) % 4 < 3:
                             right_block = self.pos[i + 1 + Sorientation]
-                            ##print(right_block)
-                            ##print(Stype + Stype_index)
                             if len(right_block) == 5 or right_block == "-" or (Stype + "_" + Stype_index) in right_block:
                                 count.append(f"M_{i + Sorientation}_{i + 1 + Sorientation}_{squirrel_block}") # CHECK HERE COULD BE SUS
                     if len(count) == num_blocks:
@@ -445,23 +434,19 @@ class Squirrels(ServerPuzzle):
                             if len(down_block) == 5 or down_block == "-" or (Stype + "_" + Stype_index) in down_block:
                                 count.append(f"M_{i + Sorientation}_{(i + Sorientation) + 4}_{squirrel_block}")
                     if len(count) == num_blocks:
-                        ##print(count)
                         moves.append(count)
                         
                     checked_squirrel = checked_squirrel + tuple(type_index)
         returner = tuple()
         for piece in moves:
             returner = returner + (tuple(piece),)
-        ##print(returner)
         return tuple(returner)
         
 
     def doMove(self, move, **kwargs):
-        ##print(move)
         new_pos = list(self.pos.copy())
         new_nuts_left = self.nuts_left.copy()
         new_actual_hole_list = self.actual_hole_list.copy()
-        ##print(new_pos)
         for piece in move:
             _, start, end, type, type_index, relation, orientation = piece.split("_")
             start = int(start)
@@ -476,8 +461,10 @@ class Squirrels(ServerPuzzle):
                 if self.nuts_list[type_index] in new_nuts_left and relation == "O" and end not in new_actual_hole_list: 
                 # CHECK THIS UPDATE: now checks if hole and if still usable hole for nuts -> past code (self.pos[end] in self.hole_matching.values())
                 # WAIT should check if the hole is already filled??
-                    new_actual_hole_list[end] = type + "_" + type_index # hole location : nut index
-                    new_nuts_left.remove(self.nuts_list[type_index]) # takes the nuts on the board off -> no more nut to consider
+                    acorn_str = type + "_" + type_index
+                    if acorn_str not in new_actual_hole_list.values():
+                        new_actual_hole_list[end] = acorn_str # hole location : nut index
+                        new_nuts_left.remove(self.nuts_list[type_index]) # takes the nuts on the board off -> no more nut to consider
             if start not in self.hole_coords and not (len(new_pos[start]) >= 7 and new_pos[start] != piece_string): # needs to check that it is not a nut
                 new_pos[start] = "-"
             if start in self.hole_coords and self.pos[start] == new_pos[start]: # if there was a hole here
@@ -492,7 +479,6 @@ class Squirrels(ServerPuzzle):
         squirrels_dict = tuple()
         for index, lister in self.squirrels_list.items():
             squirrels_dict = squirrels_dict + ((index, tuple(lister)),)
-        ##print(new_pos)
         return Squirrels(variant_id=self.variant_id, pos=tuple(new_pos), squirrels_list=tuple(squirrels_dict), nuts_list=tuple(self.nuts_list.items()), nuts_left=tuple(new_nuts_left), hole_list=tuple(self.hole_list.items()), actual_hole_list=tuple(new_actual_hole_list.items()), hole_matching=tuple(self.hole_matching.items()))
         
         #return move
