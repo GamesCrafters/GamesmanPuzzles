@@ -1,7 +1,7 @@
 """
 File: topspin.py
 Puzzle: Top Spin
-Author: Yishu Chao (2020) | Update: Esther Zeng, Benji Xu, Maria Rufova (2025)
+Author: Yishu Chao (2020) | Update: Esther Zeng, Maria Rufova, Benji Xu (2025)
 Date: November 23, 2020 | Update: April 29, 2025
 """
 
@@ -31,7 +31,7 @@ class TopSpin(ServerPuzzle):
 
 	def __str__(self, **kwargs):
 		return str(self.track)
-	
+
 	def primitive(self, **kwargs):
 		'''
 		since the track is circular, you can find where the 1 is and wrap it around
@@ -71,7 +71,6 @@ class TopSpin(ServerPuzzle):
 			spinned = self.loop[:self.spin][::-1]
 			new_loop = spinned + self.loop[self.spin:]
 		new_puzzle = TopSpin(size = self.size, spin = self.spin, loop=new_loop)
-		#new_puzzle = TopSpin(loop = new_loop)
 		return new_puzzle
 
 	def __hash__(self):
@@ -86,8 +85,7 @@ class TopSpin(ServerPuzzle):
 
 	def generateSolutions(self, **kwargs):
 		solutions = []
-		temp = self.all_nums
-		solutions.append(TopSpin(loop = temp))
+		solutions.append(TopSpin(size=self.size, spin=self.spin, loop=self.all_nums))
 		return solutions
 
 	@property
