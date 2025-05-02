@@ -1,8 +1,8 @@
 """
 File: topspin.py
 Puzzle: Top Spin
-Author: Yishu Chao
-Date: November 23, 2020
+Author: Yishu Chao (2020) | Update: Esther Zeng, Maria Rufova, Benji Xu (2025)
+Date: November 23, 2020 | Update: April 29, 2025
 """
 
 from . import ServerPuzzle
@@ -14,33 +14,25 @@ import random
 class TopSpin(ServerPuzzle):
 
 	id = 'topspin'
-	variants = ['6_2']
+	variants = ['10_2', '12_3']
 	startRandomized = True
 
-	def __init__(self, size = 6, spin = 2, **kwargs):
+	def __init__(self, size = 10, spin = 2, **kwargs):
 		self.size = size
 		self.spin = spin
-		self.all_nums = list(range(1, size+1))
+		self.all_nums = list(range(1, size + 1))
 		if len(kwargs) == 1:
 			for key, value in kwargs.items():
 				if key == 'loop':
 					self.loop = value
 		else:
-			self.loop = random.sample(self.all_nums,size)
+			self.loop = random.sample(self.all_nums, size)
 		self.track = [self.loop[:spin]] + [item for item in self.loop[spin:]]
 
 	def __str__(self, **kwargs):
 		return str(self.track)
 
-	def printInfo(self):
-		print("Puzzle: ")
-		print('                           ')
-		print ("     "+str(self.track[0]) + '\n')
-		print (str(self.track[4]) + "               " + str(self.track[1]) + '\n')
-		print("     " + str(self.track[3]) + "     " + str(self.track[2]))
-		print('                           ')
-
-	def primitive(self,**kwargs):
+	def primitive(self, **kwargs):
 		'''
 		since the track is circular, you can find where the 1 is and wrap it around
 		to see if it is in sorted order
@@ -49,16 +41,16 @@ class TopSpin(ServerPuzzle):
 			return PuzzleValue.SOLVABLE
 		return PuzzleValue.UNDECIDED
 
-	def generateMoves(self,movetype = 'all', **kwargs):
+	def generateMoves(self, movetype = 'all', **kwargs):
 		if movetype == 'for' or movetype == 'back':
 			return []
 		moves = []
-		for i in range(1,self.size):
-			moves.append((i,'clockwise'))
+		for i in range(1, self.size):
+			moves.append((i, 'clockwise'))
 		moves.append(('flip'))
 		return moves
 
-	#helper fucntion for doMove()
+	# helper fucntion for doMove()
 	def handleMove(self, idx, move):
 		if 0 <= idx + move <= self.size - 1:
 			return idx + move
@@ -78,7 +70,7 @@ class TopSpin(ServerPuzzle):
 		else:
 			spinned = self.loop[:self.spin][::-1]
 			new_loop = spinned + self.loop[self.spin:]
-		new_puzzle = TopSpin(loop = new_loop)
+		new_puzzle = TopSpin(size = self.size, spin = self.spin, loop=new_loop)
 		return new_puzzle
 
 	def __hash__(self):
@@ -93,10 +85,9 @@ class TopSpin(ServerPuzzle):
 
 	def generateSolutions(self, **kwargs):
 		solutions = []
-		temp = self.all_nums
-		solutions.append(TopSpin(loop = temp))
+		solutions.append(TopSpin(size=self.size, spin=self.spin, loop=self.all_nums))
 		return solutions
-	
+
 	@property
 	def variant(self):
 		size = str(len(self.loop))
@@ -123,15 +114,39 @@ class TopSpin(ServerPuzzle):
 			raise TypeError("Invalid variantid")
 		if variantid not in TopSpin.variants:
 			raise IndexError("Out of bounds variantid")
-		temp = variantid.split('_')
+		temp = variantid.split('_') # size_spin
 		return TopSpin(size=int(temp[0]), spin = int(temp[1]))
 
-	def toString(self, **kwargs):
+	def toString(self, mode: StringMode):
+		if mode == StringMode.AUTOGUI:
+			# b for 10, c for 11, etc...
+			return '1_a' + "".join([str(i) if i <= 9 else chr(88 + i) for i in self.track[0] + self.track[1:]])
+			# return '1_a' + "".join([str(i) if i != 10 else 'i' for i in self.track[0] + self.track[1:]])
+
 		result = '_'.join([str(item) for item in self.track[0]])
 		for item in self.track[1:]:
 			result += '-'
 			result += str(item)
 		return result
+
+	def turncount_to_textnum(self, turn_count: int) -> int:
+		"""
+		returns
+		"""
+		flat = [i if i <= 9 else chr(88 + i) for i in self.track[0] + self.track[1:]]
+		return flat[-turn_count]
+
+	# add moveString
+	def moveString(self, move, mode: StringMode):
+		if mode == StringMode.AUTOGUI:
+			if move == 'flip':
+				return 'A_a_0_-'
+			return f"A_{self.turncount_to_textnum(move[0])}_{1 + self.size - move[0]}_x"
+		else:
+			if move == 'flip':
+				return 'flip'
+			else: # example: rotate 5 steps clockwise
+				return f"rotate {move[0]} step{'' if move[0] == 1 else 's'} {move[1]}"
 
 	@classmethod
 	def fromString(cls, variant_id, positionid):
@@ -142,7 +157,7 @@ class TopSpin(ServerPuzzle):
 			new_loop.append(int(string))
 		for item in stacks[1:]:
 			new_loop.append(int(item))
-		puzzle = TopSpin(loop=new_loop)
+		puzzle = TopSpin(size=len(new_loop), spin=len(in_spin), loop=new_loop)
 		return puzzle
 
 	@classmethod
@@ -158,7 +173,7 @@ class TopSpin(ServerPuzzle):
 		elif len(puzzle.track[0]) != in_spinner:
 			return False
 		elif max(puzzle.loop) > size or min(puzzle.loop) < 1:
-			return False 
+			return False
 		for i in range(len(puzzle.loop)):
 			for j in range(i+1, len(puzzle.loop)):
 				if puzzle.loop[i] == puzzle.loop[j]:
