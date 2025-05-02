@@ -5,19 +5,11 @@ Author: Christopher Nammour
 Date: April 25, 2023
 """
 
-
-from copy import deepcopy
-from puzzlesolver.util import *
-from puzzlesolver.puzzles import Puzzle
-from puzzlesolver.solvers import GeneralSolver
-from puzzlesolver.players import TUI
-
 from ..util import *
 from ..puzzles import ServerPuzzle
 import random
 import os
 dirname = os.path.dirname(__file__)
-
 
 class RushHour(ServerPuzzle):
     id = "rushhour"
@@ -336,6 +328,3 @@ class RushHour(ServerPuzzle):
         else:
             parts = move.split('_')
             return f'{parts[1]} {parts[2]}'
-
-#puzzle = RushHour("basic")
-#TUI(puzzle, solver=GeneralSolver(puzzle), info=True).play()
