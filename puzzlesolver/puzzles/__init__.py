@@ -1,5 +1,5 @@
 from ._models import *
-from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver, SolitaireChessSolver
+from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver, SolitaireChessSolver, SquirrelSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
@@ -21,6 +21,7 @@ from .tantrix import Tantrix
 from .solitairechess import SolitaireChess
 from .clocksolitaire import ClockSolitaire
 from .sevenpennies import SevenPennies
+from .squirrelsgonuts import Squirrels
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -34,6 +35,7 @@ puzzleList = {
     NQueens.id:     NQueens,
     Peg.id:         Peg,
     Tiltago.id:     Tiltago,
+    Squirrels.id:   Squirrels,
     ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
@@ -70,6 +72,8 @@ class PuzzleManagerClass:
     
     def getSolverClass(self, puzzleid, variantid=None, test=False):
         """Get Solver Class given the puzzleid"""
+        if puzzleid == Squirrels.id:
+            return SquirrelSolver
         if puzzleid == RushHour.id or puzzleid == TopSpin.id:
             return PickleSolver
         if puzzleid == LightsOut.id:
