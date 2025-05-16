@@ -5,10 +5,15 @@ from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue, StringMode
 from werkzeug.exceptions import InternalServerError
 from . import puzzle_solved_variants
+import time
+import psutil
+from datetime import datetime, timezone
 
 app = flask.Flask("PuzzleServer")
 app.config['DATABASE_DIR'] = 'databases'
 app.json_provider_class.compact = False
+
+start_time = time.time()
 
 CORS(app)
 
@@ -54,7 +59,35 @@ def validate(puzzleid=None, variantid=None, position=None):
         except PuzzleException as e:
             abort(404, description=str(e))
 
+def format_time(seconds: float) -> str:
+    seconds = int(seconds)
+    days = seconds // 86400
+    hours = (seconds % 86400) // 3600
+    minutes = (seconds % 3600) // 60
+    secs = seconds % 60
+    return f"{days}d {hours}h {minutes}m {secs}s"
+
 # Routes
+
+@app.route('/health')
+def get_health():
+    uptime_seconds = time.time() - start_time
+    uptime = format_time(uptime_seconds)
+    cpu_usage = psutil.cpu_percent(interval=0.1)
+    memory = psutil.virtual_memory()
+    memory_usage = f"{memory.percent}%"
+    process_count = len(psutil.pids())
+    timestamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+    
+    return {
+        'status': "ok" if cpu_usage < 90 and memory_usage < 90 else "degraded",
+        'uptime': uptime,
+        'cpu_usage': cpu_usage, 
+        'memory_usage': memory_usage,
+        'process_count': process_count,
+        'timestamp': timestamp,
+    }, 200
+
 @app.route('/<puzzle_id>/<variant_id>/start/', methods=['GET'])
 def get_start_position(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)
