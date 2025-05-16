@@ -75,15 +75,15 @@ def get_health():
     uptime = format_time(uptime_seconds)
     cpu_usage = psutil.cpu_percent(interval=0.1)
     memory = psutil.virtual_memory()
-    memory_usage = f"{memory.percent}%"
     process_count = len(psutil.pids())
     timestamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
     
     return {
         'status': "ok" if cpu_usage < 90 and memory.percent < 90 else "degraded",
+        'http_code': 200,
         'uptime': uptime,
-        'cpu_usage': cpu_usage, 
-        'memory_usage': memory_usage,
+        'cpu_usage': f"{cpu_usage}%", 
+        'memory_usage': f"{memory.percent}%",
         'process_count': process_count,
         'timestamp': timestamp,
     }, 200

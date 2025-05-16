@@ -42,6 +42,30 @@ to access the webserver locally. The server should be running at http://127.0.0.
 
 
 ### Routes
+- `/health` : 
+    - Returns the current health and status of the service.
+
+      UWAPI health fields:
+        - `status`: (String) `"degraded"` when CPU Usage & Virtual Memory Usage is => 90%, else `"ok"`. Indicates that GamesmanPuzzles is online.
+        - `http_code`: (Integer) Always HTTP `200`. Indicates that GamesmanPuzzles is online.
+        - `timestamp`: (Integer) ISO 8601 UTC timestamp of when the health response was made (e.g., `"2025-05-16T20:25:55Z"`).
+        - `uptime`: (String) Time UWAPI has been running in `Xd Yh Zm Ws` format.
+        - `cpu_usage`: (String) The percentage of CPU currently used (e.g., `"21.2%"`).
+        - `memory_usage`: (String) The percentage of total system memory currently used (e.g., `"10.1%"`).
+        - `process_count`: (String) Number of processes currently running on the system.
+
+      Below is an example response from `/health`:
+      ```json
+      {
+        "cpu_usage": "92.2%",
+        "http_code": 200,
+        "memory_usage": "90.2%",
+        "process_count": 875,
+        "status": "degraded",
+        "timestamp": "2025-05-16T23:46:50Z",
+        "uptime": "4d 4h 0m 13s"
+      }
+    ```
 
 - `/<puzzle_id>/<variant_id>/start/` 
   - Returns the initial position of the variant of ID `variant_id` of the puzzle of ID `puzzle_id`. If the puzzle supports randomized starting positions, the content of the response will correspond to a random initial position.
