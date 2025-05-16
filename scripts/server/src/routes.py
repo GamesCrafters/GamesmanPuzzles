@@ -80,7 +80,7 @@ def get_health():
     timestamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
     
     return {
-        'status': "ok" if cpu_usage < 90 and memory_usage < 90 else "degraded",
+        'status': "ok" if cpu_usage < 90 and memory.percent < 90 else "degraded",
         'uptime': uptime,
         'cpu_usage': cpu_usage, 
         'memory_usage': memory_usage,
