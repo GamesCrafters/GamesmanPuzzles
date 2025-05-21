@@ -24,28 +24,28 @@ from .sevenpennies import SevenPennies
 from .squirrelsgonuts import Squirrels
 #from .examplepuzzle import ExamplePuzzle
 
-# Add your puzzle in the puzzleList
+# Add your puzzle in the puzzleList, ordered alphabetically
 puzzleList = {
     #ExamplePuzzle.id: ExamplePuzzle,
     Bishop.id:      Bishop,
+    ClockSolitaire.id:    ClockSolitaire,
+    EightBall.id:   EightBall,
     Hanoi.id:       Hanoi,
     HopNDrop.id:    HopNDrop,
     LightsOut.id:   LightsOut,
     Npuzzle.id:     Npuzzle,
     NQueens.id:     NQueens,
     Peg.id:         Peg,
-    Tiltago.id:     Tiltago,
-    Squirrels.id:   Squirrels,
-    ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
-    TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
     RushHour.id:    RushHour,
-    Spinout.id:     Spinout,
-    EightBall.id: EightBall,
-    Tantrix.id: Tantrix,
-    SolitaireChess.id:      SolitaireChess,
     SevenPennies.id: SevenPennies,
-    ClockSolitaire.id:    ClockSolitaire
+    SolitaireChess.id:      SolitaireChess,
+    Spinout.id:     Spinout,
+    Squirrels.id:   Squirrels,
+    Tantrix.id: Tantrix,
+    Tiltago.id:     Tiltago,
+    ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
+    TopSpin.id:     TopSpin,
 }
 
 class PuzzleManagerClass:
