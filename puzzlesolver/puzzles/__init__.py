@@ -1,5 +1,5 @@
 from ._models import *
-from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver
+from ..solvers import IndexSolver, PickleSolver, LightsOutClosedFormSolver, SolitaireChessSolver, SquirrelSolver
 from ..util import PuzzleException
 
 # Put your dependencies here
@@ -14,7 +14,14 @@ from .hopNdrop import HopNDrop
 from .rubiks import Rubiks
 from .nqueens import NQueens
 from .rushhour import RushHour
+from .spinout import Spinout
+from .eightball import EightBall
+from .tiltago import Tiltago
 from .tantrix import Tantrix
+from .solitairechess import SolitaireChess
+from .clocksolitaire import ClockSolitaire
+from .sevenpennies import SevenPennies
+from .squirrelsgonuts import Squirrels
 #from .examplepuzzle import ExamplePuzzle
 
 # Add your puzzle in the puzzleList
@@ -27,11 +34,18 @@ puzzleList = {
     Npuzzle.id:     Npuzzle,
     NQueens.id:     NQueens,
     Peg.id:         Peg,
+    Tiltago.id:     Tiltago,
+    Squirrels.id:   Squirrels,
     ToadsAndFrogsPuzzle.id:      ToadsAndFrogsPuzzle,
     TopSpin.id:     TopSpin,
     Rubiks.id:      Rubiks,
     RushHour.id:    RushHour,
+    Spinout.id:     Spinout,
+    EightBall.id: EightBall,
     Tantrix.id: Tantrix,
+    SolitaireChess.id:      SolitaireChess,
+    SevenPennies.id: SevenPennies,
+    ClockSolitaire.id:    ClockSolitaire
 }
 
 class PuzzleManagerClass:
@@ -58,12 +72,16 @@ class PuzzleManagerClass:
     
     def getSolverClass(self, puzzleid, variantid=None, test=False):
         """Get Solver Class given the puzzleid"""
+        if puzzleid == Squirrels.id:
+            return SquirrelSolver
         if puzzleid == RushHour.id or puzzleid == TopSpin.id:
             return PickleSolver
         if puzzleid == LightsOut.id:
             if variantid in LightsOut.closed_form_variants:
                 return LightsOutClosedFormSolver
             return IndexSolver
+        if puzzleid == SolitaireChess.id:
+            return SolitaireChessSolver
         return IndexSolver
     
     def validate(self, puzzleid, variantid=None, positionid=None):

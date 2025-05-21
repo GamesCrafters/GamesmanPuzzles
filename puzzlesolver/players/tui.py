@@ -32,7 +32,7 @@ class TUI:
         print("Game Over")
 
     def clear(self):
-        # Small function to clear the terminal every time
+        # Small function to clear the terminal every time 
         if name == 'nt':
             _ = system('cls')
         else:
@@ -145,14 +145,12 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--list", action="store_true", help="Lists puzzles and their ids")
 
     args = parser.parse_args()
-
     if not PuzzleManager.hasPuzzleId(args.puzzleid):
         print("Possible puzzles:")
         print("\n".join(PuzzleManager.getPuzzleIds()))
         raise Exception("Puzzleid is not recorded in PuzzleList")
 
     p_cls = PuzzleManager.getPuzzleClass(args.puzzleid)
-
     puzzle = None    
     if args.variant:
         puzzle = p_cls.generateStartPosition(args.variant)

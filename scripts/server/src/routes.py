@@ -15,9 +15,11 @@ CORS(app)
 # Helper functions
 
 def check_available(puzzle_id, variant=None):
+
     if puzzle_id not in puzzle_solved_variants:
         puzzle_solved_variants[puzzle_id] = {}
-        if variant is None: return "unknown"
+        if variant is None: 
+            return "unknown"
     elif len(puzzle_solved_variants[puzzle_id]) == 0:
         return "unavailable"
     elif variant is None or variant in puzzle_solved_variants[puzzle_id]:
