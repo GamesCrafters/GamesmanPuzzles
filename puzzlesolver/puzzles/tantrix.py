@@ -71,8 +71,7 @@ class Tantrix(ServerPuzzle):
             return 0
         hash_num = str(self.state[0][2] + 1)
         for state in self.state:
-            hash_num += str(state[-1] + 1) #idk if this works to make each position unique :/
-            #maybe add the first state's start position?
+            hash_num += str(state[-1])
         return int(hash_num, base=7)
 
     def primitive(self, **kwargs):

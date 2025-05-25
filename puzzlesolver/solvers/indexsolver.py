@@ -25,7 +25,10 @@ class IndexSolver(GeneralSolver):
     def getRemoteness(self, puzzle, *args, **kwargs):
         if not self.ba:
             self._read()
-        return self.ba[hash(puzzle)]
+        if hash(puzzle) < len(self.ba):
+            return self.ba[hash(puzzle)]
+        else:
+            return PuzzleValue.MAX_REMOTENESS
 
     def solve(self, *args, overwrite=False, **kwargs):
         if overwrite or not os.path.exists(self.path):
