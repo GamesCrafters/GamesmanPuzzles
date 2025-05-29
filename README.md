@@ -45,25 +45,23 @@ to access the webserver locally. The server should be running at http://127.0.0.
 - `/health` : 
     - Returns the current health and status of the service.
 
-      UWAPI health fields:
-        - `status`: (String) `"degraded"` when CPU Usage & Virtual Memory Usage is => 90%, else `"ok"`. Indicates that GamesmanPuzzles is online.
+      Health fields:
+        - `status`: (String) Always "ok". Indicates that GamesmanPuzzles is online.
         - `http_code`: (Integer) Always HTTP `200`. Indicates that GamesmanPuzzles is online.
         - `timestamp`: (Integer) ISO 8601 UTC timestamp of when the health response was made (e.g., `"2025-05-16T20:25:55Z"`).
         - `uptime`: (String) Time GamemsanPuzzles has been running in `Xd Yh Zm Ws` format.
-        - `cpu_usage`: (String) The percentage of CPU currently used (e.g., `"21.2%"`).
-        - `memory_usage`: (String) The percentage of total system memory currently used (e.g., `"10.1%"`).
-        - `process_count`: (String) Number of processes currently running on the system.
+        - `cpu_usage`: (String) Process CPU utilization percentage (e.g., `"21.2%"`).
+        - `memory_usage`: (String) Process memory percentage of total physical memory (e.g., `"10.1%"`).
 
       Below is an example response from `/health`:
       ```json
       {
-        "cpu_usage": "92.2%",
+        "cpu_usage": "0.00%",
         "http_code": 200,
-        "memory_usage": "90.2%",
-        "process_count": 875,
-        "status": "degraded",
-        "timestamp": "2025-05-16T23:46:50Z",
-        "uptime": "4d 4h 0m 13s"
+        "memory_usage": "0.12%",
+        "status": "ok",
+        "timestamp": "2025-05-29T18:07:35Z",
+        "uptime": "0d 0h 0m 6s"
       }
     ```
 
