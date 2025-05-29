@@ -9,3 +9,4 @@ progressbar2>=3.50
 sqlitedict>=2.1.0
 waitress>=3.0.0
 Werkzeug>=3.0.3
+psutil>=7.0.0

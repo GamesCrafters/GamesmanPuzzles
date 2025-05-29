@@ -5,10 +5,15 @@ from puzzlesolver.puzzles import PuzzleManager
 from puzzlesolver.util import PuzzleException, PuzzleValue, StringMode
 from werkzeug.exceptions import InternalServerError
 from . import puzzle_solved_variants
+import time
+import psutil
+from datetime import datetime, timezone
 
 app = flask.Flask("PuzzleServer")
 app.config['DATABASE_DIR'] = 'databases'
 app.json_provider_class.compact = False
+
+start_time = time.time()
 
 CORS(app)
 
@@ -54,7 +59,26 @@ def validate(puzzleid=None, variantid=None, position=None):
         except PuzzleException as e:
             abort(404, description=str(e))
 
+def format_time(seconds: float) -> str:
+    seconds = int(seconds)
+    return f"{seconds // 86400}d {(seconds % 86400) // 3600}h {(seconds % 3600) // 60}m {seconds % 60}s"
+
 # Routes
+
+@app.route('/health')
+def get_health():
+    current_process = psutil.Process()
+
+    with current_process.oneshot():
+        return {
+            'status': "ok",
+            'http_code': 200,
+            'uptime': format_time(time.time() - start_time),
+            'cpu_usage': f"{current_process.cpu_percent():.2f}%", 
+            'memory_usage': f"{current_process.memory_percent():.2f}%",
+            'timestamp': datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+        }, 200
+
 @app.route('/<puzzle_id>/<variant_id>/start/', methods=['GET'])
 def get_start_position(puzzle_id, variant_id):
     validate(puzzle_id, variant_id)

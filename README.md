@@ -42,6 +42,28 @@ to access the webserver locally. The server should be running at http://127.0.0.
 
 
 ### Routes
+- `/health` : 
+    - Returns the current health and status of the service.
+
+      Health fields:
+        - `status`: (String) Always "ok". Indicates that GamesmanPuzzles is online.
+        - `http_code`: (Integer) Always HTTP `200`. Indicates that GamesmanPuzzles is online.
+        - `timestamp`: (Integer) ISO 8601 UTC timestamp of when the health response was made (e.g., `"2025-05-16T20:25:55Z"`).
+        - `uptime`: (String) Time GamemsanPuzzles has been running in `Xd Yh Zm Ws` format.
+        - `cpu_usage`: (String) Process CPU utilization percentage (e.g., `"21.2%"`).
+        - `memory_usage`: (String) Process memory percentage of total physical memory (e.g., `"10.1%"`).
+
+      Below is an example response from `/health`:
+      ```json
+      {
+        "cpu_usage": "0.00%",
+        "http_code": 200,
+        "memory_usage": "0.12%",
+        "status": "ok",
+        "timestamp": "2025-05-29T18:07:35Z",
+        "uptime": "0d 0h 0m 6s"
+      }
+    ```
 
 - `/<puzzle_id>/<variant_id>/start/` 
   - Returns the initial position of the variant of ID `variant_id` of the puzzle of ID `puzzle_id`. If the puzzle supports randomized starting positions, the content of the response will correspond to a random initial position.
