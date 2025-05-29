@@ -61,32 +61,23 @@ def validate(puzzleid=None, variantid=None, position=None):
 
 def format_time(seconds: float) -> str:
     seconds = int(seconds)
-    days = seconds // 86400
-    hours = (seconds % 86400) // 3600
-    minutes = (seconds % 3600) // 60
-    secs = seconds % 60
-    return f"{days}d {hours}h {minutes}m {secs}s"
+    return f"{seconds // 86400}d {(seconds % 86400) // 3600}h {(seconds % 3600) // 60}m {seconds % 60}s"
 
 # Routes
 
 @app.route('/health')
 def get_health():
-    uptime_seconds = time.time() - start_time
-    uptime = format_time(uptime_seconds)
-    cpu_usage = psutil.cpu_percent(interval=0.1)
-    memory = psutil.virtual_memory()
-    process_count = len(psutil.pids())
-    timestamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
-    
-    return {
-        'status': "ok" if cpu_usage < 90 and memory.percent < 90 else "degraded",
-        'http_code': 200,
-        'uptime': uptime,
-        'cpu_usage': f"{cpu_usage}%", 
-        'memory_usage': f"{memory.percent}%",
-        'process_count': process_count,
-        'timestamp': timestamp,
-    }, 200
+    current_process = psutil.Process()
+
+    with current_process.oneshot():
+        return {
+            'status': "ok",
+            'http_code': 200,
+            'uptime': format_time(time.time() - start_time),
+            'cpu_usage': f"{current_process.cpu_percent()}%", 
+            'memory_usage': f"{current_process.memory_percent()}%",
+            'timestamp': datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+        }, 200
 
 @app.route('/<puzzle_id>/<variant_id>/start/', methods=['GET'])
 def get_start_position(puzzle_id, variant_id):
