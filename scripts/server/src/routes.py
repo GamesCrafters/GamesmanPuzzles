@@ -74,8 +74,8 @@ def get_health():
             'status': "ok",
             'http_code': 200,
             'uptime': format_time(time.time() - start_time),
-            'cpu_usage': f"{current_process.cpu_percent()}%", 
-            'memory_usage': f"{current_process.memory_percent()}%",
+            'cpu_usage': f"{current_process.cpu_percent():.2f}%", 
+            'memory_usage': f"{current_process.memory_percent():.2f}%",
             'timestamp': datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
         }, 200
 
