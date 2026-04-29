@@ -15,7 +15,7 @@ app.json_provider_class.compact = False
 
 start_time = time.time()
 _server_process = psutil.Process()
-_server_process.cpu_percent()  # Prime baseline, discard result
+_server_process.cpu_percent()
 
 CORS(app)
 
