@@ -14,6 +14,8 @@ app.config['DATABASE_DIR'] = 'databases'
 app.json_provider_class.compact = False
 
 start_time = time.time()
+_server_process = psutil.Process()
+_server_process.cpu_percent()  # Prime baseline, discard result
 
 CORS(app)
 
@@ -67,17 +69,18 @@ def format_time(seconds: float) -> str:
 
 @app.route('/health')
 def get_health():
-    current_process = psutil.Process()
+    with _server_process.oneshot():
+        cpu = _server_process.cpu_percent()
+        memory = _server_process.memory_percent()
 
-    with current_process.oneshot():
-        return {
-            'status': "ok",
-            'http_code': 200,
-            'uptime': format_time(time.time() - start_time),
-            'cpu_usage': f"{current_process.cpu_percent():.2f}%", 
-            'memory_usage': f"{current_process.memory_percent():.2f}%",
-            'timestamp': datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
-        }, 200
+    return {
+        'status': 'ok',
+        'uptime': format_time(time.time() - start_time),
+        'cpu_usage': f"{cpu:.2f}%",
+        'memory_usage': f"{memory:.2f}%",
+        'timestamp': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    }, 200
+
 
 @app.route('/<puzzle_id>/<variant_id>/start/', methods=['GET'])
 def get_start_position(puzzle_id, variant_id):
