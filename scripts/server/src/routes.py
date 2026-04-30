@@ -15,7 +15,6 @@ app.json_provider_class.compact = False
 
 start_time = time.time()
 _server_process = psutil.Process()
-_server_process.cpu_percent()
 
 CORS(app)
 
@@ -65,21 +64,31 @@ def format_time(seconds: float) -> str:
     seconds = int(seconds)
     return f"{seconds // 86400}d {(seconds % 86400) // 3600}h {(seconds % 3600) // 60}m {seconds % 60}s"
 
-# Routes
-
 @app.route('/health')
 def get_health():
-    with _server_process.oneshot():
-        cpu = _server_process.cpu_percent()
-        memory = _server_process.memory_percent()
+    cpu = _server_process.cpu_percent()
+    memory = _server_process.memory_percent()
 
-    return {
-        'status': 'ok',
+    issues = []
+    if cpu > 90:
+        issues.append(f"high CPU usage: {cpu:.2f}%")
+    if memory > 90:
+        issues.append(f"high memory usage: {memory:.2f}%")
+
+    status = 'degraded' if issues else 'ok'
+
+    body = {
+        'status': status,
         'uptime': format_time(time.time() - start_time),
         'cpu_usage': f"{cpu:.2f}%",
         'memory_usage': f"{memory:.2f}%",
         'timestamp': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
-    }, 200
+    }
+
+    if issues:
+        body['issues'] = issues
+
+    return body, 503 if issues else 200
 
 
 @app.route('/<puzzle_id>/<variant_id>/start/', methods=['GET'])
