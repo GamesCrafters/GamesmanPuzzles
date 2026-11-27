@@ -120,9 +120,10 @@ def puzzle_position(puzzle_id, variant_id):
     puzzle = PuzzleManager.getPuzzleClass(puzzle_id).fromString(variant_id, position)
     s = puzzle_solved_variants[puzzle_id][variant_id]
 
-    # We put this special case for towers of hanoi temporarily because we currently
-    # don't have support for SOLVABLE positions with remoteness > 126.
-    get_value = (lambda _: PuzzleValue.SOLVABLE) if puzzle_id == 'towersofhanoi' else s.getValue
+    # We put this special case for towers of hanoi and lights out temporarily because we currently
+    # don't have support for SOLVABLE positions with remoteness > 126. Both puzzles are always
+    # solvable at any position resulting from legal moves after the start position.
+    get_value = (lambda _: PuzzleValue.SOLVABLE) if puzzle_id in ('towersofhanoi', 'lightsout') else s.getValue
 
     value = get_value(puzzle)
     response = {'position': position, 'autoguiPosition': puzzle.toString(mode=StringMode.AUTOGUI), 'positionValue': value}
